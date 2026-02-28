@@ -1,0 +1,50 @@
+@font-face {
+  font-family: 'zeino-icon';
+  src:  url('fonts/zeino-icon.eot?1qle21');
+  src:  url('fonts/zeino-icon.eot?1qle21#iefix') format('embedded-opentype'),
+    url('fonts/zeino-icon.ttf?1qle21') format('truetype'),
+    url('fonts/zeino-icon.woff?1qle21') format('woff'),
+    url('fonts/zeino-icon.svg?1qle21#zeino-icon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="zeino-icon-"], [class*=" zeino-icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'zeino-icon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.zeino-icon-human-resources:before {
+  content: "\e900";
+}
+.zeino-icon-laptop:before {
+  content: "\e901";
+}
+.zeino-icon-left-arrow:before {
+  content: "\e902";
+}
+.zeino-icon-presentation:before {
+  content: "\e903";
+}
+.zeino-icon-strategy:before {
+  content: "\e904";
+}
+.zeino-icon-target:before {
+  content: "\e905";
+}
+.zeino-icon-training:before {
+  content: "\e906";
+}
+.zeino-icon-visualization:before {
+  content: "\e907";
+}

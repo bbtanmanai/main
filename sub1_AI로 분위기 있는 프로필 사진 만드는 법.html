@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>[AI로 분위기 있는 프로필 사진 만드는 법]</title>
+   <!-- 나눔바른고딕 폰트 -->
+   <link href="https://cdn.jsdelivr.net/gh/sun-typeface/nanum-barun-gothic@master/nanumbahrungothic.css" rel="stylesheet">
+   <link rel="stylesheet" href="css/sub_pages.css">
+</head>
+
+<body>
+    <!-- 상단 진행 바 -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- 페이지 네비게이션 -->
+    <div class="nav-controls">
+        <button class="nav-btn" onclick="prevSlide()">↑</button>
+        <div class="idx-info"><span id="currIdx">1</span> / <span id="totalIdx">1</span></div>
+        <button class="nav-btn" onclick="nextSlide()">↓</button>
+    </div>
+
+    <div class="slide-container" id="slideContainer">
+
+
+      <section class="slide" id="slide11">
+         <div class="content-box">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+               <h3>AI로 분위기 있는 프로필 사진 만드는 법</h3>
+            </div>
+
+            <div class="exercise-box">
+               <div class="exercise-icon">💡</div>
+               <div style="width:100%;">
+                  <strong>레드배경 프롬프트</strong><br><br>
+                  <span class="pill" style="background:#fef3c7; color:#92400e; margin-top:15px;">아래 프롬프트를 복사(Ctrl_c) 해서
+                     제미나이에 (Ctrl_V) 하세요.</span>
+                  <div
+                     style="background:#1e293b; color:#e2e8f0; font-family:monospace; padding:20px; border-radius:10px; white-space:pre-wrap; font-size:0.75rem; line-height:1.5; margin-top:5px;">
+                     Please create a vertical potrait shot in the exact same face features,
+                     characterized by stark cinematic lighting and intense contrast. Captured in a slightly low,
+                     upward-facing angle that dramatized the subject’s jawline and neck, the composition evokes quite
+                     dominance and sculptural elegance. The background is a deep, saturated crimson red, creating a bold
+                     visual clash with the model’s luminous skin and dark wardrobe.
+                  </div>
+                  <div class="card" style="margin-bottom: 20px;">
+                     <p><img src="img/potrait1.jpeg" width="96%"></p>
+                  </div>
+
+               </div>
+            </div>
+
+
+            <div class="exercise-box">
+               <div class="exercise-icon">💡</div>
+               <div style="width:100%;">
+                  <strong>자연스러운 까페 분위기 프롬프트</strong><br><br>
+                  <span class="pill" style="background:#B2EBF2; color:#01579B; margin-top:15px;">아래 프롬프트를 복사(Ctrl_c) 해서
+                     제미나이에 (Ctrl_V) 하세요.</span>
+                  <div
+                     style="background:#1e293b; color:#e2e8f0; font-family:monospace; padding:20px; border-radius:10px; white-space:pre-wrap; font-size:0.75rem; line-height:1.5; margin-top:5px;">
+                     A candid portrait of a person sitting in a sunlit, peaceful cafe with soft daylight streaming in
+                     through a window. The subject is looking slightly to the side with a gentle, relaxed expression.
+                     The setting is cozy and warm, with a blurred background of greenery and natural light flares. The
+                     photo has a soft, ethereal quality.
+                     Style: Candid, natural, warm, soft light, peaceful, ethereal, outdoor/cafe setting.</div>
+                  <div class="card" style="margin-bottom: 20px;">
+                     <p><img src="img/potrait2.jpeg" width="96%"></p>
+                  </div>
+
+               </div>
+            </div>
+
+
+            <div class="exercise-box">
+               <div class="exercise-icon">💡</div>
+               <div style="width:100%;">
+                  <strong>블루배경 프롬프트</strong><br><br>
+                  <span class="pill" style="background:#fef3c7; color:#92400e; margin-top:15px;">아래 프롬프트를 복사(Ctrl_c) 해서
+                     제미나이에 (Ctrl_V) 하세요.</span>
+                  <div
+                     style="background:#1e293b; color:#e2e8f0; font-family:monospace; padding:20px; border-radius:10px; white-space:pre-wrap; font-size:0.75rem; line-height:1.5; margin-top:5px;">
+                     A vibrant portrait of a person against a bright, solid-colored background (e.g., electric blue or
+                     lime green). The subject's outfit and makeup are styled to complement the background, creating a
+                     visually striking and bold image. The lighting is even and studio-like, with a sharp focus on the
+                     subject.
+                     Style: Bold, vibrant, colorful, studio portrait, high-impact, clean.
+                  </div>
+                  <div class="card" style="margin-bottom: 20px;">
+                     <p><img src="img/potrait3.jpeg" width="96%"></p>
+                  </div>
+
+               </div>
+            </div>
+
+
+
+
+         </div>
+      </section>
+
+
+
+
+
+   </div>
+
+
+   <div class="pdf-btn-container">
+      <button class="btn-pdf" onclick="generatePDF()">
+         <span>📄</span> PDF 만들기
+      </button>
+   </div>
+
+   <!-- 라이브러리 및 공통 스크립트 -->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+   <script src="js/sub_pages.js"></script>
+</body>
+
+</html>

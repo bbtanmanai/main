@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Gems+노트북LM 합치기 방법]</title>
+    <!-- 나눔바른고딕 폰트 -->
+    <link href="https://cdn.jsdelivr.net/gh/sun-typeface/nanum-barun-gothic@master/nanumbahrungothic.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/sub_pages.css">
+</head>
+
+<body>
+    <!-- 상단 진행 바 -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- 페이지 네비게이션 -->
+    <div class="nav-controls">
+        <button class="nav-btn" onclick="prevSlide()">↑</button>
+        <div class="idx-info"><span id="currIdx">1</span> / <span id="totalIdx">1</span></div>
+        <button class="nav-btn" onclick="nextSlide()">↓</button>
+    </div>
+
+    <div class="slide-container" id="slideContainer">
+
+        <section class="slide" id="slide5">
+            <div class="content-box">
+                <h2>노트북LM+제미나이 합치는 방법</h2>
+                <div class="card">
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 20px; font-size: 1.2rem;">
+                            <strong>1. 노트북LM에 중요문서를 입력.</strong> 노트북LM을 기억의 저장소로 활용
+                        </li>
+                        <li style="margin-bottom: 20px; font-size: 1.2rem;">
+                            <strong>2. Gems 만들때 지식에 노트북LM 연결 사용.</strong>
+                            <img src="img/img1.png" width="60%">
+                        </li>
+                        <li style="margin-bottom: 20px; font-size: 1.2rem;">
+                            <strong>3. 크롬에서 분할뷰 기능을 사용.</strong> 제미나이 + 노트북LM 화면 2중 브라우저 환경구축<br><br>
+                            <img src="img/img2.png" width="70%">
+                        </li>
+                        <li style="margin-bottom: 20px; font-size: 1.2rem;">
+                            <strong>4. 제미나이와의 중요 대화 후 :</strong> 노트북LM에 대화내용을 저장
+                            <img src="img/img3.png" width="70%">
+                        </li>
+                        <li style="margin-bottom: 20px; font-size: 1.2rem;">
+                            <strong>5. 제미나이는 똑똑한 천재가 맞습니다.</strong> 그러나 중장기적 대화를 통해 제미나이는 바보가 됩니다.
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+
+        <div class="pdf-btn-container">
+            <button class="btn-pdf" onclick="generatePDF()">
+                <span>📄</span> PDF 만들기
+            </button>
+        </div>
+
+        <!-- 라이브러리 및 공통 스크립트 -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+        <script src="js/sub_pages.js"></script>
+</body>
+
+</html>

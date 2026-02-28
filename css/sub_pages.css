@@ -1,0 +1,213 @@
+:root {
+    /* Phase Colors */
+    --phase1-main: #3b82f6;
+    --phase1-bg: #eff6ff;
+    --phase2-main: #8b5cf6;
+    --phase2-bg: #f5f3ff;
+    --phase3-main: #10b981;
+    --phase3-bg: #ecfdf5;
+    --phase4-main: #f97316;
+    --phase4-bg: #fff7ed;
+    --phase5-main: #ec4899;
+    --phase5-bg: #fdf2f8;
+    --interview-red: #ef4444;
+
+    --text-main: #1e293b;
+    --text-light: #64748b;
+    --bg-main: #fafbff;
+    --border: #e2e8f0;
+
+    --gradient-bar: linear-gradient(90deg, #3b82f6, #8b5cf6, #10b981, #f97316, #ec4899);
+    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'NanumBarunGothic', sans-serif;
+    color: var(--text-main);
+    background: var(--bg-main);
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+/* Top Progress Bar */
+.progress-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    z-index: 1000;
+    background: #e2e8f0;
+}
+
+.progress-bar {
+    height: 100%;
+    background: var(--gradient-bar);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* Slide Layout */
+.slide {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    scroll-snap-align: start;
+    padding: 60px 40px;
+    background: white;
+}
+
+.content-box {
+    max-width: 1000px;
+    width: 100%;
+}
+
+/* Typography */
+h1 {
+    font-size: 3.5rem;
+    font-weight: 900;
+    margin-bottom: 20px;
+    letter-spacing: -0.05rem;
+}
+
+h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 30px;
+}
+
+.highlight-text {
+    font-size: 32px;
+    font-weight: bold;
+    color: var(--phase1-main);
+}
+
+/* Grid & Cards */
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin: 20px 0;
+}
+
+.card {
+    background: #f8fafc;
+    padding: 30px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-card);
+}
+
+/* Specialized Components */
+.vs-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.vs-table th,
+.vs-table td {
+    padding: 15px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+}
+
+.vs-table th {
+    background: #f1f5f9;
+    font-weight: 700;
+}
+
+.exercise-box {
+    margin-top: 30px;
+    border: 2px dashed var(--phase4-main);
+    background: #fff7ed;
+    padding: 25px;
+    border-radius: 15px;
+    display: flex;
+    gap: 15px;
+}
+
+/* Bottom Nav Controls */
+.nav-controls {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    gap: 15px;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px 20px;
+    border-radius: 50px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border);
+    align-items: center;
+}
+
+.nav-btn {
+    background: none;
+    border: 2px solid #cbd5e1;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-btn:hover {
+    border-color: var(--phase1-main);
+    color: var(--phase1-main);
+    background: #f1f5f9;
+}
+
+/* PDF Button */
+.pdf-btn-container {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    z-index: 1000;
+}
+
+.btn-pdf {
+    background: #1e293b;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+}
+
+.btn-pdf:hover {
+    background: #0f172a;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    h1 { font-size: 2.2rem; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .slide { padding: 40px 20px; }
+    .nav-controls { bottom: 20px; right: 20px; padding: 8px 15px; }
+    .pdf-btn-container { bottom: 20px; left: 20px; }
+}

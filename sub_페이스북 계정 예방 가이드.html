@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[페이스북 계정 예방 가이드]</title>
+    <!-- 나눔바른고딕 폰트 -->
+    <link href="https://cdn.jsdelivr.net/gh/sun-typeface/nanum-barun-gothic@master/nanumbahrungothic.css"
+        rel="stylesheet">
+    <style>
+        :root {
+            /* Phase Colors from Gemstonotebook.html */
+            --phase1-main: #3b82f6;
+            --phase1-bg: #eff6ff;
+            --phase2-main: #8b5cf6;
+            --phase2-bg: #f5f3ff;
+            --phase3-main: #10b981;
+            --phase3-bg: #ecfdf5;
+            --phase4-main: #f97316;
+            --phase4-bg: #fff7ed;
+            --phase5-main: #ec4899;
+            --phase5-bg: #fdf2f8;
+            --interview-red: #ef4444;
+
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --bg-main: #fafbff;
+            --border: #e2e8f0;
+
+            --gradient-bar: linear-gradient(90deg, #3b82f6, #8b5cf6, #10b981, #f97316, #ec4899);
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'NanumBarunGothic', sans-serif;
+            color: var(--text-main);
+            background: var(--bg-main);
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        /* Top Progress Bar */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            z-index: 1000;
+            background: #e2e8f0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--gradient-bar);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Slide Layout */
+        .slide {
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            scroll-snap-align: start;
+            padding: 60px 40px;
+            background: white;
+        }
+
+        .content-box {
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            letter-spacing: -0.05rem;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 30px;
+        }
+
+        .highlight-text {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--phase1-main);
+        }
+
+        /* Grid & Cards */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .card {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-card);
+        }
+
+        /* Specialized Components */
+        .vs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .vs-table th,
+        .vs-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+        }
+
+        .vs-table th {
+            background: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .exercise-box {
+            margin-top: 30px;
+            border: 2px dashed var(--phase4-main);
+            background: #fff7ed;
+            padding: 25px;
+            border-radius: 15px;
+            display: flex;
+            gap: 15px;
+        }
+
+        /* Bottom Nav Controls */
+        .nav-controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: none;
+            border: 2px solid #cbd5e1;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--phase1-main);
+            color: var(--phase1-main);
+            background: #f1f5f9;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .slide {
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── 인트로 ── -->
+    <div class="intro-card">
+        <h1>페이스북 광고 계정 안정적으로 세팅하기</h1>
+        <p style="color: #ffffff;">메타는 계정의 <strong>신뢰도</strong>와 <strong>안정성</strong>을 매우 중요하게 봅니다.<br>
+            유령 계정·피싱·도용 피해가 많아지면서 보안 기준이 엄격해졌고,<br>
+            한 번 문제가 생기면 복구가 어려운 경우도 종종 있습니다.</p>
+        <div class="point">
+            🔑 핵심 전략 → 문제가 생긴 뒤 해결하기보다,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;애초에
+            안정적으로 세팅해서 문제 자체를 만들지 않는 것
+        </div>
+    </div>
+
+    <!-- ── 1 ── -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-num">1</div>
+            <div class="section-title">개인 계정 2단계 인증(2FA) 설정하기</div>
+        </div>
+        <p>가장 기본이자 가장 강력한 예방 장치입니다.</p>
+        <div class="box-green">
+            ✅ <strong>권장</strong>: 광고 계정 운영하는 사람(관리자) 전원 2FA 필수<br>
+            구글 OTP / 문자 인증 등 2단계 인증을 반드시 적용하세요.<br>
+            계정 보안이 강화되면 추후 인증 절차에서도 안정적으로 대응하기 쉽습니다.
+        </div>
+    </div>
+
+    <!-- ── 2 ── -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-num">2</div>
+            <div class="section-title">계정 활동으로 "정상 사용자" 신호 만들기</div>
+        </div>
+        <p>오랫동안 활동하지 않은 계정이거나 신규 계정이라면, 메타 입장에서 "이 계정이 정상인지" 확인하는 시간이 필요합니다.</p>
+        <div class="box-tip">
+            ⭐ <strong>추천 루틴 (페이스북 앱에서 실행)</strong><br>
+            <ul class="routine-list" style="margin-top:8px;">
+                <li>콘텐츠 시청</li>
+                <li>좋아요 / 댓글 등 기본 반응</li>
+                <li>한 기기에서 안정적으로 사용 (가능하면)</li>
+            </ul>
+            하루 10분 × 1주일만 해도 충분합니다.
+        </div>
+        <div class="box-warn">
+            ⚠️ <strong>피해야 할 이상 패턴</strong><br>
+            • 계정 여러 개를 한 번에 만들기<br>
+            • 갑자기 권한을 대량으로 부여/초대하기<br>
+            • 결제수단을 단기간에 여러 개 바꾸기
+        </div>
+    </div>
+
+    <!-- ── 3 ── -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-num">3</div>
+            <div class="section-title">광고 세팅 전에 '비즈니스 정보'부터 입력하기</div>
+        </div>
+        <p>초보자들이 자주 놓치는 부분입니다.</p>
+        <div class="box-tip">
+            📍 경로: <strong>비즈니스 설정 → 비즈니스 정보</strong><br><br>
+            비즈니스 정보를 먼저 입력하고 광고 세팅을 시작하세요.<br>
+            각종 알림·인증 흐름에서도 도움이 되고, "정상적인 운영 주체"로 보이는 데 유리합니다.
+        </div>
+        <div class="box-green">
+            ✅ 비즈니스 인증까지 받으면 신뢰도가 더 높아져 광고 거절 사유가 줄어듭니다.
+        </div>
+    </div>
+
+    <!-- ── 4 ── -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-num">4</div>
+            <div class="section-title">첫 광고 집행은 "보수적으로" 시작하기</div>
+        </div>
+        <p>처음부터 너무 많은 캠페인/소재를 쏟아붓고 수정도 많이 하면 계정이 불안정해질 수 있습니다.</p>
+        <table class="budget-table">
+            <tr>
+                <th>항목</th>
+                <th>권장 수준</th>
+            </tr>
+            <tr>
+                <td>일 예산</td>
+                <td>1~2만원 수준</td>
+            </tr>
+            <tr>
+                <td>캠페인 수</td>
+                <td>1~2개</td>
+            </tr>
+            <tr>
+                <td>소재 수</td>
+                <td>10개 이내</td>
+            </tr>
+            <tr>
+                <td>운영 기간</td>
+                <td>최소 1주일 안정 운영 후 점진적 확장</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- ── 5 ── -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-num">5</div>
+            <div class="section-title">광고 거절/오류 발생 시 "무작정 건드리지 않기" ⭐중요</div>
+        </div>
+        <p>초보자가 가장 많이 실수하는 포인트입니다.</p>
+        <div class="box-danger">
+            🚫 <strong>절대 하면 안 되는 행동</strong><br>
+            • 무작정 재검수 반복<br>
+            • 거절 상태에서 신규 소재 계속 올리기<br><br>
+            이런 행동은 상황을 악화시키고, 개인 계정까지 영향이 갈 수 있습니다.<br>
+            문제가 해결되지 않은 상태에서 신규 계정을 생성해도 계속 정지를 당할 수 있습니다.
+        </div>
+        <div class="box-green">
+            ✅ <strong>권장 대응</strong><br>
+            일단 멈추고 → 원인 파악 → <strong>메타 직원과 상담</strong> → 문제 해결 후 수정/재진행<br><br>
+            ※ 이미 운영 중인 광고의 "예산 조정" 같은 최소한의 운영은 가능하나,
+            원인 파악 전 과도한 수정은 피하는 것을 권장합니다.
+        </div>
+    </div>
+
+    <!-- ── 6 ── -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-num">6</div>
+            <div class="section-title">비상용 백업 관리자(보조 계정) 초대해두기</div>
+        </div>
+        <p>계정 이슈가 생기면 특정 설정 메뉴 접근이 막히거나 권한 변경이 어려워지는 경우가 있어 백업 플랜이 반드시 필요합니다.</p>
+        <div class="box-tip">
+            📍 경로: <strong>비즈니스 설정 → 사람</strong><br><br>
+            • 신뢰할 수 있는 사람(또는 본인 보조용 이메일) 1명 더 초대<br>
+            • 가능하면 잘 사용하지 않는 별도 메일로 초대해 "백업" 역할 만들어두기
+        </div>
+        <p>이 한 번의 세팅이, 나중에 계정 이슈가 터졌을 때 비즈니스 계정을 새로 파야 하는 번거로움을 크게 줄여줍니다.</p>
+    </div>
+
+    <!-- ── 7 ── -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-num">7</div>
+            <div class="section-title">"신뢰도가 올라갔는지" 추정하는 현실적인 체크 포인트</div>
+        </div>
+        <p>메타는 신뢰도를 점수로 공개하지 않지만, 경험상 아래 변화로 "안정화"를 추정해볼 수 있습니다.</p>
+        <div class="box-tip">
+            📊 <strong>비즈니스 정보 &gt; 광고계정 생성 한도 증가</strong><br>
+            신규 광고 계정은 초기에 제한이 있다가, 시간이 지나며 해제되는 경우가 있습니다.<br>
+            특히 <strong>첫 2주</strong> 정도는 메타가 계정 안정성을 판단하는 기간처럼 느껴지는 경우가 많습니다 (경험 기반).
+        </div>
+        <div class="box-warn">
+            ⚠️ <strong>중요</strong>: 메타가 공식적으로 수치를 공개하지 않기 때문에, 절대적인 기준이 아닌
+            <strong>'운영 경험상 추정 가능한 신호'</strong>로만 참고하세요.
+        </div>
+    </div>
+
+    <!-- ── 체크리스트 ── -->
+    <div class="checklist-card">
+        <h2>✅ 핵심 요약 체크리스트</h2>
+        <ul class="checklist">
+            <li>
+                <div class="check-box"></div>
+                <span>개인 계정 (관리자 전원) 2단계 인증 완료</span>
+            </li>
+            <li>
+                <div class="check-box"></div>
+                <span>신규/휴면 계정은 1주일간 하루 10분 "정상 활동" 후 광고 세팅</span>
+            </li>
+            <li>
+                <div class="check-box"></div>
+                <span>비즈니스 정보 입력 후 광고 세팅 시작</span>
+            </li>
+            <li>
+                <div class="check-box"></div>
+                <span>첫 1~2주는 보수적으로 (저예산 / 소수 캠페인 / 소수 소재) 운영</span>
+            </li>
+            <li>
+                <div class="check-box"></div>
+                <span>거절/오류 시 무작정 수정·재검수 반복 금지 → 원인 파악 후 조치</span>
+            </li>
+            <li>
+                <div class="check-box"></div>
+                <span>비상용 관리자 1명 백업 초대 완료</span>
+            </li>
+        </ul>
+    </div>
+
+</body>
+
+</html>

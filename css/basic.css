@@ -1,0 +1,507 @@
+/* 나눔바른고딕 폰트 불러오기 */
+@import url('https://cdn.jsdelivr.net/gh/sun-typeface/nanum-barun-gothic@master/nanumbahrungothic.css');
+
+:root {
+    /* Phase Colors */
+    --phase1-main: #3b82f6;
+    --phase1-bg: #eff6ff;
+    --phase2-main: #8b5cf6;
+    --phase2-bg: #f5f3ff;
+    --phase3-main: #10b981;
+    --phase3-bg: #ecfdf5;
+    --phase4-main: #f97316;
+    --phase4-bg: #fff7ed;
+    --phase5-main: #ec4899;
+    --phase5-bg: #fdf2f8;
+    --interview-red: #ef4444;
+
+    /* General Colors */
+    --text-main: #1e293b;
+    --text-light: #64748b;
+    --bg-main: #fafbff;
+    --bg-card: #f8fafc;
+    --border: #e2e8f0;
+
+    /* 시니어 가이드라인 색상 */
+    --primary-blue: #0055FF;
+    /* 직접 판매 수익 */
+    --accent-orange: #FF8800;
+    /* 팀 후원 보너스 */
+    --success-green: #22AA55;
+    /* 지급 완료 */
+    --bg-white: #FFFFFF;
+    /* 순백색 배경 */
+    --text-black: #1A1A1A;
+    /* 고대비 텍스트 */
+
+    /* Gradients */
+    --gradient-p1: linear-gradient(135deg, #3b82f6, #60a5fa);
+    --gradient-p2: linear-gradient(135deg, #8b5cf6, #a78bfa);
+    --gradient-p3: linear-gradient(135deg, #10b981, #34d399);
+    --gradient-p4: linear-gradient(135deg, #f97316, #fb923c);
+    --gradient-p5: linear-gradient(135deg, #ec4899, #f472b6);
+    --gradient-bar: linear-gradient(90deg, #3b82f6, #8b5cf6, #10b981, #f97316, #ec4899);
+
+    /* Shadows */
+    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'NanumBarunGothic', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text-main);
+    background: var(--bg-main);
+    overflow-x: hidden;
+    font-size: 18px;
+    /* 최소 폰트 크기 18px 유지 */
+    line-height: 1.6;
+    /* 가독성을 위한 행간 설정 */
+}
+
+/* Progress Bar */
+.progress-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    z-index: 1000;
+    background: #e2e8f0;
+}
+
+.progress-bar {
+    height: 100%;
+    background: var(--gradient-bar);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* Navigation */
+.nav-controls {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    gap: 15px;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px 20px;
+    border-radius: 50px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border);
+    align-items: center;
+}
+
+.nav-btn {
+    background: none;
+    border: 2px solid #cbd5e1;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: var(--text-light);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-btn:hover {
+    border-color: var(--phase1-main);
+    color: var(--phase1-main);
+    background: #f1f5f9;
+}
+
+.slide-counter {
+    font-weight: 700;
+    color: var(--text-main);
+    min-width: 60px;
+    text-align: center;
+}
+
+/* Slide Layout */
+.slide-container {
+    width: 100%;
+}
+
+.slide {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    scroll-snap-align: start;
+    position: relative;
+    padding: 40px 40px 60px;
+    background: white;
+}
+
+.content-box {
+    max-width: 1000px;
+    width: 100%;
+}
+
+/* Typography */
+h1 {
+    font-size: 3.5rem;
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    letter-spacing: -0.05rem;
+}
+
+h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 30px;
+    color: var(--text-main);
+}
+
+h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+p {
+    font-size: 1.2rem;
+    line-height: 1.7;
+    color: var(--text-light);
+    margin-bottom: 15px;
+}
+
+.highlight {
+    color: var(--phase1-main);
+    font-weight: 700;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* Card Systems */
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+}
+
+.grid-4 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.card {
+    background: var(--bg-card);
+    padding: 30px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-card);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+}
+
+.card h4 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+/* Special Slides */
+.divider-slide {
+    color: white;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.divider-slide h2 {
+    color: white;
+    font-size: 4rem;
+    margin-bottom: 10px;
+}
+
+.divider-slide p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.5rem;
+}
+
+.phase1-bg {
+    background: var(--gradient-p1);
+}
+
+.phase2-bg {
+    background: var(--gradient-p2);
+}
+
+.phase3-bg {
+    background: var(--gradient-p3);
+}
+
+.phase4-bg {
+    background: var(--gradient-p4);
+}
+
+.phase5-bg {
+    background: var(--gradient-p5);
+}
+
+/* Interview Slide Style */
+.interview-slide {
+    border-left: 12px solid var(--interview-red);
+    padding-left: 60px;
+}
+
+.interview-badge {
+    background: var(--interview-red);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+/* Exercise Box */
+.exercise-box {
+    margin-top: 30px;
+    border: 2px dashed var(--phase4-main);
+    background: #fff7ed;
+    padding: 25px;
+    border-radius: 15px;
+    display: flex;
+    gap: 15px;
+    align-items: start;
+}
+
+.exercise-icon {
+    font-size: 1.5rem;
+}
+
+/* Components */
+.stat-number {
+    font-size: 5rem;
+    font-weight: 900;
+    color: var(--interview-red);
+    line-height: 1;
+}
+
+.pill {
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    background: white;
+    border: 1px solid var(--border);
+}
+
+.step-card {
+    cursor: pointer;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.step-card.p1 {
+    border-top: 5px solid var(--phase1-main);
+}
+
+.step-card.p2 {
+    border-top: 5px solid var(--phase2-main);
+}
+
+.step-card.p3 {
+    border-top: 5px solid var(--phase3-main);
+}
+
+.step-card.p4 {
+    border-top: 5px solid var(--phase4-main);
+}
+
+.step-card.p5 {
+    border-top: 5px solid var(--phase5-main);
+}
+
+.vs-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.vs-table th,
+.vs-table td {
+    padding: 15px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+}
+
+.vs-table th {
+    background: #f1f5f9;
+    font-weight: 700;
+}
+
+/* Double Diamond CSS */
+.diamond-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 40px 0;
+    position: relative;
+}
+
+.diamond-shape {
+    width: 200px;
+    height: 200px;
+    transform: rotate(45deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #cbd5e1;
+    background: white;
+    z-index: 2;
+}
+
+.diamond-text {
+    transform: rotate(-45deg);
+    text-align: center;
+    font-weight: 700;
+}
+
+.diamond-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #cbd5e1;
+    z-index: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    .grid-2,
+    .grid-3,
+    .grid-4 {
+        grid-template-columns: 1fr;
+    }
+
+    .slide {
+        padding: 20px;
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .nav-controls {
+        bottom: 10px;
+        right: 10px;
+        padding: 8px 15px;
+    }
+
+    .interview-slide {
+        padding-left: 20px;
+        border-left-width: 6px;
+    }
+
+    .diamond-shape {
+        width: 120px;
+        height: 120px;
+    }
+}
+
+/* ================================================
+   코드 블럭 텍스트 정렬 수정
+   문제 원인: white-space:pre-wrap이 HTML 소스의
+   들여쓰기 공백을 그대로 렌더링함
+   해결: pre-line은 공백을 무시하고 줄바꿈만 유지
+   ================================================ */
+
+/* 인라인 스타일로 지정된 어두운 코드 블럭 전체 적용 */
+[style*="background:#1e293b"],
+[style*="background: #1e293b"] {
+    white-space: pre-line !important;
+    text-align: left !important;
+}
+
+/* ================================================
+   시니어 가이드라인 기반 컴포넌트
+   ================================================ */
+
+/* 중요 강조 정보 (수입금, 이름 등) */
+.highlight-text {
+    font-size: 32px;
+    /* 중요 정보 24px~32px */
+    font-weight: bold;
+    letter-spacing: -0.5px;
+}
+
+/* 버튼 설계 - 터치 영역 최소 48dp 확보 */
+.btn-large {
+    min-width: 48px;
+    min-height: 48px;
+    padding: 15px 30px;
+    font-size: 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+}
+
+/* 수당 종류별 라벨 및 색상 */
+.label-direct {
+    color: var(--primary-blue);
+    font-weight: bold;
+}
+
+.label-upline {
+    color: var(--accent-orange);
+    font-weight: bold;
+}
+
+.status-paid {
+    background-color: var(--success-green);
+    color: white;
+}
+
+/* 리스트 아이템 컨테이너 */
+.item-container {
+    margin-bottom: 20px;
+    /* 컴포넌트 사이 간격 최소 20px */
+    padding: 20px;
+    border: 1px solid #EEE;
+    border-radius: 12px;
+}

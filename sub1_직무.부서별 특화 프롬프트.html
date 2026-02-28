@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>직무·부서별 특화 프롬프트</title>
+    <!-- 나눔바른고딕 폰트 -->
+    <link href="https://cdn.jsdelivr.net/gh/sun-typeface/nanum-barun-gothic@master/nanumbahrungothic.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/sub_pages.css">
+    <style>
+        .callout {
+            background: #f1f5f9;
+            border-left: 5px solid var(--phase1-main);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+        }
+        .callout-title {
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        pre {
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .tag {
+            display: inline-block;
+            background: #e2e8f0;
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 상단 진행 바 -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- 페이지 네비게이션 -->
+    <div class="nav-controls">
+        <button class="nav-btn" onclick="prevSlide()">↑</button>
+        <div class="idx-info"><span id="currIdx">1</span> / <span id="totalIdx">1</span></div>
+        <button class="nav-btn" onclick="nextSlide()">↓</button>
+    </div>
+
+    <div class="slide-container" id="slideContainer">
+        <!-- 커버 슬라이드 -->
+        <section class="slide" style="background: linear-gradient(135deg, #1e293b, #0f172a); color: white;">
+            <div class="content-box text-center">
+                <p style="color: var(--phase1-main); font-weight: 800; margin-bottom: 10px;">Specialized Prompts</p>
+                <h1>직무·부서별 특화 프롬프트</h1>
+                <p style="color: #94a3b8; font-size: 1.5rem;">
+                    실무에서 바로 사용하는 부서별 고효율 프롬프트 모음입니다.<br>
+                    각 직무의 전문가처럼 생각하고 답변하도록 설계되었습니다.
+                </p>
+            </div>
+        </section>
+
+        <!-- 공통 가이드 -->
+        <section class="slide">
+            <div class="content-box">
+                <h2>프롬프트 사용 공통 가이드</h2>
+                <div class="card">
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 15px;">
+                        <li>🚀 <strong>역할:</strong> 당신은 {직무} 전문가입니다.</li>
+                        <li>📍 <strong>상황:</strong> {현재 상황/문제}.</li>
+                        <li>🎯 <strong>목표:</strong> {달성하고 싶은 결과}.</li>
+                        <li>⚠️ <strong>제약:</strong> {고려해야 할 조건}.</li>
+                    </ul>
+                </div>
+                <p style="margin-top: 20px; color: var(--text-light);">중괄호 <code>{ }</code> 로 표시된 부분을 본인의 상황에 맞게 수정하여 사용하세요.</p>
+            </div>
+        </section>
+
+        <!-- 1. 재무팀 -->
+        <section class="slide">
+            <div class="content-box">
+                <h2>1. 재무팀: 재무 데이터 심층 분석</h2>
+                <div class="callout">
+                    <div class="callout-title">📝 프롬프트</div>
+                    <pre>당신은 재무 분석 전문가입니다. 제공된 재무 데이터를 심층 분석하고 경영진 보고용 인사이트를 도출해 주세요.
+
+[데이터 컨텍스트]
+- 분석 기간: {2023 Q4 - 2024 Q2}
+- 비교 기준: {전년 동기 대비 및 동종 산업 평균 대비}
+- 세그먼트: {사업부명/지역}
+- 핵심 가정(Assumptions): WACC는 [X]%, 법인세율은 [X]%, 차년도 목표 매출성장률은 [X]%로 가정할 것.
+
+[분석 과업]
+ⓐ 재무건전성 진단 (유동성 및 레버리지)
+ⓑ 손익 구조 최적화 (비용 통제 및 마진 분석)
+ⓒ 현금흐름 역학 분석 (운전자본 효율성 중심)
+ⓓ 액션 아이템 도출
+
+[핵심 측정 지표]
+ROIC, EVA, FCF 전환율, 영업이익률, 자본회전율, CCC(현금전환주기: DSO+DIO-DPO)</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. HR팀 -->
+        <section class="slide">
+            <div class="content-box">
+                <h2>2. HR팀: 조직 분석 & 인재 전략</h2>
+                <div class="callout">
+                    <div class="callout-title">📝 프롬프트</div>
+                    <pre>당신은 CHRO(최고인사책임자)를 보좌하는 시니어 HR 전략 컨설턴트입니다. 제공된 조직, 인력, 성과 통합 데이터를 심층 분석하여 구조적인 HR 리스크를 진단하고, 데이터에 기반한 전략적 인재 경영 이니셔티브를 도출해 주세요.
+
+[조직 컨텍스트 및 목표]
+- 산업군 및 규모: [예: 500명 규모의 중견 IT/SaaS 기업]
+- 최근 조직 이슈: [예: 최근 1년간 3~5년 차 핵심 개발자들의 자발적 퇴사 증가]
+- 핵심 달성 목표: [예: 핵심 인재 자발적 이직률 5%p 개선 및 리더십 파이프라인 강화]
+
+[분석 과업]
+ⓐ 이직 리스크 및 유지(Retention) 전략
+ⓑ 인재 파이프라인 및 성과 (9-Box Grid 적용)
+ⓒ 조직 효율성 및 보상 (Compa-ratio 기반)
+ⓓ DE&I (다양성, 형평성, 포용성) 점검</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 마케팅팀 (1) -->
+        <section class="slide">
+            <div class="content-box">
+                <h2>3. 마케팅팀: 멀티채널 콘텐츠 생성</h2>
+                <div class="callout">
+                    <div class="callout-title">📝 프롬프트</div>
+                    <pre>당신은 10년 차 시니어 퍼포먼스 마케터이자 콘텐츠 디렉터입니다. 아래 캠페인 브리프를 바탕으로, 각 채널의 알고리즘과 유저 소비 문법에 완벽히 최적화된 5가지 마케팅 콘텐츠를 동시 생성해 주세요.
+
+[캠페인 브리프]
+- 제품/서비스명: [예: AI 영상 편집 툴]
+- 캠페인 목표: [예: 무료 트라이얼 가입 전환율(CVR) 극대화]
+- 타깃 페르소나: [예: 초보 크리에이터]
+- 핵심 메시지 및 USP: [예: "AI로 3분 컷, 작업 시간 50% 단축"]
+- 톤앤매너: [예: 친근하고 위트 있는 톤]
+
+[채널 지침]
+1. 인스타그램 릴스/피드: 후킹 중심, 짧은 문장
+2. 링크드인: 인사이트 & 프로페셔널 중심
+3. 블로그: SEO & 정보 제공 중심 (H1~H3 구조)
+4. 뉴스레터: 개인화 & 호기심 유발 제목
+5. 메타 광고: 퍼포먼스 & 전환 중심 (A/B 테스트)</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. 영업팀 -->
+        <section class="slide">
+            <div class="content-box">
+                <h2>4. 영업팀: B2B 제안서 자동 생성</h2>
+                <div class="callout">
+                    <div class="callout-title">📝 프롬프트</div>
+                    <pre>당신은 글로벌 IT/SaaS 기업의 시니어 엔터프라이즈 세일즈 디렉터입니다. 제공된 고객 맥락을 바탕으로, 의사결정권자(C-레벨)의 승인을 이끌어낼 수 있는 강력하고 구조화된 '10-Slide 제안서 스토리보드'를 작성해 주세요.
+
+[고객 컨텍스트]
+- 고객사: [예: A엔터테인먼트 / 500명 규모]
+- Pain-point: [예: 링크 및 트래픽 관리 분산으로 데이터 확보 불가]
+- 제안 솔루션: [제품명 및 핵심 기능 3가지]
+- 경쟁 우위: [경쟁사 대비 차별점 및 레퍼런스]
+
+[스토리보드 구조]
+1. 커버 및 Executive Summary
+2. 고객사 핵심 문제 (Pain-points)
+3. 새로운 접근법 (Paradigm Shift)
+4. 솔루션 소개 및 작동 원리
+5. 도입 후 기대 효과 (ROI 분석)
+... (10개 슬라이드 구성)</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. 개발팀 -->
+        <section class="slide">
+            <div class="content-box">
+                <h2>5. 개발팀: 전문가급 코드 리뷰</h2>
+                <div class="callout">
+                    <div class="callout-title">📝 프롬프트</div>
+                    <pre>당신은 15년 차 이상의 Staff Engineer이자 엄격하지만 통찰력 있는 코드 리뷰어입니다. 제공된 코드를 프로덕션 레벨의 기준에서 심층 분석하고, 시스템의 안정성과 확장성을 극대화할 수 있는 리팩토링 방안을 제시해 주세요.
+
+[코드 컨텍스트]
+- 언어/프레임워크: [예: Python / FastAPI]
+- 코드 목적: [예: 사용자 인증 및 토큰 발급 API]
+- 특별 중점 사항: [예: 데드락 방지 및 응답 속도 최적화]
+
+[검토 관점]
+ⓐ 아키텍처 및 디자인 패턴 (SOLID 원칙)
+ⓑ 성능 및 복잡도 (Big-O, N+1 쿼리)
+ⓒ 보안 및 예외 처리 (OWASP Top 10)
+ⓓ 유지보수성 (Clean Code)
+ⓔ 테스트 가능성</pre>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <div class="pdf-btn-container">
+        <button class="btn-pdf" onclick="generatePDF()">
+            <span>📄</span> PDF 만들기
+        </button>
+    </div>
+
+    <!-- 라이브러리 및 공통 스크립트 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="js/sub_pages.js"></script>
+</body>
+
+</html>

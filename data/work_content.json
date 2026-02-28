@@ -1,0 +1,442 @@
+[
+  {
+    "id": "dp001",
+    "title": "기업 재무제표 포렌식 감사",
+    "category": "생산성",
+    "link": "",
+    "created": 1740916030000,
+    "content": "당신은 시니어 주식 리서치 애널리스트입니다. 모든 재무 지표는 정확한 출처(SEC 공시, 10-Q, 10-K, 실적 발표 자료)와 보고 날짜를 인용하십시오. 수치를 추정하거나 반올림하지 마십시오. 자료가 없는 경우 '공개 보고되지 않음'이라고 명확히 표시하십시오.\n\n[회사명 / 티커]의 최신 재무제표를 분석하십시오.\n\n■ 손익계산서 진단\n- 지난 4분기 동안의 정확한 매출 수치 및 전년 대비(YoY) 성장률\n- 각 분기별 매출총이익률, 영업이익률, 순이익률\n- 마진 궤적: 확장 또는 축소 여부 수치화\n- 매출 대비 R&D 비중\n\n■ 재무상태표 강점\n- 총자산 vs 총부채\n- 유동비율 및 당좌비율\n- 현금 및 단기 투자 자산\n- 만기 구조를 포함한 총 부채; 자산 대비 영업권 비중(30% 이상 시 표시)\n\n■ 현금흐름 검증\n- 영업현금흐름(TTM)\n- 자본 지출(TTM)\n- 잉여현금흐름(FCF) 및 FCF 마진\n- 자본 배분: 자사주 매입, 배당, M&A, 부채 상환, R&D\n- YoY 현금흐름 추세\n\n■ 위험 지표\n- 매출 성장과 현금흐름의 괴리\n- 부채 증가율이 매출 증가율 상회\n- 매출채권 증가율이 매출 상회\n- 매출 성장 없는 재고자산 축적\n- 반복적인 일회성 조정 항목\n- 감사인 변경 여부\n\n■ 강점 지표\n- 점진적 마진 확장\n- 지속적인 FCF 성장\n- 부채 감소\n- GAAP 이익과 조정 이익의 일치 여부\n- 경쟁사 벤치마킹: 상위 3개 경쟁사와의 마진 및 비율 비교표 작성\n\n■ 결론 (쉬운 언어로 해석)\n이 회사는 운영적으로 강화되고 있습니까, 아니면 악화되고 있습니까?",
+    "usage": "기업의 재무제표를 분석, 감사하는 프롬프트입니다.\n\n[회사명 / 티커] 부분을 수정 후 사용하세요.\n상세한 설명은 참조 URL을 클릭하세요."
+  },
+  {
+    "id": "dp002",
+    "title": "종목 분석 보고서: 애널리스트용",
+    "category": "생산성",
+    "link": "",
+    "created": 1740916090000,
+    "content": "{\n  \"role\": \"Senior Equity Research Analyst\",\n  \"expertise\": [\"Global Investment Banking\",\"Quantitative Financial Analysis\",\"SEC Filing Interpretation\",\"Dividend Policy Evaluation\"],\n  \"language_instruction\": {\n    \"primary_language\": \"Korean\",\n    \"terminology_policy\": \"모든 주요 경제 및 금융 용어는 한국어 표준 용어를 사용하십시오.\"\n  },\n  \"strict_constraints\": {\n    \"data_integrity\": \"수치를 추정, 보간 또는 조작하지 마십시오.\",\n    \"attribution\": \"모든 수치 데이터에는 명확한 출처와 보고 날짜를 포함해야 합니다.\",\n    \"freshness_check\": \"데이터가 없거나 30일 이상 경과된 경우 [지연] 또는 [누락]으로 명시적으로 표시하십시오.\",\n    \"tone\": \"기관 투자자 수준의 객관적이고 분석적인 어조를 유지하십시오.\"\n  },\n  \"target_variable\": { \"company_identifier\": \"[COMPANY NAME / TICKER]\" },\n  \"output_structure\": {\n    \"format\": \"표와 리스트를 활용한 구조화된 마크다운\",\n    \"sections\": [\n      { \"id\": \"I\", \"title\": \"비즈니스 기초 (Business Foundation)\" },\n      { \"id\": \"II\", \"title\": \"핵심 재무 지표 및 배당 (Core Financials & Dividends)\" },\n      { \"id\": \"III\", \"title\": \"주가 성과 프로필 (Equity Performance)\" },\n      { \"id\": \"IV\", \"title\": \"시장 전문가 의견 (Analyst Sentiment)\" },\n      { \"id\": \"V\", \"title\": \"기관 투자자 포지셔닝 (Institutional Positioning)\" }\n    ]\n  },\n  \"final_instruction\": \"자본 시장의 관점에서 60초 이내에 논리적이고 정교한 분석 결과를 제출하십시오.\"\n}",
+    "usage": "[COMPANY NAME / TICKER] 부분을 수정 후 사용하세요.\n\n예: 삼성전자, NVIDIA / NVDA, Apple / AAPL\n\n자세한 사용 방법은 아래의 참조 URL을 클릭하면 확인할 수 있습니다."
+  },
+  {
+    "id": "dp003",
+    "title": "2D 수묵화 이미지 생성",
+    "category": "콘텐츠제작",
+    "link": "",
+    "created": 1740916150000,
+    "content": "{\n  \"prompt_configuration\": {\n    \"version\": \"1.0\",\n    \"style_preset\": \"Charming 2D Ink and Wash Illustration\",\n    \"technical_specs\": {\n      \"art_style\": \"Hand-drawn, minimalist\",\n      \"palette\": \"Soft grayscale, watercolor-like shading\",\n      \"lines\": \"Clean, expressive\",\n      \"atmosphere\": \"Warm, cozy, storytelling\"\n    },\n    \"dynamic_elements\": {\n      \"main_subject\": \"{{Subject}}\",\n      \"action_context\": \"{{Content}}\",\n      \"background\": \"Minimalist, thematic matching to context\"\n    },\n    \"output_parameters\": {\n      \"aspect_ratio\": \"{{Aspect_Ratio}}\",\n      \"composition\": \"Central focus, emotional resonance\"\n    },\n    \"full_prompt_template\": \"A charming 2D ink and wash illustration, hand-drawn style, {{Subject}} {{Content}}, expressive faces, soft grayscale palette, minimalist background, warm and cozy storytelling atmosphere, clean lines with watercolor-like shading.\"\n  }\n}",
+    "usage": "주제, 콘텐트, 가로세로 비율을 수정 후 사용하세요.\n\n■ 예시\n- Subject: A young girl and a playful puppy\n- Content: running through a field of tall grass under a soft sun\n- Aspect_Ratio: 16:9"
+  },
+  {
+    "id": "dp004",
+    "title": "트렌드 예측",
+    "category": "마케팅",
+    "link": "",
+    "created": 1740916210000,
+    "content": "[특정 산업]에 관한 지난 6개월간의 기사 50개를 분석해 줘. 향후 6개월간의 트렌드를 신뢰도 점수(1-10점)와 함께 예측해 줘.\n\n다음 네 가지를 포함해 줘:\n1. 현재 정점인 것 (신뢰도 포함)\n2. 새롭게 떠오르는 것 (신뢰도 포함)\n3. 지고 있는 것 (신뢰도 포함)\n4. 남들과는 다른 파격적인 예측 (신뢰도 포함)",
+    "usage": "[특정 산업] 부분을 수정 후 사용하세요."
+  },
+  {
+    "id": "dp005",
+    "title": "웹 서비스 시스템 설계",
+    "category": "SW개발",
+    "link": "",
+    "created": 1740916270000,
+    "content": "{\n  \"instruction\": {\n    \"role\": \"Senior Platform Architect\",\n    \"persona\": \"World-class infrastructure expert who provides production-ready technical blueprints.\",\n    \"goal\": \"Generate a detailed technical specification for a {{WEBSITE_TYPE}}.\"\n  },\n  \"input_variables\": {\n    \"website_type\": \"{{WEBSITE_TYPE}}\",\n    \"audience\": \"{{AUDIENCE_DESCRIPTION}}\",\n    \"capabilities\": \"{{LIST_3_TO_5_CAPABILITIES}}\",\n    \"priorities\": \"{{PRIORITY_STACK}}\",\n    \"output_language\": \"Korean\"\n  },\n  \"technical_requirements\": {\n    \"structure\": [\n      \"Information Architecture: Detailed sitemap with hierarchical depth (at least 3 levels).\",\n      \"User Journey: 3 paths (e.g., Guest to Purchase, User to Profile Update, Onboarding).\",\n      \"Data Model: Define key entities (Users, Products, etc.) and their relationships (1:N, M:N).\",\n      \"API Specs: RESTful endpoint naming conventions and OAuth2.0 logic.\",\n      \"Component Library: List exactly 30+ UI components categorized by (Atoms, Molecules, Organisms).\",\n      \"Tech Stack: Specific recommendations for Frontend (e.g. Next.js), Backend, and Infrastructure.\",\n      \"SEO & Performance: Define specific Target LCP < 2.5s and Schema.org types.\"\n    ],\n    \"constraints\": [\n      \"Must be suitable for direct input into Figma Make or design hand-off tools.\",\n      \"No conversational filler. Focus only on the technical specification.\",\n      \"Ensure logical consistency between Data Architecture and API Surface.\"\n    ]\n  },\n  \"output_configuration\": {\n    \"format\": \"Structured Markdown with tables and code blocks for schemas\",\n    \"tone\": \"Professional, precise, and implementation-oriented\"\n  }\n}",
+    "usage": "위 프롬프트에서 변수{{...}}를 입력하면 기술 사양서(Technical Spec)를 단숨에 작성해 줍니다. 특히 'Figma Make'와 같은 디자인 도구에 바로 입력할 수 있을 정도로 구조화된 데이터를 요구하므로, 기획자와 개발자 사이의 간극을 메우고 프로젝트의 성공 가능성을 극대화하는 데 목적이 있습니다."
+  },
+  {
+    "id": "dp006",
+    "title": "How-to 가이드 작성",
+    "category": "교육/학습",
+    "link": "",
+    "created": 1740916330000,
+    "content": "[역할]\n당신은 복잡한 개념을 초등학생도 이해할 수 있게 설명하는 친절한 기술 전문 가이드이자, 서비스 기획자입니다.\n\n[요청 사항]\n비전문가를 위해 **\"[주제]\"**에 관한 'A to Z 실행 가이드'를 작성해 주세요.\n\n[상세 구성 조건]\n1. 준비 단계: 시작 전 반드시 갖춰야 할 도구, 환경, 마음가짐을 먼저 알려주세요.\n2. 단계별 프로세스: 모든 과정을 논리적인 순서로 쪼개되, 각 단계는 '동사' 위주로 명확하게 설명해 주세요.\n3. 전문 용어 순화: 어려운 용어는 최대한 쉬운 비유를 들어 설명하고, 필요하다면 '용어 풀이'를 별도로 제공해 주세요.\n4. 트러블슈팅(주의점): 각 단계에서 흔히 발생하는 실수나 예상되는 질문을 \"이럴 땐 이렇게 하세요\" 형식으로 포함해 주세요.\n5. 성공 체크리스트: 모든 과정을 마친 후, 제대로 완료되었는지 확인할 수 있는 기준을 제시해 주세요.\n\n[톤앤매너]\n격려하는 듯한 친절한 말투를 사용하되, 가독성을 위해 불렛포인트와 번호를 활용해 주세요."
+  },
+  {
+    "id": "dp007",
+    "title": "소셜 미디어 데이터 분석",
+    "category": "마케팅",
+    "link": "",
+    "created": 1740916390000,
+    "content": "{\n  \"role\": \"Social Media Data Analyst\",\n  \"task\": \"Comprehensive Performance Review and Growth Strategy Development\",\n  \"input_parameters\": {\n    \"platform_name\": \"[플랫폼명 입력]\",\n    \"key_metrics_focus\": \"[주력지표 입력]\",\n    \"analysis_period\": \"[분석 기간 입력]\",\n    \"raw_data\": \"[데이터 붙여넣기]\"\n  },\n  \"instructions\": {\n    \"step_1\": \"Analyze the provided metrics for the specific {platform_name} over the {analysis_period}.\",\n    \"step_2\": \"Identify positive trends and specific factors driving growth in {key_metrics_focus}.\",\n    \"step_3\": \"Detect bottlenecks and performance inhibitors that are holding back engagement or reach.\",\n    \"step_4\": \"Perform a 'Content Gap Analysis' to find untapped opportunities or missing topics.\",\n    \"step_5\": \"Recommend an ideal posting frequency based on the data patterns.\"\n  },\n  \"output_format\": {\n    \"report_structure\": [\n      \"Executive Summary\", \"Key Success Drivers\", \"Critical Friction Points\",\n      \"Content Gap Insights\", \"Strategic 90-Day Growth Plan\", \"Measurable KPIs for Success\"\n    ],\n    \"tone\": \"Professional, analytical, and actionable\"\n  },\n  \"guiding_principle\": \"Data tells the story. You just need to read it.\"\n}",
+    "usage": "SNS 수치 뒤에 숨겨진 '성공의 이유'와 '실패의 원인'을 파악, 향후 90일간의 명확한 성장 가이드를 제시하는 '소셜 미디어 데이터 분석가'입니다.\n단순히 결과만 리포팅하는 것이 아니라, 콘텐츠 공백을 찾아내고 구체적인 KPI를 설정함으로써 실질적인 성과 개선에 최적화하였습니다.\n\n대괄호 [...]로 표시된 부분에 실제 정보를 채워 넣고, AI 채팅창에 입력해 보세요."
+  },
+  {
+    "id": "dp008",
+    "title": "바이럴 후크 생성",
+    "category": "콘텐츠제작",
+    "link": "",
+    "created": 1740916450000,
+    "content": "{\n  \"role_config\": {\n    \"persona\": \"Expert Viral Copywriter\",\n    \"experience\": \"Proven track record with millions of views on social media\",\n    \"goal\": \"Generate high-converting hook frameworks to maximize organic reach\"\n  },\n  \"input_variables\": {\n    \"niche\": \"[분야를 입력하세요]\",\n    \"target_audience\": \"[타겟층을 입력하세요]\",\n    \"count\": \"[원하는 훅의 개수를 입력하세요]\"\n  },\n  \"task_description\": {\n    \"objective\": \"Analyze viral content patterns in the specified niche and generate customizable hook frameworks.\",\n    \"output_categories\": [\n      \"Curiosity\",\n      \"Controversy\",\n      \"Storytelling\",\n      \"Lists\",\n      \"Bold Claims\"\n    ],\n    \"constraints\": [\n      \"Must be scroll-stopping and trigger immediate attention\",\n      \"Tailored specifically to the target_audience\",\n      \"Formatted as fill-in-the-blank templates for easy customization\"\n    ]\n  },\n  \"instruction\": \"Based on the variables provided, generate {{count}} viral hook frameworks for the {{niche}} market targeting {{target_audience}}. Organize the output by the 5 categories mentioned above. Remember: Attention first, everything else follows.\"\n}",
+    "usage": "찰나의 순간에 사용자의 시선을 사로잡아야 하는 '숏폼 콘텐츠'와 'SNS 마케팅'의 핵심 비결을 담은 프롬프트입니다.\n\n위의 프롬프트에서 [...]로 표시된 부분에 원하는 내용을 채워 넣으세요.\n(예: niche: \"Home Training\", target_audience: \"Busy Office Workers\", count: \"30\")\n\n■ 변수 입력 예시\n- 분야: 1인 가구 자취 요리\n- 타깃층: 퇴근 후 요리가 귀찮은 2030 직장인\n- 개수: 20개\n\n■ 출력 카테고리 (5가지)\n1. 호기심 (Curiosity)\n2. 논쟁 (Controversy)\n3. 스토리텔링 (Storytelling)\n4. 리스트 (Lists)\n5. 대담한 주장 (Bold Claims)"
+  },
+  {
+    "id": "dp009",
+    "title": "콘텐츠 캘린더 설계자",
+    "category": "콘텐츠제작",
+    "link": "",
+    "created": 1740916514000,
+    "content": "{\n  \"role\": \"Global Content Calendar Architect\",\n  \"goal\": \"Build a comprehensive and actionable content posting schedule in the specified language.\",\n  \"inputs\": {\n    \"platform\": \"[입력: 플랫폼 (예: Instagram, LinkedIn, YouTube)]\",\n    \"topic\": \"[입력: 핵심 주제 (예: AI 자동화, 비건 요리, 재테크)]\",\n    \"target_audience\": \"[입력: 타겟층 (예: 2030 직장인, 초보 요리사, 취준생)]\",\n    \"duration\": \"[입력: 기간 (예: 30일, 2주, 1주)]\",\n    \"language\": \"[입력: 출력 언어 (예: 한국어, English, 日本語)]\"\n  },\n  \"requirements\": {\n    \"schedule\": \"Provide a full daily posting schedule for the specified duration.\",\n    \"language_fidelity\": \"Ensure all content ideas, hooks, and CTAs are written naturally in the chosen language.\",\n    \"elements_per_post\": [\n      \"Creative post ideas aligned with the topic\",\n      \"Recommended posting times based on target audience behavior\",\n      \"A strategic mix of formats (e.g., Carousels, Short-form videos, Single images, Stories)\",\n      \"A high-converting 'Hook' for every post\",\n      \"A clear and compelling 'Call to Action' (CTA)\"\n    ],\n    \"output_style\": \"Ready-to-use, copy-and-paste format with no additional guesswork.\"\n  },\n  \"execution_mantra\": \"No guesswork. Just execution.\"\n}",
+    "usage": "[...] 부분을 원하는 내용으로 수정 후 사용하세요."
+  },
+  {
+    "id": "dp010",
+    "title": "코딩 비법 프롬프트",
+    "category": "SW개발",
+    "link": "",
+    "created": 1740921000000,
+    "content": "{\n  \"role_config\": {\n    \"role\": \"Technical Co-Founder\",\n    \"goal\": \"Build a real, functional product that can be used, shared, or launched.\",\n    \"responsibilities\": [\n      \"Handle all technical building and coding\",\n      \"Keep the Product Owner in the loop and in control\",\n      \"Translate technical jargon into plain language\",\n      \"Provide honest pushback on overcomplication\"\n    ]\n  },\n  \"project_input\": {\n    \"product_idea\": \"{{아이디어 내용: 예) 실시간 위치 기반의 유기견 구조 알림 서비스 또는 AI 기반 식단 사진 분석 영양 가이드}}\",\n    \"target_platform\": \"{{목표 플랫폼: 예) iOS/Android 모바일 앱, 반응형 웹사이트, 크롬 익스텐션 등}}\",\n    \"seriousness_level\": \"Launch Publicly\"\n  },\n  \"development_framework\": {\n    \"Phase_1_Discovery\": {\n      \"actions\": [\n        \"Ask clarifying questions to understand true needs\",\n        \"Challenge assumptions\",\n        \"Separate 'Must-haves' from 'Nice-to-haves'\",\n        \"Suggest a smart MVP starting point\"\n      ]\n    },\n    \"Phase_2_Planning\": {\n      \"actions\": [\n        \"Propose V1 feature set\",\n        \"Explain technical stack in plain language\",\n        \"Estimate complexity (Simple/Medium/Ambitious)\",\n        \"Identify required external services or accounts\"\n      ]\n    },\n    \"Phase_3_Building\": {\n      \"actions\": [\n        \"Build in interactive stages\",\n        \"Explain the 'why' behind the code for learning\",\n        \"Test before moving to the next module\",\n        \"Present options for complex decision points\"\n      ]\n    },\n    \"Phase_4_Polish\": {\n      \"actions\": [\n        \"Ensure professional UI/UX (not a hackathon look)\",\n        \"Handle edge cases and errors gracefully\",\n        \"Optimize for speed and cross-device compatibility\"\n      ]\n    },\n    \"Phase_5_Handoff\": {\n      \"actions\": [\n        \"Provide deployment instructions\",\n        \"Create maintenance and modification documentation\",\n        \"Suggest V2 roadmap\"\n      ]\n    }\n  },\n  \"working_principles\": {\n    \"authority\": \"User is the Product Owner and final decision-maker.\",\n    \"communication_style\": \"Fast-paced but followable, jargon-free, honest about limitations.\",\n    \"standard\": \"Must be a working product, not a mockup or prototype.\"\n  }\n}",
+    "usage": "해당 프롬프트는 웹/앱 개발을 위한 기술 공동 창업자를 필요로 하는 분을 위해 작성한 프롬프트입니다.\n제품 아이디어와 타겟 플램폼 영역 {{...}} 을 원하는 내용으로 수정 후 사용하세요.\n추천: 클로드"
+  },
+  {
+    "id": "dp011",
+    "title": "뉴스레터 아이디어 작성",
+    "category": "콘텐츠제작",
+    "link": "",
+    "created": 1740922000000,
+    "content": "[업계/산업 분야]의 **[1~3년 차 주니어/10년 차 이상 리더]**들을 대상으로 하는 주간 뉴스레터를 발행하고 있어.\n\n이번 호의 목표는 **'업계의 고정관념을 깨거나 실무에 즉시 적용 가능한 인사이트'**를 전달하는 거야. 구독자의 오픈율을 극대화할 수 있는 흥미로운 콘텐츠 아이디어 3가지를 제안해 줘.\n\n각 아이디어에는 다음 내용이 포함되어야 해:\n1. 아이디어 제목 및 핵심 요약\n2. 이 콘텐츠가 왜 전문가들의 호기심을 자극하는지에 대한 이유\n3. 클릭을 유도하는 'A/B 테스트용' 뉴스레터 제목안 2개\n참고: 뻔한 뉴스 요약보다는 [최근 트렌드 예시]와 관련된 심도 깊은 분석이나 논쟁적인 주제면 더 좋겠어.",
+    "usage": "괄호[...] 안에 내용을 수정 후 사용하세요."
+  },
+  {
+    "id": "dp012",
+    "title": "단편 소설 시놉시스 생성",
+    "category": "콘텐츠제작",
+    "link": "",
+    "created": 1740923000000,
+    "content": "# Role\n너는 베스트셀러 장르 소설가이자 전문 시나리오 작가야. \n제시된 장르, 키워드, 그리고 ** 타겟 독자층 ** 의 취향을 완벽히 분석하여 몰입감 넘치는 독창적인 단편 소설 시놉시스를 작성해 줘.\n\n# Variables(변수 설정)\n            - 타겟 독자층: [예: 20대 장르 소설 마니아 / 철학적 사유를 즐기는 성인 / 가벼운 웹소설을 선호하는 독자]\n                - 장르: [여기에 장르 입력]\n                    - 키워드 1: [키워드 입력]\n                        - 키워드 2: [키워드 입력]\n                            - 키워드 3: [키워드 입력]\n\n# Instructions(작성 지침)\n        1. ** 타겟 독자층의 니즈 반영 **: 독자층이 선호하는 문체, 사건의 전개 속도, 주제의 깊이를 최우선으로 고려할 것.\n2. ** 키워드의 유기적 결합 **: 세 가지 키워드가 단순 나열이 아닌, 사건의 핵심 동력(Trigger)이나 복선으로 작용해야 함.\n3. ** 입체적 캐릭터 설정 **: 주인공에게 명확한 결핍과 욕망을 부여하여 독자가 감정적으로 이입할 수 있게 함.\n4. ** 차별화된 변주 **: 해당 장르의 전형적인 틀을 유지하면서도, 소재의 해석이나 결말에서 신선한 충격을 줄 것.\n\n# Output Format(출력 구조)\n        1. ** 소설 제목 **: (독자의 시선을 사로잡을 제목)\n        2. ** 로그라인 **: (작품의 핵심 갈등과 매력을 한 문장으로 요약)\n        3. ** 주요 등장인물 **: (이름, 특징, 독자가 매력을 느낄만한 포인트)\n        4. ** 시놉시스 **:\n        -[발단]: 사건의 시작과 세계관 제시\n            - [전개]: 키워드들이 얽히며 갈등 시작\n                - [위기]: 드라마틱한 갈등의 고조\n                    - [절정]: 감정이 폭발하거나 거대한 진실이 드러나는 순간\n                        - [결말]: 타겟 독자층이 만족할만한 여운이나 반전이 담긴 마무리",
+    "usage": "변수[...] 부분을 수정 후 사용하세요.\n\n■ 생성된 콘텐츠 활용 가이드\n시놉시스의 주요 장면을 이미지 생성 AI(Nano Banana 등) 후 웹툰, 영화 트레일러 등으로 확장해서 사용할 수 있습니다."
+  },
+  {
+    "id": "dp013",
+    "title": "챗봇 시나리오 설계",
+    "category": "챗봇지침",
+    "link": "",
+    "created": 1741000000000,
+    "content": "# Role: 전문 이커머스 CX(고객경험) 디자이너 및 세일즈 전략가\n\n# Context\n- 쇼핑몰 업종: [예: 프리미엄 비건 화장품 / 캠핑 용품 / 오피스룩 의류]\n- 타겟 고객: [예: 성분을 중시하는 30대 여성 / 실용성을 따지는 초보 캠퍼 / 20대 사회초년생]\n- 챗봇의 톤앤매너: [예: 친절하고 전문적인 / 위트 있고 트렌디한 / 신뢰감을 주는]\n\n# Objective\n방문자의 문의를 해결함과 동시에, 고객의 취향을 데이터화하여 가장 적합한 상품을 제안하고 구매 전환(Conversion)을 일으키는 대화 흐름을 설계해줘.\n\n# Essential Menu & Flow Requirements\n1. [선물 추천]: 받는 사람, 예산, 상황(TPO)을 필터링하여 최적의 상품 2~3종을 추천하고 상세 페이지 연결.\n2. [사이즈/제품 문의]: 업종별 핵심 고민(핏, 성분, 규격 등)을 해결하고 실사용 리뷰나 가이드 제공.\n3. [배송/주문 조회]: 단순 조회를 넘어, 배송 대기 중인 고객에게 연관 상품을 노출하는 '업셀링' 전략 포함.\n4. [이벤트/쿠폰]: 첫 구매 유도나 현재 진행 중인 프로모션 강조.\n\n# Output Format (Tree Structure)\n- 각 메뉴 클릭 시 이어지는 대화 단계를 [단계 1] -> [단계 2] -> [최종 제안] 형태로 구성할 것.\n- 각 단계마다 사용자가 누를 수 있는 '선택지 버튼'을 명시할 것.\n- 대화의 끝에는 항상 구매를 유도하는 CTA(Call to Action) 버튼을 포함할 것.",
+    "usage": "Context(쇼핑몰 업종, 타겟 고객, 톤앤매너)를 수정 후 사용하세요."
+  },
+  {
+    "id": "dp014",
+    "title": "블로그 포스트 재활용 전략 작성",
+    "category": "콘텐츠제작",
+    "link": "",
+    "created": 1741001000000,
+    "content": "가장 인기 있었던 블로그 포스트 **\"[포스트 제목]\"**을 다양한 플랫폼에 맞춰 재가공하려고 해. 아래 내용을 바탕으로 재활용 전략을 짜줘.\n\n1. 블로그 포스트 주요 내용: \n- [핵심 내용 1 또는 본문 요약]\n- [핵심 내용 2]\n- [핵심 내용 3]\n\n2. 요청 사항:\n- 유튜브: 1분 내외의 숏폼(Shorts) 대본과 시선을 끌 수 있는 제목/썸네일 컨셉을 제안해 줘.\n- 인스타그램: 카드뉴스 8~10장 구성안을 짜줘. (각 장에 들어갈 핵심 문구와 디자인 컨셉 포함)\n- 이메일 뉴스레터: 기존 구독자들이 클릭하고 싶게 만드는 **매력적인 제목(3가지)**과 본문 도입부의 스토리텔링 방식을 추천해 줘.\n\n3. 톤앤매너: [예: 전문적인 / 친근한 / 유머러스한 / 감성적인] 말투로 작성해 줘.",
+    "usage": "위의 프롬프트에서 괄호[...]로 표시된 부분만 채워서 질문하시면 됩니다. \n만약 블로그 포스트 내용이 너무 길다면, 본문을 그대로 붙여넣고 **\"이 내용을 읽고 위 형식에 맞춰 재구성해 줘\"**라고 하셔도 충분히 똑똑하게 답변해 드릴 겁니다."
+  },
+  {
+    "id": "dp015",
+    "title": "맞춤형 고객 FAQ 생성",
+    "category": "생산성",
+    "link": "",
+    "created": 1741002000000,
+    "content": "1. 제품 정보\n- 제품명: (예: 구름베개 2.0)\n- 핵심 기능: (예: 경추 지지형 메모리폼, 통기성 소재)\n- 주요 고객: (예: 목 디스크가 걱정되는 3040 직장인)\n\n2. 요청 사항\n위 제품에 대해 고객이 가장 자주 물어볼 법한 질문 10가지를 뽑고 답변을 작성해 줘.\n- 카테고리 구성: 구매 전(3개), 사용 중(4개), 문제 해결 및 AS(3개)\n- 답변 스타일: 신뢰감을 주면서도 따뜻한 말투 (~해요 체)\n- 추가 요구: 답변 끝에는 고객의 만족을 돕는 '한 줄 꿀팁'을 포함해 줘.\n\n3. 출력 형식\n질문은 Q:, 답변은 **A:**로 구분해서 작성해 줘.\n답변은 공백 포함 200자 내외로 작성해 줘.",
+    "usage": "[추가 팁] 부정적 질문 포함하기: \n\"가격이 왜 이렇게 비싼가요?\"나 \"배송이 느리다는 후기가 있는데 왜 그런가요?\" 같은 예민한 질문에 대한 방어 논리를 미리 짜달라고 요청해 보세요. CS 업무가 훨씬 편해집니다."
+  },
+  {
+    "id": "dp016",
+    "title": "고객 페르소나 생성",
+    "category": "마케팅",
+    "link": "",
+    "created": 1741003000000,
+    "content": "**[우리 제품/서비스 설명: 예 - 1인 가구를 위한 프리미엄 밀키트 구독 서비스]**의 이상적인 고객 페르소나를 작성해 줘.\n\n다음의 항목을 상세히 포함해서 하나의 인물 프로필처럼 만들어 줘:\n1. 기본 인적 사항: 가상의 이름, 나이, 거주 지역, 직업, 소득 수준.\n2. 라이프스타일: 전형적인 하루 일과와 주말 활동.\n3. 목표와 동기: 이 서비스/제품을 통해 얻고자 하는 궁극적인 가치.\n4. Pain Points(고충): 현재 일상에서 겪는 구체적인 불편함과 스트레스 요인.\n5. 구매 결정 요인: 제품을 선택할 때 가장 중요하게 생각하는 기준 (가격, 디자인, 효율성 등).\n6. 미디어 행동: 자주 사용하는 SNS 채널 및 정보를 얻는 경로.\n\n출력 형식: 읽기 편하게 표나 리스트 형태로 정리해 줘.",
+    "usage": "괄호[...] 부분을 수정 후 사용하세요."
+  },
+  {
+    "id": "dp017",
+    "title": "투자 제안서(Pitch Deck) 목차 작성",
+    "category": "생산성",
+    "link": "",
+    "created": 1741004000000,
+    "content": "초기 스타트업(Pre-A 단계) 투자 유치를 위한 피치덱(Pitch Deck) 구성을 제안해줘. 다음 조건을 반영해 줘:\n\n1. 필수 슬라이드 10곳의 제목과 각 슬라이드에 담겨야 할 핵심 내용을 정리할 것.\n2. 단순히 정보 나열이 아니라, **'투자자가 이 슬라이드에서 보고 싶어 하는 본질적인 질문'**이 무엇인지 함께 적어줄 것.\n3. 최근 투자 트렌드를 반영하여 **수익 모델(BM)과 유닛 이코노믹스(Unit Economics)**에 대한 설명을 강조해줄 것.\n4. 전체 슬라이드가 자연스럽게 이어지도록 **논리적 흐름(Storyline)**을 함께 설명해줄 것.",
+    "usage": "[추가 팁] 슬라이드 구성 시 유의사항\n1. Problem: \"내 생각이 아닌 데이터로 증명된 불편함인가?\"\n2. Solution: \"우리만의 독보적인 기술이나 방식(Secret Sauce)이 있는가?\"\n3. Team: \"왜 하필 이 사람들이 이 문제를 가장 잘 풀 수 있는가?\"\n\n이런 관점을 프롬프트 결과물과 대조해 보시면 훨씬 강력한 제안서가 될 겁니다."
+  },
+  {
+    "id": "dp018",
+    "title": "경쟁 우위 분석용",
+    "category": "마케팅",
+    "link": "",
+    "created": 1741005000000,
+    "content": "우리 제품은 **[제품 이름]**이고, 주 타겟 고객은 **[예: 30대 직장인/1인 가구 등]**이야. 주요 경쟁사인 **[경쟁사 이름]**과 비교했을 때 우리가 가진 차별적 경쟁 우위 3가지를 **[기능/가격/브랜드 이미지/서비스 등]**의 측면에서 심층 분석해줘.\n\n특히 다음 내용에 집중해서 답변해줘:\n1. 차별화 요소: 경쟁사가 쉽게 따라 하기 힘든 우리만의 '경제적 해자(Moat)'가 무엇인지 분석.\n2. 고객 소구 문구: 각 강점을 고객의 언어로 바꾼 매력적인 카피라이팅 예시.\n3. 강화 전략: 이 강점을 극대화하기 위해 제품 개선이나 마케팅 채널(SNS, 상세페이지 등)에서 당장 실행할 수 있는 액션 아이템.\n\n결과는 가독성 좋게 **표와 불렛 포인트**를 섞어서 정리해줘.",
+    "usage": "상황에 맞게 괄호[...] 부분을 채워 넣고 사용하세요."
+  },
+  {
+    "id": "dp019",
+    "title": "기술 스택 추천",
+    "category": "SW개발",
+    "link": "",
+    "created": 1741006000000,
+    "content": "# 프로젝트 설정 (Variables)\n- 목적(Goal): [예: 실시간 채팅 중심의 소셜 미디어 앱 개발]\n- 핵심 기능(Core Features): [예: 1:1 채팅, 그룹 채팅, 이미지 공유, 게시물 피드]\n- 타겟 플랫폼(Target Platform): [예: iOS 및 Android (크로스 플랫폼)]\n- 예상 이용량(Scalability): [예: 동시 접속자 1,000명 내외, 초기 스타트업 규모]\n\n# 요청 사항 (Instructions)\n위 설정을 바탕으로 최적의 기술 스택을 추천하고 다음 항목별로 상세히 설명해 줘.\n\n1. **Frontend:** 플랫폼에 적합한 프레임워크와 상태 관리 라이브러리.\n2. **Backend:** 실시간 데이터 처리에 강점이 있는 언어와 프레임워크.\n3. **Database:** 사용자 정보(RDB)와 채팅 메시지(NoSQL 등)를 위한 이원화 전략 제안.\n4. **Real-time Communication:** WebSocket 혹은 Firebase 실시간 DB 중 최적의 선택지.\n5. **Infrastructure:** 초기 개발 속도와 비용 효율성을 고려한 배포 환경.\n\n# 답변 가이드\n- 각 기술 스택을 선정할 때는 \"개발 속도\"와 \"유지보수 용이성\"을 최우선으로 고려해 줘.\n- 가능하다면 전체 시스템 아키텍처의 흐름을 요약해 줄 것.",
+    "usage": "원본 프롬프트에서 변수를 수정 후 사용하세요."
+  },
+  {
+    "id": "dp020",
+    "title": "시장 분석(Market Trend Analysis)",
+    "category": "마케팅",
+    "link": "",
+    "created": 1741007000000,
+    "content": "{\n  \"role\": \"Market Analyst\",\n  \"task\": \"Analyze the latest market trends based on specific variables provided by the user.\",\n  \"parameters\": {\n    \"industry\": \"[Insert Industry Name]\",\n    \"target_segment\": \"[Insert Target Region or Generation]\",\n    \"timeframe\": \"[Insert Analysis Period, e.g., Last 6 months, 2024-2025]\"\n  },\n  \"instructions\": [\n    \"Identify emerging opportunities within the specified industry and target segment.\",\n    \"Analyze potential challenges and risks that may impact the market during the timeframe.\",\n    \"Describe significant shifts in consumer behavior within the target segment.\",\n    \"Provide a strategic summary with actionable insights for the business.\"\n  ],\n  \"output_format\": {\n    \"structure\": [\n      \"Industry Overview\",\n      \"Emerging Opportunities\",\n      \"Potential Challenges\",\n      \"Shifts in Consumer Behavior\",\n      \"Strategic Recommendations\"\n    ]\n  }\n}",
+    "usage": "아래의 변수(산업, 타겟지역 또는 타겟 세대, 분석 기간)를 수정 후 사용하세요.\n[Insert Industry Name]\n[Insert Target Region or Generation]\n[Insert Analysis Period, e.g., Last 6 months, 2024-2025]"
+  },
+  {
+    "id": "dp021",
+    "title": "VEO3 비디오 JSON 생성기",
+    "category": "콘텐츠제작",
+    "link": "",
+    "created": 1741008000000,
+    "content": "## **1. 기본 역할 (Persona)**\n당신은 사용자의 키워드를 기반으로 시네마틱한 영상 컷을 구상하고, 영상 제작에 필요한 핵심 요소를 포함한 **구조화된 씬(Scene) JSON을 최종적으로 생성**하는 전문 AI 어시스턴트입니다. 당신의 목표는 단순한 프롬프트 생성을 넘어, 영상 제작의 각 요소를 체계적으로 조합하여 몰입감 높은 결과물을 만드는 것입니다.\n\n## **2. 핵심 프로세스 (Core Process)**\n당신은 반드시 다음의 2단계 프로세스를 따라야 합니다.\n\n**1단계: 프롬프트 생성 및 사용자 확인 (Prompt Generation & Confirmation)**\n *   사용자가 [키워드]를 입력하면, 아래 **[3. 프롬프트 구성 7요소]**에 따라 상세하고 시네마틱한 **통합 텍스트 프롬프트**를 먼저 생성합니다.\n *   생성된 텍스트 프롬프트를 사용자에게 명확하게 제시하고, 이 내용으로 영상 생성을 진행할 것인지 반드시 확인 받아야 합니다.\n *   **절대로 사용자 승인 없이 곧바로 JSON을 생성하지 마세요.**\n\n**2단계: 구조화된 씬 JSON 생성 (한/영)**\n *   사용자가 프롬프트 내용에 동의하거나 생성을 요청하면(예: \"네, 생성해 주세요\", \"좋아요\", \"진행\"), 1단계에서 생성했던 **동일한 텍스트 프롬프트의 내용**을 분석하고 분해하여 아래 **[4. 최종 출력 포맷]**에 명시된 **구조화된 씬(Scene) JSON 형식**으로 변환합니다.\n\n *   최종 결과물은 반드시 **한국어 버전과 영어 버전, 두 개의 JSON을 모두** 출력해야 합니다.\n\n## **3. 프롬프트 구성 7요소 (7 Cinematic Components)**\n(이 부분은 1단계의 통합 텍스트 프롬프트를 생성하기 위한 내부 가이드라인으로 유지됩니다.)\n\n| 구성 요소 | 지침 | 예시 (1980년대 뉴욕 뒷골목) |\n| :--- | :--- | :--- |\n| **1. 관점 (Perspective)** | 카메라의 시점을 정의합니다. (1인칭, 3인칭, 항공샷 등) | `from a first-person perspective,` |\n| **2. 샷 스타일 (Shot Style)** | 카메라의 움직임, 앵글, 렌즈 효과를 묘사합니다. (핸드헬드, 드론샷, 줌인, 얕은 심도 등) | `shot with a handheld camera, slightly shaky, with a narrow depth of field,` |\n| **3. 주제와 환경 (Subject & Environment)** | 핵심 피사체와 배경이 되는 장소, 시간, 분위기를 구체적으로 설정합니다. | `navigating a narrow alley in 1980s New York on a rainy night. The asphalt is wet and reflective, flanked by dimly lit, weathered brick walls.` |\n| **4. 장면 디테일 (Scene Details)** | 장면에 생동감을 더하는 구체적인 움직임, 날씨, 배경 요소 등을 추가합니다. | `Raindrops streak down, steam rises from a nearby sewer vent, and distant silhouettes of people walk by.` |\n| **5. 사운드 묘사 (Sound Description)** | (선택사항) 장면에 어울리는 소리를 텍스트로 묘사하여 분위기를 강화합니다. | `The only sounds are footsteps splashing in puddles, the faint honk of distant car horns, and the rhythmic dripping from gutters.` |\n| **6. 조명 (Lighting)** | 빛의 종류, 방향, 색감, 대비를 통해 시각적 톤을 설정합니다. (자연광, 네온사인, 강한 그림자 등) | `Lighting is harsh and atmospheric, cast by streetlights that create long, dramatic shadows and the intermittent flicker of a red neon sign.` |\n| **7. 필름 스타일 (Film Style)** | 영상의 전체적인 질감, 색감, 시대적 느낌을 결정합니다. (VHS, 35mm 필름, 흑백, 채도 등) | `The entire scene is captured with a grainy VHS texture, complete with subtle chromatic aberration for a retro feel.` |\n\n---\n\n## **4. 최종 출력 포맷: 구조화된 씬 JSON (한/영)**\n사용자 승인 후, 생성된 프롬프트 텍스트의 내용을 분석하고 분해하여 아래 JSON 구조에 맞춰 **한국어와 영어 버전, 두 개를 모두** 최종적으로 출력합니다.\n\n```json\n// 최종 출력 포맷 예시\n{\n  \"scene\": \"[장소, 시간, 배경, 분위기 묘사]\",\n  \"subject\": \"[등장인물 또는 핵심 피사체에 대한 상세 묘사]\",\n  \"action\": \"[주제의 행동, 사건, 장면에 일어나는 일에 대한 설명]\",\n  \"camera\": \"[카메라 시점, 앵글, 움직임, 촬영 기법]\",\n  \"lighting\": \"[광원의 종류, 색감, 분위기, 그림자 등 조명에 대한 설명]\",\n  \"style\": \"[영상 전체의 시각적 스타일, 필름 종류, 색 보정 등]\",\n\n  \"audio\": {\n    \"sound_effects\": \"[장면에 포함될 효과음 목록]\",\n    \"music\": \"[배경 음악의 장르나 분위기에 대한 설명]\",\n    \"dialogue\": \"[대사 내용 (없으면 빈 문자열)]\"\n  },\n\n  \"negative_prompt\": \"[장면에서 제외하고 싶은 요소나 분위기]\"\n\n}\n```\n\n---\n\n## **5. 실행 예시 (Execution Example)**\n\n**[사용자 입력]**\n> 사이버펑크 도시에서 싸우는 여성 전사\n\n**[당신의 1차 응답 - 프롬프트 제시 및 확인]**\n> 아래와 같이 영상 프롬프트를 생성했습니다.\n\n> \n\n> > 미래형 도시의 비 내리는 밤, 네온 불빛이 가득한 고층 빌딩 사이를 비행선이 날아다닙니다. 은색 사이버네틱 갑옷을 입고 빛나는 검을 든 여성 전사가 빗물에 젖어 빛을 반사하는 바닥 위에서 적대적인 드론들을 향해 빠르게 질주합니다. 그녀의 눈은 강렬한 파란색으로 빛나며, 검을 휘두를 때마다 드론들이 폭발하며 불꽃이 튑니다. 카메라는 로우 앵글에서 시작하여 그녀의 역동적인 움직임을 따라가며, 간헐적으로 슬로우 모션 효과를 사용합니다. 네온 불빛과 폭발 섬광이 만들어내는 극적인 명암 대비와 렌즈 플레어 효과가 두드러지며, 전체적으로 차가운 색감의 사이버펑크 영화 스타일과 35mm 필름 그레인 질감이 느껴집니다. 배경에서는 긴장감 넘치는 신디사이저 음악과 함께 검을 휘두르는 소리, 드론 폭발음, 빗소리가 들려옵니다.\n\n> \n\n> 이 내용으로 영상 생성 프롬프트를 진행할까요?\n\n**[사용자 응답]**\n> 네, 이걸로 생성해 주세요.\n\n**[당신의 최종 응답 - JSON 출력 (한/영)]**\n\n### **한국어 JSON**\n\n```json\n{\n  \"scene\": \"미래형 도시의 밤. 네온 불빛이 가득한 고층 빌딩 사이를 비행선이 날아다닌다. 바닥은 비에 젖어 빛을 반사한다.\",\n  \"subject\": \"은색 사이버네틱 갑옷을 입고 빛나는 검을 든 여성 전사. 그녀의 눈은 강렬한 파란색으로 빛난다.\",\n  \"action\": \"그녀는 빠르게 질주하며 적대적인 드론들을 향해 검을 휘두른다. 드론이 폭발하며 불꽃이 튊다.\",\n  \"camera\": \"로우 앵글에서 시작하여 그녀의 움직임을 따라가는 역동적인 트래킹 샷. 슬로우 모션 효과가 간헐적으로 사용된다.\",\n  \"lighting\": \"네온 불빛과 폭발 섬광이 만들어내는 극적인 명암 대비. 렌즈 플레어 효과.\",\n  \"style\": \"사이버펑크 영화 스타일, 35mm 필름 그레인, 차가운 색감.\",\n\n  \"audio\": {\n    \"sound_effects\": \"검을 휘두르는 소리, 드론 폭발음, 비행선 엔진 소리, 빗소리.\",\n    \"music\": \"긴장감 넘치는 웅장한 신디사이저 배경 음악.\",\n    \"dialogue\": \"\"\n  },\n\n  \"negative_prompt\": \"낮, 자연 풍경, 평화로운 분위기, 코믹 스타일.\"\n\n}\n```\n\n### **English JSON**\n\n```json\n{\n  \"scene\": \"A futuristic city at night. Airships fly between towering skyscrapers filled with neon lights. The ground is wet with rain, reflecting the lights.\",\n  \"subject\": \"A female warrior wearing silver cybernetic armor and holding a glowing sword. Her eyes glow with an intense blue light.\",\n  \"action\": \"She sprints rapidly, swinging her sword at hostile drones. The drones explode, creating sparks.\",\n  \"camera\": \"A dynamic tracking shot that starts from a low angle and follows her movements. Slow-motion effects are used intermittently.\",\n  \"lighting\": \"Dramatic contrast created by neon lights and explosion flashes. Lens flare effects.\",\n  \"style\": \"Cyberpunk film style, 35mm film grain, cool color palette.\",\n\n  \"audio\": {\n    \"sound_effects\": \"Sword swings, drone explosions, airship engine hum, sound of rain.\",\n    \"music\": \"Tense and epic synthesizer background music.\",\n    \"dialogue\": \"\"\n  },\n\n  \"negative_prompt\": \"Daytime, natural landscapes, peaceful atmosphere, comic style.\"\n\n}\n```",
+    "usage": "제미나이 > 새 GEMS 등록 후 사용하세요.\n영상 생성을 위한 프롬프트를 JSON 포맷으로 출력해 줍니다.\n추천: Veo 3.1"
+  },
+  {
+    "id": "dp022",
+    "title": "문서 요약 & 시각화",
+    "category": "생산성",
+    "link": "",
+    "created": 1741009000000,
+    "content": "## 역할 (Role)\n\n당신은 복잡한 정보를 분석하여 시각적 아웃라인으로 요약하고, 이를 기반으로 전문적인 '그래픽 레코딩(Graphic Recording)' 스타일의 인포그래픽 생성 프롬프트를 작성하는 비주얼 전략가입니다.\n\n## 수행 단계 (Workflow)\n\n###Step 1. 시각적 아웃라인 요약 (Summarize)\n입력된 내용을 분석하여 다음 형식을 갖춘 요약을 출력합니다. \n- 언어 규칙: 기본 언어는 한글로 작성하되, 전문용어 및 업계 통용 단축어는 원문 그대로 사용합니다.\n- 구조: 섹션 제목과 글머리 기호 계층 구조를 사용합니다. \n- 논리: 원인과 결과, 흐름을 나타내는 화살표($\rightarrow$)를 포함합니다. \n- 요약 내용을 출력할 때에는 소스 링크를 제외합니다.\n- 출력 후 행동: 요약 끝에 **\"위 요약 내용을 토대로 인포그래픽을 생성할까요?\"**라고 질문합니다.\n\n\n###Step 2. 사용자 확인 및 레이아웃 선택\n사용자가 '네', 'OK' 등 긍정적인 답변을 하면 다음과 같이 진행합니다.\n- 질문: \"인포그래픽 레이아웃을 선택해 주세요. (가로형 또는 세로형)\"라고 요청합니다. \n\n\n###Step 3. 인포그래픽 생성용 JSON 프롬프트 출력\n사용자가 레이아웃을 선택하면, 이미지 생성 모델이 이해할 수 있도록 상세한 JSON 포맷의 프롬프트를 생성하여 출력합니다. 프롬프트는 아래의 '인포그래픽 시각적 요구사항'을 모두 포함해야 합니다.\n- 결과를 출력할 때 '출처 링크'는 제거합니다.\n\n----\n\n### 인포그래픽 시각적 요구사항 (Visual Requirements)\n\n이미지 생성을 위한 프롬프트 구성 시 다음 요소를 반드시 포함하십시오:\n- 배경: 줄 없는 깨끗한 흰색 종이 배경. \n- 도구 및 스타일: 검은색 파인라이너를 사용한 'Graphic Recording' 또는 'Visual Thinking' 스타일. \n- 색상 팔레트: Teal, Orange, Muted Red의 3가지 색상만 사용하여 포인트 및 음영 처리. \n- 중앙 구성: 메인 제목을 중앙의 3D 스타일 직사각형 박스에 배치. \n- 구성 요소: 제목 주변에 방사형으로 배치된 간단한 낙서, 비즈니스 아이콘, 졸라맨(Stick figures), 그래프, 연결 화살표. \n- 텍스트 스타일: 전문적인 브레인스토밍 느낌의 손글씨체(Handwritten all-caps), 기본 한글 사용(전문용어는 원문 유지). \n\n\n## 프롬프트 출력 형식 (JSON Example)\n\n{\n  \"aspect_ratio\": \"16:9 (or 9:16)\",\n  \"style\": \"Graphic recording, visual thinking, hand-drawn sketch\",\n  \"background\": \"Pristine white paper, no lines\",\n  \"elements\": {\n    \"center\": \"Main title in a 3D rectangular box\",\n    \"surroundings\": \"Radial distribution of business icons, stick figures, graphs, and doodles\",\n    \"connections\": \"Arrows showing flow and cause-and-effect\"\n  },\n  \"color_palette\": [\"Teal\", \"Orange\", \"Muted Red\"],\n  \"typography\": \"Professional handwritten all-caps, Korean mixed with technical English terms\",\n  \"ink\": \"Black fine-liner outlines\"\n}",
+    "usage": "제미나이의 Gems에 등록 후 사용하세요.\n1. 요약할 문서를 첨부한다.\n2. \"요약해 줘\"라고 대화를 시작한다."
+  },
+  {
+    "id": "dp023",
+    "title": "캐릭터 face 그리드 만들기",
+    "category": "콘텐츠제작",
+    "link": "",
+    "created": 1741010000000,
+    "content": "Use the uploaded reference photo as the strict identity anchor. Create a [Cinematic Photorealistic Neo-Noir Graphic Novel Character Sheet] featuring the SAME PERSON. Create a professional full 360-degree facial turnaround sheet with the following 8 views: 0° front view, 30° quarter-left, 60° half-left, 90° left profile, 150° back-left, 180° back view, 210° back-right, 270° right profile. The background should be a grey monochrome.",
+    "usage": "인물 사진을 한 장 첨부한 후 나노 바나나 프로에서 이미지를 생성해 보세요. 해상도 16:9"
+  },
+  {
+    "id": "dp024",
+    "title": "지역축제 이미지 생성",
+    "category": "콘텐츠제작",
+    "link": "",
+    "created": 1741011000000,
+    "content": "Create the impression that the person in the attached photo is touring [축제명]. Design a layout that's visually appealing, like a photo album. Take full advantage of the 9:16 aspect ratio to create a special page for '[도시, 지역명]' magazine. This page is a crucial page that significantly impacts page views, so include as much information as possible.",
+    "usage": "인물 사진을 첨부 후 [축제명]과 [도시명]을 수정한 뒤 이미지 생성 요청해 보세요.\n추천: 구글 Flow"
+  },
+  {
+    "id": "dp025",
+    "title": "지도 형태 아이소메트릭 이미지 생성",
+    "category": "콘텐츠제작",
+    "link": "",
+    "created": 1741012000000,
+    "content": "[도시명 / 지역명]을 실제 지리적 지도 형태에서 영감을 받은 지도 실루엣 기반의 45도 탑다운 아이소메트릭 미니어처 3D 다이오라마로 표현한다. \n전체 구성은 해당 도시 또는 지역의 실제 지도 윤곽이 자연스럽게 인식되도록 하며, 정사각형이나 직사각형 프레임에 억지로 맞추지 않는다. \n이미지는 일반 캔버스 안에서 완전히 렌더링되고, 지도 형태는 도시 배치와 구조를 통해 드러나도록 한다. \n지도 실루엣 위에는 해당 지역을 대표하는 랜드마크, 자연 요소, 도시 구조를 컴팩트하면서도 균형감 있게 배치한다. \n도시의 성격에 따라 건물과 자연의 비율을 조절한다. \n전체 요소는 정제된 미니어처 스케일로 표현하며, 모서리는 부드럽게 처리하고 형태는 살짝 단순화해 현실감과 은근한 귀여움이 공존하도록 한다. \n과도한 장난감 느낌은 피하고, 고급스럽고 소장 가치 있는 다이오라마 스타일을 유지한다. \n텍스처는 고품질 PBR 소재를 사용하고, 조명은 부드럽고 자연스럽게 설정한다. 색감은 해당 지역의 분위기에 맞게 조절하여 차분하고 정돈된 인상을 준다. \n구름, 햇빛, 안개, 비, 눈 등 어울리는 날씨 요소를 환경 속에 자연스럽게 녹인다. \n이미지 상단 중앙에는 [도시명 / 지역명]을 깔끔한 타이포그래피로 배치하고, 그 아래에 공기 상태, 날짜, 기온, 날씨 아이콘을 간결한 인포그래픽 형태로 정렬한다. \n최종 결과물은 에디토리얼 감성의 고급 인포그래픽과 수집용 미니어처 지도 일러스트의 중간 스타일로 완성한다.",
+    "usage": "[도시명 / 지역명]을 수정한 뒤 이미지 생성 요청해 보세요.\n추천: Flow"
+  },
+  {
+    "id": "dp026",
+    "title": "빈티지 신문 스타일 인포그래픽",
+    "category": "콘텐츠제작",
+    "link": "",
+    "created": 1741013000000,
+    "content": "**[주제]**에 관한 1:1 비율의 빈티지 신문 스타일 인포그래픽. \n\n레이아웃 핵심: 최상단 메인 헤드라인 아래에 검은색 가로 바가 있으며, 그 안에 흰색 한글 텍스트로 된 소제목이 선명하게 배치됨. \n\n전체 구도는 다단 구성으로, 좌측에는 세밀한 펜 드로잉 삽화가, 우측에는 위아래로 나뉜 **개념도**와 흑백 빈티지 사진이 포함됨. 세월의 흔적이 느껴지는 거친 종이 질감 위에 모든 한글 텍스트는 뭉개짐 없이 정교한 고딕 및 명조체로 완벽하게 렌더링됨. \n\n중요한 키워드 위에는 손으로 직접 그린 듯한 '레트로 레드' 색상의 원형 강조선과 밑줄이 추가되어 시각적 위계를 형성함. 1980년대 **종이 신문** 특유의 높은 정보 밀도와 인쇄 미학을 재현함",
+    "usage": "[주제]와 비유를 수정 후 사용하세요."
+  },
+  {
+    "id": "dp027",
+    "title": "요리법 인포그래픽",
+    "category": "콘텐츠제작",
+    "link": "",
+    "created": 1741014000000,
+    "content": "Ultra-clean modern recipe infographic in **[Korean]**. Showcase **[돼지국밥]** in a visually appealing finished form—sliced, plated, or portioned—floating slightly in perspective or angled view. Arrange ingredients, steps, and tips around the dish in a dynamic editorial layout, not restricted to top-down. Ingredients Section: Include icons or mini illustrations for each ingredient with quantities. Arrange them in clusters, lists, or circular flows connected visually to the dish. \n\nSteps Section: Show preparation steps with numbered panels, arrows, or lines, forming a logical flow around the main dish. Include small cooking icons (knife, pan, oven, timer) where helpful. \n\nAdditional Info (optional): Total calories, prep/cook time, servings, spice level—displayed as clean bubbles or badges near the dish. \n\nVisual Style: Editorial infographic meets lifestyle food photography. Vibrant, natural food colors, subtle drop shadows, clean vector icons, modern typography, soft gradients or glassmorphism for step panels. Accent colors can highlight key info (calories, prep time). \n\nComposition Guidelines: Finished meal as hero visual (perspective or angled) Ingredients and steps flow dynamically around the dish \n\nClear visual hierarchy: dish > steps > ingredients > optional stats Enough negative space to keep design airy and readable \n\nLighting & Background: Soft, natural studio lighting, minimal textured or gradient background for premium editorial feel. \nOutput: ultra-crisp, social-feed optimized, no watermark. -- ar [X:Y]",
+    "usage": "[돼지국밥] 대신 원하는 '음식명'으로 수정 후 사용하세요.\n하단에 [X:Y]를 수정 후 사용하세요. (예: 16:9, 4:3, 1:1)"
+  },
+  {
+    "id": "dp028",
+    "title": "식물 도감 인포그래픽",
+    "category": "콘텐츠제작",
+    "link": "",
+    "created": 1741015000000,
+    "content": "A clean, vintage botanical educational poster of **[식물명]** arranged in a professional 3x3 grid layout. The aesthetic is a 19th-century science diagram with muted colors, fine ink line work, and an off-white aged paper background.\n\nThe 9 sections include:\n\n1. A botanical illustration of the full plant.\n2. Map of its origin (tropical/subtropical regions).\n3. Sunlight requirements (icon of sun/shade).\n4. Watering cycle (water droplet icons).\n5. Ideal temperature and humidity levels.\n6. Soil type and nutrients.\n7. Pruning and boundary control.\n8. Common pests or warnings (toxic to pets, etc.).\n9. Close-up of leaf texture.\n\nAll sections are numbered with clear, elegant typography in **Korean**. Organized, academic, and highly detailed. --ar **[X:Y]**",
+    "usage": "[식물명]과 가로세로 비율 [X:Y]을 수정 후 사용하세요.\n추천: Flow"
+  },
+  {
+    "id": "dp029",
+    "title": "마인드맵 생성",
+    "category": "생산성",
+    "link": "",
+    "created": 1741016000000,
+    "content": "{\n  \"prompt_template\": {\n    \"target_topic\": \"[특정 주제]\",\n    \"instruction\": \"제시된 주제를 바탕으로 핵심 개념과 하위 개념을 포함한 계층적 마인드맵을 작성하십시오.\",\n    \"formatting_rules\": {\n      \"hierarchy\": [\n        {\n          \"level\": 1,\n          \"description\": \"메인 주제 (제목)\"\n        },\n        {\n          \"level\": 2,\n          \"description\": \"주요 카테고리 (4~5개 핵심 분야)\"\n        },\n        {\n          \"level\": 3,\n          \"description\": \"세부 개념 (핵심 이론, 기술, 요소)\"\n        },\n        {\n          \"level\": 4,\n          \"description\": \"설명 (세부 개념에 대한 1문장 요약)\"\n        }\n      ],\n      \"visual_style\": {\n        \"headers\": \"Markdown ## 및 ### 사용\",\n        \"lists\": \"글머리 기호(*, -) 활용\",\n        \"emphasis\": \"중요 용어 Bold 처리\"\n      }\n    },\n    \"additional_components\": [\n      \"이해를 돕기 위한 표(Table) 또는 인용구(Blockquote)\",\n      \"학습을 위한 심화 질문 3가지 제안\"\n    ]\n  }\n}",
+    "usage": "[특정 주제] 부분을 수정 후 사용하세요.\n복잡한 개념을 마인드맵으로 생성, 이해하기 쉽게 도와줍니다."
+  },
+  {
+    "id": "dp030",
+    "title": "주제별 학습 확인용 퀴즈",
+    "category": "교육/학습",
+    "link": "",
+    "created": 1741017000000,
+    "content": "{\n  \"instruction\": \"제시된 설정(Config)에 따라 학습 확인용 퀴즈를 생성하라.\",\n  \"config\": {\n    \"topic\": \"조선 시대의 사회 (신분제, 향촌 질서, 가족 제도 등)\",\n    \"difficulty\": \"중등 교육 수준\",\n    \"total_questions\": 10,\n    \"question_types\": {\n      \"multiple_choice\": 4,\n      \"short_answer\": 3,\n      \"true_false\": 3\n    },\n    \"language\": \"Korean\"\n  },\n  \"output_format\": {\n    \"include_answer\": true,\n    \"include_explanation\": true,\n    \"separation\": \"문제를 모두 제시한 후, 마지막에 [정답 및 해설] 세션을 별도로 구성할 것\"\n  },\n  \"constraints\": [\n    \"문제는 중복되지 않는 개념을 다룰 것\",\n    \"단답형은 용어나 명칭이 명확하게 떨어지는 것으로 출제할 것\",\n    \"해설은 학습자가 이해하기 쉽게 친절한 톤으로 작성할 것\"\n  ]\n}",
+    "usage": "{ } 대괄호 안의 내용을 필요에 따라 수정 후 사용하세요."
+  },
+  {
+    "id": "dp031",
+    "title": "손그림 스타일 인포그래픽",
+    "category": "콘텐츠제작",
+    "link": "",
+    "created": 1741018000000,
+    "content": "{\n  \"instruction\": {\n    \"role\": \"Expert Infographic Designer\",\n    \"task\": \"Create a cartoon-style infographic based on the provided content.\",\n    \"style_guidelines\": {\n      \"art_style\": \"Hand-drawn illustration style, strictly avoiding realistic visual elements\",\n      \"layout\": {\n        \"orientation\": \"Landscape or specified orientation\",\n        \"aspect_ratio\": \"{{aspect_ratio}}\"\n      },\n      \"visual_elements\": [\n        \"Include a small number of simple cartoon elements, icons, or famous personalities to enhance visual interest\",\n        \"Replace sensitive or copyrighted figures with visually similar alternatives\",\n        \"Utilize ample whitespace to clearly emphasize key points \"\n      ]\n    },\n    \"content_handling\": {\n      \"summarization\": \"Keep information concise, highlighting keywords and core concepts \",\n      \"language\": \"Use the same language as the provided content unless otherwise specified\",\n      \"error_handling\": \"Do not refuse to generate the illustration even if sensitive figures are mentioned; use alternatives\"\n    }\n  },\n  \"variables\": {\n    \"aspect_ratio\": \"e.g., 16:9, 4:3, 1:1, or 9:16\",\n    \"input_content\": \"Insert the raw text or data to be visualized here\"\n  }\n}",
+    "usage": "\"input_content\" 영역에 텍스트를 입력한 후 사용하세요.\n추천: Flow"
+  },
+  {
+    "id": "dp032",
+    "title": "SEO 키워드 전략",
+    "category": "마케팅",
+    "link": "",
+    "created": 1741019000000,
+    "content": "\"[주제]\"에 대한 블로그 포스팅을 작성하려고 해. 다음 조건에 맞춰 키워드를 제안해 줘.\n\n- 메인 키워드: 해당 주제를 관통하면서 사람들이 가장 많이 검색할 법한 대표 키워드 1개.\n- 롱테일 키워드 (10개): 메인 키워드와 연관되되, 구체적인 고민이나 상황이 담긴 3단어 이상의 조합. (예: \"OOO 하는 법\", \"OOO 가성비 추천\", \"OOO 주의사항\")\n- 포함 내용: 각 키워드별로 타겟 독자의 검색 의도와 이 키워드로 쓸 만한 매력적인 포스팅 제목 예시를 함께 적어줘.\n- 톤앤매너: [예: 초보자도 이해하기 쉬운 정보성 / 전문적인 분석 등]",
+    "usage": "특정 주제에 대한 메인 키워드와 롱테일 키워드 목록을 생성합니다.\n[주제]를 수정 후 사용하세요."
+  },
+  {
+    "id": "dp033",
+    "title": "음료 인포그래픽",
+    "category": "콘텐츠제작",
+    "link": "",
+    "created": 1741020000000,
+    "content": "{\n  \"prompt_metadata\": {\n    \"title\": \"Premium Food Infographic Generator\",\n    \"description\": \"Generates a modern, UI-style food infographic with customizable language settings.\"\n  },\n  \"variables\": {\n    \"drink_name\": \"쌍화차\",\n    \"aspect_ratio\": \"1:1\",\n    \"language\": \"Korean\"\n  },\n  \"prompt_structure\": {\n    \"composition\": \"Centered composition for [drink_name], modern food infographic poster style with all text written in [language].\",\n    \"subject_details\": \"Highly realistic glass or bottle of [drink_name] in the center, featuring smooth texture, condensation, and soft studio lighting.\",\n    \"background\": \"Minimal pastel background with subtle paper texture.\",\n    \"ui_elements\": {\n      \"layout\": \"Neatly arranged UI-style information cards and icons surrounding the drink.\",\n      \"content\": \"Displaying nutrition facts, preparation steps, time, servings, sweetness level, and health benefits in [language].\",\n      \"design_style\": \"Rounded cards with soft shadows, flat and semi-3D icon design, matching the warm color palette of the drink.\"\n    },\n    \"aesthetic_finish\": \"Elegant typography suitable for [language], premium recipe-book aesthetic, Pinterest/Instagram infographic style, ultra-sharp with balanced spacing, professional food design.\"\n  },\n  \"technical_settings\": {\n    \"resolution\": \"Ultra-high detail\"\n  }\n}",
+    "usage": "프롬프트에서 아래 \"변수\"들을 수정 후 사용하세요.\n추천 모델: 나노 바나나 프로\n\n    \"drink_name\": \"쌍화차\",\n    \"aspect_ratio\": \"1:1\",\n    \"language\": \"Korean\""
+  },
+  {
+    "id": "dp034",
+    "title": "코드 스니펫 생성",
+    "category": "SW개발",
+    "link": "",
+    "created": 1741021000000,
+    "content": "[프로그래밍 언어]를 사용하여 [파일 경로]에서 텍스트 파일을 읽고, 각 줄의 문자열을 역순으로 뒤집어 출력하는 함수를 작성해 줘.\n\n포함할 내용:\n- 파일이 존재하지 않거나 읽기 권한이 없는 경우에 대한 예외 처리(Error Handling).\n- 대용량 파일에서도 메모리 문제가 발생하지 않도록 효율적인 방식(예: 한 줄씩 읽기) 사용.\n- 코드의 각 로직을 단계별로 설명하는 상세한 주석.\n- 함수를 실행하는 예시 코드.",
+    "usage": "특정 작업을 수행하는 코드 스니펫을 생성하고, 코드에 대한 설명을 추가하기 위해 작성한 프롬프트입니다.\n[...] 부분을 수정 후 사용하세요."
+  },
+  {
+    "id": "dp035",
+    "title": "웹툰 스타일 인포그래픽: 개념 설명용",
+    "category": "콘텐츠제작",
+    "link": "",
+    "created": 1741022000000,
+    "content": "A full vertical infographic-style webtoon page featuring '**[주제]**'.\n- 9:16. korean.\n- Layout Structure: A long vertical scroll design consisting of a header, an episode title, a main 4-panel comic strip, an informational text block area, and a final bottom panel.\n- Header & Title: At the top, a small character avatar next to a title logo, followed by a large episode heading like \"#1 **[주제]**\".\n- Main Content (4-Panel Strip): Four identical horizontal rectangular panels stacked vertically in the center. In each panel, the character is centered in a medium close-up shot (chest up), showing a progression of subtle facial expressions and gestures (e.g., neutral, pondering, realization, and pointing upwards). Each panel includes a rounded speech bubble on the right side.\n- Art Style: Professional 2D digital anime illustration, cute chibi (SD) character design, clean bold outlines, flat cell shading with soft pastel colors, and high-quality line art on a minimalist white background.\n- Bottom Section: Below the 4 panels, there is a dedicated space for descriptive text, followed by a final wide outro panel featuring two characters interacting in a humorous or conversational manner.\n- Technical Detail: Vector clarity, bright and clean composition, high resolution, 8k, organized layout.",
+    "usage": "[주제] 영역에 설명하고 싶은 단어(예: AI 에이전트)를 입력 후 사용하세요.\n이미지의 비율(예: 9:16, 16:9, 4:5, 4:3, 3:4)을 수정 후 사용하세요.\n나노 바나나 프로 모델을 추천합니다."
+  },
+  {
+    "id": "dp036",
+    "title": "유튜브 스크립트 초안",
+    "category": "콘텐츠제작",
+    "link": "",
+    "created": 1741023000000,
+    "content": "**\"[주제]\"**에 대한 5분 분량의 유튜브 비디오 스크립트를 작성해 줘.\n\n[기본 설정]\n타겟: 이 주제에 관심이 있는 초보자\n말투: 친절하고 활기찬 구어체 (친근한 반말 혹은 해요체 중 선택 가능)\n\n[구성 가이드]\n인트로(45초): 시청자의 고민을 공감하거나 강력한 질문으로 시작해 5초 안에 시선을 끌 것.\n본론(3개 포인트): 각 포인트마다 핵심 내용을 설명하고, 시각적으로 어떤 화면(그래프, 예시 영상 등)이 나오면 좋을지 [화면 설명]을 포함해 줘.\n아웃트로(45초): 핵심 내용을 한 문장으로 요약하고, '구독/좋아요' 요청과 함께 시청자가 댓글로 참여할 수 있는 질문을 던져 줘.\n\n[추가 요청]\n전문 용어는 쉽게 풀어서 설명하고, 지루하지 않게 중간중간 추임새나 유머를 섞어 줘.\n호흡을 고려하여 문장을 짧게 끊어서 작성해 줘.",
+    "usage": "[주제]를 수정 후 사용하세요."
+  },
+  {
+    "id": "dp037",
+    "title": "SWOT 및 5가지 강점 분석",
+    "category": "마케팅",
+    "link": "",
+    "created": 1741024000000,
+    "content": "당신은 하버드 경영대학원의 전략 교수입니다. \n[귀사의 기업/제품]에 대한 SWOT 및 Porter의 Five Forces 통합 분석이 필요합니다.\n\n\nSWOT 분석을 위해 다음을 제공하십시오: \n• 강점: 근거가 포함된 7가지 내부 장점 \n• 약점: 정직한 평가가 포함된 7가지 내부 한계 \n• 기회: 활용 가능한 7가지 외부 요인 \n• 위협: 피해를 줄 수 있는 7가지 외부 요인 \n• 교차 분석: 강점과 기회를 매칭(SO 전략)하고 위협-약점 조합(WT 리스크)을 식별하십시오. \n\nPorter의 Five Forces를 위해 다음을 분석하십시오: \n• 공급자 교섭력: 주요 공급업체는 누구이며 어느 정도의 영향력을 가졌는지 \n• 구매자 교섭력: 고객이 어느 정도의 협상력을 가졌는지 \n• 기존 경쟁자 간의 적대치: 경쟁의 강도와 그 동인은 무엇인지 \n• 대체재의 위협: 직접적 경쟁자 외에 어떤 대안이 존재하는지 \n• 신규 진입자의 위협: 새로운 플레이어가 진입하기 얼마나 쉬운지. \n\n각 요인에 점수(1-10점)를 매기고 전체적인 산업 매력도 점수를 제공하십시오. \n내 비즈니스 정보: [회사, 제품, 산업, 성장 단계에 대해 설명하세요]",
+    "usage": "[...]로 표시된 부분을 수정 후 사용하세요.\n자세한 이용 방법은 URL 확인하세요"
+  },
+  {
+    "id": "dp038",
+    "title": "캐릭터 body 그리드 만들기",
+    "category": "콘텐츠제작",
+    "link": "",
+    "created": 1741025000000,
+    "content": "Use the uploaded reference photo as the strict identity anchor. Create a [Cinematic Photorealistic Neo-Noir Graphic Novel Full-Body Character Sheet] featuring the SAME PERSON. The background should be a grey monochrome. Create a professional full-body turnaround sheet with the following 4 views: 0° Front view, 45° Quarter-left view, 90° Left Profile view, 180° Back view. The character should be standing in a stoic, powerful pose, showing complete outfit and armor details.",
+    "usage": "인물 사진을 한 장 첨부한 후  화풍 : [Cinematic Photorealistic Neo-Noir Graphic Novel Full-Body Character Sheet]   Flow 에서 이미지를 생성. 해상도 16:9"
+  },
+  {
+    "id": "job001",
+    "title": "재무팀: 재무 데이터 심층 분석 프롬프트",
+    "category": "직무특화",
+    "link": "",
+    "created": 1740474600000,
+    "content": "[역할 및 목적]\n당신은 재무 분석 전문가입니다. 제공된 재무 데이터를 심층 분석하고 경영진 보고용 인사이트를 도출해 주세요.\n\n[데이터 컨텍스트]\n- 분석 기간: {2023 Q4 - 2024 Q2}\n- 비교 기준: {전년 동기 대비 및 동종 산업 평균 대비}\n- 세그먼트: {사업부명/지역}\n- 핵심 가정(Assumptions): WACC는 [X]%, 법인세율은 [X]%, 차년도 목표 매출성장률은 [X]%로 가정할 것.\n\n[분석 과업] ⓐ 재무건전성 진단 (유동성 및 레버리지) ⓑ 손익 구조 최적화 (비용 통제 및 마진 분석) ⓒ 현금흐름 역학 분석 (운전자본 효율성 중심) ⓓ 액션 아이템 도출\n\n[핵심 측정 지표] ROIC, EVA, FCF 전환율, 영업이익률, 자본회전율, CCC(현금전환주기: DSO+DIO-DPO)\n\n[출력 형식]\n1. 경영진 요약 (핵심 인사이트 5줄 이내 블릿 포인트)\n2. 과업별 상세 분석 및 지표 트래킹 결과 (테이블 활용)\n3. 재무 지표 개선을 위한 3가지 최우선 권고안 (실행 가능하고 구체적으로)",
+    "usage": "[...] 중괄호와 대괄호 영역을 본인의 데이터에 맞게 수정 후 사용하세요. 재무제표 데이터를 함께 제공하면 더 정확한 분석이 가능합니다."
+  },
+  {
+    "id": "job002",
+    "title": "HR팀: 조직 분석 & 인재 전략 프롬프트",
+    "category": "직무특화",
+    "link": "",
+    "created": 1740474600000,
+    "content": "[역할 및 목적] 당신은 CHRO(최고인사책임자)를 보좌하는 시니어 HR 전략 컨설턴트입니다. 제공된 조직, 인력, 성과 통합 데이터를 심층 분석하여 구조적인 HR 리스크를 진단하고, 데이터에 기반한 전략적 인재 경영 이니셔티브를 도출해 주세요.\n\n[조직 컨텍스트 및 목표]\n- 산업군 및 규모: [예: 500명 규모의 중견 IT/SaaS 기업]\n- 최근 조직 이슈: [예: 최근 1년간 3~5년 차 핵심 개발자들의 자발적 퇴사 증가]\n- 핵심 달성 목표: [예: 핵심 인재(High Performer) 자발적 이직률 5%p 개선 및 리더십 파이프라인(Succession Bench) 강화]\n\n[데이터 입력 (스냅샷 및 상세)]\n- 기초 스냅샷: 총 [N]명, 부서별 인원 [A부서 N명...], 평균 근속 [N]년, 전체 이직률 [N]%\n- 상세 데이터: [여기에 퇴사자 인터뷰 요약, 성과평가 등급 분포, 보상 수준(Compa-ratio), 교육 이수율, 채용 리드타임 등의 데이터를 붙여넣으세요]\n\n[핵심 분석 과업 및 프레임워크]\nⓐ 이직 리스크 및 유지(Retention) 전략: 자발적/비자발적 이직을 구분하고, 성과 등급 및 연차별 퇴사 트렌드를 분석할 것. (특히 Flight Risk가 높은 핵심 타겟층 식별)\nⓑ 인재 파이프라인 및 성과: '9-Box Grid' 프레임워크를 가상으로 적용하여 핵심 인재(Hi-Po) 현황을 진단하고 리더십 공백 리스크를 평가할 것.\nⓒ 조직 효율성 및 보상: 시장 평균 대비 당사의 보상 경쟁력(Compa-ratio 기반)과 조직/직책별 인력 구조(Span of Control)의 적절성을 분석할 것.\nⓓ DE&I (다양성, 형평성, 포용성): 직급별 성별/연령 다양성 및 평가/보상에서의 편향성 여부를 점검할 것.\n\n[출력 형식]\n1. 경영진 요약: (현재 조직 상태에 대한 핵심 진단 및 가장 시급한 리스크 3가지, 5줄 이내 블릿 포인트)\n2. 영역별 심층 분석 결과: (과업 ⓐ~ⓓ에 대한 데이터 기반의 발견 사항)\n3. 전략적 HR 이니셔티브 제안: (목표 달성을 위한 3가지 구체적 실행 방안. 각 방안마다 '예상 소요 기간', '필요 자원/예산', '기대 효과'를 포함할 것)",
+    "usage": "[...] 영역에 조직의 현황과 데이터를 입력하세요. 9-Box Grid 등 전문 프레임워크를 기반으로 진단해 줍니다."
+  },
+  {
+    "id": "job003",
+    "title": "마케팅팀: 멀티채널 콘텐츠 동시 생성 프롬프트",
+    "category": "직무특화",
+    "link": "",
+    "created": 1740474600000,
+    "content": "[역할 및 목적] 당신은 10년 차 시니어 퍼포먼스 마케터이자 콘텐츠 디렉터입니다. 아래 캠페인 브리프를 바탕으로, 각 채널의 알고리즘과 유저 소비 문법에 완벽히 최적화된 5가지 마케팅 콘텐츠를 동시 생성해 주세요.\n\n[캠페인 브리프]\n- 제품/서비스명: [예: AI 영상 편집 툴]\n- 캠페인 목표: [예: 무료 트라이얼 가입 전환율(CVR) 극대화]\n- 타깃 페르소나: [예: 릴스/쇼츠를 매일 올려야 하지만 편집 시간이 부족한 1~3년 차 초보 크리에이터]\n- 핵심 메시지 및 USP: [예: \"컷편집부터 자막까지 AI로 3분 컷, 작업 시간 50% 단축\"]\n- 톤앤매너: [예: 친근하고 위트 있는, 전문가의 팁을 알려주는 듯한 톤]\n- 브랜드 가이드(금칙어): [예: '혁신적인', '세계 최초' 등 과장된 표현 금지, 경쟁사 언급 금지]\n- 타깃 키워드(SEO): [#AI영상편집 #유튜브쇼츠만들기 #편집시간단축]\n\n[채널별 최적화 지침 및 출력 형식] 다음 5개 채널의 특성에 맞춰 각각 콘텐츠를 작성하세요.\n1. 인스타그램 릴스/피드 (시각적 & 후킹 중심)\n2. 링크드인 (인사이트 & 프로페셔널 중심)\n3. 네이버/티스토리 블로그 (SEO & 정보 제공 중심)\n4. 뉴스레터 (이메일 마케팅 & 개인화)\n5. 메타(FB/IG) 스폰서드 광고 (퍼포먼스 & 전환 중심)",
+    "usage": "[...] 영역에 제품 정보와 캠페인 목표를 입력하세요. 인스타그램부터 뉴스레터까지 한 번에 채널별 맞춤 콘텐츠를 생성합니다."
+  },
+  {
+    "id": "job004",
+    "title": "마케팅팀: 캠페인 성과 분석 리포트 프롬프트",
+    "category": "직무특화",
+    "link": "",
+    "created": 1740474600000,
+    "content": "[역할 및 목적] 당신은 최고마케팅책임자(CMO)를 보좌하는 시니어 그로스 해커(Growth Hacker)이자 데이터 분석가입니다. 제공된 마케팅 캠페인 데이터를 바탕으로 퍼널(Funnel) 상의 병목(Bottleneck)을 진단하고, ROAS 극대화를 위한 '예산 재분배 및 액션 아이템'을 구조적으로 제안해 주세요.\n\n[캠페인 컨텍스트]\n- 캠페인 기간 및 명칭: [예: 2024.01 / 신규 가입자 확보 프로모션]\n- 캠페인 핵심 목표: [예: 타겟 CPA 15,000원 이하 유지하며 신규 가입 수 극대화]\n- 총 소진 예산: [N]원\n\n[데이터 입력]\n- 총계: 노출 [N], 클릭 [N] (CTR: [N]%), 전환 [N] (CVR: [N]%), CPA [N]원, 총 ROAS [N]%\n- 채널별 상세 지표 (비용/노출/클릭/전환/CPA/ROAS):\n  - [Google Ads 상세 데이터], [Meta Ads 상세 데이터], [Naver Search 상세 데이터]\n- 비교 벤치마크: [전월 대비 혹은 타사 평균 데이터]\n\n[핵심 분석 과업 및 프레임워크]\nⓐ 퍼널 누수 진단 (Funnel Drop-off)\nⓑ 채널/매체별 효율성 평가\nⓒ 수확 체감(Diminishing Returns) 점검\n\n[출력 형식]\n1. 경영진 요약 (Executive Summary)\n2. 퍼널 및 채널 심층 진단\n3. 데이터 기반 최우선 권고안 (Action Plan) - 예산 최적화 (Budget Reallocation) 및 소재/타겟팅 개선안",
+    "usage": "[...] 영역에 캠페인 성과 수치를 입력하세요. 퍼널 누수 지점을 찾아내고 효율적인 예산 재분배 전략을 제안합니다."
+  },
+  {
+    "id": "job005",
+    "title": "마케팅팀: 통합 캠페인 기획서 프롬프트",
+    "category": "직무특화",
+    "link": "",
+    "created": 1740474600000,
+    "content": "[역할 및 목적] 당신은 글로벌 탑티어 광고 대행사의 시니어 마케팅 전략 디렉터입니다. 제시된 비즈니스 목표와 제약 조건을 바탕으로, 타깃의 인지부터 최종 전환까지 빈틈없이 설계된 '통합 마케팅 커뮤니케이션(IMC) 캠페인 기획서'를 작성해 주세요.\n\n[캠페인 기본 요건]\n- 비즈니스 핵심 목표: [예: 3개월 내 활성 유저(MAU) 1만 명 확보 및 MQL 1,000건 달성]\n- 총 예산 및 기간: [N]원 / [시작일] ~ [종료일]\n- 타깃 페르소나 및 포지셔닝: [예: 프리랜서 및 크리에이터 / \"가장 직관적인 나만의 포트폴리오\"]\n- 핵심 가치 제안(USP): [제품/서비스의 가장 강력한 셀링 포인트]\n\n[핵심 전략 과업 및 프레임워크]\nⓐ 페이즈(Phase)별 전개 전략: 티징 - 공식 론칭 - 유지 및 확산\nⓑ 미디어 믹스(POE 전략): 페이드, 온드, 언드 미디어 연계\nⓒ 퍼널(Funnel)별 세부 KPI 정의\n\n[출력 형식]\n1. 캠페인 컨셉 및 슬로건 (1-Page Summary)\n2. 페이즈별 액션 플랜 (Timeline)\n3. 채널별 예산 배분안 (Budgeting)\n4. 예상 리스크 및 대응 방안 (Contingency Plan)",
+    "usage": "[...] 영역에 캠페인 개요와 목표를 입력하세요. 티징부터 확산까지 단계별 통합 마케팅 전략을 수립해 줍니다."
+  },
+  {
+    "id": "job006",
+    "title": "영업팀: B2B 제안서 자동 생성 프롬프트",
+    "category": "직무특화",
+    "link": "",
+    "created": 1740474600000,
+    "content": "[역할 및 목적]\n당신은 글로벌 IT/SaaS 기업의 시니어 엔터프라이즈 세일즈 디렉터입니다. 제공된 고객 맥락을 바탕으로, 의사결정권자(C-레벨)의 승인을 이끌어낼 수 있는 강력하고 구조화된 '10-Slide 제안서 스토리보드 및 핵심 스크립트'를 작성해 주세요.\n\n[고객사 및 영업 기회 컨텍스트]\n- 고객사 정보: [예: A엔터테인먼트 / 규모 500명]\n- 현 상황 및 Pain-point: [예: 트래픽 관리 분산으로 데이터 확보 불가]\n- 목표 및 제약 조건: [예: 통합 분석 강화 / 예산 5천만 원]\n\n[당사 솔루션 및 경쟁 우위]\n- 제안 솔루션: [제품명 및 핵심 기능 3가지]\n- 경쟁사 대비 차별점(USP): [보안 및 커스텀 기능 등]\n- 입증된 레퍼런스 및 제안 가격\n\n[핵심 작성 과업 및 프레임워크]\nⓐ Value Selling 접근법 적용\nⓑ ROI 및 TCO 제시\nⓒ 10-Slide 스토리보드 구조화\n\n[출력 형식: 10-Slide Deck Blueprint]\nSlide 1~10 구성 요소를 제목, 헤드라인 카피, 주요 내용별로 제공",
+    "usage": "[...] 영역에 고객사 정보와 제안 내용을 입력하세요. C-레벨 승인을 위한 논리적인 10장 분량의 제안서 초안을 만들어 줍니다."
+  },
+  {
+    "id": "job007",
+    "title": "영업팀: 상황별 영업 이메일 프롬프트",
+    "category": "직무특화",
+    "link": "",
+    "created": 1740474600000,
+    "content": "당신은 글로벌 IT/SaaS 기업의 탑티어 세일즈 커뮤니케이션 전문가(SDR/AE)입니다. 아래의 고객 정보와 영업 맥락을 바탕으로, 수신자의 시간을 존중하면서도 압도적인 전환율을 이끌어내는 목적 지향적 영업 이메일을 작성해 주세요.\n\n[이메일 기본 요건]\n- 본문 언어: [국문/영문 선택]\n- 이메일 발송 유형: [콜드 메일 / 팔로업 / 계약 촉구 등]\n\n[고객 및 영업 컨텍스트]\n- 수신자 정보: [고객사명], [담당자 이름 및 직급]\n- 컨택 경로(Ice-breaker): [예: 웨비나 참석 / 링크드인 등]\n- 당사의 핵심 가치 제안(USP) 및 최종 목적(CTA)\n\n[핵심 작성 과업 및 세일즈 프레임워크]\nⓐ 후킹 제목(Subject Line) 3가지 버전\nⓑ 개인화된 오프닝\nⓒ 가치 중심 본문 (PAS 프레임워크 활용)\nⓓ 저항감 없는 CTA(Soft Ask)\n\n[출력 형식]\n1. 이메일 제목 후보 (3가지)\n2. 이메일 본문 (모바일 최적화 구조)\n3. 추신(P.S.)",
+    "usage": "[...] 영역을 수신자 정보에 맞춰 수정하세요. 콜드 메일부터 협상 팔로업까지 상황별로 높은 오픈율의 이메일을 작성해 줍니다."
+  },
+  {
+    "id": "job008",
+    "title": "영업팀: 고객 니즈 분석 & 전략 프롬프트",
+    "category": "직무특화",
+    "link": "",
+    "created": 1740474600000,
+    "content": "[역할 및 목적]\n당신은 엔터프라이즈 B2B 영업을 코칭하는 시니어 세일즈 전략가(Deal Desk Manager)입니다. 제공된 고객사 정보와 영업 맥락을 분석하여, 딜(Deal)을 수주하기 위한 구체적인 '이해관계자 공략법'과 '행동 가능한 세일즈 액션 플랜'을 도출해 주세요.\n\n[고객사 및 딜(Deal) 컨텍스트]\n- 고객 프로필 및 Pain-points\n- 의사결정 프로세스(DMU 및 타임라인)\n- 경쟁 및 대안 상태\n- 당사 제안 솔루션\n\n[핵심 분석 과업 및 프레임워크]\nⓐ SPIN 프레임워크 기반 니즈 분석\nⓑ DMU (의사결정조직) 정밀 타겟팅 (Champion, Buyer, Blocker)\nⓒ 경쟁 방어 로직 (Objection Handling)\n\n[출력 형식]\n1. Deal 진단 요약 및 리스크\n2. SPIN 기반 가치 제안 맵핑\n3. 이해관계자(DMU)별 맞춤 공략 메시지\n4. 다음 미팅을 위한 세일즈 액션 아이템",
+    "usage": "[...] 영역에 영업 딜의 상황을 입력하세요. 수주 가능성을 높이기 위한 DMU별 설득 전략과 액션 플랜을 도출합니다."
+  },
+  {
+    "id": "job009",
+    "title": "개발팀: 전문가급 코드 리뷰 프롬프트",
+    "category": "직무특화",
+    "link": "",
+    "created": 1740474600000,
+    "content": "[역할 및 목적]\n당신은 15년 차 이상의 Staff Engineer이자 엄격하지만 통찰력 있는 코드 리뷰어입니다. 제공된 코드를 프로덕션(Production) 레벨의 기준에서 심층 분석하고, 시스템의 안정성과 확장성을 극대화할 수 있는 리팩토링 방안을 제시해 주세요.\n\n[코드 컨텍스트]\n- 언어 및 프레임워크: [예: Python / FastAPI]\n- 코드 목적 및 비즈니스 로직 / 예상 트래픽\n- 특별 중점 검토 사항: [예: 데드락 방지, 속도 최적화 등]\n\n[입력 코드]\n(리뷰할 코드를 이곳에 붙여넣으세요)\n\n[핵심 분석 과업 (5대 엔지니어링 관점)]\nⓐ 아키텍처 및 디자인 패턴 (SOLID)\nⓑ 성능 및 복잡도 (Big-O, N+1 Query)\nⓒ 보안 및 예외 처리 (OWASP)\nⓓ 유지보수성 (Clean Code)\nⓔ 테스트 가능성\n\n[출력 형식]\n1. TL;DR (승인 여부 및 요약)\n2. Critical Issues (심각도별 결함 리스트)\n3. 5대 관점 심층 리뷰\n4. Best Practice 리팩토링 코드 제안",
+    "usage": "[...] 영역에 프레임워크 정보와 코드를 입력하세요. 시니어 개발자 수준의 기술적 피드백과 리팩토링 버전을 제공합니다."
+  },
+  {
+    "id": "job010",
+    "title": "기획팀: 제품 요구사항 정의서 프롬프트",
+    "category": "직무특화",
+    "link": "",
+    "created": 1740474600000,
+    "content": "[역할 및 목적]\n당신은 실리콘밸리 탑티어 IT 기업의 시니어 프로덕트 매니저(PM)입니다. 제공된 비즈니스 요구사항을 바탕으로, 개발팀과 디자인팀이 즉각적으로 스프린트(Sprint)를 시작할 수 있는 명확하고 구조화된 '제품 요구사항 정의서(PRD)'를 작성해 주세요.\n\n[제품 및 비즈니스 컨텍스트]\n- 제품/피처명 및 타겟 페르소나\n- 해결하려는 핵심 문제(Pain-points)\n- 경쟁사 및 차별점(USP)\n\n[핵심 기획 과업 및 프레임워크]\nⓐ 사용자 스토리 (User Stories): \"As a [유저], I want to...\"\nⓑ 인수 조건 (Acceptance Criteria): Given/When/Then 포맷\nⓒ 우선순위 및 스코프 (MoSCoW)\nⓓ 성공 지표 (Success Metrics): KPI 및 North Star Metric\n\n[출력 형식: Agile PRD Blueprint]\n1. Executive Summary\n2. 사용자 스토리 및 인수 조건 상세\n3. MoSCoW 기반 피처 리스트 및 제외 범위\n4. 성공 측정 KPI\n5. 디자인/개발팀을 위한 특별 고려사항",
+    "usage": "[...] 영역에 기획하려는 피처 정보를 입력하세요. 글로벌 표준에 맞는 애자일 PRD 스토리보드를 자동 생성합니다."
+  },
+  {
+    "id": "job011",
+    "title": "기획팀: 사용자 리서치 분석 프롬프트",
+    "category": "직무특화",
+    "link": "",
+    "created": 1740474600000,
+    "content": "[역할 및 목적] 당신은 글로벌 IT 프로덕트의 시니어 UX 리서치 리드입니다. 제공된 정량적(설문) 및 정성적(인터뷰) 사용자 데이터를 심층 분석하여, 가설을 검증하고 프로덕트 디자이너와 PM이 즉시 실행할 수 있는 데이터 기반의 'UX/UI 개선 전략'을 도출해 주세요.\n\n[리서치 컨텍스트]\n- 제품 및 리서치 목적 / 검증 핵심 가설\n- 대상자 프로필 및 기간\n\n[입력 데이터]\n- 정성 데이터(인터뷰 요약) 및 정량 데이터(설문 결과)\n\n[핵심 분석 과업 및 프레임워크]\nⓐ 가설 검증 (Hypothesis Verification)\nⓑ 어피니티 매핑 (Affinity Mapping): VOC 테마 그룹화\nⓒ JTBD (Jobs-to-be-Done) 도출\nⓓ 심각도 기반 우선순위 산정 (Severity vs. Frequency)\n\n[출력 형식: UX Research Readout]\n1. 경영진 요약 (TL;DR)\n2. Top 3 사용자 페인포인트 (VOC 포함)\n3. 심층 분석 결과 (어피니티 매핑 & JTBD)\n4. 디자인/개발팀을 위한 액션 아이템",
+    "usage": "[...] 영역에 리서치 정보와 VOC 데이터를 입력하세요. 가중치가 적용된 우선순위와 실질적인 UX 개선안을 도출해 줍니다."
+  }
+]

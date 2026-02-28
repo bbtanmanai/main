@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>바이브코딩 실전 워크숍</title>
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <style>
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+      color: #333;
+      background: #fff;
+      line-height: 1.6;
+    }
+
+    /* Progress Bar */
+    #progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: #111;
+      z-index: 1000;
+      transition: width 0.2s;
+      width: 0%;
+    }
+
+    /* Slide Counter */
+    #counter {
+      position: fixed;
+      bottom: 24px;
+      right: 32px;
+      font-size: 0.85rem;
+      color: #999;
+      z-index: 1000;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Slides */
+    .slide {
+      min-height: 100vh;
+      scroll-snap-align: start;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 40px;
+      position: relative;
+    }
+
+    .slide .inner {
+      max-width: 920px;
+      width: 100%;
+    }
+
+    /* Divider Slides */
+    .divider {
+      background: #000;
+      color: #fff;
+      text-align: center;
+    }
+
+    .divider h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .divider p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1.15rem;
+    }
+
+    .divider .tools {
+      margin-top: 24px;
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Typography */
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    h2 {
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 8px;
+    }
+
+    h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      color: #666;
+      font-size: 1.05rem;
+      margin-bottom: 24px;
+    }
+
+    .secondary {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    /* Cards */
+    .card {
+      background: #fff;
+      border: 1px solid #E5E5E5;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-alt {
+      background: #F5F5F5;
+      border: 1px solid #E5E5E5;
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    /* Code Blocks */
+    .code-block {
+      background: #F5F5F5;
+      color: #333;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #E5E5E5;
+      white-space: pre-wrap;
+      font-size: 0.85rem;
+      line-height: 1.7;
+      overflow-x: auto;
+    }
+
+    .code-block .label {
+      display: inline-block;
+      font-family: 'Pretendard Variable', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #666;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 1px 8px;
+      margin-bottom: 8px;
+    }
+
+    /* Pills */
+    .pill {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #666;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 2px 10px;
+    }
+
+    .pill-black {
+      background: #111;
+      color: #fff;
+      border-color: #111;
+    }
+
+    /* Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .grid-5 {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+
+    /* Table */
+    .tbl {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .tbl th,
+    .tbl td {
+      padding: 10px 14px;
+      border: 1px solid #E5E5E5;
+      text-align: left;
+    }
+
+    .tbl th {
+      background: #F5F5F5;
+      font-weight: 700;
+      color: #111;
+    }
+
+    /* Highlight box */
+    .highlight-box {
+      background: #F5F5F5;
+      border: 1px solid #E5E5E5;
+      border-radius: 8px;
+      padding: 16px 20px;
+      text-align: center;
+      font-weight: 600;
+      color: #111;
+    }
+
+    /* Numbered steps */
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #111;
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    /* Stars */
+    .stars {
+      color: #111;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+    }
+
+    /* Spacing */
+    .mb-8 {
+      margin-bottom: 8px;
+    }
+
+    .mb-12 {
+      margin-bottom: 12px;
+    }
+
+    .mb-16 {
+      margin-bottom: 16px;
+    }
+
+    .mb-20 {
+      margin-bottom: 20px;
+    }
+
+    .mb-24 {
+      margin-bottom: 24px;
+    }
+
+    .mt-16 {
+      margin-top: 16px;
+    }
+
+    .mt-20 {
+      margin-top: 20px;
+    }
+
+    .mt-24 {
+      margin-top: 24px;
+    }
+
+    .gap-12 {
+      gap: 12px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .slide {
+        padding: 40px 20px;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      h2 {
+        font-size: 1.4rem;
+      }
+
+      .grid-2,
+      .grid-3,
+      .grid-4,
+      .grid-5 {
+        grid-template-columns: 1fr;
+      }
+
+      .divider h1 {
+        font-size: 2rem;
+      }
+
+      .code-block {
+        font-size: 0.78rem;
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="progress"></div>
+  <div id="counter"></div>
+
+
+  <section class="slide divider" id="s-git-intro">
+    <div class="inner">
+      <h1>Git &amp; GitHub 완전 정복</h1>
+      <p>깃허브 가입부터 안티그래비티 연동, 무료 웹사이트 배포까지!</p>
+    </div>
+  </section>
+
+  <section class="slide" id="s-git-concept">
+    <div class="inner">
+      <div class="pill mb-12">1장. 개념 잡기</div>
+      <h2>Git과 GitHub의 차이</h2>
+      <p class="subtitle mb-20">이름이 비슷하지만 커피와 커피숍만큼 완전히 다릅니다</p>
+
+      <div class="grid-2 mb-16">
+        <div class="card" style="text-align:center;">
+          <h4 class="mb-8">💻 Git (포장 기계)</h4>
+          <p class="secondary mt-12" style="text-align:left; line-height:1.6;">
+            내 컴퓨터 안에서 돌아가는 깐깐한 <b>'포장 기계'</b>이자 <b>'타임머신'</b>입니다.<br><br>
+            인터넷 연결이 없어도 내가 수정한 코드를 기록하고, 과거로 되돌려 줍니다.
+          </p>
+        </div>
+        <div class="card" style="text-align:center;">
+          <h4 class="mb-8">☁️ GitHub (인터넷 창고)</h4>
+          <p class="secondary mt-12" style="text-align:left; line-height:1.6;">
+            포장된 박스를 올려두는 <b>'거대한 온라인 창고'</b>입니다.<br><br>
+            구글 드라이브처럼 내 코드를 안전하게 백업하고 전 세계에 배포할 수 있습니다.
+          </p>
+        </div>
+      </div>
+
+      <div class="highlight-box">한 줄 요약: "내 컴퓨터의 Git(기계)으로 포장해서, 인터넷의 GitHub(창고)로 배송한다!"</div>
+    </div>
+  </section>
+
+  <section class="slide" id="s-github-setup">
+    <div class="inner">
+      <div class="pill mb-12">2장. 첫걸음</div>
+      <h2>나만의 인터넷 창고 만들기</h2>
+      <p class="subtitle mb-20">github.com에 가입하고 코드를 담을 빈 방(Repository)을 만듭니다</p>
+
+      <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:20px;">
+        <div class="card" style="display:flex; align-items:flex-start; gap:16px;">
+          <div class="step-num" style="flex-shrink:0; background:#2563EB;">1</div>
+          <div style="flex:1;">
+            <h4>가입하기</h4>
+            <p class="secondary">github.com 접속 후 이메일과 닉네임으로 무료 회원가입을 진행합니다.</p>
+          </div>
+        </div>
+
+        <div class="card" style="display:flex; align-items:flex-start; gap:16px;">
+          <div class="step-num" style="flex-shrink:0; background:#16A34A;">2</div>
+          <div style="flex:1;">
+            <h4>새 창고(Repository) 만들기</h4>
+            <p class="secondary">로그인 후 우측 상단의 <b>[+]</b> 버튼을 누르고 <b>[New repository]</b>를 클릭합니다.</p>
+          </div>
+        </div>
+
+        <div class="card" style="display:flex; align-items:flex-start; gap:16px;">
+          <div class="step-num" style="flex-shrink:0; background:#9333EA;">3</div>
+          <div style="flex:1;">
+            <h4>이름 설정 및 생성</h4>
+            <p class="secondary">Repository name에 프로젝트 이름(예: linkdrop)을 적고, Public(공개) 체크 후 화면 맨 아래 초록색 <b>[Create
+                repository]</b>를 누르면 빈 창고 완성!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" id="s-git-warning">
+    <div class="inner">
+      <div class="pill mb-12" style="background:#DC2626; color:white; border:none;">3장. 주의사항 🚨</div>
+      <h2>초보자가 가장 많이 하는 치명적 실수!</h2>
+      <p class="subtitle mb-20">"용량이 3GB가 넘어서 업로드가 펑 터졌어요! (HTTP 500 에러)"</p>
+
+      <div class="grid-2 mb-16">
+        <div class="card" style="border: 2px solid #DC2626;">
+          <h4 class="mb-8" style="color:#DC2626;">❌ 에러의 원인</h4>
+          <p class="secondary">GitHub는 텍스트(코드) 전용입니다. <b>전체 용량 1GB 초과</b> 또는 <b>100MB 이상 파일</b>이 섞여 있으면 서버가 업로드를 차단합니다.
+          </p>
+          <div class="code-block"
+            style="margin-top:12px; font-size:0.8rem; background:#fee2e2; color:#991b1b; border: 1px solid #fca5a5;">
+            [범인들]<br>
+            - 무거운 .zip 압축파일<br>
+            - 대용량 .pdf / .mp4 영상<br>
+            - 무거운 부품 폴더 (node_modules)
+          </div>
+        </div>
+        <div class="card" style="border: 2px solid #16A34A;">
+          <h4 class="mb-8" style="color:#16A34A;">✅ 완벽한 해결책</h4>
+          <p class="secondary">무거운 파일은 폴더 밖으로 빼고, 개발 찌꺼기 폴더는 거름망(<b>.gitignore</b>) 파일을 만들어 깃허브에 안 올라가게 걸러냅니다.</p>
+          <div class="code-block"
+            style="margin-top:12px; font-size:0.8rem; background:#dcfce7; color:#166534; border: 1px solid #86efac;">
+            [거름망 파일 만들기]<br>
+            파일명: .gitignore<br>
+            내용: node_modules/
+          </div>
+        </div>
+      </div>
+
+      <div class="highlight-box" style="background:#fef2f2; border-color:#fca5a5; color:#991b1b;">
+        일반적인 웹사이트 코드 용량은 보통 10~50MB 내외입니다. 무거운 이삿짐은 절대 GitHub에 올리지 마세요!
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" id="s-git-commands-real">
+    <div class="inner">
+      <div class="pill mb-12">4장. 터미널 명령어</div>
+      <h2>안티그래비티와 GitHub 연결 (마법의 명령어)</h2>
+      <p class="subtitle mb-20">안티그래비티 터미널(PS C:\linkdrop>)에 한 줄씩 치면 됩니다</p>
+
+      <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:20px;">
+        <div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:12px 16px;">
+          <div><strong style="color:#2563EB;">1. 포장 기계 설치</strong><br><span class="secondary"
+              style="font-size:0.75rem;">내 컴퓨터 폴더에 Git을 준비시킵니다.</span></div>
+          <div class="code-block" style="margin:0; padding:6px 10px; font-size:0.8rem;">git init</div>
+        </div>
+        <div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:12px 16px;">
+          <div><strong style="color:#9333EA;">2. 인터넷 창고 연결</strong><br><span class="secondary"
+              style="font-size:0.75rem;">GitHub 창고 주소로 배송길을 뚫습니다.</span></div>
+          <div class="code-block" style="margin:0; padding:6px 10px; font-size:0.8rem;">git remote add origin [주소]</div>
+        </div>
+        <div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:12px 16px;">
+          <div><strong style="color:#16A34A;">3. 장바구니에 담기</strong><br><span class="secondary"
+              style="font-size:0.75rem;">폴더 안의 모든 파일을 스캔합니다. (마침표 필수)</span></div>
+          <div class="code-block" style="margin:0; padding:6px 10px; font-size:0.8rem;">git add .</div>
+        </div>
+        <div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:12px 16px;">
+          <div><strong style="color:#EAB308;">4. 박스 포장 및 이름표</strong><br><span class="secondary"
+              style="font-size:0.75rem;">파일을 묶고 작업 내용을 메모합니다.</span></div>
+          <div class="code-block" style="margin:0; padding:6px 10px; font-size:0.8rem;">git commit -m "첫 업로드"</div>
+        </div>
+        <div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:12px 16px;">
+          <div><strong style="color:#DC2626;">5. 창고로 쏘아 올리기</strong><br><span class="secondary"
+              style="font-size:0.75rem;">GitHub 서버로 최종 배송합니다.</span></div>
+          <div class="code-block" style="margin:0; padding:6px 10px; font-size:0.8rem;">git push -u origin main --force
+          </div>
+        </div>
+      </div>
+      <div class="highlight-box">성공하면 화면에 100% 완료 메시지가 뜨며, GitHub 사이트에 내 파일이 짠! 나타납니다.</div>
+    </div>
+  </section>
+
+  <section class="slide" id="s-git-gui">
+    <div class="inner">
+      <div class="pill mb-12">5장. 마우스 클릭</div>
+      <h2>명령어 졸업! 마우스로 우아하게 연동하기</h2>
+      <p class="subtitle mb-20">초기 뼈대 공사가 끝났다면, 이제 복잡한 명령어 없이 버튼만 누르세요!</p>
+
+      <div
+        style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:28px; flex-wrap:wrap;">
+        <div class="card" style="text-align:center; padding:14px 16px; min-width:120px;">
+          <div style="font-size:1.3rem; margin-bottom:4px;">✏️</div>
+          <h4 style="font-size:0.8rem;">코드 수정</h4>
+          <p class="secondary" style="font-size:0.7rem;">에디터에서 변경</p>
+        </div>
+        <div style="font-size:1.3rem; color:#666;">→</div>
+        <div class="card" style="text-align:center; padding:14px 16px; min-width:120px; border:2px solid #2563EB;">
+          <div style="font-size:1.3rem; margin-bottom:4px;">🌿</div>
+          <h4 style="font-size:0.8rem;">소스 제어 탭</h4>
+          <p class="secondary" style="font-size:0.7rem;">좌측 나뭇가지 클릭</p>
+        </div>
+        <div style="font-size:1.3rem; color:#666;">→</div>
+        <div class="card" style="text-align:center; padding:14px 16px; min-width:120px; border:2px solid #16A34A;">
+          <div style="font-size:1.3rem; margin-bottom:4px;">📦</div>
+          <h4 style="font-size:0.8rem;">[커밋] 버튼</h4>
+          <p class="secondary" style="font-size:0.7rem;">중간 저장 (세이브)</p>
+        </div>
+        <div style="font-size:1.3rem; color:#666;">→</div>
+        <div class="card" style="text-align:center; padding:14px 16px; min-width:120px; border:2px solid #9333EA;">
+          <div style="font-size:1.3rem; margin-bottom:4px;">🚀</div>
+          <h4 style="font-size:0.8rem;">[동기화] 버튼</h4>
+          <p class="secondary" style="font-size:0.7rem;">GitHub로 쏘아 올리기</p>
+        </div>
+      </div>
+
+      <div class="grid-1 mb-16">
+        <div class="card-alt">
+          <h4 class="mb-8">💡 AI 사용량 때문에 구글 계정을 여러 개 돌려 쓴다면?</h4>
+          <p class="secondary">계정 A, B, C를 번갈아 로그인하더라도 <b>깃허브(GitHub) 연결 권한은 내 컴퓨터(PC) 자체에 튼튼하게 저장</b>되어 있습니다. 따라서 구글
+            계정을 바꿔도 아무 문제 없이 동기화 버튼 하나로 코드가 잘 올라갑니다!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" id="s-github-pages">
+    <div class="inner">
+      <div class="pill mb-12">6장. 라이브 배포</div>
+      <h2>3분 컷! 내 코드 진짜 웹사이트로 띄우기</h2>
+      <p class="subtitle mb-20">GitHub Pages 기능을 켜면 누구나 접속할 수 있는 URL이 탄생합니다</p>
+
+      <div class="card mb-20" style="background:#0D1117; color:#fff; padding:24px; border-radius:12px;">
+        <h3 style="color:#fff; margin-bottom:20px; font-size:1.2rem;">🌐 호스팅 스위치 ON 순서</h3>
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div style="display:flex; gap:14px; align-items:center;">
+            <div
+              style="background:#2563EB; color:#fff; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.9rem; font-weight:bold; flex-shrink:0;">
+              1</div>
+            <div style="color:#e2e8f0;">내 깃허브 창고 화면 상단의 톱니바퀴 모양 <b>[Settings]</b> 탭 클릭</div>
+          </div>
+          <div style="display:flex; gap:14px; align-items:center;">
+            <div
+              style="background:#2563EB; color:#fff; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.9rem; font-weight:bold; flex-shrink:0;">
+              2</div>
+            <div style="color:#e2e8f0;">왼쪽 메뉴 목록을 쭉 내려서 <b>[Pages]</b> 메뉴 클릭</div>
+          </div>
+          <div style="display:flex; gap:14px; align-items:center;">
+            <div
+              style="background:#2563EB; color:#fff; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.9rem; font-weight:bold; flex-shrink:0;">
+              3</div>
+            <div style="color:#e2e8f0;">화면 중앙 'Branch' 아래 스위치를 None에서 <b>[main]</b>으로 바꾸고 <b>[Save]</b> 클릭</div>
+          </div>
+          <div style="display:flex; gap:14px; align-items:center;">
+            <div
+              style="background:#16A34A; color:#fff; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.9rem; font-weight:bold; flex-shrink:0;">
+              4</div>
+            <div style="color:#e2e8f0;">1~2분 뒤 새로고침 하면 맨 위에 <b>"Your site is live at..."</b> 링크 등장!</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="highlight-box">축하합니다! 에러의 산을 넘어 완벽한 라이브 웹서비스 배포에 성공하셨습니다! 🎉</div>
+    </div>
+  </section>
+
+
+
+
+  <script>
+    (function () {
+      const slides = document.querySelectorAll('.slide');
+      const total = slides.length;
+      const progress = document.getElementById('progress');
+      const counter = document.getElementById('counter');
+
+      function update() {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        progress.style.width = pct + '%';
+
+        let current = 1;
+        for (let i = 0; i < slides.length; i++) {
+          const rect = slides[i].getBoundingClientRect();
+          if (rect.top <= window.innerHeight / 2) current = i + 1;
+        }
+        counter.textContent = current + ' / ' + total;
+      }
+
+      window.addEventListener('scroll', update);
+      window.addEventListener('resize', update);
+      update();
+
+      document.addEventListener('keydown', function (e) {
+        const currentScroll = window.scrollY;
+        let currentIdx = 0;
+        for (let i = 0; i < slides.length; i++) {
+          if (slides[i].offsetTop <= currentScroll + 10) currentIdx = i;
+        }
+        if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+          e.preventDefault();
+          if (currentIdx < slides.length - 1) slides[currentIdx + 1].scrollIntoView({ behavior: 'smooth' });
+        } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+          e.preventDefault();
+          if (currentIdx > 0) slides[currentIdx - 1].scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    })();
+  </script>
+</body>
+
+</html>

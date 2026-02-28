@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메타 프롬프트 초간단 사용법</title>
+    <!-- 나눔바른고딕 폰트 -->
+    <link href="https://cdn.jsdelivr.net/gh/sun-typeface/nanum-barun-gothic@master/nanumbahrungothic.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/sub_pages.css">
+</head>
+
+<body>
+    <!-- 상단 진행 바 -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- 페이지 네비게이션 -->
+    <div class="nav-controls">
+        <button class="nav-btn" onclick="prevSlide()">↑</button>
+        <div class="idx-info"><span id="currIdx">1</span> / <span id="totalIdx">1</span></div>
+        <button class="nav-btn" onclick="nextSlide()">↓</button>
+    </div>
+
+    <div class="slide-container" id="slideContainer">
+        <!-- 커버 슬라이드 (Cover) -->
+        <section class="slide" style="background: linear-gradient(135deg, #1e293b, #0f172a); color: white;">
+            <div class="content-box text-center">
+                <p style="color: var(--phase1-main); font-weight: 800; margin-bottom: 10px;">NotebookLM </p>
+                <h1>메타 프롬프트 초간단 사용법</h1>
+                <p style="color: #94a3b8; font-size: 1.5rem;">
+
+                    메타 프롬프트란 : AI가 사용자의 프롬프트를 충실하게 이행하기 위한 최소한의 전술<br><br>
+                    예를 들어 당신이 사수이고 부사수가 외국인이라 가정을 하면<br>
+                    부사수에게 어떤일을 잘 시키려면 어떻게 해야 하는가?<br>
+                    당신은 영어를 잘 못한다. 잘못하는 영어 실력으로 부사수에게 아무리 잘 설명을 해도 부사수는 재대로 이해를 못했을것이다<br>
+                    이런 경우 당신은 해야할일에 대해 한글로 자세하게 기록을 하고 그걸 파파고 등의 번역도구를 사용해서 부사수에게 전달을 한다라면<br>
+                    부사수는 일정수준 이상의 일을 해낼것이다<br>
+                    같은 맥락이다. 메타프롬프트는 사용자가 최소한의 노력으로 AI를 잘 활용하기 위한 방법이다<br><br>
+                    <img src="img/img9.png" style="width:100%; border-radius:10px; margin-top:10px;">
+                </p>
+            </div>
+        </section>
+
+        <!-- 본문 슬라이드 (Content) -->
+        <section class="slide">
+            <div class="content-box">
+                <h2>초간단 메타프롬프트 사용법</h2>
+
+                <img src="img/img10.png" style="width:100%; border-radius:10px; margin-top:10px;"><br>
+                <p style="margin-top:10px;">그림처럼 제미나이를 2개를 사용하면 된다.</p>
+
+                <p style="margin-top:10px;">왼쪽의 제미나이에게 당신의 질문에 대해 "구조화 해줘" 라고 요청을 한다.</p>
+
+                <p style="margin-top:10px;">출력한 내용을 복사해서 오른쪽의 제미나이에게 질문을 한다라면</p>
+
+                <p style="margin-top:10px;">그동안 당신이 받았던 답변수준보다 훨씬 수준높은 답변을 받을수 있을것이다.</p>
+
+                <div style="padding-bottom: 200px;"></div>
+
+            </div>
+        </section>
+
+
+    </div>
+
+
+
+
+    <div class="pdf-btn-container">
+        <button class="btn-pdf" onclick="generatePDF()">
+            <span>📄</span> PDF 만들기
+        </button>
+    </div>
+
+    <!-- 라이브러리 및 공통 스크립트 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="js/sub_pages.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>노트북LM 활용한 영상제작</title>
+    <link href="https://cdn.jsdelivr.net/gh/sun-typeface/nanum-barun-gothic@master/nanumbahrungothic.css"
+        rel="stylesheet">
+    <style>
+        :root {
+            --phase1-main: #3b82f6;
+            --phase1-bg: #eff6ff;
+            --phase2-main: #8b5cf6;
+            --phase2-bg: #f5f3ff;
+            --phase3-main: #10b981;
+            --phase3-bg: #ecfdf5;
+            --phase4-main: #f97316;
+            --phase4-bg: #fff7ed;
+            --phase5-main: #ec4899;
+            --phase5-bg: #fdf2f8;
+
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --bg-main: #fafbff;
+            --border: #e2e8f0;
+            --gradient-bar: linear-gradient(90deg, #3b82f6, #8b5cf6, #10b981, #f97316, #ec4899);
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'NanumBarunGothic', sans-serif;
+            color: var(--text-main);
+            background: var(--bg-main);
+            font-size: 18px;
+            line-height: 1.7;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            z-index: 1000;
+            background: #e2e8f0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--gradient-bar);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Slide Layout */
+        .slide {
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            scroll-snap-align: start;
+            padding: 80px 40px;
+            background: white;
+        }
+
+        .slide:nth-child(even) {
+            background: #fafbff;
+        }
+
+        .content-box {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 3.2rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            letter-spacing: -0.05rem;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+            color: var(--text-main);
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 20px 0 10px;
+            color: var(--phase2-main);
+        }
+
+        p {
+            margin-bottom: 14px;
+        }
+
+        /* Step Badge */
+        .step-badge {
+            display: inline-block;
+            background: var(--phase1-main);
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 800;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 14px;
+            letter-spacing: 0.05rem;
+        }
+
+        /* Lists */
+        ol,
+        ul {
+            padding-left: 24px;
+            margin-bottom: 16px;
+        }
+
+        ol li,
+        ul li {
+            margin-bottom: 10px;
+        }
+
+        /* Prompt Box */
+        .prompt-box {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-top: 18px;
+            font-size: 1rem;
+            line-height: 1.8;
+            border-left: 4px solid var(--phase1-main);
+        }
+
+        .prompt-box strong {
+            color: #7dd3fc;
+        }
+
+        /* Style Cards Grid */
+        .style-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .style-item {
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px 20px;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .style-item strong {
+            display: block;
+            color: var(--phase2-main);
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        /* Insight / Tip Box */
+        .insight-box {
+            background: var(--phase3-bg);
+            border-left: 4px solid var(--phase3-main);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-top: 18px;
+            font-size: 0.95rem;
+        }
+
+        .tip-box {
+            background: var(--phase4-bg);
+            border-left: 4px solid var(--phase4-main);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-top: 10px;
+            font-size: 0.95rem;
+        }
+
+        /* Workflow Steps */
+        .workflow {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .workflow-step {
+            flex: 1;
+            min-width: 160px;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .workflow-step .num {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--phase1-main);
+        }
+
+        .workflow-step .tool {
+            font-size: 0.9rem;
+            font-weight: 800;
+            margin: 4px 0;
+        }
+
+        .workflow-step .desc {
+            font-size: 0.82rem;
+            color: var(--text-light);
+        }
+
+        /* Resource List */
+        .resource-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .resource-list li {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .resource-list li::before {
+            content: '📋';
+            font-size: 1rem;
+        }
+
+        /* Nav Controls */
+        .nav-controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: none;
+            border: 2px solid #cbd5e1;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--phase1-main);
+            color: var(--phase1-main);
+            background: #f1f5f9;
+        }
+
+        /* PDF Button */
+        .pdf-btn-container {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2000;
+        }
+
+        .btn-pdf {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #ef4444;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-pdf:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .style-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .workflow {
+                flex-direction: column;
+            }
+
+            .slide {
+                padding: 60px 20px;
+            }
+        }
+
+        @media print {
+
+            .pdf-btn-container,
+            .nav-controls,
+            .progress-container {
+                display: none !important;
+            }
+
+            .slide {
+                min-height: auto !important;
+                page-break-after: always;
+                scroll-snap-align: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 상단 프로그레스 바 -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="slide-container" id="slideContainer">
+
+        <!-- ── 커버 ── -->
+        <section class="slide" style="background: linear-gradient(135deg, #1e293b, #0f172a); color: white;">
+            <div class="content-box">
+                <p style="color: var(--phase1-main); font-weight: 800; margin-bottom: 10px;">NotebookLM</p>
+                <h1 style="color: white;">노트북LM 활용한<br>영상제작</h1>
+                <p style="color: #94a3b8; font-size: 1.3rem; margin-top: 20px;">
+                    아이디어 하나로 당신만의 영화를 만드는 방법<br>
+                    Gemini · NotebookLM · Video AI · CapCut
+                </p>
+            </div>
+        </section>
+
+        <!-- ── 슬라이드 2: 워크플로우 ── -->
+        <section class="slide">
+            <div class="content-box">
+                <div class="step-badge">WORKFLOW</div>
+                <h2>AI 연구 파트너에서 AI 아트 디렉터로</h2>
+                <p>노트북LM은 단순히 문서를 요약하는 도구가 아닙니다.<br>
+                    '슬라이드 덱' 기능을 활용하면 당신의 이야기를 시각화하는 <strong>자동화된 스토리보드 작가</strong>가 됩니다.</p>
+                <div class="workflow">
+                    <div class="workflow-step">
+                        <div class="num">01</div>
+                        <div class="tool">Gemini</div>
+                        <div class="desc">텍스트 소스 생성<br>(Scripting)</div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="num">02</div>
+                        <div class="tool">NotebookLM</div>
+                        <div class="desc">키프레임 생성<br>(Visualization)</div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="num">03</div>
+                        <div class="tool">Veo 3 / Grok</div>
+                        <div class="desc">이미지 투 비디오<br>(Production)</div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="num">04</div>
+                        <div class="tool">CapCut</div>
+                        <div class="desc">컷 편집 및 완성<br>(Editing)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── 슬라이드 3: 1단계 ── -->
+        <section class="slide">
+            <div class="content-box">
+                <div class="step-badge">STEP 01</div>
+                <h2>프리 프로덕션: 제미나이로 시나리오 집필하기</h2>
+                <ol>
+                    <li>구글 제미나이(Google Gemini) 접속</li>
+                    <li>아래 프롬프트를 입력하여 원천 소스 생성</li>
+                    <li>생성된 텍스트를 복사하여 메모장에 저장</li>
+                </ol>
+                <div class="prompt-box">
+                    <strong>• 프롬프트 예시</strong><br><br>
+                    그리스 신화 판도라의 상자를 3,000자 내외의 SF 소설 형식으로 각색해줘.
+                    배경은 실리콘 밸리로 설정해주고, 독자는 20대 이상의 성인으로 설정해줘.
+                </div>
+            </div>
+        </section>
+
+        <!-- ── 슬라이드 4: 2단계 ── -->
+        <section class="slide">
+            <div class="content-box">
+                <div class="step-badge">STEP 02</div>
+                <h2>소스 입력: 노트북LM 세팅하기</h2>
+                <ol>
+                    <li>노트북LM 접속 후 <strong>'NotebookLM 사용해보기'</strong> 클릭</li>
+                    <li><strong>'Create new notebook'</strong> 버튼 클릭</li>
+                    <li>소스 업로드 팝업에서 <strong>'Copied Text'</strong> 선택</li>
+                    <li>저장해 둔 이야기를 붙여넣고 <strong>'Insert'</strong> 클릭</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- ── 슬라이드 5: 3단계 ── -->
+        <section class="slide">
+            <div class="content-box">
+                <div class="step-badge">STEP 03</div>
+                <h2>시각화: 슬라이드 덱 기능의 재발견</h2>
+                <p>우측 <strong>'Studio'</strong> 탭의 슬라이드 덱 기능이 핵심입니다.<br>
+                    우리는 발표 자료를 만드는 것이 아니라, 영화의 <strong>장면(Scene)</strong>을 만듭니다.</p>
+                <div class="insight-box">
+                    💡 이 작은 버튼 하나가 영화 제작의 시작입니다. 아래 스타일 프롬프트를 넣어 원하는 분위기를 연출해 보세요.
+                </div>
+            </div>
+        </section>
+
+        <!-- ── 슬라이드 6: 스타일 프롬프트 ── -->
+        <section class="slide">
+            <div class="content-box">
+                <div class="step-badge">STYLE PROMPTS</div>
+                <h2>4가지 스타일 프롬프트 예시</h2>
+                <div class="style-grid">
+                    <div class="style-item">
+                        <strong>🎬 Style A: 헐리우드 블록버스터</strong>
+                        SF 단편 영화로 만들 수 있도록 각각의 슬라이드가 키프레임이 되도록 해주고, 슬라이드에는 텍스트를 넣지 말아줘. 슬라이드 스타일은 헐리우드의 블록버스터 SF 영화 스타일로
+                        해줘.
+                    </div>
+                    <div class="style-item">
+                        <strong>🌸 Style B: 일본 SF 애니메이션</strong>
+                        애니메이션으로 만들 수 있도록 각각의 슬라이드가 키프레임이 되도록 해주고, 슬라이드에는 텍스트를 넣지 말아줘. 슬라이드 그림 스타일은 일본 SF 애니메이션으로 해줘.
+                    </div>
+                    <div class="style-item">
+                        <strong>🖼️ Style C: 타무라 시게루 일러스트</strong>
+                        슬라이드 그림 스타일은 타무라 시게루의 일러스트레이션으로 해줘. 컬러를 몇 가지로만 제한해서 타무라 시게루 특유의 인상적인 분위기를 연출해줘.
+                    </div>
+                    <div class="style-item">
+                        <strong>🖌️ Style D: 역동적인 수묵화</strong>
+                        슬라이드 그림 스타일은 수묵화로 해주고, 붓의 힘과 속도감이 느껴지는 역동적인 필치와 농담(濃淡)의 변화를 풍부하게 표현해줘.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── 슬라이드 7: 작업 팁 ── -->
+        <section class="slide">
+            <div class="content-box">
+                <div class="step-badge">PRO TIPS</div>
+                <h2>작업 효율을 높이는 프로 팁</h2>
+                <div class="tip-box">
+                    <strong>Tip 01: 병렬 처리 (Parallel Processing)</strong><br>
+                    하나의 슬라이드 덱 생성을 기다리지 마세요.<br>
+                    프롬프트를 입력해두면 백그라운드에서 동시에 여러 작업이 진행됩니다.
+                </div>
+                <div class="tip-box" style="margin-top: 14px;">
+                    <strong>Tip 02: 믹스 앤 매치 (Mix &amp; Match)</strong><br>
+                    결과물이 완벽하지 않다면, 프롬프트를 약간씩 수정하여 여러 버전을 생성하세요.<br>
+                    여러 덱에서 가장 좋은 컷들만 골라 조합하면 완성도가 높아집니다.
+                </div>
+                <h3>• 일일 생성 용량 비교</h3>
+                <ul>
+                    <li><strong>Gemini Pro:</strong> 일 10~20편 (15분 대기)</li>
+                    <li><strong>무료 사용자:</strong> 일 3편 (30분 대기)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ── 슬라이드 8: 4단계 ── -->
+        <section class="slide">
+            <div class="content-box">
+                <div class="step-badge">STEP 04</div>
+                <h2>추출: 키프레임 캡처 (Keyframe Capture)</h2>
+                <ol>
+                    <li>생성된 슬라이드 우측 상단 <strong>'점 3개(...)'</strong> 클릭</li>
+                    <li><strong>'Start slideshow'</strong> 선택하여 전체 화면 모드 진입</li>
+                    <li>페이지를 넘기며 결과물 확인</li>
+                    <li>Print Screen(스크린샷) 키로 슬라이드를 이미지 파일로 저장</li>
+                </ol>
+                <div class="insight-box">
+                    💡 이렇게 저장된 이미지들은 다음 단계인 영상 생성의 <strong>'씨앗(Seed Image)'</strong>이 됩니다.
+                </div>
+            </div>
+        </section>
+
+        <!-- ── 슬라이드 9: 5단계 ── -->
+        <section class="slide">
+            <div class="content-box">
+                <div class="step-badge">STEP 05</div>
+                <h2>영상 제작: 정지된 그림에 숨결 불어넣기</h2>
+                <p>캡처한 키프레임 이미지를 Image-to-Video AI 툴에 업로드하여 모션 클립을 생성합니다.</p>
+                <ul>
+                    <li><strong>Veo 3</strong> — 구글의 고품질 영상 생성 AI</li>
+                    <li><strong>Grok</strong> — X(트위터)의 멀티모달 AI</li>
+                    <li><strong>Runway</strong> — 전문가용 영상 AI</li>
+                    <li><strong>Luma</strong> — Dream Machine 영상 생성</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ── 슬라이드 10: 6단계 ── -->
+        <section class="slide">
+            <div class="content-box">
+                <div class="step-badge">STEP 06</div>
+                <h2>편집: 하나의 이야기로 완성</h2>
+                <ul>
+                    <li>생성된 짧은 비디오 클립들을 타임라인에 배열</li>
+                    <li>음악, 효과음, 자막을 추가하여 최종 영상 완성</li>
+                </ul>
+                <div class="insight-box" style="margin-top: 20px;">
+                    🎬 추천 편집 툴: <strong>CapCut</strong> — 무료이며 AI 자막·음악 기능 내장
+                </div>
+            </div>
+        </section>
+
+        <!-- ── 슬라이드 11: 결론 ── -->
+        <section class="slide" style="background: linear-gradient(135deg, #1e293b, #0f172a); color: white;">
+            <div class="content-box">
+                <div class="step-badge" style="background: #ec4899;">CONCLUSION</div>
+                <h2 style="color: white;">판도라의 상자는 열렸습니다</h2>
+                <p style="color: #94a3b8; margin-bottom: 30px;">
+                    제미나이가 써준 텍스트 소스 하나만 있다면,<br>누구나 자신만의 영화를 연출할 수 있습니다.
+                </p>
+                <div class="workflow">
+                    <div class="workflow-step"
+                        style="background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); color: white;">
+                        <div class="num">🖊️</div>
+                        <div class="tool" style="color: #7dd3fc;">Gemini</div>
+                        <div class="desc" style="color: #94a3b8;">Storyteller</div>
+                    </div>
+                    <div class="workflow-step"
+                        style="background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); color: white;">
+                        <div class="num">🎨</div>
+                        <div class="tool" style="color: #a78bfa;">NotebookLM</div>
+                        <div class="desc" style="color: #94a3b8;">Art Director</div>
+                    </div>
+                    <div class="workflow-step"
+                        style="background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); color: white;">
+                        <div class="num">🎬</div>
+                        <div class="tool" style="color: #6ee7b7;">Video AI</div>
+                        <div class="desc" style="color: #94a3b8;">Cinematographer</div>
+                    </div>
+                </div>
+                <p style="color: #64748b; margin-top: 40px; font-size: 0.9rem; text-align: right;">
+                    Director: [User Name] / Assistant Director: NotebookLM
+                </p>
+            </div>
+        </section>
+
+        <!-- ── 슬라이드 12: 리소스 ── -->
+        <section class="slide">
+            <div class="content-box">
+                <div class="step-badge" style="background: var(--phase3-main);">RESOURCES</div>
+                <h2>프롬프트 모음 (Copy &amp; Paste)</h2>
+                <p style="color: var(--text-light);">아래 프롬프트를 복사하여 나만의 영화를 만들어 보세요.</p>
+                <ul class="resource-list">
+                    <li>SF 각색 프롬프트 (Gemini)</li>
+                    <li>헐리우드 블록버스터 스타일 프롬프트 (NotebookLM)</li>
+                    <li>일본 SF 애니메이션 스타일 프롬프트 (NotebookLM)</li>
+                    <li>타무라 시게루 스타일 프롬프트 (NotebookLM)</li>
+                    <li>역동적인 수묵화 스타일 프롬프트 (NotebookLM)</li>
+                </ul>
+                <div style="padding-bottom: 100px;"></div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- 하단 네비게이션 -->
+    <div class="nav-controls">
+        <button class="nav-btn" onclick="prevSlide()">↑</button>
+        <span id="currIdx">1</span> / <span id="totalIdx"></span>
+        <button class="nav-btn" onclick="nextSlide()">↓</button>
+    </div>
+
+    <!-- PDF 버튼 -->
+    <div class="pdf-btn-container">
+        <button class="btn-pdf" onclick="generatePDF()">
+            <span>📄</span> PDF 만들기
+        </button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const progressBar = document.getElementById('progressBar');
+        const currIdxTxt = document.getElementById('currIdx');
+        document.getElementById('totalIdx').textContent = slides.length;
+
+        function updateStatus() {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            progressBar.style.width = scrollPercent + '%';
+            let current = 1;
+            slides.forEach((slide, idx) => {
+                if (scrollTop >= slide.offsetTop - 100) current = idx + 1;
+            });
+            currIdxTxt.textContent = current;
+        }
+
+        function nextSlide() { window.scrollBy(0, window.innerHeight); }
+        function prevSlide() { window.scrollBy(0, -window.innerHeight); }
+
+        window.addEventListener('scroll', updateStatus);
+        window.addEventListener('resize', updateStatus);
+
+        function generatePDF() {
+            const element = document.body;
+            const cleanTitle = document.title.replace(/[\[\]]/g, '');
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: 'linkdrop_' + cleanTitle + '.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, logging: false },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+    </script>
+
+</body>
+
+</html>

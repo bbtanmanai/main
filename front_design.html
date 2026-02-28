@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>바이브코더를 위한 프론트엔드 디자인 가이드</title>
+    <link rel="stylesheet" href="css/basic.css">
+    <link rel="stylesheet" href="css/linkdrop.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            min-height: 100vh;
+            overflow-y: auto !important;
+            display: block !important;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            padding: 80px 20px 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.05) 0%, transparent 70%);
+        }
+
+        .hero h1 {
+            font-size: clamp(1.6rem, 4vw, 2.8rem);
+            font-weight: 800;
+            background: linear-gradient(90deg, #4f46e5, #0ea5e9, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.3;
+            margin-bottom: 12px;
+            position: relative
+        }
+
+        .hero p {
+            color: #64748b;
+            font-size: 1rem;
+            position: relative
+        }
+
+        .hero .badge {
+            display: inline-block;
+            background: #eef2ff;
+            border: 1px solid #e0e7ff;
+            color: #4f46e5;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: .8rem;
+            margin-bottom: 20px;
+            position: relative
+        }
+
+        .main {
+            margin: 0 auto;
+            padding: 40px 20px 80px
+        }
+
+        .design-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 30px;
+        }
+
+        .design-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 24px;
+            height: 320px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 0;
+            transition: all .4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            cursor: pointer;
+            overflow: hidden;
+            text-decoration: none;
+        }
+
+        .design-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            border-color: #4f46e5;
+        }
+
+        /* 썸네일 배경 이미지 */
+        .card-thumb {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            transition: transform .6s ease;
+            z-index: 1;
+        }
+
+        .design-card:hover .card-thumb {
+            transform: scale(1.1);
+        }
+
+        /* 오버레이 그라데이션 */
+        .card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.4) 50%, transparent 100%);
+            z-index: 2;
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 3;
+            padding: 24px;
+            color: #ffffff;
+        }
+
+        .card-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .card-desc {
+            font-size: .95rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+            margin-bottom: 16px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* 다운로드 버튼 */
+        .download-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            text-decoration: none;
+            transition: all 0.2s;
+            z-index: 4;
+            font-size: 1.2rem;
+        }
+
+        .download-btn:hover {
+            background: #4f46e5;
+            border-color: #4f46e5;
+            transform: scale(1.1);
+        }
+
+        .download-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* 페이징 스타일 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 50px;
+            padding-bottom: 20px;
+        }
+
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+            color: #64748b;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #4f46e5;
+        }
+
+        .page-btn.active {
+            background: #4f46e5;
+            border-color: #4f46e5;
+            color: #ffffff;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #backToTop {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 48px;
+            height: 48px;
+            background: #ffffff;
+            color: #4f46e5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 1000;
+            border: 1px solid #e2e8f0;
+            font-size: 1.2rem;
+        }
+
+        #backToTop.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #backToTop:hover {
+            background: #4f46e5;
+            color: #ffffff;
+            transform: translateY(-5px);
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a3b8;
+            font-size: .85rem;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        /* ─── Full Width Overrides ─── */
+        .main, .hero {
+            max-width: 100% !important;
+            width: 100% !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            padding-left: 5% !important;
+            padding-right: 5% !important;
+            box-sizing: border-box !important;
+        }
+
+        @media (min-width: 1024px) {
+            .main, .hero {
+                padding-left: 10% !important;
+                padding-right: 10% !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- GNB (공통 컴포넌트) -->
+    <div id="gnb-placeholder"></div>
+    <script src="js/loader.js" defer></script>
+
+    <div style="height:52px"></div><!-- header spacer -->
+
+    <section class="hero">
+        <div class="badge">Design Warehouse</div>
+        <h1>프론트 디자인 창고</h1>
+        <p>엄선된 디자인 샘플과 리소스를 한눈에 확인하고 다운로드하세요</p>
+    </section>
+
+    <div class="main">
+        <div class="design-grid" id="designGrid">
+            <!-- 자바스크립트로 데이터 로드 -->
+        </div>
+        <div class="pagination" id="pagination">
+            <!-- 자바스크립트로 페이징 로드 -->
+        </div>
+    </div>
+
+    <button id="backToTop" title="상단으로 이동">↑</button>
+
+    <footer>바이브코더를 위한 프론트 디자인 창고 · LinkDrop</footer>
+
+    <!-- Supabase SDK 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // Supabase 설정
+        const SUPABASE_URL = "https://fmjuhbcxkfuilvvdwvix.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZtanVoYmN4a2Z1aWx2dmR3dml4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5Nzc2NDgsImV4cCI6MjA4NzU1MzY0OH0.HppuDhKiqTnXEjSWHneSYXzmPxVFL3HjcUnvOC4uMj4";
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let DESIGN_DATA = [];
+        let currentPage = 1;
+        const itemsPerPage = 12;
+
+        // DB에서 데이터 가져오기
+        async function fetchDesignData() {
+            const grid = document.getElementById('designGrid');
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 50px; color: #64748b;">데이터를 불러오는 중입니다...</div>';
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('design_assets')
+                    .select('*')
+                    .order('id', { ascending: true });
+
+                if (error) throw error;
+
+                DESIGN_DATA = data;
+                renderDesignGrid();
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 50px; color: #ef4444;">데이터를 불러오는데 실패했습니다.</div>';
+            }
+        }
+
+        // 그리드 렌더링
+        function renderDesignGrid() {
+            const grid = document.getElementById('designGrid');
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pagedData = DESIGN_DATA.slice(startIndex, endIndex);
+
+            if (pagedData.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 50px; color: #64748b;">등록된 디자인이 없습니다.</div>';
+                return;
+            }
+
+            grid.innerHTML = pagedData.map(item => `
+                <div class="design-card" onclick="window.open('${item.preview_url}', '_blank')">
+                    <div class="card-thumb" style="background-image: url('${item.thumbnail_url}')"></div>
+                    <div class="card-overlay"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">${item.title}</h3>
+                        <p class="card-desc">${item.description || ''}</p>
+                    </div>
+                    <a href="${item.download_url}" class="download-btn" title="파일 다운로드" onclick="event.stopPropagation();">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </a>
+                </div>
+            `).join('');
+            
+            renderPagination();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 페이징 렌더링
+        function renderPagination() {
+            const pagination = document.getElementById('pagination');
+            const totalPages = Math.ceil(DESIGN_DATA.length / itemsPerPage);
+            
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+
+            let html = `
+                <button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">
+                    &lt;
+                </button>
+            `;
+
+            for (let i = 1; i <= totalPages; i++) {
+                html += `
+                    <button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">
+                        ${i}
+                    </button>
+                `;
+            }
+
+            html += `
+                <button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">
+                    &gt;
+                </button>
+            `;
+
+            pagination.innerHTML = html;
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            renderDesignGrid();
+        }
+
+        // 초기 데이터 로드
+        fetchDesignData();
+
+        // 상단 이동 버튼 기능
+        const backToTop = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 400) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+        backToTop.onclick = () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+    </script>
+
+    <!-- 푸터 (공통 컴포넌트) -->
+    <div id="footer-placeholder"></div>
+</body>
+
+</html>
