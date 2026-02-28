@@ -6,73 +6,390 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="LinkDrop 뉴스요약 — 긴 뉴스를 AI가 핵심만 콕 집어 요약해드립니다.">
-    <title>뉴스요약 — LinkDrop</title>
+    <meta name="description" content="LinkDrop 뉴스 에이전트 — 원하는 키워드로 최신 뉴스를 매일 아침 받아보세요.">
+    <title>뉴스 에이전트 — LinkDrop</title>
     <link rel="stylesheet" href="css/linkdrop.css">
     <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg-soft: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #059669;
+        }
+
         .news-container {
-            max-width: 800px;
+            max-width: 1000px;
             margin: 40px auto;
-            padding: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 40px;
             background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
         }
-        .news-header {
-            text-align: center;
+
+        /* Left side: Info & Automation Visualization */
+        .news-info-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .news-info-section h3 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .news-info-section p {
+            color: var(--text-muted);
             margin-bottom: 32px;
+            font-size: 16px;
+            line-height: 1.6;
         }
-        .news-input-group {
+
+        /* Automation Flow Visualization */
+        .automation-flow {
+            background: var(--bg-soft);
+            padding: 24px;
+            border-radius: 16px;
+            margin-top: auto;
+            border: 1px dashed var(--border);
+        }
+
+        .flow-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .flow-steps {
             display: flex;
             flex-direction: column;
             gap: 12px;
+            position: relative;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1;
+        }
+
+        .step-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            flex-shrink: 0;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .step-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .step-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-left: auto;
+        }
+
+        .flow-line {
+            position: absolute;
+            left: 3.5px;
+            top: 8px;
+            bottom: 8px;
+            width: 1px;
+            background: var(--border);
+            z-index: 0;
+        }
+
+        /* Right side: Subscription Form */
+        .subscribe-card {
+            background: var(--bg-soft);
+            padding: 32px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .form-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
             margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .news-textarea {
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            padding-left: 4px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 18px;
+        }
+
+        .news-input {
             width: 100%;
-            height: 200px;
-            padding: 14px 20px;
-            border: 1.5px solid #e2e8f0;
+            padding: 14px 16px 14px 44px;
+            border: 2px solid #fff;
+            background: #fff;
             border-radius: 12px;
-            font-size: 16px;
+            font-size: 15px;
+            color: var(--text-main);
             outline: none;
-            resize: none;
-            transition: border-color 0.2s;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
-        .news-textarea:focus {
-            border-color: #6366f1;
+
+        .news-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
         }
+
         .news-btn {
-            align-self: flex-end;
-            padding: 12px 32px;
-            background: #6366f1;
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
             color: #fff;
             border: none;
             border-radius: 12px;
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 16px;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
         }
+
         .news-btn:hover {
-            background: #4f46e5;
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
         }
-        .news-result {
-            margin-top: 32px;
-            padding: 24px;
-            background: #f8fafc;
+
+        .news-btn:active {
+            transform: translateY(0);
+        }
+
+        .agent-status {
+            margin-top: 20px;
+            padding: 16px;
             border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
             display: none;
+            animation: slideUp 0.3s ease;
         }
-        .news-result-title {
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .status-success {
+            background: #ecfdf5;
+            color: #059669;
+            border: 1px solid #10b98133;
+        }
+
+        .status-error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #ef444433;
+        }
+
+        /* News Preview Section */
+        .preview-section {
+            grid-column: span 2;
+            margin-top: 24px;
+            padding: 32px;
+            background: #fff;
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            display: none;
+            animation: slideUp 0.4s ease;
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 10;
+            background: #fff;
+        }
+
+        .preview-title {
             font-size: 18px;
             font-weight: 700;
-            margin-bottom: 16px;
-            color: #1e293b;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .news-summary {
-            white-space: pre-wrap;
-            line-height: 1.6;
-            color: #475569;
+
+        .preview-badge {
+            background: #eef2ff;
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Rolling Container - Fixed height and hidden overflow */
+        .news-rolling-container {
+            height: 80px !important; 
+            overflow: hidden !important;
+            position: relative;
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            z-index: 5;
+        }
+
+        .news-list {
+            display: block; /* Flex 대신 Block으로 안정성 확보 */
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .news-item {
+            height: 80px !important;
+            display: flex !important;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            text-decoration: none;
+            border-bottom: 1px solid var(--border);
+            box-sizing: border-box;
+            background: #fff;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+
+        .news-item:hover {
+            background: #f8fafc;
+            padding-left: 28px; /* 살짝 오른쪽으로 밀리는 효과 */
+        }
+
+        .news-item-content {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .news-item-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 85%; /* 여유 공간 확보 */
+        }
+
+        .news-item-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .news-source-tag {
+            background: #03c75a; /* 네이버 브랜드 컬러 */
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 800;
+            font-size: 10px;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .news-source-tag::before {
+            content: 'N';
+            font-size: 9px;
+            background: #fff;
+            color: #03c75a;
+            width: 12px;
+            height: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 2px;
+            font-weight: 900;
+        }
+
+        .news-item i {
+            color: var(--primary);
+            font-size: 20px;
+            opacity: 0.2;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            margin-left: 15px;
+        }
+
+        .news-item:hover i {
+            opacity: 1;
+            transform: translateX(6px) scale(1.1);
+        }
+
+        @media (max-width: 800px) {
+            .news-container {
+                grid-template-columns: 1fr;
+                padding: 24px;
+                gap: 32px;
+            }
+            .preview-section {
+                grid-column: span 1;
+                padding: 24px;
+            }
+            .news-info-section h3 { font-size: 24px; }
         }
     </style>
 </head>
@@ -85,8 +402,8 @@
         <main class="main">
             <div class="blog-functional-bar">
                 <div class="bfb-left">
-                    <h2 class="bfb-title">뉴스요약</h2>
-                    <p class="bfb-sub">긴 뉴스를 AI가 핵심만 콕 집어 요약해드립니다.</p>
+                    <h2 class="bfb-title">나만의 뉴스 비서</h2>
+                    <p class="bfb-sub">관심 키워드만 입력하면 알아서 뉴스를 배달합니다.</p>
                 </div>
                 <div class="bfb-right">
                     <nav class="bfb-breadcrumb">
@@ -94,26 +411,95 @@
                         <span>›</span>
                         <a href="#">AI 활용</a>
                         <span>›</span>
-                        <span>뉴스요약</span>
+                        <span>뉴스 비서</span>
                     </nav>
                 </div>
             </div>
 
             <div class="news-container">
-                <div class="news-header">
-                    <h3>AI 뉴스 핵심 요약</h3>
-                    <p>요약하고 싶은 뉴스 전문을 붙여넣어 주세요.</p>
+                <!-- Left: Info & Automation Visualization -->
+                <div class="news-info-section">
+                    <h3>자동화가 바꾸는<br>뉴스 읽기의 즐거움</h3>
+                    <p>매번 검색할 필요 없습니다. 단 한 번의 설정으로 수만 개의 뉴스 중 당신이 찾는 정보만 골라 보내드립니다.</p>
+                    
+                    <!-- Automation Flow Visualization -->
+                    <div class="automation-flow">
+                        <div class="flow-title">⚡ 실시간 자동화 과정</div>
+                        <div class="flow-steps">
+                            <div class="flow-line"></div>
+                            <div class="flow-step">
+                                <div class="step-dot"></div>
+                                <span class="step-label">시간 체크</span>
+                                <span class="step-desc">약속된 시간 확인</span>
+                            </div>
+                            <div class="flow-step">
+                                <div class="step-dot"></div>
+                                <span class="step-label">최신 뉴스 수집</span>
+                                <span class="step-desc">4시간 이내 뉴스 찾기</span>
+                            </div>
+                            <div class="flow-step">
+                                <div class="step-dot"></div>
+                                <span class="step-label">불필요한 뉴스 제거</span>
+                                <span class="step-desc">중복된 뉴스 정리</span>
+                            </div>
+                            <div class="flow-step">
+                                <div class="step-dot"></div>
+                                <span class="step-label">메일 발송</span>
+                                <span class="step-desc">나만의 뉴스레터 배달</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="news-input-group">
-                    <textarea id="newsInput" class="news-textarea" placeholder="여기에 뉴스 내용을 붙여넣으세요..."></textarea>
-                    <button id="generateBtn" class="news-btn">요약하기</button>
+
+                <!-- Right: Form -->
+                <div class="subscribe-card">
+                    <div class="form-title">📬 뉴스레터 설정</div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">관심 키워드</label>
+                        <div class="input-wrapper">
+                            <i>🔍</i>
+                            <input type="text" id="keywordInput" class="news-input" placeholder="예: 인공지능, 테슬라">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">수신 이메일</label>
+                        <div class="input-wrapper">
+                            <i>📧</i>
+                            <input type="email" id="emailInput" class="news-input" placeholder="news@example.com" style="ime-mode: disabled;" lang="en">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">발송 희망 시간</label>
+                        <div class="input-wrapper">
+                            <i>⏰</i>
+                            <input type="time" id="timeInput" class="news-input" value="08:00">
+                        </div>
+                    </div>
+
+                    <button id="subscribeBtn" class="news-btn">
+                        구독 정보 저장하기
+                    </button>
+
+                    <div id="statusMessage" class="agent-status"></div>
                 </div>
-                <div id="loading" style="display:none; text-align:center; padding: 20px;">
-                    요약 중입니다... 잠시만 기다려주세요.
-                </div>
-                <div id="resultArea" class="news-result">
-                    <div class="news-result-title">✨ AI 뉴스 요약 결과</div>
-                    <div id="summaryContent" class="news-summary"></div>
+
+                <!-- Bottom: Preview Section (Added) -->
+                <div id="previewSection" class="preview-section">
+                    <div class="preview-header">
+                        <div class="preview-title">
+                            <span>📰 실시간 뉴스 미리보기</span>
+                            <span id="previewKeywordBadge" class="preview-badge"></span>
+                        </div>
+                        <div style="font-size: 13px; color: var(--text-muted);">방금 수집된 따끈따끈한 뉴스입니다</div>
+                    </div>
+                    <div class="news-rolling-container">
+                        <div id="newsPreviewList" class="news-list">
+                            <!-- News items will be injected here -->
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -121,24 +507,147 @@
 
     <script src="js/loader.js" defer></script>
     <script>
-        document.getElementById('generateBtn').addEventListener('click', async () => {
-            const content = document.getElementById('newsInput').value;
-            if (!content) return alert('뉴스 내용을 입력해주세요.');
+        const SUPABASE_URL = 'https://fmjuhbcxkfuilvvdwvix.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZtanVoYmN4a2Z1aWx2dmR3dml4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5Nzc2NDgsImV4cCI6MjA4NzU1MzY0OH0.HppuDhKiqTnXEjSWHneSYXzmPxVFL3HjcUnvOC4uMj4';
+        let rollingInterval;
 
-            const loading = document.getElementById('loading');
-            const resultArea = document.getElementById('resultArea');
-            const summaryContent = document.getElementById('summaryContent');
-
-            loading.style.display = 'block';
-            resultArea.style.display = 'none';
-
-            // 시뮬레이션
-            setTimeout(() => {
-                loading.style.display = 'none';
-                resultArea.style.display = 'block';
-                summaryContent.innerText = `[뉴스 핵심 요약]\n\n1. 주요 사건: ...\n2. 핵심 포인트: ...\n3. 전망: ...`;
-            }, 2000);
+        // 이메일 입력 시 영문 모드 강제 (한글 입력 방지)
+        const emailInput = document.getElementById('emailInput');
+        emailInput.addEventListener('input', (e) => {
+            const val = e.target.value;
+            // 한글 및 특수문자 중 이메일에 부적합한 것 제거 (단순 영문/숫자/기본특수문자만 허용)
+            e.target.value = val.replace(/[^a-zA-Z0-9@._-]/g, '');
         });
+
+        // 클릭(포커스) 시 영문 입력 유도
+        emailInput.addEventListener('focus', () => {
+            emailInput.setAttribute('lang', 'en');
+        });
+
+        document.getElementById('subscribeBtn').addEventListener('click', async () => {
+            const keyword = document.getElementById('keywordInput').value.trim();
+            const email = document.getElementById('emailInput').value.trim();
+            const sendTime = document.getElementById('timeInput').value;
+            
+            if (!keyword || !email || !sendTime) {
+                return showStatus('모든 정보를 입력해주세요.', 'error');
+            }
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/news_subscriptions?on_conflict=email`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Prefer': 'resolution=merge-duplicates'
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        keyword: keyword,
+                        send_time: sendTime,
+                        updated_at: new Date().toISOString()
+                    })
+                });
+
+                if (response.ok) {
+                    showStatus('✅ 성공적으로 등록되었습니다! 실시간 뉴스를 가져오는 중...', 'success');
+                    fetchPreview(keyword);
+                } else {
+                    const error = await response.json();
+                    throw new Error(error.message);
+                }
+            } catch (e) {
+                showStatus(`❌ 오류 발생: ${e.message}`, 'error');
+            }
+        });
+
+        async function fetchPreview(keyword) {
+            const previewSection = document.getElementById('previewSection');
+            const previewList = document.getElementById('newsPreviewList');
+            const badge = document.getElementById('previewKeywordBadge');
+            
+            if (rollingInterval) clearInterval(rollingInterval);
+            
+            previewSection.style.display = 'block';
+            badge.innerText = `#${keyword}`;
+            previewList.innerHTML = '<div style="text-align:center; padding:30px; color:var(--text-muted);">뉴스를 수집하고 있습니다...</div>';
+            previewList.style.transform = 'translateY(0)';
+
+            try {
+                const res = await fetch(`${SUPABASE_URL}/functions/v1/news-extractor`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    },
+                    body: JSON.stringify({ trigger: 'manual', keyword: keyword })
+                });
+
+                if (!res.ok) throw new Error('뉴스 추출 실패');
+                
+                const data = await res.json();
+                const news = data.news || [];
+
+                if (news.length === 0) {
+                    previewList.innerHTML = '<div style="text-align:center; padding:30px; color:var(--text-muted);">최근 4시간 이내 뉴스가 없습니다.</div>';
+                    return;
+                }
+
+                // 무한 롤링을 위해 첫 번째 아이템을 마지막에 복제
+                const displayNews = [...news];
+                if (news.length > 1) displayNews.push(news[0]);
+
+                previewList.innerHTML = displayNews.map(n => `
+                    <a href="${n.link}" target="_blank" class="news-item">
+                        <div class="news-item-content">
+                            <span class="news-item-title">${n.title}</span>
+                            <div class="news-item-meta">
+                                <span class="news-source-tag">${n.source}</span>
+                                <span>•</span>
+                                <span>${new Date(n.pubDate).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })} 발행</span>
+                            </div>
+                        </div>
+                        <i>➜</i>
+                    </a>
+                `).join('');
+
+                // 롤링 시작
+                if (news.length > 1) {
+                    startRolling(news.length);
+                }
+
+            } catch (e) {
+                previewList.innerHTML = `<div style="text-align:center; padding:30px; color:#dc2626;">뉴스를 가져오지 못했습니다.</div>`;
+            }
+        }
+
+        function startRolling(count) {
+            const list = document.getElementById('newsPreviewList');
+            let current = 0;
+            const height = 80;
+
+            rollingInterval = setInterval(() => {
+                current++;
+                list.style.transition = 'transform 0.5s ease-in-out';
+                list.style.transform = `translateY(-${current * height}px)`;
+
+                if (current === count) {
+                    setTimeout(() => {
+                        list.style.transition = 'none';
+                        list.style.transform = 'translateY(0)';
+                        current = 0;
+                    }, 500);
+                }
+            }, 3000); // 3초마다 롤링
+        }
+
+        function showStatus(text, type) {
+            const statusMessage = document.getElementById('statusMessage');
+            statusMessage.innerText = text;
+            statusMessage.className = `agent-status status-${type}`;
+            statusMessage.style.display = 'block';
+        }
     </script>
 
     <!-- 푸터 (공통 컴포넌트) -->

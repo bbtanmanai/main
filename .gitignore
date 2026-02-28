@@ -1,0 +1,47 @@
+# 1. Ignore EVERYTHING first
+/*
+
+# 2. Allow only essential web service folders
+!/assets/
+!/components/
+!/css/
+!/data/
+!/img/
+!/js/
+
+# 3. Allow essential root files
+!/*.html
+!/.nojekyll
+!/README.md
+!/package.json
+!/package-lock.json
+
+# 4. Strictly exclude large/unnecessary files even in allowed folders
+**/*.zip
+**/*.rar
+**/*.7z
+**/*.exe
+**/*.mov
+**/*.mp4
+**/*.wav
+**/*.mp3
+**/*.pdf
+**/node_modules/
+
+# 5. Exclude specific local-only folders (Double check)
+/0.*/
+/0. 제공자료/
+/bin/
+/apps/
+/backend/
+/cfront/
+!/agents/
+!/agents/news-agent/
+/mcp-servers/
+/.agent/
+
+# 6. Security (Never upload)
+.env
+**/.env
+token.json
+credentials.json
