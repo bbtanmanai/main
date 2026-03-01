@@ -36,9 +36,9 @@
 /backend/
 /cfront/
 !/agents/
-!/agents/news-agent/
-!/agents/email-sender/
 !/agents/news-extractor/
+!/agents/email-sender/
+!/agents/shorts-scripter/
 /mcp-servers/
 /.agent/
 
