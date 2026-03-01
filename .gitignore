@@ -38,6 +38,7 @@
 !/agents/
 !/agents/news-agent/
 !/agents/email-sender/
+!/agents/news-extractor/
 /mcp-servers/
 /.agent/
 
