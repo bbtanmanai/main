@@ -79,3 +79,13 @@ export interface RefinedData extends CollectedData {
   insight: string;
   summary: string;
 }
+
+export interface UsageLog {
+  date: string;
+  theme: string;
+  totalItems: number;
+  refinedItems: number;
+  promptTokens: number;
+  completionTokens: number;
+  estimatedCost: number;
+}

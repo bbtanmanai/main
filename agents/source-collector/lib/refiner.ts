@@ -31,7 +31,7 @@ export class Refiner {
   /**
    * LLM을 호출하여 데이터 분석 및 요약
    */
-  private async callAI(item: CollectedData): Promise<{ score: number; insight: string; summary: string }> {
+  private async callAI(item: CollectedData): Promise<{ score: number; insight: string; summary: string; usage: { prompt_tokens: number; completion_tokens: number } }> {
     const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
     if (!OPENAI_API_KEY) {
       throw new Error("OPENAI_API_KEY is not set");
@@ -65,6 +65,50 @@ export class Refiner {
     });
 
     const result = await response.json();
-    return JSON.parse(result.choices[0].message.content);
+    const parsedContent = JSON.parse(result.choices[0].message.content);
+    
+    return {
+      ...parsedContent,
+      usage: {
+        prompt_tokens: result.usage.prompt_tokens,
+        completion_tokens: result.usage.completion_tokens
+      }
+    };
+  }
+
+  /**
+   * 정제 프로세스 실행 (사용량 정보 포함)
+   */
+  async refineWithUsage(data: CollectedData[]): Promise<{ refined: RefinedData[]; usage: { prompt_tokens: number; completion_tokens: number } }> {
+    const refinedItems: RefinedData[] = [];
+    let totalPromptTokens = 0;
+    let totalCompletionTokens = 0;
+
+    for (const item of data) {
+      try {
+        const result = await this.callAI(item);
+        totalPromptTokens += result.usage.prompt_tokens;
+        totalCompletionTokens += result.usage.completion_tokens;
+
+        if (result.score >= 8) {
+          refinedItems.push({
+            ...item,
+            score: result.score,
+            insight: result.insight,
+            summary: result.summary
+          });
+        }
+      } catch (error) {
+        console.error(`Error refining data for ${item.title}:`, error);
+      }
+    }
+
+    return {
+      refined: refinedItems,
+      usage: {
+        prompt_tokens: totalPromptTokens,
+        completion_tokens: totalCompletionTokens
+      }
+    };
   }
 }
