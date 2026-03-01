@@ -37,6 +37,7 @@
 /cfront/
 !/agents/
 !/agents/news-agent/
+!/agents/email-sender/
 /mcp-servers/
 /.agent/
 
