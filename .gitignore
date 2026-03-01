@@ -27,6 +27,7 @@
 **/*.mp3
 **/*.pdf
 **/node_modules/
+/components/footer.html
 
 # 5. Exclude specific local-only folders (Double check)
 /0.*/
