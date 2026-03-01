@@ -40,6 +40,7 @@
 !/agents/news-extractor/
 !/agents/email-sender/
 !/agents/shorts-scripter/
+!/agents/source-collector/
 /mcp-servers/
 /.agent/
 
