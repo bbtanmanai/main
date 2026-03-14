@@ -61,24 +61,6 @@ function getScoreTier(score: number): { emoji: string; color: string; label: str
   return { emoji: '💤', color: 'bg-slate-600/80 text-slate-300 border-slate-500/50', label: '보통' };
 }
 
-// --- Genre Options ---
-const GENRE_OPTIONS = [
-  { value: '',           label: '전체' },
-  { value: 'general',   label: '일반' },
-  { value: '판타지',    label: '판타지' },
-  { value: '무협',      label: '무협' },
-  { value: '로맨스',    label: '로맨스' },
-  { value: '현대판타지', label: '현대판타지' },
-];
-
-const CRAWL_GENRES = [
-  { value: 'general',    label: '일반' },
-  { value: '판타지',     label: '판타지' },
-  { value: '무협',       label: '무협' },
-  { value: '로맨스',     label: '로맨스' },
-  { value: '현대판타지', label: '현대판타지' },
-];
-
 // --- Video type ---
 type VideoItem = {
   id: number;
@@ -94,7 +76,6 @@ type VideoItem = {
   status: 'active';
   collectedAt: string;
   viral_score?: number;
-  genre?: string;
 };
 
 
@@ -105,8 +86,6 @@ export default function ChannelCrawlingPage() {
   const [newChannelUrls, setNewChannelUrls] = useState<string[]>(['', '', '', '', '']);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
-  const [selectedGenre, setSelectedGenre] = useState('general');
-  const [filterGenre, setFilterGenre] = useState('');
   const [progressMsg, setProgressMsg] = useState('');
 
   // Pagination States
@@ -115,11 +94,10 @@ export default function ChannelCrawlingPage() {
   const totalPages = Math.ceil(totalVideos / itemsPerPage);
 
   // Load videos from API
-  const loadVideos = useCallback(async (page = 1, genre = '') => {
+  const loadVideos = useCallback(async (page = 1) => {
     setIsFetching(true);
     try {
       const params = new URLSearchParams({ page: String(page), limit: '20' });
-      if (genre) params.set('genre', genre);
       const res = await fetch(`/api/youtube/videos?${params.toString()}`);
       if (!res.ok) throw new Error('fetch failed');
       const json = await res.json();
@@ -134,8 +112,8 @@ export default function ChannelCrawlingPage() {
 
   // Initial load
   useEffect(() => {
-    loadVideos(1, filterGenre);
-  }, [loadVideos, filterGenre]);
+    loadVideos(1);
+  }, [loadVideos]);
 
   // Pagination Effect: current page should not exceed total pages
   useEffect(() => {
@@ -147,7 +125,7 @@ export default function ChannelCrawlingPage() {
   // Page change
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    loadVideos(page, filterGenre);
+    loadVideos(page);
   };
 
   const currentVideos = videos;
@@ -175,7 +153,7 @@ export default function ChannelCrawlingPage() {
       const res = await fetch('/api/youtube/crawl', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ urls: activeUrls, genre: selectedGenre, max_results: 30 }),
+        body: JSON.stringify({ urls: activeUrls, genre: 'general', max_results: 30 }),
       });
 
       if (!res.ok || !res.body) {
@@ -212,7 +190,7 @@ export default function ChannelCrawlingPage() {
       }
 
       setNewChannelUrls(['', '', '', '', '']);
-      await loadVideos(1, filterGenre);
+      await loadVideos(1);
       setCurrentPage(1);
       alert(`크롤링 완료! 총 ${totalSaved}개 영상이 저장되었습니다.`);
     } catch (e) {
@@ -344,22 +322,6 @@ export default function ChannelCrawlingPage() {
                   </div>
                 </div>
 
-                {/* Genre selector for crawl */}
-                <div>
-                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 ml-1">장르 선택</label>
-                  <select
-                    value={selectedGenre}
-                    onChange={(e) => setSelectedGenre(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3.5 text-sm font-bold text-white focus:ring-2 focus:ring-[#a78bfa] focus:border-transparent outline-none transition-all appearance-none"
-                  >
-                    {CRAWL_GENRES.map((g) => (
-                      <option key={g.value} value={g.value} className="bg-[#1c1c2e] text-white">
-                        {g.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
                 <button
                   onClick={handleAddChannel}
                   disabled={isLoading}
@@ -404,21 +366,6 @@ export default function ChannelCrawlingPage() {
                 TOTAL {totalVideos}
               </span>
             </h3>
-            {/* Genre filter */}
-            <div className="flex items-center gap-2">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">장르 필터</label>
-              <select
-                value={filterGenre}
-                onChange={(e) => { setFilterGenre(e.target.value); setCurrentPage(1); }}
-                className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-xs font-bold text-white focus:ring-2 focus:ring-[#a78bfa] focus:border-transparent outline-none transition-all appearance-none"
-              >
-                {GENRE_OPTIONS.map((g) => (
-                  <option key={g.value || '__all__'} value={g.value} className="bg-[#1c1c2e] text-white">
-                    {g.label}
-                  </option>
-                ))}
-              </select>
-            </div>
           </div>
 
           {/* Loading skeleton */}
