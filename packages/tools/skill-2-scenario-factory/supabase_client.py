@@ -14,6 +14,16 @@ from supabase import create_client, Client
 
 # ── DDL (최초 1회 Supabase 콘솔에서 실행) ─────────────────────────────────────
 SCHEMA_SQL = """
+-- 성공 방정식 (템플릿별 바이럴 패턴 분석 결과)
+CREATE TABLE IF NOT EXISTS success_formulas (
+  id          UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  scope       TEXT NOT NULL UNIQUE,   -- 'common' 또는 template_id (예: 'health-senior')
+  formula     JSONB NOT NULL,
+  sample_size INT NOT NULL DEFAULT 0,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 -- 토픽 풀 (크롤 데이터에서 추출한 시나리오 소재)
 CREATE TABLE IF NOT EXISTS topic_pool (
   id           UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -169,6 +179,52 @@ def pop_random_scenario(template_id: str, style: Optional[str] = None) -> Option
         "used_at": datetime.now(timezone.utc).isoformat()
     }).eq("id", chosen["id"]).execute()
     return chosen
+
+
+# ── success_formulas ──────────────────────────────────────────────────────────
+
+def upsert_success_formula(scope: str, formula: dict, sample_size: int = 0) -> None:
+    """
+    성공 방정식 저장 (scope 기준 upsert).
+    scope: 'common' 또는 template_id (예: 'health-senior')
+    """
+    from datetime import datetime, timezone
+    client = get_client()
+    client.table("success_formulas").upsert({
+        "scope":       scope,
+        "formula":     formula,
+        "sample_size": sample_size,
+        "updated_at":  datetime.now(timezone.utc).isoformat(),
+    }, on_conflict="scope").execute()
+
+
+def get_success_formula(scope: str) -> Optional[dict]:
+    """
+    성공 방정식 조회.
+    scope: 'common' 또는 template_id
+    반환: formula dict 또는 None
+    """
+    client = get_client()
+    res = (
+        client.table("success_formulas")
+        .select("formula, sample_size, updated_at")
+        .eq("scope", scope)
+        .maybe_single()
+        .execute()
+    )
+    if res is None or not res.data:
+        return None
+    return res.data.get("formula")
+
+
+def get_all_formulas() -> dict[str, dict]:
+    """
+    저장된 전체 성공 방정식 반환.
+    반환: {scope: formula_dict, ...}
+    """
+    client = get_client()
+    res = client.table("success_formulas").select("scope, formula").execute()
+    return {row["scope"]: row["formula"] for row in (res.data or [])}
 
 
 # ── crawl_videos (원천 데이터 읽기) ─────────────────────────────────────────────

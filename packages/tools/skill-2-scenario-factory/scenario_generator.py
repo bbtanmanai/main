@@ -93,18 +93,67 @@ STYLE_DIRECTIVES: dict[str, str] = {
 }
 
 
-def _build_prompt(topic: str, style: str, nlm_context: str = "") -> str:
-    """prompt_config.json + 스타일 지시문 + 토픽을 합쳐 최종 프롬프트 조립."""
+def _build_formula_block(
+    common_formula: Optional[dict],
+    template_formula: Optional[dict],
+) -> str:
+    """공통 + 템플릿별 성공 방정식을 프롬프트 블록으로 변환."""
+    if not common_formula and not template_formula:
+        return ""
+
+    lines = ["\n━━━ 성공 방정식 (반드시 적용) ━━━"]
+
+    if common_formula:
+        lines.append("【공통 성공 패턴】")
+        if common_formula.get("universal_hooks"):
+            lines.append(f"• 검증된 훅 패턴: {' / '.join(common_formula['universal_hooks'][:3])}")
+        if common_formula.get("scene_flow"):
+            lines.append(f"• 씬 흐름: {' → '.join(common_formula['scene_flow'])}")
+        if common_formula.get("key_success_factors"):
+            lines.append(f"• 핵심 성공 요인: {', '.join(common_formula['key_success_factors'][:3])}")
+        if common_formula.get("emotional_triggers"):
+            lines.append(f"• 감정 트리거: {', '.join(common_formula['emotional_triggers'][:3])}")
+
+    if template_formula:
+        lines.append("\n【이 카테고리 전용 방정식】")
+        if template_formula.get("top_hook_templates"):
+            lines.append(f"• 훅 템플릿: {template_formula['top_hook_templates'][0]}")
+        if template_formula.get("scene_structure"):
+            lines.append(f"• 씬 구조: {template_formula['scene_structure']}")
+        if template_formula.get("winning_scene_flow"):
+            lines.append(f"• 씬 흐름: {' → '.join(template_formula['winning_scene_flow'][:5])}")
+        if template_formula.get("title_keywords_viral"):
+            lines.append(f"• 바이럴 키워드: {', '.join(template_formula['title_keywords_viral'][:8])}")
+        if template_formula.get("target_emotion"):
+            lines.append(f"• 타겟 감정: {template_formula['target_emotion']}")
+        if template_formula.get("authority_signals"):
+            lines.append(f"• 권위 신호: {', '.join(template_formula['authority_signals'][:3])}")
+        if template_formula.get("forbidden_patterns"):
+            lines.append(f"• 금지 패턴: {', '.join(template_formula['forbidden_patterns'])}")
+        if template_formula.get("optimal_cta"):
+            lines.append(f"• 최적 CTA: {template_formula['optimal_cta']}")
+
+    return "\n".join(lines)
+
+
+def _build_prompt(
+    topic: str,
+    style: str,
+    nlm_context: str = "",
+    common_formula: Optional[dict] = None,
+    template_formula: Optional[dict] = None,
+) -> str:
+    """prompt_config.json + 스타일 지시문 + 성공 방정식 + 토픽을 합쳐 최종 프롬프트 조립."""
     cfg     = PROMPT_CONFIG
     base    = cfg["base"]
     user    = cfg["user_overrides"]
     directive = STYLE_DIRECTIVES.get(style, STYLE_DIRECTIVES["ranking"])
 
-    scene_count  = MAX_SCENE_COUNT                          # 20
-    total_chars  = int(MAX_SCENE_COUNT * TARGET_SCENE_CHARS)  # 900자
+    scene_count  = MAX_SCENE_COUNT
+    total_chars  = int(MAX_SCENE_COUNT * TARGET_SCENE_CHARS)
 
-    good_ex = "\n".join(f"  ✅ {e}" for e in user["examples"]["good"])
-    bad_ex  = "\n".join(f"  ❌ {e}" for e in user["examples"]["bad"])
+    good_ex  = "\n".join(f"  ✅ {e}" for e in user["examples"]["good"])
+    bad_ex   = "\n".join(f"  ❌ {e}" for e in user["examples"]["bad"])
     required = "\n".join(f"  • {r}" for r in user["content_rules"]["required_elements"])
     banned_w = ", ".join(user["content_rules"]["banned_words"])
 
@@ -112,11 +161,14 @@ def _build_prompt(topic: str, style: str, nlm_context: str = "") -> str:
     if nlm_context:
         context_block = f"\n━━━ 참고 지식 (반드시 활용) ━━━\n{nlm_context}\n"
 
+    formula_block = _build_formula_block(common_formula, template_formula)
+
     custom = user.get("custom_instruction", "").strip()
     custom_block = f"\n━━━ 추가 지시 ━━━\n{custom}" if custom else ""
 
     return f"""주제: {topic}
-{context_block}
+{context_block}{formula_block}
+
 ━━━ 구성 방식 ━━━
 {directive}
 
@@ -157,10 +209,17 @@ def _estimate_sec(script: str) -> float:
     return round(total_chars / TTS_CHARS_PER_SEC, 1)
 
 
-def generate_one(topic: str, style: str, template_id: str,
-                 viral_seed: float = 0.0, nlm_context: str = "") -> Optional[dict]:
+def generate_one(
+    topic: str,
+    style: str,
+    template_id: str,
+    viral_seed: float = 0.0,
+    nlm_context: str = "",
+    common_formula: Optional[dict] = None,
+    template_formula: Optional[dict] = None,
+) -> Optional[dict]:
     """시나리오 1개 생성. 실패 시 None 반환."""
-    prompt = _build_prompt(topic, style, nlm_context)
+    prompt = _build_prompt(topic, style, nlm_context, common_formula, template_formula)
     cfg    = PROMPT_CONFIG["base"]
 
     try:
@@ -239,28 +298,34 @@ def batch_generate(
     count: int,
     workers: int = 20,
     delay_sec: float = 0.1,
+    common_formula: Optional[dict] = None,
+    template_formula: Optional[dict] = None,
 ) -> list[dict]:
     """
     topics 리스트에서 count개 시나리오를 병렬 생성.
     topics가 부족하면 반복 사용.
+    common_formula + template_formula가 주입되면 성공 방정식 기반 생성.
     """
-    # 토픽 순환 (부족 시)
     topic_cycle: list[dict] = []
     while len(topic_cycle) < count:
         topic_cycle.extend(topics)
     topic_cycle = topic_cycle[:count]
 
+    formula_tag = " [방정식 적용]" if (common_formula or template_formula) else ""
+    print(f"  [{template_id}/{style}] {count}개 병렬 생성 시작 (workers={workers}){formula_tag}")
+
     results: list[dict] = []
     failed = 0
-
-    print(f"  [{template_id}/{style}] {count}개 병렬 생성 시작 (workers={workers})")
 
     with ThreadPoolExecutor(max_workers=workers) as pool:
         futures = {
             pool.submit(
                 generate_one,
                 t["topic"], style, template_id,
-                t.get("viral_score", 0.0)
+                t.get("viral_score", 0.0),
+                "",
+                common_formula,
+                template_formula,
             ): i
             for i, t in enumerate(topic_cycle)
         }
@@ -273,6 +338,5 @@ def batch_generate(
             if delay_sec > 0:
                 time.sleep(delay_sec)
 
-    success = len(results)
-    print(f"  [{template_id}/{style}] 완료: {success}개 성공, {failed}개 실패")
+    print(f"  [{template_id}/{style}] 완료: {len(results)}개 성공, {failed}개 실패")
     return results

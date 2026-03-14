@@ -32,6 +32,14 @@
     "max_total_scenarios": 10000
   },
 
+  "formula": {
+    "_comment": "성공 방정식 수집 기준 (--mode formula)",
+    "min_viral_score": 30.0,
+    "fallback_min_score": 15.0,
+    "max_per_keyword": 50,
+    "top_n_per_template": 100
+  },
+
   "topic_source": {
     "min_viral_score": 7.0,
     "max_topic_age_days": 90,
