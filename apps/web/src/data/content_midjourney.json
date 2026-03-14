@@ -1,0 +1,31 @@
+{
+  "versions": [
+    { "id": "v6.1", "label": "V 6.1 (Latest)", "val": "--v 6.1", "desc": "가장 최신의 고품질 모델" },
+    { "id": "v6.0", "label": "V 6.0", "val": "--v 6.0", "desc": "안정적인 고품질 모델" },
+    { "id": "v5.2", "label": "V 5.2", "val": "--v 5.2", "desc": "예술적 감성이 풍부한 이전 버전" },
+    { "id": "niji6", "label": "Niji 6", "val": "--niji 6", "desc": "애니메이션/일러스트 특화 모델" }
+  ],
+  "aspect_ratios": [
+    { "id": "ar11", "label": "1:1 (정사각형)", "val": "--ar 1:1", "desc": "인스타그램 게시물용" },
+    { "id": "ar169", "label": "16:9 (와이드)", "val": "--ar 16:9", "desc": "유튜브/영화 스크린용" },
+    { "id": "ar916", "label": "9:16 (세로)", "val": "--ar 9:16", "desc": "틱톡/쇼츠/릴스용" },
+    { "id": "ar43", "label": "4:3 (표준)", "val": "--ar 4:3", "desc": "전통적인 사진 규격" },
+    { "id": "ar32", "label": "3:2 (DSLR)", "val": "--ar 3:2", "desc": "DSLR 카메라 표준 규격" }
+  ],
+  "stylize": [
+    { "id": "s0", "label": "Low (낮음)", "val": "--s 50", "desc": "프롬프트에 매우 충실함" },
+    { "id": "s250", "label": "Default (기본)", "val": "--s 250", "desc": "표준적인 예술성" },
+    { "id": "s750", "label": "High (높음)", "val": "--s 750", "desc": "미드저니 특유의 화풍 강화" },
+    { "id": "s1000", "label": "Max (최대)", "val": "--s 1000", "desc": "극도로 예술적인 재해석" }
+  ],
+  "chaos": [
+    { "id": "c0", "label": "안정적", "val": "--c 0", "desc": "변화가 적고 일관됨" },
+    { "id": "c20", "label": "다양함", "val": "--c 20", "desc": "4개 결과물의 변동폭 증가" },
+    { "id": "c50", "label": "파격적", "val": "--c 50", "desc": "매우 창의적이고 예상치 못한 결과" }
+  ],
+  "quality": [
+    { "id": "q_master", "label": "걸작 (Masterpiece)", "val": "Masterpiece, best quality, ultra-high resolution, extremely detailed, professional photography", "desc": "최고 품질의 걸작 수준으로 디테일 강화" },
+    { "id": "q_8k", "label": "8K 초고해상도", "val": "8k resolution, UHD, sharp focus, highly detailed textures, realistic skin", "desc": "8K 초고해상도 및 선명한 질감 표현" },
+    { "id": "q_cinematic", "label": "시네마틱", "val": "Cinematic lighting, volumetric fog, anamorphic lens flares, epic scale", "desc": "영화 같은 웅장한 연출" }
+  ]
+}

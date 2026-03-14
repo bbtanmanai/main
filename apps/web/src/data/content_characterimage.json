@@ -1,0 +1,38 @@
+{
+  "styles": [
+    { "id": "all", "label": "전체" },
+    { "id": "people", "label": "사람" },
+    { "id": "clay", "label": "클레이" },
+    { "id": "animal", "label": "동물" },
+    { "id": "fruit", "label": "과일" },
+    { "id": "vegetable", "label": "채소" },
+    { "id": "object", "label": "물체" },
+    { "id": "minimal", "label": "미니멀" },
+    { "id": "shinkai", "label": "신카이" },
+    { "id": "cutout", "label": "컷아웃라인" },
+    { "id": "chaotic-ink", "label": "Chaotic Ink" },
+    { "id": "anime", "label": "Anime" },
+    { "id": "digital-art", "label": "디지털아트" },
+    { "id": "vector", "label": "벡터" },
+    { "id": "pixar", "label": "픽사" },
+    { "id": "virtual-3d", "label": "버츄얼3D" },
+    { "id": "noir", "label": "누와르" },
+    { "id": "graphic", "label": "그래픽" }
+  ],
+  "characters": [
+    { "id": "c1", "name": "해설가 양씨", "style": "animal", "tag": "동물", "image": "/img/content/character/c1/c1.png", "faceGrid": "/img/content/character/c1/c1_face_Grid.png", "bodyGrid": "/img/content/character/c1/c1_body_Grid.png", "zipFile": "/img/content/character/c1/c1.zip" },
+    { "id": "c2", "name": "바나나", "style": "fruit", "tag": "과일", "image": "/img/content/character/c2/c2.png", "faceGrid": "/img/content/character/c2/c2_face_Grid.png", "bodyGrid": "/img/content/character/c2/c2_body_Grid.png", "zipFile": "/img/content/character/c2/c2.zip" },
+    { "id": "c3", "name": "수달아저씨", "style": "animal", "tag": "동물", "image": "/img/content/character/c3/c3.png", "faceGrid": "/img/content/character/c3/c3_face_Grid.png", "bodyGrid": "/img/content/character/c3/c3_body_Grid.png", "zipFile": "/img/content/character/c3/c3.zip" },
+    { "id": "c4", "name": "너구리형", "style": "animal", "tag": "동물", "image": "/img/content/character/c4/c4.png", "faceGrid": "/img/content/character/c4/c4_face_Grid.png", "bodyGrid": "/img/content/character/c4/c4_body_Grid.png", "zipFile": "/img/content/character/c4/c4.zip" },
+    { "id": "c5", "name": "70대 한국할머니", "style": "cutout", "tag": "컷아웃라인", "image": "/img/content/character/c5/c5.png", "faceGrid": "/img/content/character/c5/c5_face_Grid.png", "bodyGrid": "/img/content/character/c5/c5_body_Grid.png", "zipFile": "/img/content/character/c5/c5.zip" },
+    { "id": "c6", "name": "70대 한국할아버지", "style": "cutout", "tag": "컷아웃라인", "image": "/img/content/character/c6/c6.png", "faceGrid": "/img/content/character/c6/c6_face_Grid.png", "bodyGrid": "/img/content/character/c6/c6_body_Grid.png", "zipFile": "/img/content/character/c6/c6.zip" },
+    { "id": "c7", "name": "숟가락군", "style": "object", "tag": "물체", "image": "/img/content/character/c7/c7.png", "faceGrid": "/img/content/character/c7/c7_face_Grid.png", "bodyGrid": "/img/content/character/c7/c7_body_Grid.png", "zipFile": "/img/content/character/c7/c7.zip" },
+    { "id": "c8", "name": "젓가락녀", "style": "object", "tag": "물체", "image": "/img/content/character/c8/c8.png", "faceGrid": "/img/content/character/c8/c8_face_Grid.png", "bodyGrid": "/img/content/character/c8/c8_body_Grid.png", "zipFile": "/img/content/character/c8/c8.zip" },
+    { "id": "c9", "name": "수달아줌마", "style": "animal", "tag": "동물", "image": "/img/content/character/c9/c9.png", "faceGrid": "/img/content/character/c9/c9_face_Grid.png", "bodyGrid": "/img/content/character/c9/c9_body_Grid.png", "zipFile": "/img/content/character/c9/c9.zip" },
+    { "id": "c10", "name": "플랫 요원 P", "style": "vector", "tag": "벡터/미니멀", "image": "/img/content/character/c10/c10.png", "faceGrid": "/img/content/character/c10/c10_face_Grid.png", "bodyGrid": "/img/content/character/c10/c10_body_Grid.png", "zipFile": "/img/content/character/c10/c10.zip" },
+    { "id": "c11", "name": "우주 탐험가 버즈", "style": "pixar", "tag": "픽사/가족", "image": "/img/content/character/c11/c11.png", "faceGrid": "/img/content/character/c11/c11_face_Grid.png", "bodyGrid": "/img/content/character/c11/c11_body_Grid.png", "zipFile": "/img/content/character/c11/c11.zip" },
+    { "id": "c12", "name": "메타 에이전트 X", "style": "virtual-3d", "tag": "3D/메타버스", "image": "/img/content/character/c12/c12.png", "faceGrid": "/img/content/character/c12/c12_face_Grid.png", "bodyGrid": "/img/content/character/c12/c12_body_Grid.png", "zipFile": "/img/content/character/c12/c12.zip" },
+    { "id": "c13", "name": "형사 마르코", "style": "noir", "tag": "누와르/하드보일드", "image": "/img/content/character/c13/c13.png", "faceGrid": "/img/content/character/c13/c13_face_Grid.png", "bodyGrid": "/img/content/character/c13/c13_body_Grid.png", "zipFile": "/img/content/character/c13/c13.zip" },
+    { "id": "c14", "name": "패턴 아티스트 킴", "style": "graphic", "tag": "그래픽/팝아트", "image": "/img/content/character/c14/c14.png", "faceGrid": "/img/content/character/c14/c14_face_Grid.png", "bodyGrid": "/img/content/character/c14/c14_body_Grid.png", "zipFile": "/img/content/character/c14/c14.zip" }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "skill-3-drive-syncer",
+  "name": "04_출고_동기화_에이전트",
+  "category": 3,
+  "label_number": "06",
+  "description": "최종 결과물을 구글 드라이브 및 외부 시스템으로 동기화하여 제작된 콘텐츠가 실제 서비스에 즉시 배포될 수 있도록 지원합니다.",
+  "icon": "faCloudUpload",
+  "entry_point": "logic.py",
+  "version": "1.0.0",
+  "author": "LinkDropV2"
+}

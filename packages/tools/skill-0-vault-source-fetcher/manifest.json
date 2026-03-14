@@ -1,0 +1,11 @@
+{
+  "id": "skill-0-vault-source-fetcher",
+  "name": "01_콘텐츠_소재탐사_에이전트",
+  "category": 0,
+  "label_number": "01",
+  "description": "5대 핵심 Vault(건강, 수익, 기술, 자기계발, 마케팅) 테마를 기반으로 RSS와 웹 본문을 분석하여 고순도 원재료를 지능적으로 수집합니다.",
+  "icon": "faRss",
+  "entry_point": "logic.py",
+  "version": "1.0.0",
+  "author": "LinkDropV2"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "skill-2-video-longform2",
+  "name": "05b_롱폼_대본_설계_에이전트",
+  "category": 2,
+  "label_number": "05b",
+  "description": "Gold 지식 소스를 입력받아 GPT-4o 기반으로 30초~3분 분량의 유튜브 롱폼 대본을 장면 단위로 설계합니다.",
+  "icon": "faFilm",
+  "entry_point": "logic.py",
+  "version": "1.0.0",
+  "author": "LinkDropV2"
+}

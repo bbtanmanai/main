@@ -1,0 +1,11 @@
+{
+  "id": "skill-0-web-saver",
+  "name": "01c_웹페이지_저장_에이전트",
+  "category": 0,
+  "label_number": "01c",
+  "description": "Playwright를 활용하여 웹페이지의 텍스트, 이미지, 영상 소스를 렌더링 후 번들로 저장합니다.",
+  "icon": "faGlobe",
+  "entry_point": "logic.py",
+  "version": "1.0.0",
+  "author": "LinkDropV2"
+}

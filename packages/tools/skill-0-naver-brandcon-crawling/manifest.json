@@ -1,0 +1,11 @@
+{
+  "id": "skill-0-naver-brandcon-crawling",
+  "name": "01_네이버_브랜드커넥트_크롤링",
+  "category": 0,
+  "label_number": "01",
+  "description": "네이버 브랜드 커넥트 및 스마트스토어 상세 페이지에서 고화질 에셋과 상품 데이터를 독립적으로 크롤링합니다.",
+  "icon": "faSearch",
+  "entry_point": "logic.py",
+  "version": "1.1.0",
+  "author": "LinkDropV2"
+}

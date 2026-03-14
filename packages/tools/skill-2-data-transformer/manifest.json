@@ -1,0 +1,11 @@
+{
+  "id": "skill-2-data-transformer",
+  "name": "03_지식_조립_에이전트",
+  "category": 2,
+  "label_number": "04",
+  "description": "정제된 지식을 Rule 104 표준 기반의 영상 대본과 연출 지시서로 변환하여 조립 준비가 완료된 패키지를 생성합니다.",
+  "icon": "faExchangeAlt",
+  "entry_point": "logic.py",
+  "version": "1.0.0",
+  "author": "LinkDropV2"
+}

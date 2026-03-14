@@ -1,0 +1,11 @@
+{
+  "id": "skill-0-youtube-fetcher",
+  "name": "01d_유튜브_소스_수집_에이전트",
+  "category": 0,
+  "label_number": "01d",
+  "description": "유튜브 URL을 입력받아 자막(한국어/영어)과 메타데이터를 추출하여 소스 패키지로 저장합니다.",
+  "icon": "faYoutube",
+  "entry_point": "logic.py",
+  "version": "1.0.0",
+  "author": "LinkDropV2"
+}

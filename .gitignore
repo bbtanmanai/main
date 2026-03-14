@@ -1,0 +1,61 @@
+# LinkDropV2 Ignore Patterns
+
+# Temporary and Design Storage (Private Workspaces)
+99. temporary_storage/
+design_inbox/
+admin-static/
+
+# Local Documentation (Private)
+docs/
+0. docs/
+0. rules/
+
+# Environment and Secrets
+.env
+.env.local
+.venv/
+node_modules/
+venv/
+env/
+ENV/
+python_venv/
+pycache/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Google Cloud / OAuth / Firebase Credentials
+**/*token.json
+**/*credentials.json
+**/*service_account.json
+**/*service-account.json
+**/keyfile.json
+**/secret.json
+**/secrets.json
+
+# Next.js / React
+.next/
+out/
+build/
+dist/
+.vercel
+.turbo
+
+# OS and IDE files
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Data and Artifacts
+packages/data/
+**/pipeline_state.json
+
+# System / Log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*

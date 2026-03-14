@@ -1,0 +1,74 @@
+{
+  "_comment": "생산량·일정·인프라 제어판 — 운영자(개발자)가 관리",
+
+  "templates": [
+    "health-senior",
+    "stock-news",
+    "tech-trend",
+    "wisdom-quotes",
+    "lifestyle",
+    "shorts-viral",
+    "insta-marketing",
+    "blog-seo",
+    "ai-video-ads",
+    "ai-business",
+    "digital-product",
+    "workflow"
+  ],
+
+  "styles": [
+    "ranking",
+    "storytelling",
+    "qa",
+    "comparison",
+    "expert",
+    "before_after"
+  ],
+
+  "targets": {
+    "initial_count_per_template": 200,
+    "min_stock_threshold": 30,
+    "replenish_count": 50,
+    "max_total_scenarios": 10000
+  },
+
+  "topic_source": {
+    "min_viral_score": 7.0,
+    "max_topic_age_days": 90,
+    "max_topics_per_run": 500,
+    "prefer_trending": true
+  },
+
+  "generation": {
+    "parallel_workers": 20,
+    "retry_max": 3,
+    "temperature": 0.75,
+    "max_output_tokens": 6144,
+    "request_delay_sec": 0.1
+  },
+
+  "quality_filter": {
+    "min_scene_count": 20,
+    "max_scene_count": 35,
+    "min_script_chars": 400,
+    "reject_if_contains": ["광고", "협찬", "스폰서", "PPL"]
+  },
+
+  "schedule": {
+    "stock_check_interval_minutes": 60,
+    "full_refresh_days": 90,
+    "topic_refresh_days": 7
+  },
+
+  "google_drive": {
+    "raw_data_folder_id": "",
+    "backup_enabled": true,
+    "backup_folder_name": "LinkDrop-ScenarioFactory"
+  },
+
+  "supabase": {
+    "scenarios_table": "scenarios",
+    "topic_pool_table": "topic_pool",
+    "crawl_data_table": "crawl_videos"
+  }
+}

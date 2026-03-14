@@ -1,0 +1,24 @@
+{
+  "id": "6df4472a-5bf5-4e78-9ca6-21de530d77cf",
+  "title": "AI as tradecraft: How threat actors operationalize AI - Microsoft",
+  "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxQWU1ETkN4ZGhmQWdfYk1GWnUtaFp1LURnWjBfUmN6aVNNMFJPSnFOREpXQURYTk96SmVJTXpQTFVEcTUyV3NiWVlQaXZFM1FDTUszYXNXRzRyOWJ3UU1GYjhJcXp3MW5uWUVpckVYUmZELU9scmM2ZE5WeXN4ZTZVVzVVLUZjLUVZajFscklMQW51Q2VmQU5NRXQwN0pQRGNSSlZ3M2FLVW11d0wyeTBN?oc=5",
+  "pubDate": "Fri, 06 Mar 2026 17:00:00 GMT",
+  "theme": "AI_TECH",
+  "content": "<a href=\"https://news.google.com/rss/articles/CBMirwFBVV95cUxQWU1ETkN4ZGhmQWdfYk1GWnUtaFp1LURnWjBfUmN6aVNNMFJPSnFOREpXQURYTk96SmVJTXpQTFVEcTUyV3NiWVlQaXZFM1FDTUszYXNXRzRyOWJ3UU1GYjhJcXp3MW5uWUVpckVYUmZELU9scmM2ZE5WeXN4ZTZVVzVVLUZjLUVZajFscklMQW51Q2VmQU5NRXQwN0pQRGNSSlZ3M2FLVW11d0wyeTBN?oc=5\" target=\"_blank\">AI as tradecraft: How threat actors operationalize AI</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Microsoft</font>",
+  "source_type": "RSS",
+  "collected_at": "2026-03-07T04:34:03.704989",
+  "analysis": {
+    "score": 7.0,
+    "summary": "이 자료는 AI를 활용하는 위협 행위자들의 방법론을 다루며, 사이버 보안 전문가들에게 귀중한 인사이트를 제공합니다. 해당 내용은 흔치 않은 주제로, AI의 수익화와도 맞물려 가능합니다. 그러나 시니어 부업과의 직접적 연관성은 제한적일 수 있습니다.",
+    "is_gold": true,
+    "keywords": [
+      "AI",
+      "사이버 보안",
+      "위협 행위자",
+      "수익화"
+    ],
+    "reason": "이 자료는 AI의 악용 사례라는 독특한 주제로 희소성이 높고, 관련 분야 전문가에게 중요한 정보를 제공하여 유익성이 높습니다. AI 수익화 관점에서도 어느 정도 적합성은 있지만, 시니어 부업과의 직접적 연결성은 낮아 전체 평균 점수가 경계치에 위치합니다."
+  },
+  "refined_at": "2026-03-07T05:26:32.709311",
+  "status": "GOLD"
+}

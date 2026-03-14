@@ -1,0 +1,5 @@
+# 오팔 접속 스킬 의존성
+# 설치: pip install -r requirements.txt
+
+httpx>=0.27.0          # HTTP 요청 (세션 검증, 렌더 트리거)
+websocket-client>=1.8  # Chrome DevTools Protocol (CDP) WebSocket 연결

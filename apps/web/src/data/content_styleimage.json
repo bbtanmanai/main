@@ -1,0 +1,439 @@
+{
+  "styles": [
+    {
+      "id": "style9",
+      "label": "시네마틱",
+      "img": "/img/content/styleimage/style/style9.png",
+      "val": "Ultra-realistic cinematic 8K portrait with 100% exact facial feature preservation (no beautification, stylization, or alteration), captured with a wide-angle lens from a low perspective creating dramatic scale, featuring motion blur in clouds, debris, and air turbulence enhancing speed and intensity, natural and cinematic lighting with strong contrast, and a surreal yet realistic atmosphere emphasizing depth, movement, and cinematic tension.",
+      "recommend": "volumetric",
+      "desc": "영화의 한 장면 같은 웅장한 스케일과 역동적인 연출"
+    },
+    {
+      "id": "style10",
+      "label": "클레이 애니",
+      "img": "/img/content/styleimage/style/style10.png",
+      "val": "Handcrafted claymation-style character with soft textures and visible fingerprints, featuring whimsical proportions, a stop-motion film aesthetic, and a cozy evening mood.",
+      "excludes": { "lighting": ["neon_night"] },
+      "recommend": "soft_window",
+      "desc": "지문 자국이 살아있는 따뜻하고 귀여운 클레이 인형 느낌"
+    },
+    {
+      "id": "style8",
+      "label": "지브리+실사",
+      "img": "/img/content/styleimage/style/style8.png",
+      "val": "A heartwarming Studio Ghibli whimsical art style, lush hand-painted garden background with soft watercolor brushstrokes, expressive cartoon faces ::1.5   Hyper-realistic cinematic textures, dramatic cinematic backlighting with soft glowing rim lights ::0.6   Vibrant iridescent prism light leaks and rainbow refractions, magical realism ::0.4",
+      "recommend": "soft_window",
+      "desc": "지브리의 감성과 실사 지향의 디테일이 하이브리드된 스타일"
+    },
+    {
+      "id": "style2",
+      "label": "스티커 컷아웃",
+      "img": "/img/content/styleimage/style/style2.png",
+      "val": "The subject is rendered with a bold, clean white sticker-cut outline and a subtle drop shadow for a 3D lifted effect, featuring a smooth, vector-like finish that sharply contrasts with a matte, textured background and incorporates die-cut aesthetics for clean isolation.",
+      "excludes": { "lighting": ["low_key", "rembrandt"] },
+      "recommend": "backlit",
+      "desc": "하얀 테두리가 둘러진 깔끔한 스티커/캐릭터 굿즈 스타일"
+    },
+    {
+      "id": "style11",
+      "label": "팝아트",
+      "img": "/img/content/styleimage/style/style11.png",
+      "val": "High-end professional pop-art vector illustration featuring clean vector shapes with accurate facial features, soft cartoon detailing, minimal halftone shading, comic bursts, dotted patterns, motion lines, energy effects, spark highlights, bold outlines, crisp edges, vibrant balanced colors, and a fully color-adaptive pop-art background",
+      "recommend": "neon_night",
+      "desc": "강렬한 색감과 망점 무늬가 특징인 현대적 팝아트 일러스트"
+    },
+    {
+      "id": "style12",
+      "label": "카오틱 잉크",
+      "img": "/img/content/styleimage/style/style12.png",
+      "val": "A dramatic, high-impact portrait rendered in an expressive ink sketch and mixed-media illustration style, featuring heavy texture strokes, sharp angular linework, and vibrant ink creating a raw, rebellious visual energy. The illustration is bold and experimental, blending fine pen detailing, aggressive brush marks, splashes, and controlled drips. The background is a pale, aged parchment tone with grain, faded paper texture, delicate linework, and ink stains, evoking an old manuscript. High contrast, expressive composition, artistic with precision, editorial art meets conceptual illustration, intense, and emotionally charged.",
+      "recommend": "low_key",
+      "desc": "거친 잉크 자국과 파격적인 붓터치가 섞인 독창적인 예술 스타일"
+    },
+    {
+      "id": "style13",
+      "label": "애니+실사",
+      "img": "/img/content/styleimage/style/style13.png",
+      "val": "High-quality anime-realistic hybrid, cinematic lighting, fun and nostalgic mood, clean composition, viral-friendly image, slightly shallow depth of field, sharp focus on faces, natural shadows, realistic skin tones, ultra-detailed, high resolution, social-media-ready.",
+      "recommend": "backlit",
+      "desc": "애니메이션의 깔끔함과 사진의 입체감을 동시에 구현"
+    },
+    {
+      "id": "style14",
+      "label": "디지털 아트",
+      "img": "/img/content/styleimage/style/style14.png",
+      "val": "Aesthetic digital illustration, soft warm brown color palette, cozy minimal background with small hand-drawn hearts and teddy bear doodles, smooth painterly style, semi-realistic character design, soft glow outline around the character, warm lighting, cute romantic vibe, high detail, clean lines, modern Instagram aesthetic, 4k illustration.",
+      "recommend": "firelight",
+      "desc": "부드럽고 몽환적인 감성의 감각적인 디지털 삽화"
+    },
+    {
+      "id": "style15",
+      "label": "벡터 그래픽",
+      "img": "/img/content/styleimage/style/style15.png",
+      "val": "High-detail portrait rendered in a vectorized style with flat, saturated color blocking, featuring bright, clean, and dramatic front-right lighting creating sharp, well-defined shadows, high resolution, extreme detail, clear edges, and a solid deep burgundy-red background.",
+      "negatives": "photorealistic, textures, gradients, soft edges",
+      "recommend": "rembrandt",
+      "desc": "단색의 면 분할로 완성된 깔끔하고 현대적인 벡터 그래픽"
+    },
+    {
+      "id": "style3",
+      "label": "픽사 3D",
+      "img": "/img/content/styleimage/style/style3.png",
+      "val": "A whimsical Pixar-style 3D illustration with a dreamy, cozy winter mood, cool blue tones, soft cinematic lighting, pastel color palette, ultra-detailed 3D render, expressive cartoon faces, rounded proportions, shallow depth of field, magical realism, and a heartwarming, nostalgic atmosphere.",
+      "recommend": "volumetric",
+      "desc": "픽사 스타일의 풍부한 입체감과 사랑스러운 캐릭터 표현"
+    },
+    {
+      "id": "style4",
+      "label": "버츄얼 3D",
+      "img": "/img/content/styleimage/style/style4.png",
+      "val": "High-end stylized 3D character portrait with a cinematic game-inspired aesthetic, clean angular facial anatomy, simplified yet realistic proportions, subtle stylization, professional virtual 3D camera rendering, dramatic yet controlled studio lighting with soft key and subtle rim light creating depth and contrast, smooth sculpted surfaces, clean material definition, minimal texture noise, and a polished modern stylized 3D render.",
+      "recommend": "backlit",
+      "desc": "최고급 3D 게임 속 주인공 같은 정교한 모델링 느낌"
+    },
+    {
+      "id": "style5",
+      "label": "네오 누와르",
+      "img": "/img/content/styleimage/style/style5.png",
+      "val": "A gritty Neo-Noir graphic novel aesthetic featuring atmospheric ink wash painting textures for backgrounds, sharp comic book inking for character outlines, dramatic chiaroscuro with intense rim lighting, and a high-contrast cinematic composition with heavy gritty paper texture, strictly limited to a color palette of deep blacks, pure whites, neutral greys, and vibrant scarlet red for minimal, strategic emphasis (no other colors allowed).",
+      "excludes": { "lighting": ["soft_window", "golden_hour"] },
+      "negatives": "vibrant colors, photographic realism, complex textures, soft lighting, bloom, colorful",
+      "recommend": "shadow_line",
+      "desc": "흑백의 강한 대비와 특정 컬러스포인트가 특징인 장르 스타일"
+    },
+    {
+      "id": "style7",
+      "label": "수묵화",
+      "img": "/img/content/styleimage/style/style7.png",
+      "val": "An evocative ink wash painting aesthetic, characterized by fluid, expressive brushstrokes and a rich monochromatic palette primarily in deep blacks, nuanced greys, and pristine whites. Emphasize the translucent layering of ink to create atmospheric depth and subtle gradations, with delicate, almost ethereal textures. Focus on natural forms, dynamic compositions, and the deliberate use of negative space to convey profound emotion and serene beauty. The overall mood should be contemplative and elegant, reminiscent of classical East Asian calligraphy and landscape art.",
+      "negatives": "vibrant colors, detailed textures, 3d render, modern photography, colorful",
+      "recommend": "blue_hour",
+      "desc": "동양화 특유의 여백의 미와 잉크 번짐 효과가 살아있는 화풍"
+    },
+    {
+      "id": "style1",
+      "label": "누와르 그래픽",
+      "img": "/img/content/styleimage/style/style1.png",
+      "val": "A gritty Neo-Noir graphic novel aesthetic. Use atmospheric ink wash painting textures for environmental backgrounds to create depth, contrasted with sharp, bold comic book inking for character outlines to ensure clarity. Features dramatic chiaroscuro and intense rim lighting that carves sharp silhouettes against deep, obsidian shadows. A high-contrast cinematic composition finished with a heavy gritty paper texture for an intense, tactile atmospheric mood. Strictly limited to Black, White, Grey, and Scarlet Red. Dominant deep blacks for shadows and negative space. Pure white for sharp highlights, electrical contours, and snow/rain. Neutral greys for mid-tone textures and ink-wash depth. [Vibrant Scarlet Red] strictly for strategic emphasis (e.g., blood, signature flags), highly saturated crimson. Red usage: Minimalist and selective (less than 10% of total canvas) to ensure maximum visual impact. ABSOLUTE NEGATIVE: NO other colors allowed.",
+      "excludes": { "lighting": ["soft_window", "golden_hour"] },
+      "negatives": "colors, gradients, soft lighting, realistic skin, smooth textures",
+      "recommend": "low_key",
+      "desc": "거친 종이 질감 위 선명한 라인의 그래픽 노블 스타일"
+    },
+    {
+      "id": "style6",
+      "label": "리얼리티",
+      "img": "/img/content/styleimage/style/style6.png",
+      "val": "Ultra-realistic indoor portrait, real human skin texture with visible pores, fine skin grain, subtle imperfections, natural blush and no smoothing, calm, intimate, quiet atmosphere, real camera photography, candid moment, shallow depth of field, realistic shadow falloff, strong natural sunlight with clear striped shadows, soft yet high-contrast lighting, and warm daylight tones.",
+      "recommend": "soft_window",
+      "desc": "피부 모공까지 느껴지는 초고화질 실사 인물 사진 연출"
+    }
+  ],
+  "cameras": [
+    {
+      "id": "ecu",
+      "label": "익스트림 클로즈업",
+      "img": "/img/content/styleimage/shot/ecu.png",
+      "val": "Extreme Close-up (ECU), macro focus on facial details, eyes, or specific features, often utilizing a macro lens, (subject maintaining original gaze direction and eyes looking ahead:1.4), no eye contact with camera",
+      "desc": "눈이나 입 등 특정 부위를 강조하는 초정밀 근접 촬영"
+    },
+    {
+      "id": "cu",
+      "label": "클로즈업",
+      "img": "/img/content/styleimage/shot/cu.png",
+      "val": "Close-up (CU) shot, head and shoulders, focused on expression and identity, typically with an 85mm or 50mm portrait lens, (subject maintaining original gaze direction and eyes looking ahead:1.4), no eye contact with camera",
+      "desc": "얼굴 위주의 표준 인물 사진 구도"
+    },
+    {
+      "id": "ms",
+      "label": "미디엄 샷",
+      "img": "/img/content/styleimage/shot/ms.png",
+      "val": "Medium Shot (MS), waist-up framing, balanced subject and immediate environment, often using a 50mm to 85mm lens for natural perspective, (subject maintaining original gaze direction and eyes looking ahead:1.4), no eye contact with camera",
+      "desc": "허리 윗부분을 담아 인물과 주변을 균형 있게 묘사"
+    },
+    {
+      "id": "fs",
+      "label": "풀 바디 샷",
+      "img": "/img/content/styleimage/shot/fs.png",
+      "val": "Full Shot (FS), entire body visible, clear posture and costume details, typically captured with a 35mm to 50mm lens to balance the full figure with the environment, (subject maintaining original gaze direction and eyes looking ahead:1.4), no eye contact with camera",
+      "desc": "머리부터 발끝까지 전신이 모두 보이는 구도"
+    },
+    {
+      "id": "ws",
+      "label": "와이드 샷",
+      "img": "/img/content/styleimage/shot/ws.png",
+      "val": "Wide Shot or Long Shot (LS), subject in large environment, scale and context, often captured with a 24mm to 35mm lens to encompass the environment while keeping the subject prominent, (subject maintaining original gaze direction and eyes looking ahead:1.4), no eye contact with camera",
+      "desc": "웅장한 배경 속에 인물을 배치하여 전체 맥락 강조"
+    },
+    {
+      "id": "low",
+      "label": "로우 앵글",
+      "img": "/img/content/styleimage/shot/low.png",
+      "val": "Low-angle shot, looking up at the subject to show power or scale, often using a 24mm to 35mm lens for dramatic effect, (subject maintaining original gaze direction and eyes looking ahead:1.4), no eye contact with camera",
+      "desc": "아래에서 위로 올려다보아 대상의 권위나 크기를 강조"
+    },
+    {
+      "id": "high",
+      "label": "하이 앵글",
+      "img": "/img/content/styleimage/shot/high.png",
+      "val": "High-angle shot, looking down at the subject, showing surroundings, often using a 35mm to 50mm lens to capture the downward perspective, (subject maintaining original gaze direction and eyes looking ahead:1.4), no eye contact with camera",
+      "desc": "위에서 아래로 내려다보며 상황의 전체를 조망"
+    },
+    {
+      "id": "eye",
+      "label": "눈 높이",
+      "img": "/img/content/styleimage/shot/eye.png",
+      "val": "Eye-level perspective, intimate and neutral storytelling, typically captured with a 50mm lens for a natural, human-eye view, (subject maintaining original gaze direction and eyes looking ahead:1.4), no eye contact with camera",
+      "desc": "가장 일상적이고 자연스러운 인간의 시선 높이"
+    },
+    {
+      "id": "bird",
+      "label": "버드 아이 뷰",
+      "img": "/img/content/styleimage/shot/bird.png",
+      "val": "Close-up bird's-eye view from 1m overhead, directly looking down at the character, intimate top-down perspective capturing head and shoulders from above, (subject maintaining original gaze direction and eyes looking ahead:1.4), no eye contact with camera",
+      "desc": "머리 위 1m 근거리에서 캐릭터를 수직으로 내려다보는 밀착 구도"
+    },
+    {
+      "id": "worm_left",
+      "label": "지면 좌측 앵글",
+      "img": "/img/content/styleimage/shot/worm_left.png",
+      "val": "(extreme low-angle shot from the ground looking up:1.3), looking up at the subject from the LEFT SIDE, (three-quarter view from below left:1.5), dynamic upward perspective, camera on floor, (extreme foreshortening:1.2), dramatic low side angle, (subject maintaining original gaze direction and eyes looking ahead:1.4), no eye contact with camera",
+      "desc": "왼쪽 낮은 지면 시각에서 단축법과 방향성이 강조된 구도"
+    },
+    {
+      "id": "worm_center",
+      "label": "지면 정면 앵글",
+      "img": "/img/content/styleimage/shot/worm_center.png",
+      "val": "Extreme low-angle shot, worm's-eye view, directly from the ground looking straight up, dramatic vertical perspective, strong vertical composition, camera on floor, towering subject, (subject maintaining original gaze direction and eyes looking ahead:1.4), no eye contact with camera",
+      "desc": "정면 지면에서 수직으로 캐릭터를 높게 올려다보는 강렬한 수직 구성"
+    },
+    {
+      "id": "worm_right",
+      "label": "지면 우측 앵글",
+      "img": "/img/content/styleimage/shot/worm_right.png",
+      "val": "(extreme low-angle shot from the ground looking up:1.3), looking up at the subject from the RIGHT SIDE, (three-quarter view from below right:1.5), dynamic upward perspective, camera on floor, (extreme foreshortening:1.2), dramatic low side angle, (subject maintaining original gaze direction and eyes looking ahead:1.4), no eye contact with camera",
+      "desc": "오른쪽 낮은 지면 시각에서 단축법과 방향성이 강조된 구도"
+    },
+    {
+      "id": "dutch",
+      "label": "더치 앵글",
+      "img": "/img/content/styleimage/shot/dutch.png",
+      "val": "Dutch angle, tilted horizon, creating tension or psychological instability, often achieved with a 35mm or 50mm lens, (subject maintaining original gaze direction and eyes looking ahead:1.4), no eye contact with camera",
+      "desc": "화면을 비스듬히 기울여 심리적 불안감이나 긴장 유발"
+    },
+    {
+      "id": "ots",
+      "label": "숄더 샷",
+      "img": "/img/content/styleimage/shot/ots.png",
+      "val": "Over-the-shoulder (OTS) shot, creating depth and character interaction, typically captured with a 50mm to 85mm lens, (subject maintaining original gaze direction and eyes looking ahead:1.4), no eye contact with camera",
+      "desc": "누군가의 어깨 너머로 대상을 보며 깊이감 부여"
+    },
+    {
+      "id": "pov",
+      "label": "1인칭 시점",
+      "img": "/img/content/styleimage/shot/pov.png",
+      "val": "First-person Point of View (POV), looking through the subject's eyes, often using a wide-angle lens for immersion, (subject maintaining original gaze direction and eyes looking ahead:1.4), no eye contact with camera",
+      "desc": "주인공의 눈으로 직접 세상을 보는 몰입형 시점"
+    },
+    {
+      "id": "crane",
+      "label": "크레인 샷",
+      "img": "/img/content/styleimage/shot/crane.png",
+      "val": "Crane shot, sweeping cinematic movement from a moderate height, often used for dramatic reveals and fluid scene transitions, emphasizing scale within a specific location, (subject maintaining original gaze direction and eyes looking ahead:1.4), no eye contact with camera",
+      "desc": "크레인을 타고 부드럽게 이동하는 고유의 영화적 시선"
+    },
+    {
+      "id": "drone",
+      "label": "드론 샷",
+      "img": "/img/content/styleimage/shot/drone.png",
+      "val": "Drone aerial shot, extreme high-altitude perspective capturing expansive landscapes and wide context, providing a bird's-eye view of the entire environment, (subject maintaining original gaze direction and eyes looking ahead:1.4), no eye contact with camera",
+      "desc": "드론 고공 비행으로 촬영한 넓은 광각의 항공 시공간"
+    }
+  ],
+  "lighting": [
+    {
+      "id": "rembrandt",
+      "label": "렘브란트 조명",
+      "img": "/img/content/styleimage/light/rembrandt.png",
+      "val": "Classic Rembrandt lighting, triangular highlight on cheek, dramatic shadows, moody portrait",
+      "desc": "얼굴 한쪽에 삼각형 빛을 남기는 얼굴 윤곽 강조 기법"
+    },
+    {
+      "id": "shadow_line",
+      "label": "블라인드 그림자",
+      "img": "/img/content/styleimage/light/shadow_line.png",
+      "val": "Cinematic film noir shadows, Venetian blind shadow patterns (slat shadows), mysterious atmosphere",
+      "desc": "창틀이나 블라인드 사이로 새어 나오는 긴 그림자 연출"
+    },
+    {
+      "id": "firelight",
+      "label": "모닥불 조명",
+      "img": "/img/content/styleimage/light/firelight.png",
+      "val": "Warm flickering firelight, amber glow, dancing shadows, cozy and intimate nighttime mood",
+      "desc": "모닥불의 따뜻하고 일렁이는 주황빛 광원 효과"
+    },
+    {
+      "id": "bioluminescent",
+      "label": "몽환적 자체발광",
+      "img": "/img/content/styleimage/light/bioluminescent.png",
+      "val": "Ethereal bioluminescent glow, glowing plants and particles, magical fantasy lighting, neon forest aesthetic",
+      "desc": "발광 생물이나 마법 같은 몽환적인 자체 발광 조명"
+    },
+    {
+      "id": "underwater_caustics",
+      "label": "물결 굴절광",
+      "img": "/img/content/styleimage/light/caustics.png",
+      "val": "Underwater caustic lighting, shimmering water reflections, wavy light patterns, aquatic atmosphere",
+      "desc": "수면 아래로 투과된 일렁이는 물결 무늬 조명"
+    },
+    {
+      "id": "blue_hour",
+      "label": "새벽의 푸른빛",
+      "img": "/img/content/styleimage/light/blue_hour.png",
+      "val": "Calm blue hour lighting, twilight atmosphere, cool deep blue and purple tones, tranquil serenity",
+      "desc": "해 지기 직전이나 새벽의 차분하고 서늘한 푸른 빛"
+    },
+    {
+      "id": "volumetric",
+      "label": "빛내림",
+      "img": "/img/content/styleimage/light/volumetric.png",
+      "val": "Volumetric lighting with visible sunbeams (god rays), misty atmosphere, ethereal feel",
+      "desc": "안개나 먼지 사이로 쏟아지는 찬란한 빛줄기 연출"
+    },
+    {
+      "id": "backlit",
+      "label": "백라이트",
+      "img": "/img/content/styleimage/light/backlit.png",
+      "val": "Strong backlighting, rim light around the subject, silhouette effect, golden glow",
+      "desc": "뒤에서 쏘는 강한 빛으로 인물의 테두리를 강조"
+    },
+    {
+      "id": "soft_window",
+      "label": "창가 확산광",
+      "img": "/img/content/styleimage/light/soft_window.png",
+      "val": "Soft, diffused morning sunlight through a large window, natural and gentle",
+      "desc": "창가로 들어오는 부드럽고 자연스러운 확산광"
+    },
+    {
+      "id": "neon_night",
+      "label": "네온 사이버펑크",
+      "img": "/img/content/styleimage/light/neon_night.png",
+      "val": "Vibrant neon lighting, cybernetic pink and blue hues, rain reflections, high contrast",
+      "desc": "미래 도시의 화려하고 강렬한 형광색 네온사인 조명"
+    },
+    {
+      "id": "low_key",
+      "label": "어둠의 미학",
+      "img": "/img/content/styleimage/light/low_key.png",
+      "val": "Extreme low-key lighting, deep obsidian shadows, high contrast chiaroscuro",
+      "desc": "어둠 속에서 최소한의 빛으로 신비로움을 강조하는 기법"
+    },
+    {
+      "id": "golden_hour",
+      "label": "황금 시간 조명",
+      "img": "/img/content/styleimage/light/golden_hour.png",
+      "val": "Warm, low-angle golden hour sunlight, intense orange and amber tones",
+      "desc": "해 질 녘의 따뜻하고 긴 황금빛 태양광 연출"
+    }
+  ],
+  "backgrounds": [
+    {
+      "id": "urban_cyber",
+      "label": "사이버펑크 도시",
+      "img": "/img/content/styleimage/bg/urban_cyber.png",
+      "val": "Futuristic cyberpunk city street, neon signs, rainy pavement, towering skyscrapers, high-tech urban environment",
+      "desc": "네온 사인이 가득한 미래 지향적인 사이버펑크 거리"
+    },
+    {
+      "id": "nature_forest",
+      "label": "신비로운 숲",
+      "img": "/img/content/styleimage/bg/nature_forest.png",
+      "val": "Enchanted mystic forest, ancient trees, bioluminescent plants, soft mist, magical natural environment",
+      "desc": "신비로운 안개와 빛나는 식물이 있는 몽환적인 숲"
+    },
+    {
+      "id": "studio",
+      "label": "심플 스튜디오",
+      "img": "/img/content/styleimage/bg/studio.png",
+      "val": "Minimalist professional studio background, solid neutral color, clean and sophisticated aesthetic",
+      "desc": "인물에 집중할 수 있는 깔끔하고 미니멀한 스튜디오 배경"
+    },
+    {
+      "id": "library",
+      "label": "고전 도서관",
+      "img": "/img/content/styleimage/bg/library.png",
+      "val": "Grand classic library, endless wooden bookshelves, warm ambient lighting, scholarly atmosphere, vintage books",
+      "desc": "고풍스러운 목제 서가와 따뜻한 조명이 어우러진 지적인 공간"
+    },
+    {
+      "id": "beach",
+      "label": "에메랄드 해변",
+      "img": "/img/content/styleimage/bg/beach.png",
+      "val": "Serene tropical beach at sunset, turquoise water, golden sand, palm trees swaying in the breeze",
+      "desc": "황금빛 노을이 지는 평화롭고 아름다운 열대 해변"
+    },
+    {
+      "id": "ghibli_alley1",
+      "label": "지브리 스타일 골목",
+      "img": "/img/content/styleimage/bg/ghibli_alley1.png",
+      "val": "Studio Ghibli inspired anime style alleyway, lush greenery, quaint traditional houses, nostalgic watercolor aesthetic",
+      "desc": "수채화 톤의 따뜻하고 정겨운 지브리 스타일 골목길"
+    },
+    {
+      "id": "sketch_landscape",
+      "label": "스케치풍 풍경",
+      "img": "/img/content/styleimage/bg/sketch_landscape.png",
+      "val": "Artistic charcoal sketch of a vast landscape, expressive pencil strokes, minimalist black and white hand-drawn style",
+      "desc": "거친 연필 선과 감각적인 흑백 톤의 핸드 드로잉 풍경"
+    },
+    {
+      "id": "oriental",
+      "label": "동양풍 사원",
+      "img": "/img/content/styleimage/bg/oriental.png",
+      "val": "Traditional East Asian temple, ornate architecture, cherry blossoms, majestic mountain background",
+      "desc": "동양적인 건축물과 자연이 어우러진 서사적인 배경"
+    },
+    {
+      "id": "sci_lab",
+      "label": "첨단 연구실",
+      "img": "/img/content/styleimage/bg/sci_lab.png",
+      "val": "Sleek sci-fi laboratory, metallic surfaces, blue glowing data screens, advanced technology atmosphere",
+      "desc": "금속 재질과 블루톤 조명이 강조된 첨단 실험실"
+    },
+    {
+      "id": "office1",
+      "label": "현대적 오피스",
+      "img": "/img/content/styleimage/bg/office1.png",
+      "val": "A modern high-tech office interior in Seoul, open floor plan, sleek white and wood desks, ergonomic chairs, large windows with a view of N Seoul Tower in the distance, soft natural morning light, indoor plants, minimalist aesthetic, cinematic lighting, 8k resolution, highly detailed, photorealistic.",
+      "desc": "서울의 현대적인 하이테크 사무실 내부, 개방형 평면, 세련된 화이트와 우드 책상, 인체공학적 의자, 멀리 남산 타워가 보이는 큰 창문, 부드러운 자연광, 실내 식물, 미니멀한 미학, 영화 같은 조명, 8k 해상도, 매우 상세한, 사실적인."
+    },
+    {
+      "id": "office2",
+      "label": "일반 사무실",
+      "img": "/img/content/styleimage/bg/office2.png",
+      "val": "Interior of a typical South Korean office, cubicle partitions, organized desks with dual monitors, post-it notes, tumblers and office supplies, fluorescent ceiling lights mixed with window light, professional and busy atmosphere, documentary photography style, high quality",
+      "desc": "일반적인 한국 사무실 내부, 칸막이, 듀얼 모니터가 있는 정리된 책상, 포스트잇, 텀블러 및 사무용품, 창문 빛과 섞인 형광등 조명, 전문적이고 바쁜 분위기, 다큐멘터리 사진 스타일, 고품질"
+    },
+    {
+      "id": "desert",
+      "label": "광활한 황야",
+      "img": "/img/content/styleimage/bg/desert.png",
+      "val": "Vast desert wasteland, ancient crumbling ruins, giant weathered statues, harsh sunlight",
+      "desc": "거대한 유적과 거친 모래바람이 부는 광활한 황야"
+    }
+  ],
+  "quality": [
+    { "id": "q_master", "label": "걸작 (Masterpiece)", "val": "Masterpiece, best quality, ultra-high resolution, extremely detailed, professional photography", "desc": "최고 품질의 걸작 수준으로 디테일 강화" },
+    { "id": "q_8k", "label": "8K 초고해상도", "val": "8k resolution, UHD, sharp focus, highly detailed textures, realistic skin", "desc": "8K 초고해상도 및 선명한 질감 표현" },
+    { "id": "q_unreal", "label": "언리얼 엔진 5", "val": "Unreal Engine 5 render, ray tracing, global illumination, incredibly cinematic", "desc": "최신 게임 엔진 스타일의 웅장한 후보정" },
+    { "id": "q_raw", "label": "RAW 사진 품질", "val": "RAW photo, unedited, realistic, high dynamic range, natural skin texture", "desc": "무보정 사진 같은 사실적인 질감 및 톤" },
+    { "id": "q_vibrant", "label": "선명한 색감", "val": "Saturated colors, vibrant details, sharp edges, high contrast", "desc": "강렬한 색감과 뚜렷한 경계면 강조" }
+  ],
+  "negative": [
+    { "id": "n_standard", "label": "저품질 제외", "val": "low quality, bad quality, blurry, distorted, grainy, low resolution", "desc": "흐림, 왜곡, 노이즈 등 기본 품질 저하 요소 배제" },
+    { "id": "n_character", "label": "인물 오류 방지", "val": "deformed fingers, extra limbs, mutated hands, missing arms, bad anatomy, double faces", "desc": "기형적인 손가락, 팔다리 오류 등 인물 묘사 결함 방지" },
+    { "id": "n_text", "label": "글자/워터마크 제거", "val": "text, caption, watermark, signature, letters, words, logo, writing", "desc": "문자, 워터마크, 로고 등 불필요한 글자 배제" },
+    { "id": "n_aesthetic", "label": "비심미적 요소 배제", "val": "unreal, cartoon, (when photo), ugly, messy, watermark, signature, text", "desc": "지저분하거나 비심미적인 구성 요소 최소화" },
+    { "id": "n_lighting", "label": "조명 오류 수정", "val": "overexposed, underexposed, harsh shadows (unless noir), flat lighting", "desc": "노출 과다/부족 및 밋밋한 조명 효과 수정" }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "skill-2-video-longform1",
+  "name": "04_오팔_영상_렌더_에이전트",
+  "category": 3,
+  "label_number": "06b",
+  "description": "Google Opal 편집실과 연결하여 Rule 105 노드 설계도 기반으로 최종 영상을 자동 렌더링하고 출고합니다.",
+  "icon": "faFileVideo",
+  "entry_point": "opal-manager/logic.py",
+  "version": "1.0.0",
+  "author": "LinkDropV2"
+}

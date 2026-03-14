@@ -1,0 +1,11 @@
+{
+  "id": "skill-1-source-refiner",
+  "name": "02_지식_정제_에이전트",
+  "category": 1,
+  "label_number": "02",
+  "description": "수집된 원재료를 AI 스코어링을 통해 분석하고, 고품질 지식 소재(Gold)만 선별하여 정제된 지식 서랍장에 저장합니다.",
+  "icon": "faMagic",
+  "entry_point": "logic.py",
+  "version": "1.0.0",
+  "author": "LinkDropV2"
+}

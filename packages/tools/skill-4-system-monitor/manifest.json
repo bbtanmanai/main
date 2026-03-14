@@ -1,0 +1,11 @@
+{
+  "id": "skill-4-system-monitor",
+  "name": "04_시스템_감시_에이전트",
+  "category": 4,
+  "label_number": "07",
+  "description": "세션 대화 및 시스템 상태를 실시간 감시하며, 자동 요약 패치 및 일일 로그 아카이빙을 통해 프로젝트의 연속성을 보장합니다.",
+  "icon": "faTv",
+  "entry_point": "logic.py",
+  "version": "1.0.0",
+  "author": "LinkDropV2"
+}

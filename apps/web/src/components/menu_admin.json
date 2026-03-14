@@ -1,0 +1,23 @@
+[
+  {
+    "name": "에이전트 관리",
+    "items": [
+      { "name": "통합 관제실", "href": "/admin/agent-control" },
+      { "name": "개별 에이전트", "href": "/admin/agents" }
+    ]
+  },
+  {
+    "name": "데이터 인프라",
+    "items": [
+      { "name": "지식 파이프라인", "href": "/admin/data-flow" },
+      { "name": "웹 수집 관리", "href": "/admin/web-save" }
+    ]
+  },
+  {
+    "name": "시스템 설정",
+    "items": [
+      { "name": "노트북LM 로그인", "href": "/admin/notebook-login" },
+      { "name": "사용자 관리", "href": "/admin/users/list" }
+    ]
+  }
+]

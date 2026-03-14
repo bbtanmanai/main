@@ -1,0 +1,11 @@
+{
+  "id": "skill-1-script-classifier",
+  "name": "02_지식_테마분류_에이전트",
+  "category": 1,
+  "label_number": "03",
+  "description": "정제된 지식 콘텐츠를 분석하여 5대 핵심 카테고리(건강, 재테크, 기술, 지혜, 라이프스타일) 및 무드별로 자동 분류합니다.",
+  "icon": "faTags",
+  "entry_point": "logic.py",
+  "version": "1.0.0",
+  "author": "LinkDropV2"
+}

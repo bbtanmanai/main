@@ -1,0 +1,141 @@
+{
+  "templates": [
+    {
+      "id": "health-senior",
+      "title": "건강 웰빙",
+      "icon": "faHeartbeat",
+      "bgImage": "/img/content/longform/health-senior.webp",
+      "color": "bg-rose-500",
+      "category": "vault",
+      "notebookId": "b9d4db2d-bc89-46a6-b5ec-b85579c8dc30"
+    },
+    {
+      "id": "stock-news",
+      "title": "재테크 수익",
+      "icon": "faChartLine",
+      "bgImage": "/img/content/longform/stock-news.webp",
+      "color": "bg-emerald-500",
+      "category": "vault",
+      "notebookId": "a8891e02-4fc9-4593-8fc7-fb13333ea6a7"
+    },
+    {
+      "id": "tech-trend",
+      "title": "기술 트렌드",
+      "icon": "faLaptopCode",
+      "bgImage": "/img/content/longform/tech-trend.webp",
+      "color": "bg-indigo-500",
+      "category": "vault",
+      "notebookId": "1522568a-5833-45f4-baa3-8ad2d6afb795"
+    },
+    {
+      "id": "wisdom-quotes",
+      "title": "지혜 명언",
+      "icon": "faQuoteRight",
+      "bgImage": "/img/content/longform/wisdom-quotes.webp",
+      "color": "bg-amber-500",
+      "category": "vault",
+      "notebookId": "6a6dee66-1811-4939-80cc-4ab57f50810b"
+    },
+    {
+      "id": "lifestyle",
+      "title": "라이프스타일",
+      "icon": "faLeaf",
+      "bgImage": "/img/content/longform/lifestyle.webp",
+      "color": "bg-teal-500",
+      "category": "vault",
+      "notebookId": "fe5bcad7-cc23-412d-804d-b2d1f0277527"
+    },
+    {
+      "id": "shorts-viral",
+      "title": "쇼츠 바이럴",
+      "icon": "faBolt",
+      "bgImage": "/img/content/longform/shorts-viral.webp",
+      "color": "bg-fuchsia-500",
+      "category": "content",
+      "notebookId": "ff2dce84-b2a0-4033-8c0b-030e9c9f8fd9"
+    },
+    {
+      "id": "insta-marketing",
+      "title": "인스타 마케팅",
+      "icon": "faHashtag",
+      "bgImage": "/img/content/longform/insta-marketing.webp",
+      "color": "bg-pink-500",
+      "category": "content",
+      "notebookId": "39ee7e22-a2d8-43f1-96c2-3facbe9495c2"
+    },
+    {
+      "id": "blog-seo",
+      "title": "블로그 SEO",
+      "icon": "faBook",
+      "bgImage": "/img/content/longform/blog-seo.webp",
+      "color": "bg-orange-500",
+      "category": "content",
+      "notebookId": "477e9b88-d64c-4678-9e0f-e2978b3bd1e0"
+    },
+    {
+      "id": "ai-video-ads",
+      "title": "AI 영상 광고",
+      "icon": "faVideo",
+      "bgImage": "/img/content/longform/ai-video-ads.webp",
+      "color": "bg-violet-600",
+      "category": "content",
+      "notebookId": "4aed5fdc-3c29-4682-ae9a-4d699349950e"
+    },
+    {
+      "id": "ai-business",
+      "title": "AI 비즈니스",
+      "icon": "faRocket",
+      "bgImage": "/img/content/longform/ai-business.webp",
+      "color": "bg-sky-500",
+      "category": "content",
+      "notebookId": "e415edf8-2366-4cb5-81d8-fa63bd8f2b34"
+    },
+    {
+      "id": "digital-product",
+      "title": "디지털 상품",
+      "icon": "faBook",
+      "bgImage": "/img/content/longform/digital-product.webp",
+      "color": "bg-cyan-600",
+      "category": "content",
+      "notebookId": "3c353b30-0945-4d5e-b88f-ce87f54a5784"
+    },
+    {
+      "id": "workflow",
+      "title": "업무 자동화",
+      "icon": "faCog",
+      "bgImage": "/img/content/longform/workflow.webp",
+      "color": "bg-slate-600",
+      "category": "content",
+      "notebookId": "8508afbe-75a6-4c35-baee-58b60c825b15"
+    }
+  ],
+  "artStyles": [
+    { "id": "hollywood-sf", "label": "Hollywood SF", "desc": "네온 사이버펑크 조명", "bgImage": "/img/content/longform/hollywood-sf.webp", "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nHollywood SF cinematic cyberpunk neon lighting, UE5 quality." },
+    { "id": "anime-sf", "label": "일본 애니 SF", "desc": "지브리 스타일 수채화", "bgImage": "/img/content/longform/anime-sf.webp", "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nJapanese anime SF, Ghibli style watercolor, vivid pastel colors." },
+    { "id": "ink-wash", "label": "수묵화", "desc": "전통 수묵 필치", "bgImage": "/img/content/longform/Ink-wash.webp", "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nTraditional Oriental ink wash painting, dynamic brush strokes." },
+    { "id": "pixar-3d", "label": "픽사 3D", "desc": "따뜻한 3D 렌더링", "bgImage": "/img/content/longform/pixar-3d.webp", "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nPixar 3D animation style, warm lighting, pastel palette." },
+    { "id": "neo-noir", "label": "네오 누와르", "desc": "흑백 고대비 연출", "bgImage": "/img/content/longform/neo-noir.webp", "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nNeo-noir graphic novel style, high contrast black and white, scarlet red accent." },
+    { "id": "pop-art", "label": "팝아트", "desc": "앤디워홀 망점 패턴", "bgImage": "/img/content/longform/pop-art.webp", "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nPop art style, halftone patterns, vivid primary colors, Andy Warhol aesthetic." },
+    { "id": "reality", "label": "실사", "desc": "RAW 사진 퀄리티", "bgImage": "/img/content/longform/reality.webp", "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nRealistic RAW photo quality, detailed textures, natural lighting." },
+    { "id": "ghibli-real", "label": "지브리+실사", "desc": "하이브리드 감성", "bgImage": "/img/content/longform/ghibli-real.webp", "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nHybrid Ghibli watercolor background with realistic cinematic focus." },
+    { "id": "sticker-cutout", "label": "스티커 컷아웃", "desc": "굿즈 캐릭터 스타일", "bgImage": "/img/content/longform/sticker-cutout.webp", "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nSticker cutout style, white die-cut borders, character-focused goods quality." }
+  ],
+  "narrativeStyles": [
+    { "id": "ranking", "icon": "faTrophy", "label": "랭킹형", "desc": "TOP N 순위 제공", "example": "건강식품 TOP 5 추천", "directive": "Create a ranking-style scenario from lowest to highest rank." },
+    { "id": "storytelling", "icon": "faBookOpen", "label": "스토리텔링형", "desc": "인물 서사 중심", "example": "나의 재테크 성공기", "directive": "Create a storytelling narrative with a clear arc: situation, change, and result." },
+    { "id": "qa", "icon": "faCircleQuestion", "label": "Q&A형", "desc": "질답 구조 구성", "example": "무엇이든 물어보세요", "directive": "Create a Q&A structured scenario starting with questions followed by detailed answers." },
+    { "id": "comparison", "icon": "faScaleBalanced", "label": "비교형", "desc": "대상 간 비교 분석", "example": "삼성 vs 애플 비교", "directive": "Create a comparison-style scenario analyzing A vs B and providing a recommendation." },
+    { "id": "expert", "icon": "faUserDoctor", "label": "전문가 조언형", "desc": "권위 있는 조언", "example": "내과 전문의 건강 팁", "directive": "Create an expert advice-style scenario with authoritative data and professional insights." },
+    { "id": "before_after", "icon": "faArrowRightArrowLeft", "label": "비포/애프터형", "desc": "극적 대비 효과", "example": "한 달 만의 변화", "directive": "Create a dramatic before and after comparison scenario." }
+  ],
+  "voices": [
+    { "id": "ko-KR-Neural2-A", "name": "고은", "gender": "FEMALE", "type": "Neural2",   "previewUrl": "/assets/audio/preview/고은.mp3" },
+    { "id": "ko-KR-Neural2-C", "name": "준호", "gender": "MALE",   "type": "Neural2",   "previewUrl": "/assets/audio/preview/준호.mp3" },
+    { "id": "ko-KR-Neural2-B", "name": "미소", "gender": "FEMALE", "type": "Neural2",   "previewUrl": "/assets/audio/preview/미소.mp3" },
+    { "id": "ko-KR-Wavenet-A", "name": "다인", "gender": "FEMALE", "type": "Wavenet",   "previewUrl": "/assets/audio/preview/다인.mp3" },
+    { "id": "ko-KR-Wavenet-B", "name": "서윤", "gender": "FEMALE", "type": "Wavenet",   "previewUrl": "/assets/audio/preview/서윤.mp3" },
+    { "id": "ko-KR-Wavenet-C", "name": "하준", "gender": "MALE",   "type": "Wavenet",   "previewUrl": "/assets/audio/preview/하준.mp3" },
+    { "id": "ko-KR-Standard-A", "name": "영철", "gender": "MALE", "type": "Standard", "previewUrl": "/assets/audio/preview/영철.mp3" },
+    { "id": "ko-KR-Standard-C", "name": "도윤", "gender": "MALE",   "type": "Standard", "previewUrl": "/assets/audio/preview/도윤.mp3" }
+  ]
+}

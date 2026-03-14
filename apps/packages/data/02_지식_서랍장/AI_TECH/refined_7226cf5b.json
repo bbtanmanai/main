@@ -1,0 +1,23 @@
+{
+  "id": "7226cf5b-24f3-4970-8c7f-81f7770bdbd1",
+  "title": "Anthropic launches AI job destruction detector - Axios",
+  "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE53TVNlLWtsVTJEN2dEZ1JOSklpWktZbElfa08tWWlhbFhrc3B6MEhIZi1hQnh0TlBzQnFXMGk5LTZXOTQyYlRZM1daYWREeml0dllZSmJYLUVicU03dEMyYlZlSUl3eFh2?oc=5",
+  "pubDate": "Fri, 06 Mar 2026 12:52:13 GMT",
+  "theme": "AI_TECH",
+  "content": "<a href=\"https://news.google.com/rss/articles/CBMiaEFVX3lxTE53TVNlLWtsVTJEN2dEZ1JOSklpWktZbElfa08tWWlhbFhrc3B6MEhIZi1hQnh0TlBzQnFXMGk5LTZXOTQyYlRZM1daYWREeml0dllZSmJYLUVicU03dEMyYlZlSUl3eFh2?oc=5\" target=\"_blank\">Anthropic launches AI job destruction detector</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Axios</font>",
+  "source_type": "RSS",
+  "collected_at": "2026-03-07T04:33:50.805001",
+  "analysis": {
+    "score": 8.0,
+    "summary": "Anthropic에서 AI로 인한 직업 파괴 여부를 감지하는 도구를 출시했다. 이는 AI 기술이 노동 시장에 미치는 영향을 조명하며, 시니어들이 AI와 관련된 새로운 부업 기회를 탐색하는 데 도움을 줄 수 있다. 이러한 도구들은 AI 수익화 및 관련 전략에 가치있는 인사이트를 제공할 수 있다.",
+    "is_gold": true,
+    "keywords": [
+      "Anthropic",
+      "AI job destruction",
+      "AI 수익화"
+    ],
+    "reason": "이 자료는 AI 기술이 실질적으로 노동 시장에 미치는 영향을 측정하려는 시도를 소개하고 있어 희소성이 높다. 시니어 부업 및 AI 수익화와도 관련성이 있어 독자들에게 유익한 인사이트를 제공할 수 있다."
+  },
+  "refined_at": "2026-03-07T05:26:35.811006",
+  "status": "GOLD"
+}

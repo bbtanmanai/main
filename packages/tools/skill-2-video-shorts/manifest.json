@@ -1,0 +1,11 @@
+{
+  "id": "skill-2-video-shorts",
+  "name": "03_쇼츠_영상_설계_에이전트",
+  "category": 2,
+  "label_number": "05",
+  "description": "Rule 104 대본을 바탕으로 시니어 맞춤형 쇼츠(Shorts) 영상의 효과음, 나레이션 타이밍, 시각적 요소를 정밀 설계합니다.",
+  "icon": "faBolt",
+  "entry_point": "logic.py",
+  "version": "1.1.0",
+  "author": "LinkDropV2"
+}

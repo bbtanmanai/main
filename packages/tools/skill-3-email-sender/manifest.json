@@ -1,0 +1,11 @@
+{
+  "id": "skill-3-email-sender",
+  "name": "06c_이메일_발송_에이전트",
+  "category": 3,
+  "label_number": "06c",
+  "description": "공정 완료 알림 및 뉴스레터를 이메일로 발송합니다. (현재 스텁 — 실제 발송 API 연동 예정)",
+  "icon": "faEnvelope",
+  "entry_point": "logic.py",
+  "version": "0.1.0",
+  "author": "LinkDropV2"
+}

@@ -1,0 +1,59 @@
+{
+  "_comment": "화풍별 Opal 생성 프롬프트 정의파일 — 코드 수정 없이 여기서만 편집",
+  "_version": "1.0",
+
+  "ghibli-real": {
+    "label": "지브리 실사풍",
+    "prompt": "Studio Ghibli-inspired pastoral landscape. Lush rolling green hills under a warm golden-hour sky. Soft watercolor clouds drifting slowly. A gentle river reflecting sunlight winds through the valley. Distant misty mountains in cool blue-green hues. Wildflowers dotting the foreground meadow in purples, yellows, and whites. Warm ambient light with subtle god-rays breaking through the clouds. Hand-painted, dreamlike quality — no hard edges, everything soft and luminous. Pure visual background, absolutely no text or labels."
+  },
+
+  "hollywood-sf": {
+    "label": "할리우드 SF",
+    "prompt": "Epic Hollywood sci-fi cinematic background. Vast interstellar nebula with deep purples, electric blues, and burning oranges. A colossal alien megastructure or space station silhouetted against a gas giant. Distant star clusters and aurora-like energy ribbons. Lens flare from a distant sun catching the edge of a spacecraft hull. High-contrast dramatic lighting — deep shadows and brilliant highlights. Photorealistic rendering quality, broadcast-safe colors, IMAX-level detail. Pure visual background, absolutely no text or labels."
+  },
+
+  "neo-noir": {
+    "label": "네오 누아르",
+    "prompt": "Neo-noir urban nightscape. Rain-soaked streets reflecting neon signs in crimson, cyan, and amber. Dark alleyway with steam rising from grates. A lone streetlamp casting a cone of light in the fog. Wet cobblestones and puddles creating mirror-like reflections of the city above. Deep shadow pools contrasting with pools of vivid neon color. Moody, atmospheric, cinematic tension. High contrast chiaroscuro lighting. Pure visual background, absolutely no text or labels."
+  },
+
+  "anime-sf": {
+    "label": "애니메이션 SF",
+    "prompt": "Japanese anime sci-fi aesthetic. Futuristic megacity skyline at dusk — towering arcologies with glowing windows, elevated hyperloop tracks, holographic advertising haze. A vast ocean or floating platform below with bioluminescent waves. Dramatic sunset gradient from deep violet to warm peach across the horizon. Speed lines in the upper atmosphere suggesting a passing mech or aircraft. Clean, vibrant cel-shading style with sharp outlines. Pure visual background, absolutely no text or labels."
+  },
+
+  "ink-wash": {
+    "label": "수묵화풍",
+    "prompt": "Traditional East Asian ink wash painting (수묵화). Towering mountain peaks emerging from swirling mist and low clouds. Pine trees clinging to sheer cliff faces. A solitary waterfall cascading down layered rock faces. Minimalist negative space in soft cream and ivory. Ink gradients from jet black to translucent grey. Brushstroke texture visible — dry brush on the rocks, wet wash in the mist. Peaceful, meditative, timeless atmosphere. Pure visual background, absolutely no text or calligraphy."
+  },
+
+  "pixar-3d": {
+    "label": "픽사 3D",
+    "prompt": "Pixar-style 3D rendered environment. Warm, inviting interior or outdoor scene with exaggerated cheerful proportions. Bright saturated colors — sunny yellows, sky blues, and lush greens. Global illumination creating soft subsurface scattering on organic surfaces. Ambient occlusion in corners, subtle depth-of-field blur on foreground elements. A sense of playful wonder — oversized sunflowers, a cozy cottage, or a fantastical candy-colored landscape. Cinematic frame composition. Pure visual background, absolutely no text or labels."
+  },
+
+  "reality": {
+    "label": "실사 다큐풍",
+    "prompt": "Photorealistic documentary-style nature photography. Golden hour light raking across a vast savanna, mountain ridge, or coastal cliff. Sharp foreground detail with natural bokeh in the background. Natural color grading — warm highlights, cool shadows, high dynamic range. Authentic textures: rough bark, dewy grass blades, weathered stone. The kind of shot you'd see in a BBC Planet Earth production. Cinematic widescreen composition. Pure visual background, absolutely no text or labels."
+  },
+
+  "ghibli-night": {
+    "label": "지브리 야경",
+    "prompt": "Studio Ghibli-style magical night scene. A small hilltop village glowing with warm amber window lights under a vast starry sky. The Milky Way arching overhead in deep indigo and silver. Fireflies floating in the foreground darkness. A crescent moon casting silver light on a still lake below. Soft painterly brushwork, dreamlike atmosphere. Stars have a hand-drawn shimmer quality. The scene evokes quiet wonder and nostalgia. Pure visual background, absolutely no text or labels."
+  },
+
+  "pop-art": {
+    "label": "팝아트",
+    "prompt": "Bold pop-art inspired background. High-contrast halftone dot pattern in primary colors — vivid red, electric yellow, royal blue. Ben-Day dots in the mid-tones. Strong geometric shapes: concentric circles, diagonal stripes, checkerboard sections. The energy of Roy Lichtenstein meets Andy Warhol. Flat graphic design aesthetic with crisp hard edges. No gradients — pure blocked color fields. Loud, energetic, attention-grabbing. Pure visual background, absolutely no text or labels."
+  },
+
+  "sticker-cutout": {
+    "label": "스티커 컷아웃",
+    "prompt": "Playful sticker-cutout collage aesthetic. Bright pastel background with chunky illustrated shapes layered on top — oversized cartoon clouds, bold geometric confetti, simple rounded animal silhouettes. White border/outline on each element giving a sticker peel-off effect. Drop shadows on each layer creating depth. Colors: soft mint, lavender, peach, and warm white. Clean, digital scrapbook feel. Cute and contemporary. Pure visual background, absolutely no text or labels."
+  },
+
+  "_default": {
+    "label": "기본 시네마틱",
+    "prompt": "Cinematic wide-screen abstract background. Rich atmospheric depth using layered gradients — deep midnight blue transitioning to warm horizon amber. Volumetric light beams cutting through atmospheric haze. Subtle particle system of floating light motes. Bokeh circles of soft light in the foreground. Broadcast-quality color palette with deep blacks and luminous highlights. Timeless, premium production quality. Pure visual background, absolutely no text or labels."
+  }
+}

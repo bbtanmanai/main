@@ -1,0 +1,11 @@
+{
+  "id": "skill-2-scenario-factory",
+  "name": "05_시나리오_팩토리_에이전트",
+  "category": 2,
+  "label_number": "05",
+  "description": "수집된 바이럴 데이터(7점+)를 소재로 템플릿·스타일별 시나리오를 대량 사전 생성하여 Supabase에 저장하고 재고를 자동 관리합니다.",
+  "icon": "faLayerGroup",
+  "entry_point": "logic.py",
+  "version": "1.0.0",
+  "author": "LinkDropV2"
+}

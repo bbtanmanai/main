@@ -1,0 +1,11 @@
+{
+  "id": "skill-0-news-extractor",
+  "name": "01b_뉴스_추출_에이전트",
+  "category": 0,
+  "label_number": "01b",
+  "description": "네이버 뉴스 API를 통해 키워드 기반 최신 뉴스를 수집하고 이메일 브리핑으로 발송합니다.",
+  "icon": "faNewspaper",
+  "entry_point": "logic.py",
+  "version": "1.0.0",
+  "author": "LinkDropV2"
+}

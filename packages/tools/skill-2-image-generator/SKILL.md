@@ -1,0 +1,25 @@
+# 🎨 미드저니 이미지 생성 에이전트 (Midjourney Image Generator)
+
+## 개요
+사용자의 아이디어나 키워드를 입력받아 **미드저니(Midjourney)** 고품질 이미지를 자동 생성하고, 결과물을 LinkDrop V2 저장소에 배송하는 독립형 스킬입니다.
+
+## 핵심 기능
+- **프롬프트 고도화 (Prompt Architect)**: 사용자의 간단한 입력을 미드저니 전용 파라미터(--ar, --v, --chaos 등)와 예술적 스타일이 결합된 전문 프롬프트로 변환 (Gemini 2.5 Flash-Lite 활용).
+- **미드저니 연동 (MJ Execution)**: 외부 API(GoAPI, ImagineAPI 등) 또는 디스코드 봇을 통해 미드저니 이미지를 생성하고 상태를 모니터링합니다.
+- **이미지 정착 (Image Retainer)**: 생성된 결과물을 다운로드하여 `packages/data/refined/images` 폴더와 Supabase Storage에 동시 저장합니다.
+- **배송 보고 (Notification)**: 생성이 완료되면 텔레그램 알림을 통해 이미지 미리보기와 링크를 전송합니다.
+
+## 사용법 (AI 지침)
+- 콘텐츠 제작(No.05) 공정에서 이미지가 필요할 때, 또는 사용자가 직접 이미지 생성을 요청할 때 호출하세요.
+- 결과물인 `IMAGE_*.png` 경로는 최종 시나리오 패키지에 포함되어야 합니다.
+
+## 제약 사항
+- 미드저니 유료 구독 계정이 연동되어 있어야 작동합니다.
+- 1회 생성 시 약 1~3분의 대기 시간이 발생할 수 있으므로 비동기(Background) 처리를 기본으로 합니다.
+
+
+---
+
+http://localhost:3000/content/styleimage  과  비슷한 구조로 하고   http://localhost:3000/content/midjourneyimg  경로로 하고  gnb메뉴 컨텐츠 제작 > 미드져니 이미지 메뉴로 연결시캬라  일단   프로트부터 구성하고 로직을  구현한다
+
+★ 아직 미완성 미구현 상태  좀더 세부적인 아이디어 가 필요한 시점
