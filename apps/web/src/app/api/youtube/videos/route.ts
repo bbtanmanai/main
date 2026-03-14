@@ -58,20 +58,24 @@ export async function GET(req: NextRequest) {
   const totalPages = Math.ceil(total / limit);
 
   const videos = (data || []).map((row: Record<string, unknown>, idx: number) => ({
-    id:          from + idx + 1,
-    channelName: (row.channel as string) || '',
-    videoTitle:  (row.title   as string) || '',
-    description: '',
-    thumbnail:   `https://img.youtube.com/vi/${row.video_id}/mqdefault.jpg`,
-    url:         (row.url as string) || `https://www.youtube.com/watch?v=${row.video_id}`,
-    subscribers: formatKorean(Number(row.subscribers) || 0),
-    views:       formatKorean(Number(row.views)       || 0),
-    likes:       formatKorean(Number(row.likes)       || 0),
-    comments:    formatKorean(Number(row.comments)    || 0),
-    status:      'active' as const,
-    collectedAt: toCollectedAt((row.created_at as string) || (row.published_at as string)),
-    viral_score: Number(row.viral_score) || 0,
-    genre:       (row.template_id as string) || 'general',
+    id:           from + idx + 1,
+    channelName:  (row.channel as string) || '',
+    videoTitle:   (row.title   as string) || '',
+    description:  '',
+    thumbnail:    `https://img.youtube.com/vi/${row.video_id}/mqdefault.jpg`,
+    url:          (row.url as string) || `https://www.youtube.com/watch?v=${row.video_id}`,
+    subscribers:  formatKorean(Number(row.subscribers) || 0),
+    views:        formatKorean(Number(row.views)       || 0),
+    likes:        formatKorean(Number(row.likes)       || 0),
+    comments:     formatKorean(Number(row.comments)    || 0),
+    status:       'active' as const,
+    collectedAt:  toCollectedAt((row.created_at as string) || (row.published_at as string)),
+    viral_score:  Number(row.viral_score) || 0,
+    genre:        (row.template_id as string) || 'general',
+    is_analyzed:  Boolean(row.is_analyzed),
+    quality_score: row.quality_score != null ? Number(row.quality_score) : undefined,
+    content_type:  (row.content_type as string) || undefined,
+    summary:       (row.summary as string) || undefined,
   }));
 
   return NextResponse.json({ videos, total, page, totalPages });
