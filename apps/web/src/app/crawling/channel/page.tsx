@@ -92,8 +92,6 @@ export default function ChannelCrawlingPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
   const [progressMsg, setProgressMsg] = useState('');
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analyzeMsg, setAnalyzeMsg] = useState('');
   const [analyzingIds, setAnalyzingIds] = useState<Set<string>>(new Set());
 
   // Pagination States
@@ -207,63 +205,6 @@ export default function ChannelCrawlingPage() {
     } finally {
       setIsLoading(false);
       setProgressMsg('');
-    }
-  };
-
-  const handleAnalyzeAll = async () => {
-    setIsAnalyzing(true);
-    setAnalyzeMsg('분석 준비 중...');
-
-    try {
-      const res = await fetch('/api/youtube/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ analyze_all: true, batch_size: 5 }),
-      });
-
-      if (!res.ok || !res.body) {
-        throw new Error('API 요청 실패');
-      }
-
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let analyzedCount = 0;
-      let failedCount = 0;
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const text = decoder.decode(value);
-        const lines = text.split('\n');
-
-        for (const line of lines) {
-          const trimmed = line.trim();
-          if (!trimmed.startsWith('data: ')) continue;
-          try {
-            const event = JSON.parse(trimmed.slice(6));
-            if (event.type === 'progress') {
-              setAnalyzeMsg(`분석 중... (${event.index}/${event.total})`);
-            } else if (event.type === 'done') {
-              analyzedCount = event.analyzed ?? 0;
-              failedCount = event.failed ?? 0;
-              setAnalyzeMsg(`분석 완료: ${analyzedCount}개`);
-            } else if (event.type === 'error') {
-              console.error('Analyze error:', event.message);
-              setAnalyzeMsg(`오류: ${event.message}`);
-            }
-          } catch { /* non-JSON */ }
-        }
-      }
-
-      await loadVideos(currentPage);
-      alert(`분석 완료: ${analyzedCount}개 성공, ${failedCount}개 실패`);
-    } catch (e) {
-      console.error('handleAnalyzeAll error:', e);
-      alert('분석 중 오류가 발생했습니다. 콘솔을 확인해 주세요.');
-    } finally {
-      setIsAnalyzing(false);
-      setAnalyzeMsg('');
     }
   };
 
@@ -430,7 +371,7 @@ export default function ChannelCrawlingPage() {
                     </>
                   ) : (
                     <>
-                      <span>일괄 분석 및 등록</span>
+                      <span>수집 시작</span>
                       <FontAwesomeIcon icon={faArrowRight} className="text-xs" />
                     </>
                   )}
@@ -462,23 +403,6 @@ export default function ChannelCrawlingPage() {
                 TOTAL {totalVideos}
               </span>
             </h3>
-            <button
-              onClick={handleAnalyzeAll}
-              disabled={isAnalyzing}
-              className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs rounded-xl shadow-lg shadow-emerald-500/20 transition-all active:scale-[0.98] disabled:opacity-50"
-            >
-              {isAnalyzing ? (
-                <>
-                  <FontAwesomeIcon icon={faSpinner} className="animate-spin" />
-                  <span>{analyzeMsg || '분석 중...'}</span>
-                </>
-              ) : (
-                <>
-                  <FontAwesomeIcon icon={faRobot} />
-                  <span>미분석 영상 일괄 분석</span>
-                </>
-              )}
-            </button>
           </div>
 
           {/* Loading skeleton */}
