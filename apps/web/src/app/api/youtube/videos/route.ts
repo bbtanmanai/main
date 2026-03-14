@@ -59,6 +59,7 @@ export async function GET(req: NextRequest) {
 
   const videos = (data || []).map((row: Record<string, unknown>, idx: number) => ({
     id:           from + idx + 1,
+    video_id:     (row.video_id as string) || '',
     channelName:  (row.channel as string) || '',
     videoTitle:   (row.title   as string) || '',
     description:  '',

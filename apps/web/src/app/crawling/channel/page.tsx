@@ -64,6 +64,7 @@ function getScoreTier(score: number): { emoji: string; color: string; label: str
 // --- Video type ---
 type VideoItem = {
   id: number;
+  video_id?: string;
   channelName: string;
   videoTitle: string;
   description: string;
@@ -93,6 +94,7 @@ export default function ChannelCrawlingPage() {
   const [progressMsg, setProgressMsg] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzeMsg, setAnalyzeMsg] = useState('');
+  const [analyzingIds, setAnalyzingIds] = useState<Set<string>>(new Set());
 
   // Pagination States
   const [currentPage, setCurrentPage] = useState(1);
@@ -262,6 +264,37 @@ export default function ChannelCrawlingPage() {
     } finally {
       setIsAnalyzing(false);
       setAnalyzeMsg('');
+    }
+  };
+
+  const handleAnalyzeSingle = async (videoId: string) => {
+    setAnalyzingIds(prev => new Set(prev).add(videoId));
+    try {
+      const res = await fetch('/api/youtube/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ video_ids: [videoId], batch_size: 1 }),
+      });
+      if (!res.ok || !res.body) throw new Error('API 요청 실패');
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const lines = decoder.decode(value).split('\n');
+        for (const line of lines) {
+          if (!line.trim().startsWith('data: ')) continue;
+          try {
+            const ev = JSON.parse(line.trim().slice(6));
+            if (ev.type === 'done' || ev.type === 'error') break;
+          } catch { /* skip */ }
+        }
+      }
+      await loadVideos(currentPage);
+    } catch (e) {
+      console.error('handleAnalyzeSingle error:', e);
+    } finally {
+      setAnalyzingIds(prev => { const s = new Set(prev); s.delete(videoId); return s; });
     }
   };
 
@@ -588,10 +621,36 @@ export default function ChannelCrawlingPage() {
                     </div>
                   </div>
                   
-                  <div className="mt-auto flex justify-center pt-3 md:pt-4 border-t border-white/5">
-                    <a 
-                      href={video.url} 
-                      target="_blank" 
+                  <div className="mt-auto flex flex-col gap-1.5 pt-3 md:pt-4 border-t border-white/5">
+                    {/* 개별 분석 버튼 */}
+                    {!video.is_analyzed ? (
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleAnalyzeSingle(String(video.video_id ?? video.id)); }}
+                        disabled={analyzingIds.has(String(video.video_id ?? video.id))}
+                        className="w-full flex items-center justify-center gap-1.5 py-1.5 md:py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-lg md:rounded-xl text-[8px] md:text-[10px] font-black transition-all disabled:opacity-50"
+                      >
+                        {analyzingIds.has(String(video.video_id ?? video.id)) ? (
+                          <><FontAwesomeIcon icon={faSpinner} className="animate-spin text-[8px]" /><span>분석 중...</span></>
+                        ) : (
+                          <><FontAwesomeIcon icon={faRobot} className="text-[8px]" /><span>AI 분석</span></>
+                        )}
+                      </button>
+                    ) : (
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleAnalyzeSingle(String(video.video_id ?? video.id)); }}
+                        disabled={analyzingIds.has(String(video.video_id ?? video.id))}
+                        className="w-full flex items-center justify-center gap-1.5 py-1.5 md:py-2 bg-white/5 hover:bg-white/10 text-slate-500 hover:text-slate-300 rounded-lg md:rounded-xl text-[8px] md:text-[10px] font-black transition-all disabled:opacity-50"
+                      >
+                        {analyzingIds.has(String(video.video_id ?? video.id)) ? (
+                          <><FontAwesomeIcon icon={faSpinner} className="animate-spin text-[8px]" /><span>재분석 중...</span></>
+                        ) : (
+                          <><FontAwesomeIcon icon={faSync} className="text-[8px]" /><span>재분석</span></>
+                        )}
+                      </button>
+                    )}
+                    <a
+                      href={video.url}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="w-full flex items-center justify-center gap-1.5 md:gap-2 px-2 md:px-3 py-1.5 md:py-2 bg-[#a78bfa]/10 hover:bg-[#a78bfa] text-[#a78bfa] hover:text-white rounded-lg md:rounded-xl text-[8px] md:text-[10px] font-black transition-all group/btn"
                     >
