@@ -25,10 +25,10 @@ CONFIG_DIR     = Path(__file__).parent / "config"
 PROMPT_CONFIG  = json.loads((CONFIG_DIR / "prompt_config.json").read_text(encoding="utf-8"))
 
 TTS_CHARS_PER_SEC  = 4.5
-MAX_VIDEO_SEC      = 200.0  # 씬 20개 × 10초
+MAX_VIDEO_SEC      = 90.0   # 씬 20개 × 4.5초 (쇼츠 최적화)
 MAX_SCENE_COUNT    = 20     # Opal App 병렬 풀 한도
-TARGET_SCENE_SEC   = 10.0
-TARGET_SCENE_CHARS = int(TARGET_SCENE_SEC * TTS_CHARS_PER_SEC)   # 45자
+TARGET_SCENE_SEC   = 4.5
+TARGET_SCENE_CHARS = int(TARGET_SCENE_SEC * TTS_CHARS_PER_SEC)   # 20자
 
 _gemini_client: Optional[_genai.Client] = None
 
@@ -194,7 +194,7 @@ def _build_prompt(
 ━━━ 형식 제약 ━━━
 • 대상: {user['target_persona']['age']} / {user['brand_voice']['tone']} 어조 / {user['brand_voice']['honorific']}
 • 씬 수: 정확히 {scene_count}개 (최소 15개, 최대 {scene_count}개)
-• 씬당 텍스트: {base['format']['scene_chars_min']}~{base['format']['scene_chars_max']}자 (약 10초 분량, 2~3문장)
+• 씬당 텍스트: {base['format']['scene_chars_min']}~{base['format']['scene_chars_max']}자 (약 4초 분량, 짧고 임팩트 있는 1~2문장)
 • 전체 합산: 최대 {total_chars}자
 • 출력: [씬N] 나레이션 텍스트만 (주석·설명·메타텍스트 금지){custom_block}"""
 

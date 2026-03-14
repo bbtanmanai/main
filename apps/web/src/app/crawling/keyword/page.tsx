@@ -70,6 +70,7 @@ type VideoItem = {
   quality_score?: number;
   content_type?: string;
   summary?: string;
+  viral_reason?: string;
 };
 
 const COUNTRIES = ['전체', 'Korea', 'USA', 'Japan', 'India'];
@@ -223,7 +224,7 @@ export default function KeywordCrawlingPage() {
               점수 = (조회수 ÷ 구독자수 × 100) × (1 + 참여율 × 0.05)<br />
               <span className="text-slate-400 text-xs">참여율 = (좋아요 + 댓글×5) ÷ 조회수 × 100</span>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-[10px] font-bold">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-[10px] font-bold mb-4">
               <div className="flex items-center gap-2 bg-red-500/15 border border-red-400/30 rounded-xl px-3 py-2">
                 <span>🔥</span><div><div className="text-red-400">30점 이상</div><div className="text-slate-500 font-medium">떡상</div></div>
               </div>
@@ -236,6 +237,13 @@ export default function KeywordCrawlingPage() {
               <div className="flex items-center gap-2 bg-slate-700/50 border border-slate-600/30 rounded-xl px-3 py-2">
                 <span>💤</span><div><div className="text-slate-400">8점 미만</div><div className="text-slate-500 font-medium">보통</div></div>
               </div>
+            </div>
+            <div className="flex items-center gap-3 bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-3">
+              <span className="text-lg">🔥</span>
+              <p className="text-[11px] font-black text-red-300 leading-snug">
+                <span className="text-red-400">30점 이상 떡상 영상만 수집 대상</span>입니다.
+                낮은 점수 영상은 AI 분석 버튼이 표시되지 않습니다.
+              </p>
             </div>
           </div>
         </div>
@@ -457,6 +465,11 @@ export default function KeywordCrawlingPage() {
                       {/* AI analysis result badges */}
                       {video.is_analyzed && (
                         <div className="flex flex-wrap gap-1 mb-2 md:mb-3">
+                          {video.viral_reason && (
+                            <span className="px-1.5 py-0.5 bg-red-500/10 border border-red-400/20 rounded text-[7px] md:text-[9px] font-black text-red-400">
+                              🔥 떡상분석완료
+                            </span>
+                          )}
                           {video.quality_score != null && (
                             <span className="px-1.5 py-0.5 bg-amber-500/10 border border-amber-400/20 rounded text-[7px] md:text-[9px] font-black text-amber-400">
                               ★ {video.quality_score.toFixed(1)}
@@ -503,16 +516,16 @@ export default function KeywordCrawlingPage() {
                       </div>
 
                       <div className="mt-auto flex flex-col gap-1.5 pt-2 md:pt-3 border-t border-white/5">
-                        {/* AI 분석 버튼 */}
-                        {!video.is_analyzed ? (
+                        {/* AI 분석 버튼 — 떡상(30점+) 영상만 표시 */}
+                        {score >= 30 && (!video.is_analyzed ? (
                           <button
                             onClick={(e) => { e.stopPropagation(); handleAnalyzeSingle(vid); }}
                             disabled={isAnalyzingThis}
-                            className="w-full flex items-center justify-center gap-1.5 py-1.5 md:py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-lg md:rounded-xl text-[8px] md:text-[10px] font-black transition-all disabled:opacity-50"
+                            className="w-full flex items-center justify-center gap-1.5 py-1.5 md:py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg md:rounded-xl text-[8px] md:text-[10px] font-black transition-all disabled:opacity-50"
                           >
                             {isAnalyzingThis
                               ? <><FontAwesomeIcon icon={faSpinner} className="animate-spin text-[8px]" /><span>분석 중...</span></>
-                              : <><FontAwesomeIcon icon={faRobot}   className="text-[8px]" /><span>AI 분석</span></>
+                              : <><FontAwesomeIcon icon={faRobot}   className="text-[8px]" /><span>🔥 떡상 이유 분석</span></>
                             }
                           </button>
                         ) : (
@@ -526,7 +539,7 @@ export default function KeywordCrawlingPage() {
                               : <><FontAwesomeIcon icon={faSync}    className="text-[8px]" /><span>재분석</span></>
                             }
                           </button>
-                        )}
+                        ))}
                         <a
                           href={video.url}
                           target="_blank"
@@ -675,55 +688,76 @@ export default function KeywordCrawlingPage() {
                   <FontAwesomeIcon icon={faRobot} className="text-[#a78bfa]" /> AI Insight
                 </label>
                 {selectedVideo.is_analyzed ? (
-                  <div className="bg-white/5 rounded-2xl p-6 border border-white/10 space-y-4">
-                    {selectedVideo.quality_score != null && (
-                      <div className="flex items-center gap-3">
-                        <span className="text-[10px] font-black text-slate-500 uppercase w-24">품질 점수</span>
-                        <div className="flex items-center gap-1">
-                          {[...Array(10)].map((_, i) => (
-                            <div
-                              key={i}
-                              className={`w-2 h-2 rounded-full ${i < Math.round(selectedVideo.quality_score!) ? 'bg-amber-400' : 'bg-white/10'}`}
-                            />
-                          ))}
-                          <span className="text-amber-400 font-black text-xs ml-2">{selectedVideo.quality_score.toFixed(1)}</span>
+                  <div className="space-y-3">
+                    {/* 떡상 이유 */}
+                    {selectedVideo.viral_reason && (
+                      <div className="bg-red-500/5 rounded-2xl p-6 border border-red-500/20 space-y-3">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm">🔥</span>
+                          <span className="text-[10px] font-black text-red-400 uppercase tracking-widest">왜 떡상했나</span>
+                          <span className="ml-auto px-2 py-0.5 rounded-full text-[9px] font-black bg-red-500/20 text-red-400 border border-red-500/30">성공 방정식 기반</span>
                         </div>
+                        <p className="text-red-200/80 text-xs leading-relaxed font-bold">{selectedVideo.viral_reason}</p>
                       </div>
                     )}
-                    {selectedVideo.content_type && (
-                      <div className="flex items-center gap-3">
-                        <span className="text-[10px] font-black text-slate-500 uppercase w-24">콘텐츠 유형</span>
-                        <span className="px-2 py-0.5 bg-sky-500/10 border border-sky-400/20 rounded text-xs font-black text-sky-400 uppercase">
-                          {selectedVideo.content_type}
-                        </span>
-                      </div>
-                    )}
-                    {selectedVideo.summary && selectedVideo.summary !== '자막 없음' && (
-                      <div>
-                        <div className="text-[10px] font-black text-slate-500 uppercase mb-2">요약</div>
-                        <p className="text-slate-400 text-xs leading-relaxed font-bold">{selectedVideo.summary}</p>
-                      </div>
-                    )}
-                    {selectedVideo.summary === '자막 없음' && (
-                      <p className="text-slate-500 text-xs font-bold">자막이 없는 영상입니다.</p>
-                    )}
+                    <div className="bg-white/5 rounded-2xl p-6 border border-white/10 space-y-4">
+                      {selectedVideo.quality_score != null && (
+                        <div className="flex items-center gap-3">
+                          <span className="text-[10px] font-black text-slate-500 uppercase w-24">품질 점수</span>
+                          <div className="flex items-center gap-1">
+                            {[...Array(10)].map((_, i) => (
+                              <div
+                                key={i}
+                                className={`w-2 h-2 rounded-full ${i < Math.round(selectedVideo.quality_score!) ? 'bg-amber-400' : 'bg-white/10'}`}
+                              />
+                            ))}
+                            <span className="text-amber-400 font-black text-xs ml-2">{selectedVideo.quality_score.toFixed(1)}</span>
+                          </div>
+                        </div>
+                      )}
+                      {selectedVideo.content_type && (
+                        <div className="flex items-center gap-3">
+                          <span className="text-[10px] font-black text-slate-500 uppercase w-24">콘텐츠 유형</span>
+                          <span className="px-2 py-0.5 bg-sky-500/10 border border-sky-400/20 rounded text-xs font-black text-sky-400 uppercase">
+                            {selectedVideo.content_type}
+                          </span>
+                        </div>
+                      )}
+                      {selectedVideo.summary && selectedVideo.summary !== '자막 없음' && (
+                        <div>
+                          <div className="text-[10px] font-black text-slate-500 uppercase mb-2">요약</div>
+                          <p className="text-slate-400 text-xs leading-relaxed font-bold">{selectedVideo.summary}</p>
+                        </div>
+                      )}
+                      {selectedVideo.summary === '자막 없음' && (
+                        <p className="text-slate-500 text-xs font-bold">자막이 없는 영상입니다.</p>
+                      )}
+                    </div>
                   </div>
                 ) : (
                   <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
-                    <p className="text-slate-500 text-xs font-bold mb-3">아직 분석되지 않은 영상입니다.</p>
-                    <button
-                      onClick={() => {
-                        const vid = selectedVideo.video_id ?? String(selectedVideo.id);
-                        handleAnalyzeSingle(vid);
-                      }}
-                      disabled={analyzingIds.has(selectedVideo.video_id ?? String(selectedVideo.id))}
-                      className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-xl text-xs font-black transition-all disabled:opacity-50"
-                    >
-                      {analyzingIds.has(selectedVideo.video_id ?? String(selectedVideo.id))
-                        ? <><FontAwesomeIcon icon={faSpinner} className="animate-spin" /><span>분석 중...</span></>
-                        : <><FontAwesomeIcon icon={faRobot} /><span>AI 분석 시작</span></>
+                    {(() => {
+                      const selScore = selectedVideo.viral_score ?? calcViralScore(selectedVideo);
+                      const selVid   = selectedVideo.video_id ?? String(selectedVideo.id);
+                      if (selScore < 30) {
+                        return <p className="text-slate-500 text-xs font-bold">바이럴 점수 30점 미만 영상은 AI 분석 대상이 아닙니다.</p>;
                       }
-                    </button>
+                      return (
+                        <>
+                          <p className="text-slate-500 text-xs font-bold mb-3">🔥 떡상 영상 — 왜 떡상했는지 분석할 수 있습니다.</p>
+                          <button
+                            onClick={() => handleAnalyzeSingle(selVid)}
+                            disabled={analyzingIds.has(selVid)}
+                            className="flex items-center gap-2 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-xl text-xs font-black transition-all disabled:opacity-50"
+                          >
+                            {analyzingIds.has(selVid)
+                              ? <><FontAwesomeIcon icon={faSpinner} className="animate-spin" /><span>분석 중...</span></>
+                              : <><FontAwesomeIcon icon={faRobot} /><span>🔥 떡상 이유 분석</span></>
+                            }
+                          </button>
+                        </>
+                      );
+                    })()}
                   </div>
                 )}
               </div>

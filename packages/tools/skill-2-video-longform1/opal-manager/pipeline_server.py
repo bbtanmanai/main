@@ -72,13 +72,14 @@ def main() -> int:
     parser.add_argument("--script",     default="", help="사전 편집된 시나리오 (전달 시 NotebookLM 건너뜀)")
     parser.add_argument("--art_prompt", default="", help="화풍 프롬프트 (Opal HTML 키프레임용)")
     parser.add_argument("--aspect",     default="16:9", choices=["16:9", "9:16"], help="출력 종횡비 (기본: 16:9)")
+    parser.add_argument("--tts_speed",  type=float, default=1.2, help="TTS 더빙 속도 (기본: 1.2)")
     args = parser.parse_args()
 
     prev_states: dict = {}
     reporter = make_reporter(prev_states)
 
     try:
-        job = PipelineJob(app_id=args.app, topic=args.topic, voice=args.voice, art_prompt=args.art_prompt, aspect=args.aspect)
+        job = PipelineJob(app_id=args.app, topic=args.topic, voice=args.voice, tts_speed=args.tts_speed, art_prompt=args.art_prompt, aspect=args.aspect)
 
         # [0] 인증
         emit({"type": "step", "step": 0, "message": "인증 확인 중..."})

@@ -5,7 +5,7 @@ import path from 'path';
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
-  const { app_id, topic, voice, script, art_prompt, aspect } = await req.json();
+  const { app_id, topic, voice, tts_speed, script, art_prompt, aspect } = await req.json();
 
   if (!topic?.trim()) {
     return new Response(JSON.stringify({ error: '주제를 입력해주세요.' }), {
@@ -39,6 +39,7 @@ export async function POST(req: NextRequest) {
       if (script?.trim())     args.push('--script',     script.trim());
       if (art_prompt?.trim()) args.push('--art_prompt', art_prompt.trim());
       if (aspect?.trim())     args.push('--aspect',     aspect.trim());
+      if (tts_speed != null)  args.push('--tts_speed',  String(tts_speed));
 
       const child = spawn('python', args,
         {

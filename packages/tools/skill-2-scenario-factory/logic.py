@@ -72,6 +72,15 @@ def mode_formula(config: dict) -> None:
         print("[오류] YOUTUBE_API_KEY 환경변수가 없습니다.")
         return
 
+    # 추가 API 키 수집 (YOUTUBE_API_KEY_2, YOUTUBE_API_KEY_3, ...)
+    extra_keys = []
+    for i in range(2, 10):
+        k = os.environ.get(f"YOUTUBE_API_KEY_{i}", "")
+        if k:
+            extra_keys.append(k)
+    if extra_keys:
+        print(f"  [API키] 총 {1 + len(extra_keys)}개 키 등록 (쿼터 초과 시 자동 전환)")
+
     formula_cfg = config.get("formula", {})
     min_score        = formula_cfg.get("min_viral_score",      30.0)
     fallback_score   = formula_cfg.get("fallback_min_score",   15.0)
@@ -95,6 +104,7 @@ def mode_formula(config: dict) -> None:
         max_per_keyword=max_per_keyword,
         top_n=top_n,
         fallback_min_score=fallback_score,
+        extra_api_keys=extra_keys,
     )
 
     total_collected = sum(len(v) for v in template_videos.values())

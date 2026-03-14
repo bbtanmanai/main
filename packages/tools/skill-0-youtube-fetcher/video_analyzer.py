@@ -147,21 +147,82 @@ def _extract_json_from_text(text: str) -> dict | None:
     return None
 
 
-def _analyze_with_gemini(transcript_text: str) -> dict:
-    """Call Gemini gemini-2.0-flash to analyze transcript. Returns analysis dict."""
-    prompt = f"""다음은 유튜브 영상의 자막입니다. 아래 항목을 JSON으로 분석해주세요:
-1. summary: 핵심 내용 요약 (200자 이내)
-2. keywords: 핵심 키워드 5개 (배열)
-3. quality_score: 콘텐츠 품질 점수 0-10 (정보성, 명확성, 유용성 기준)
-4. content_type: 콘텐츠 유형 (tutorial/review/news/opinion/vlog/interview/education 중 하나)
+def _fetch_success_formula(template_id: str | None) -> dict | None:
+    """Fetch success formula from success_formulas table. Template-specific first, fallback to common."""
+    supa = _get_supabase()
+    formula = None
 
-JSON만 반환하고 다른 텍스트는 포함하지 마세요.
+    # Try template-specific formula first
+    if template_id and template_id != 'general':
+        try:
+            res = supa.table('success_formulas').select('formula').eq('scope', template_id).maybe_single().execute()
+            if res is not None and res.data:
+                formula = res.data.get('formula')
+        except Exception:
+            pass
 
-자막: {transcript_text}"""
+    # Fallback to common formula
+    if formula is None:
+        try:
+            res = supa.table('success_formulas').select('formula').eq('scope', 'common').maybe_single().execute()
+            if res is not None and res.data:
+                formula = res.data.get('formula')
+        except Exception:
+            pass
+
+    return formula
+
+
+def _build_formula_context(formula: dict) -> str:
+    """Convert success formula dict into a readable text block for the prompt."""
+    parts = []
+    if formula.get('hook_patterns'):
+        parts.append(f"- 훅 패턴: {', '.join(formula['hook_patterns'][:5])}")
+    if formula.get('key_success_factors'):
+        parts.append(f"- 핵심 성공 요인: {', '.join(formula['key_success_factors'][:5])}")
+    if formula.get('emotional_triggers'):
+        parts.append(f"- 감정 자극 요소: {', '.join(formula['emotional_triggers'][:3])}")
+    if formula.get('top_hook_templates'):
+        parts.append(f"- 템플릿 전용 훅: {', '.join(formula['top_hook_templates'][:3])}")
+    if formula.get('title_keywords_viral'):
+        parts.append(f"- 바이럴 키워드: {', '.join(formula['title_keywords_viral'][:8])}")
+    if formula.get('target_emotion'):
+        parts.append(f"- 주요 감정: {formula['target_emotion']}")
+    if formula.get('winning_scene_flow'):
+        parts.append(f"- 검증된 씬 흐름: {', '.join(formula['winning_scene_flow'][:4])}")
+    return '\n'.join(parts) if parts else '성공 방정식 정보 없음'
+
+
+def _analyze_with_gemini(
+    title: str,
+    transcript_text: str,
+    viral_score: float,
+    formula: dict | None,
+) -> dict:
+    """Call Gemini to analyze transcript and explain why it went viral. Returns analysis dict."""
+    formula_block = _build_formula_context(formula) if formula else '성공 방정식 정보 없음'
+
+    prompt = f"""다음은 유튜브 바이럴 영상의 데이터입니다. 아래 항목을 JSON으로 분석해주세요.
+
+영상 제목: {title}
+바이럴 점수: {viral_score}점 (30점 이상 = 떡상 영상)
+
+[성공 방정식]
+{formula_block}
+
+[영상 자막]
+{transcript_text}
+
+분석 항목 (JSON만 반환, 다른 텍스트 없음):
+1. viral_reason: 이 영상이 왜 떡상했는지 성공 방정식에 근거한 구체적 이유 (200자 이내, 한국어)
+2. summary: 핵심 내용 요약 (150자 이내)
+3. keywords: 핵심 키워드 5개 (배열)
+4. quality_score: 콘텐츠 품질 점수 0-10 (정보성, 명확성, 유용성 기준)
+5. content_type: 콘텐츠 유형 (tutorial/review/news/opinion/vlog/interview/education 중 하나)"""
 
     client = genai.Client(api_key=GOOGLE_API_KEY)
     response = client.models.generate_content(
-        model="gemini-2.0-flash",
+        model="gemini-2.5-flash-lite",
         contents=prompt,
     )
     result = _extract_json_from_text(response.text)
@@ -174,13 +235,26 @@ def analyze_video(video_id: str) -> tuple[bool, str, dict]:
     """Analyze a single video. Returns (success, title, update_data)."""
     supa = _get_supabase()
 
-    # Fetch video title from Supabase
-    row_res = supa.table('crawl_videos').select('title').eq('video_id', video_id).maybe_single().execute()
+    # Fetch video metadata from Supabase
+    row_res = (
+        supa.table('crawl_videos')
+        .select('title, viral_score, template_id')
+        .eq('video_id', video_id)
+        .maybe_single()
+        .execute()
+    )
     title = ''
+    viral_score = 0.0
+    template_id = None
     if row_res is not None and row_res.data:
-        title = row_res.data.get('title', '') or ''
+        title       = row_res.data.get('title', '') or ''
+        viral_score = float(row_res.data.get('viral_score') or 0)
+        template_id = row_res.data.get('template_id')
 
     now_iso = datetime.now(timezone.utc).isoformat()
+
+    # Fetch success formula
+    formula = _fetch_success_formula(template_id) if viral_score >= 30 else None
 
     # Fetch transcript
     transcript_text = _fetch_transcript(video_id)
@@ -195,13 +269,15 @@ def analyze_video(video_id: str) -> tuple[bool, str, dict]:
             'quality_score': None,
             'transcript': None,
             'keywords': [],
+            'viral_reason': None,
         }
         supa.table('crawl_videos').update(update_data).eq('video_id', video_id).execute()
         return True, title, update_data
 
     # Analyze with Gemini
-    analysis = _analyze_with_gemini(transcript_text)
+    analysis = _analyze_with_gemini(title, transcript_text, viral_score, formula)
 
+    viral_reason = str(analysis.get('viral_reason', ''))[:500] or None
     summary      = str(analysis.get('summary', ''))[:200]
     keywords     = analysis.get('keywords', [])
     if not isinstance(keywords, list):
@@ -228,6 +304,7 @@ def analyze_video(video_id: str) -> tuple[bool, str, dict]:
         'content_type': content_type,
         'is_analyzed': True,
         'analyzed_at': now_iso,
+        'viral_reason': viral_reason,
     }
     supa.table('crawl_videos').update(update_data).eq('video_id', video_id).execute()
     return True, title, update_data

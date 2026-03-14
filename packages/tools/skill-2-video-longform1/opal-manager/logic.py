@@ -245,6 +245,7 @@ class PipelineJob:
     app_id: str
     topic: str
     voice: str = "ko-KR-Wavenet-D"
+    tts_speed: float = 1.2             # TTS 더빙 속도 (0.5~2.0)
     style: str = "ranking"             # 시나리오 구성 스타일
     art_prompt: str = ""               # 화풍 프롬프트 (NotebookLM 슬라이드 주입용)
     clips: list[ClipStatus] = field(default_factory=list)
@@ -503,7 +504,7 @@ def _real_render(
     tts_path = work_dir / f"tts_{clip.index:02d}.mp3"
     if not tts_path.exists():
         api_key = os.environ.get("GOOGLE_API_KEY", "")
-        synthesize_to_mp3(clip.scene_text, job.voice, tts_path, api_key)
+        synthesize_to_mp3(clip.scene_text, job.voice, tts_path, api_key, speed=job.tts_speed)
     clip.tts_path = tts_path
 
     clip.progress = 40.0

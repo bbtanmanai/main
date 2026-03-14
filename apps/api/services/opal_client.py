@@ -325,4 +325,48 @@ class OpalInternalClient:
             return None
 
 
+    async def download_blob_image(
+        self,
+        proxy_url: str,
+        output_path: Path,
+    ) -> bool:
+        """
+        executeStep 결과로 받은 proxy_url 에서 이미지를 다운로드해 PNG로 저장.
+
+        proxy_url 형식: https://opal.google/board/blobs/labs-opal-prod-blobs/{uuid}
+        인증: Bearer 토큰 + 쿠키 (opal_client 공통 헤더 사용)
+        """
+        from pathlib import Path as _Path
+
+        token_header = opal_auth_manager.ensure_token() or ""
+        session = opal_auth_manager.load_session()
+        cookie_header = session.cookie_header if session and session.cookies else ""
+
+        headers = {
+            "Authorization": token_header,
+            "Referer": "https://opal.google/",
+            "Origin": "https://opal.google",
+            "x-browser-channel": "stable",
+            "x-browser-copyright": "Copyright 2026 Google LLC. All Rights reserved.",
+            "x-browser-validation": "mGtxj/IERUi4uQ9hLSvZZF4DQgA=",
+            "x-browser-year": "2026",
+            "x-client-data": "CIW2yQEIpbbJAQipncoBCNjeygEIlKHLAQiFoM0BCNKxzwEY6LHPARjIs88B",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        }
+        if cookie_header:
+            headers["Cookie"] = cookie_header
+
+        try:
+            async with httpx.AsyncClient(timeout=60.0) as c:
+                resp = await c.get(proxy_url, headers=headers, follow_redirects=True)
+                resp.raise_for_status()
+                _Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+                _Path(output_path).write_bytes(resp.content)
+                logger.info(f"blob 다운로드 완료: {output_path} ({len(resp.content)//1024}KB)")
+                return True
+        except Exception as e:
+            logger.error(f"blob 다운로드 실패: {e}")
+            return False
+
+
 opal_client = OpalInternalClient()

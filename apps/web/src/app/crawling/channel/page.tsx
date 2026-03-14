@@ -81,6 +81,7 @@ type VideoItem = {
   quality_score?: number;
   content_type?: string;
   summary?: string;
+  viral_reason?: string;
 };
 
 
@@ -264,7 +265,7 @@ export default function ChannelCrawlingPage() {
               점수 = (조회수 ÷ 구독자수 × 100) × (1 + 참여율 × 0.05)<br />
               <span className="text-slate-400 text-xs">참여율 = (좋아요 + 댓글×5) ÷ 조회수 × 100</span>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-[10px] font-bold">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-[10px] font-bold mb-4">
               <div className="flex items-center gap-2 bg-red-500/15 border border-red-400/30 rounded-xl px-3 py-2">
                 <span>🔥</span>
                 <div>
@@ -293,6 +294,13 @@ export default function ChannelCrawlingPage() {
                   <div className="text-slate-500 font-medium">보통</div>
                 </div>
               </div>
+            </div>
+            <div className="flex items-center gap-3 bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-3">
+              <span className="text-lg">🔥</span>
+              <p className="text-[11px] font-black text-red-300 leading-snug">
+                <span className="text-red-400">30점 이상 떡상 영상만 수집 대상</span>입니다.
+                낮은 점수 영상은 AI 분석 버튼이 표시되지 않습니다.
+              </p>
             </div>
           </div>
         </div>
@@ -473,15 +481,15 @@ export default function ChannelCrawlingPage() {
 
                 {/* Analysis Status Badges */}
                 <div className="flex flex-wrap items-center gap-1 px-3 pt-1.5">
-                  {video.is_analyzed ? (
+                  {video.is_analyzed && video.viral_reason ? (
+                    <span className="px-1.5 py-0.5 rounded-full text-[7px] md:text-[8px] font-black bg-red-500/20 text-red-400 border border-red-500/30">
+                      🔥 떡상분석완료
+                    </span>
+                  ) : video.is_analyzed ? (
                     <span className="px-1.5 py-0.5 rounded-full text-[7px] md:text-[8px] font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                      질분석완료
+                      분석완료
                     </span>
-                  ) : (
-                    <span className="px-1.5 py-0.5 rounded-full text-[7px] md:text-[8px] font-black bg-slate-600/40 text-slate-400 border border-slate-600/40">
-                      미분석
-                    </span>
-                  )}
+                  ) : null}
                   {video.is_analyzed && video.quality_score != null && (
                     <span className={`px-1.5 py-0.5 rounded-full text-[7px] md:text-[8px] font-black border ${
                       video.quality_score >= 7
@@ -546,32 +554,37 @@ export default function ChannelCrawlingPage() {
                   </div>
                   
                   <div className="mt-auto flex flex-col gap-1.5 pt-3 md:pt-4 border-t border-white/5">
-                    {/* 개별 분석 버튼 */}
-                    {!video.is_analyzed ? (
-                      <button
-                        onClick={(e) => { e.stopPropagation(); handleAnalyzeSingle(String(video.video_id ?? video.id)); }}
-                        disabled={analyzingIds.has(String(video.video_id ?? video.id))}
-                        className="w-full flex items-center justify-center gap-1.5 py-1.5 md:py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-lg md:rounded-xl text-[8px] md:text-[10px] font-black transition-all disabled:opacity-50"
-                      >
-                        {analyzingIds.has(String(video.video_id ?? video.id)) ? (
-                          <><FontAwesomeIcon icon={faSpinner} className="animate-spin text-[8px]" /><span>분석 중...</span></>
-                        ) : (
-                          <><FontAwesomeIcon icon={faRobot} className="text-[8px]" /><span>AI 분석</span></>
-                        )}
-                      </button>
-                    ) : (
-                      <button
-                        onClick={(e) => { e.stopPropagation(); handleAnalyzeSingle(String(video.video_id ?? video.id)); }}
-                        disabled={analyzingIds.has(String(video.video_id ?? video.id))}
-                        className="w-full flex items-center justify-center gap-1.5 py-1.5 md:py-2 bg-white/5 hover:bg-white/10 text-slate-500 hover:text-slate-300 rounded-lg md:rounded-xl text-[8px] md:text-[10px] font-black transition-all disabled:opacity-50"
-                      >
-                        {analyzingIds.has(String(video.video_id ?? video.id)) ? (
-                          <><FontAwesomeIcon icon={faSpinner} className="animate-spin text-[8px]" /><span>재분석 중...</span></>
-                        ) : (
-                          <><FontAwesomeIcon icon={faSync} className="text-[8px]" /><span>재분석</span></>
-                        )}
-                      </button>
-                    )}
+                    {/* AI 분석 버튼 — 떡상(30점+) 영상만 표시 */}
+                    {(() => {
+                      const score = video.viral_score != null ? video.viral_score : calcViralScore(video);
+                      if (score < 30) return null;
+                      const vid = String(video.video_id ?? video.id);
+                      return !video.is_analyzed ? (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleAnalyzeSingle(vid); }}
+                          disabled={analyzingIds.has(vid)}
+                          className="w-full flex items-center justify-center gap-1.5 py-1.5 md:py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg md:rounded-xl text-[8px] md:text-[10px] font-black transition-all disabled:opacity-50"
+                        >
+                          {analyzingIds.has(vid) ? (
+                            <><FontAwesomeIcon icon={faSpinner} className="animate-spin text-[8px]" /><span>분석 중...</span></>
+                          ) : (
+                            <><FontAwesomeIcon icon={faRobot} className="text-[8px]" /><span>🔥 떡상 이유 분석</span></>
+                          )}
+                        </button>
+                      ) : (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleAnalyzeSingle(vid); }}
+                          disabled={analyzingIds.has(vid)}
+                          className="w-full flex items-center justify-center gap-1.5 py-1.5 md:py-2 bg-white/5 hover:bg-white/10 text-slate-500 hover:text-slate-300 rounded-lg md:rounded-xl text-[8px] md:text-[10px] font-black transition-all disabled:opacity-50"
+                        >
+                          {analyzingIds.has(vid) ? (
+                            <><FontAwesomeIcon icon={faSpinner} className="animate-spin text-[8px]" /><span>재분석 중...</span></>
+                          ) : (
+                            <><FontAwesomeIcon icon={faSync} className="text-[8px]" /><span>재분석</span></>
+                          )}
+                        </button>
+                      );
+                    })()}
                     <a
                       href={video.url}
                       target="_blank"
@@ -755,6 +768,24 @@ export default function ChannelCrawlingPage() {
                   AI Analysis Content
                 </label>
                 <div className="space-y-4">
+                  {/* Viral Reason — 떡상 이유 (30점+ 분석 완료 시) */}
+                  {selectedVideo.is_analyzed && selectedVideo.viral_reason && (
+                    <div className="bg-red-500/5 rounded-2xl p-6 border border-red-500/20 space-y-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center text-red-400 text-xs">
+                          🔥
+                        </div>
+                        <h4 className="text-sm font-black text-white uppercase tracking-wider">왜 떡상했나</h4>
+                        <span className="ml-auto px-2 py-0.5 rounded-full text-[9px] font-black bg-red-500/20 text-red-400 border border-red-500/30">
+                          성공 방정식 기반
+                        </span>
+                      </div>
+                      <p className="text-red-200/80 text-xs leading-relaxed font-bold pl-11">
+                        {selectedVideo.viral_reason}
+                      </p>
+                    </div>
+                  )}
+
                   {/* Summary */}
                   <div className="bg-white/5 rounded-2xl p-6 border border-white/10 space-y-4">
                     <div className="flex items-center gap-3">
@@ -777,17 +808,11 @@ export default function ChannelCrawlingPage() {
                     <p className="text-slate-400 text-xs leading-relaxed font-bold pl-11">
                       {selectedVideo.is_analyzed
                         ? (selectedVideo.summary || '요약 없음')
-                        : (
-                          <>
-                            영상을 분석 중입니다. 잠시만 기다려 주세요...<br/>
-                            AI가 영상의 스크립트를 추출하고 주요 포인트를 정리하여 이곳에 표시합니다.
-                          </>
-                        )
-                      }
+                        : '분석 전입니다. 30점 이상 영상만 AI 분석이 가능합니다.'}
                     </p>
                   </div>
 
-                  {/* Content Type & Keywords */}
+                  {/* Content Type */}
                   {selectedVideo.is_analyzed && (
                     <div className="bg-white/5 rounded-2xl p-6 border border-white/10 space-y-4">
                       <div className="flex items-center gap-3">
@@ -802,34 +827,9 @@ export default function ChannelCrawlingPage() {
                         )}
                       </div>
                       <div className="pl-11">
-                        {/* Analysis not done yet placeholder */}
-                        {!selectedVideo.summary && (
-                          <div className="space-y-2">
-                            <div className="h-2 w-full bg-white/5 rounded-full"></div>
-                            <div className="h-2 w-[80%] bg-white/5 rounded-full"></div>
-                            <div className="h-2 w-[90%] bg-white/5 rounded-full"></div>
-                          </div>
-                        )}
                         {selectedVideo.summary === '자막 없음' && (
                           <p className="text-slate-500 text-xs font-bold">자막을 사용할 수 없는 영상입니다.</p>
                         )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Not analyzed yet */}
-                  {!selectedVideo.is_analyzed && (
-                    <div className="bg-white/5 rounded-2xl p-6 border border-white/10 space-y-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-xs">
-                          <FontAwesomeIcon icon={faFileAlt} />
-                        </div>
-                        <h4 className="text-sm font-black text-white uppercase tracking-wider">추출된 스크립트</h4>
-                      </div>
-                      <div className="pl-11 space-y-2">
-                        <div className="h-2 w-full bg-white/5 rounded-full"></div>
-                        <div className="h-2 w-[80%] bg-white/5 rounded-full"></div>
-                        <div className="h-2 w-[90%] bg-white/5 rounded-full"></div>
                       </div>
                     </div>
                   )}

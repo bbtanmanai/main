@@ -21,7 +21,7 @@ from typing import Optional
 from google import genai as _genai
 from google.genai import types as _genai_types
 
-GEMINI_MODEL = "gemini-2.0-flash"
+GEMINI_MODEL = "gemini-2.5-flash-lite"
 
 TEMPLATE_NAMES: dict[str, str] = {
     "health-senior":   "시니어 건강",

@@ -145,6 +145,7 @@ export default function LongformPage() {
   const [voice, setVoice]         = useState<Voice>(VOICES[0]);
   const [previewing, setPreviewing] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [ttsSpeed, setTtsSpeed]   = useState<number>(1.2);
   const [textStyle, setTextStyle] = useState<'box' | 'outline'>('box');
 
   // Step 3
@@ -242,6 +243,7 @@ export default function LongformPage() {
           topic:      useTopic,
           style:      sty.id,
           voice:      voice.id,
+          tts_speed:  ttsSpeed,
           art_prompt: useArt?.notebooklmPrompt ?? '',
         }),
       });
@@ -358,6 +360,7 @@ export default function LongformPage() {
           app_id:     template.id,
           topic:      topic.trim() || template.title,
           voice:      voice.id,
+          tts_speed:  ttsSpeed,
           script:     (inputMode === 'manual' ? manualScript : editedScript).trim() || undefined,
           art_prompt: artStyle?.notebooklmPrompt ?? '',
           aspect:     resolution,
@@ -699,29 +702,21 @@ export default function LongformPage() {
                   </div>
                 </div>
 
-                {/* ── 주제 + 재생성 ── */}
-                {style && (
-                  <div className="flex gap-2 mb-6">
-                    <input
-                      type="text"
-                      value={topic}
-                      onChange={e => setTopic(e.target.value)}
-                      onKeyDown={e => e.key === 'Enter' && template && style && generateScenarios(template, style)}
-                      placeholder={`주제 입력 (기본: ${template?.title})`}
-                      className="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500/50 text-sm transition-all"
-                    />
-                    <button
-                      onClick={() => template && style && generateScenarios(template, style)}
-                      disabled={scenariosLoading}
-                      className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600/20 hover:bg-indigo-600/40 border border-indigo-500/30 rounded-xl text-indigo-300 text-xs font-black transition-all disabled:opacity-40 whitespace-nowrap"
-                    >
-                      <FontAwesomeIcon icon={scenariosLoading ? faSpinner : faRotate} className={scenariosLoading ? 'animate-spin' : ''} />
-                      {scenariosLoading ? '생성 중...' : '재생성'}
-                    </button>
-                  </div>
-                )}
-
                 {/* ── 시나리오 3개 카드 ── */}
+                {scenarios.length > 0 && (
+                  <>
+                    <div className="flex justify-end mb-2">
+                      <button
+                        onClick={() => template && style && generateScenarios(template, style)}
+                        disabled={scenariosLoading}
+                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600/20 hover:bg-indigo-600/40 border border-indigo-500/30 rounded-xl text-indigo-300 text-xs font-black transition-all disabled:opacity-40"
+                      >
+                        <FontAwesomeIcon icon={scenariosLoading ? faSpinner : faRotate} className={scenariosLoading ? 'animate-spin' : ''} />
+                        {scenariosLoading ? '생성 중...' : '재생성'}
+                      </button>
+                    </div>
+                  </>
+                )}
                 {scenarios.length > 0 && (
                   <div className="grid md:grid-cols-3 gap-4 mb-6">
                     {scenarios.map(card => (
@@ -755,7 +750,7 @@ export default function LongformPage() {
                       <textarea
                         value={editedScript}
                         onChange={e => setEditedScript(e.target.value)}
-                        rows={10}
+                        rows={16}
                         className="w-full bg-slate-900 border border-slate-700 rounded-2xl p-4 text-white text-sm focus:outline-none focus:border-indigo-500/50 resize-none font-mono leading-relaxed transition-all"
                       />
                     </div>
@@ -771,6 +766,7 @@ export default function LongformPage() {
                             previewing={previewing === v.id} onSelect={() => setVoice(v)} onPreview={() => handlePreview(v)} />
                         ))}
                       </div>
+                      <TtsSpeedControl value={ttsSpeed} onChange={setTtsSpeed} />
                     </div>
                   </div>
                 )}
@@ -851,6 +847,7 @@ export default function LongformPage() {
                           previewing={previewing === v.id} onSelect={() => setVoice(v)} onPreview={() => handlePreview(v)} />
                       ))}
                     </div>
+                    <TtsSpeedControl value={ttsSpeed} onChange={setTtsSpeed} />
 
                     {/* 입력 형식 안내 */}
                     <div className="mt-4 bg-slate-900/60 border border-slate-800 rounded-2xl p-4">
@@ -1444,6 +1441,46 @@ function VoiceCard({ v, idx, selected, previewing, onSelect, onPreview }: {
           <FontAwesomeIcon icon={v.gender === 'MALE' ? faMars : faVenus} className="text-[9px] text-slate-300" />
           <span className="text-[8px] text-slate-400 font-bold uppercase">{v.type}</span>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function TtsSpeedControl({ value, onChange }: { value: number; onChange: (v: number) => void }) {
+  const presets = [0.8, 1.0, 1.2, 1.5];
+  return (
+    <div className="mt-3 bg-slate-900/60 border border-slate-800 rounded-2xl p-3">
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <FontAwesomeIcon icon={faVolumeUp} className="text-fuchsia-400 text-xs" />
+          <span className="text-xs font-black text-white">더빙 속도</span>
+        </div>
+        <span className="text-xs font-black text-fuchsia-300">{value.toFixed(1)}x</span>
+      </div>
+      <div className="flex gap-1.5 mb-2">
+        {presets.map(p => (
+          <button
+            key={p}
+            onClick={() => onChange(p)}
+            className={`flex-1 py-1 rounded-lg text-[11px] font-black transition-all ${
+              value === p
+                ? 'bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow-sm'
+                : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
+            }`}
+          >
+            {p.toFixed(1)}x
+          </button>
+        ))}
+      </div>
+      <input
+        type="range" min={0.5} max={2.0} step={0.1}
+        value={value}
+        onChange={e => onChange(parseFloat(e.target.value))}
+        className="w-full accent-fuchsia-500 h-1 cursor-pointer"
+      />
+      <div className="flex justify-between mt-0.5">
+        <span className="text-[9px] text-slate-600">0.5x</span>
+        <span className="text-[9px] text-slate-600">2.0x</span>
       </div>
     </div>
   );

@@ -44,6 +44,7 @@ def _synthesize_google(
     voice_id: str,
     output_path: Path,
     api_key: str,
+    speed: float = 1.2,
 ) -> bool:
     """Google Cloud TTS REST API로 MP3 생성. 성공 시 True."""
     payload = {
@@ -54,7 +55,7 @@ def _synthesize_google(
         },
         "audioConfig": {
             "audioEncoding": "MP3",
-            "speakingRate": 0.95,        # 약간 천천히 (시니어 친화)
+            "speakingRate": max(0.25, min(4.0, speed)),
             "pitch": 0.0,
         },
     }
@@ -79,14 +80,18 @@ def _synthesize_edge(
     text: str,
     voice_id: str,
     output_path: Path,
+    speed: float = 1.2,
 ) -> None:
     """edge-tts를 사용해 MP3 생성."""
     import edge_tts
 
     edge_voice = EDGE_VOICE_MAP.get(voice_id, DEFAULT_EDGE_VOICE)
+    # speed 1.0 → "+0%", 1.2 → "+20%", 0.8 → "-20%"
+    rate_pct = int(round((speed - 1.0) * 100))
+    rate_str = f"+{rate_pct}%" if rate_pct >= 0 else f"{rate_pct}%"
 
     async def _run() -> None:
-        communicate = edge_tts.Communicate(text, edge_voice)
+        communicate = edge_tts.Communicate(text, edge_voice, rate=rate_str)
         await communicate.save(str(output_path))
 
     asyncio.run(_run())
@@ -99,6 +104,7 @@ def synthesize_to_mp3(
     voice_id: str,
     output_path: Path,
     api_key: Optional[str] = None,
+    speed: float = 1.2,
 ) -> Path:
     """
     씬 텍스트를 MP3로 변환.
@@ -123,11 +129,11 @@ def synthesize_to_mp3(
 
     # 1순위: Google Cloud TTS
     if resolved_key:
-        if _synthesize_google(text, voice_id, output_path, resolved_key):
+        if _synthesize_google(text, voice_id, output_path, resolved_key, speed=speed):
             return output_path
 
     # 2순위: edge-tts
-    _synthesize_edge(text, voice_id, output_path)
+    _synthesize_edge(text, voice_id, output_path, speed=speed)
     return output_path
 
 

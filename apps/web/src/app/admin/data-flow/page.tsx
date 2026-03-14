@@ -54,7 +54,7 @@ export default function IntegratedInventory() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isMounted, setIsMounted] = useState(false);
 
-  const API_URL = "http://localhost:8000/api/v1/inventory/pipeline-status";
+  const API_URL = "/api/v1/inventory/pipeline-status";
 
   useEffect(() => {
     setIsMounted(true);

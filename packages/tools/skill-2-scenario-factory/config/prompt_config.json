@@ -13,8 +13,8 @@
       "교과서식 오프닝 절대 금지: '~에 대해 알아보겠습니다' 사용 불가"
     ],
     "format": {
-      "scene_chars_min": 40,
-      "scene_chars_max": 50,
+      "scene_chars_min": 18,
+      "scene_chars_max": 30,
       "scene_count_target": 30,
       "total_chars_max": 1372
     }

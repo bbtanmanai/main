@@ -85,6 +85,7 @@ export async function GET(req: NextRequest) {
     quality_score: row.quality_score != null ? Number(row.quality_score) : undefined,
     content_type:  (row.content_type as string) || undefined,
     summary:       (row.summary as string) || undefined,
+    viral_reason:  (row.viral_reason as string) || undefined,
   }));
 
   return NextResponse.json({ videos, total, page, totalPages });

@@ -19,6 +19,7 @@ import time
 from typing import Optional
 
 from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 
 import supabase_client
 from topic_collector import TEMPLATE_KEYWORDS
@@ -48,8 +49,56 @@ def _calc_viral_score(views: int, likes: int, comments: int, subscribers: int) -
     return round(view_ratio * (1 + engagement * 0.05), 2)
 
 
+def _is_quota_exceeded(exc: Exception) -> bool:
+    """YouTube API 쿼터 초과 오류인지 확인."""
+    if isinstance(exc, HttpError) and exc.resp.status == 403:
+        content = str(exc)
+        return "quotaExceeded" in content or "quota" in content.lower()
+    return False
+
+
+class YouTubeKeyRotator:
+    """
+    여러 API 키를 순환하며 사용.
+    쿼터 초과 시 자동으로 다음 키로 전환.
+    """
+    def __init__(self, api_keys: list[str]):
+        self.keys = [k for k in api_keys if k]
+        self.idx  = 0
+        self._client = self._build()
+
+    def _build(self):
+        key = self.keys[self.idx]
+        label = f"키{self.idx + 1} (...{key[-6:]})"
+        print(f"  [API키] {label} 사용 중")
+        return build("youtube", "v3", developerKey=key)
+
+    def rotate(self) -> bool:
+        """다음 키로 전환. 남은 키가 없으면 False 반환."""
+        next_idx = self.idx + 1
+        if next_idx >= len(self.keys):
+            return False
+        self.idx = next_idx
+        print(f"  [API키 전환] 쿼터 초과 → 키{self.idx + 1} (...{self.keys[self.idx][-6:]}) 로 전환")
+        self._client = self._build()
+        return True
+
+    def execute_with_rotation(self, build_request_fn):
+        """
+        API 요청 실행. 쿼터 초과 시 키 전환 후 재시도.
+        build_request_fn: youtube 클라이언트를 받아 request 객체를 반환하는 함수
+        """
+        while True:
+            try:
+                return build_request_fn(self._client).execute()
+            except HttpError as exc:
+                if _is_quota_exceeded(exc) and self.rotate():
+                    continue  # 새 키로 재시도
+                raise  # 모든 키 소진 or 다른 오류
+
+
 def collect_template_videos(
-    youtube,
+    rotator: YouTubeKeyRotator,
     template_id: str,
     min_score: float = 30.0,
     max_per_keyword: int = 50,
@@ -70,13 +119,15 @@ def collect_template_videos(
     for kw in keywords:
         try:
             # 전 세계 검색 (regionCode 지정 안 함 = 글로벌)
-            search_res = youtube.search().list(
-                q=kw,
-                part="id",
-                type="video",
-                order="viewCount",          # 조회수 많은 순
-                maxResults=min(max_per_keyword, 50),
-            ).execute()
+            search_res = rotator.execute_with_rotation(
+                lambda yt: yt.search().list(
+                    q=kw,
+                    part="id",
+                    type="video",
+                    order="viewCount",
+                    maxResults=min(max_per_keyword, 50),
+                )
+            )
 
             video_ids = [
                 item["id"]["videoId"]
@@ -89,10 +140,12 @@ def collect_template_videos(
                 continue
 
             # 영상 상세 정보
-            details_res = youtube.videos().list(
-                id=",".join(new_ids),
-                part="snippet,statistics",
-            ).execute()
+            details_res = rotator.execute_with_rotation(
+                lambda yt: yt.videos().list(
+                    id=",".join(new_ids),
+                    part="snippet,statistics",
+                )
+            )
 
             # 채널 구독자 수 일괄 조회
             channel_ids = list({
@@ -101,10 +154,12 @@ def collect_template_videos(
             })
             subs_map: dict[str, int] = {}
             if channel_ids:
-                ch_res = youtube.channels().list(
-                    id=",".join(channel_ids),
-                    part="statistics",
-                ).execute()
+                ch_res = rotator.execute_with_rotation(
+                    lambda yt: yt.channels().list(
+                        id=",".join(channel_ids),
+                        part="statistics",
+                    )
+                )
                 for ch in ch_res.get("items", []):
                     subs_map[ch["id"]] = int(
                         ch.get("statistics", {}).get("subscriberCount", 0)
@@ -169,19 +224,22 @@ def collect_all_templates(
     max_per_keyword: int = 50,
     top_n: int = 100,
     fallback_min_score: float = 15.0,
+    extra_api_keys: list[str] | None = None,
 ) -> dict[str, list[dict]]:
     """
     12개 전체 템플릿 수집.
     - 30점+ 영상이 10개 미만이면 15점+ 폴백 적용
+    - 쿼터 초과 시 extra_api_keys로 자동 전환
     - 수집 영상은 crawl_videos에도 upsert (부산물 활용)
     반환: {template_id: [video, ...], ...}
     """
-    youtube = build("youtube", "v3", developerKey=api_key)
+    all_keys = [api_key] + (extra_api_keys or [])
+    rotator  = YouTubeKeyRotator(all_keys)
     result: dict[str, list[dict]] = {}
 
     for tmpl in TEMPLATE_KEYWORDS.keys():
         videos = collect_template_videos(
-            youtube, tmpl,
+            rotator, tmpl,
             min_score=min_score,
             max_per_keyword=max_per_keyword,
             top_n=top_n,
@@ -191,7 +249,7 @@ def collect_all_templates(
         if len(videos) < 10:
             print(f"  [{tmpl}] 30점+ 부족 ({len(videos)}개) → {fallback_min_score}점+ 폴백 적용")
             videos = collect_template_videos(
-                youtube, tmpl,
+                rotator, tmpl,
                 min_score=fallback_min_score,
                 max_per_keyword=max_per_keyword,
                 top_n=top_n,
