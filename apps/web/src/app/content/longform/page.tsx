@@ -344,7 +344,8 @@ export default function LongformPage() {
     setStep(3);
     setRunning(true);
     setPipelineError(null);
-    setFinalUrl(null);
+    setFinalUrl16x9(null);
+    setFinalUrl9x16(null);
     setSlots([]);
     setPipelineStep(0);
     setStepMsg('파이프라인 시작 중...');
