@@ -36,7 +36,7 @@ if _ROOT_ENV.exists():
             _k, _v = _line.split("=", 1)
             os.environ.setdefault(_k.strip(), _v.strip())
 
-import google.generativeai as genai  # noqa: E402
+import google.genai as genai  # noqa: E402
 from supabase import create_client, Client  # noqa: E402
 from youtube_transcript_api import YouTubeTranscriptApi, NoTranscriptFound, TranscriptsDisabled  # noqa: E402
 
@@ -148,7 +148,7 @@ def _extract_json_from_text(text: str) -> dict | None:
 
 
 def _analyze_with_gemini(transcript_text: str) -> dict:
-    """Call Gemini gemini-1.5-flash to analyze transcript. Returns analysis dict."""
+    """Call Gemini gemini-2.0-flash to analyze transcript. Returns analysis dict."""
     prompt = f"""다음은 유튜브 영상의 자막입니다. 아래 항목을 JSON으로 분석해주세요:
 1. summary: 핵심 내용 요약 (200자 이내)
 2. keywords: 핵심 키워드 5개 (배열)
@@ -159,9 +159,11 @@ JSON만 반환하고 다른 텍스트는 포함하지 마세요.
 
 자막: {transcript_text}"""
 
-    genai.configure(api_key=GOOGLE_API_KEY)
-    model = genai.GenerativeModel("gemini-1.5-flash")
-    response = model.generate_content(prompt)
+    client = genai.Client(api_key=GOOGLE_API_KEY)
+    response = client.models.generate_content(
+        model="gemini-2.0-flash",
+        contents=prompt,
+    )
     result = _extract_json_from_text(response.text)
     if result is None:
         raise ValueError(f"JSON 파싱 실패: {response.text[:200]}")
@@ -175,7 +177,7 @@ def analyze_video(video_id: str) -> tuple[bool, str, dict]:
     # Fetch video title from Supabase
     row_res = supa.table('crawl_videos').select('title').eq('video_id', video_id).maybe_single().execute()
     title = ''
-    if row_res.data:
+    if row_res is not None and row_res.data:
         title = row_res.data.get('title', '') or ''
 
     now_iso = datetime.now(timezone.utc).isoformat()
