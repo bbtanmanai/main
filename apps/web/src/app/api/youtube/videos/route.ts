@@ -33,9 +33,10 @@ export async function GET(req: NextRequest) {
   const supa = createClient(supabaseUrl, supabaseKey);
 
   const { searchParams } = new URL(req.url);
-  const page       = Math.max(1, parseInt(searchParams.get('page')  || '1',  10));
-  const limit      = Math.max(1, parseInt(searchParams.get('limit') || '20', 10));
-  const genreParam = searchParams.get('genre') || '';
+  const page        = Math.max(1, parseInt(searchParams.get('page')   || '1',  10));
+  const limit       = Math.max(1, parseInt(searchParams.get('limit')  || '20', 10));
+  const genreParam  = searchParams.get('genre')  || '';
+  const sourceParam = searchParams.get('source') || '';
 
   const from = (page - 1) * limit;
   const to   = from + limit - 1;
@@ -43,6 +44,13 @@ export async function GET(req: NextRequest) {
   let query = supa.from('crawl_videos').select('*', { count: 'exact' });
   if (genreParam) {
     query = query.eq('template_id', genreParam);
+  }
+  if (sourceParam === 'keyword') {
+    // Videos collected via keyword search (keyword is not a URL)
+    query = query.not('keyword', 'like', 'http%');
+  } else if (sourceParam === 'channel') {
+    // Videos collected via channel URL crawling
+    query = query.like('keyword', 'http%');
   }
 
   const { data, count, error } = await query
