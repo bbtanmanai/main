@@ -16,7 +16,8 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const { urls, genre = 'general', max_results = 30 } = body;
+  const { urls, genre = 'general', max_results = 50 } = body;
+  const totalLimit = Math.min(50, Math.max(1, Number(max_results) || 50));
 
   if (!Array.isArray(urls) || urls.length === 0) {
     return new Response(JSON.stringify({ error: 'urls must be a non-empty array' }), {
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest) {
   );
 
   const enc = new TextEncoder();
-  const inputPayload = JSON.stringify({ urls: validUrls, genre, max_results });
+  const inputPayload = JSON.stringify({ urls: validUrls, genre, max_results: totalLimit });
 
   const stream = new ReadableStream({
     start(controller) {

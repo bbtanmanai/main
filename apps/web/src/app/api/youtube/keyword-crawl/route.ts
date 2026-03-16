@@ -16,7 +16,8 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const { keywords = [], max_results = 10, regionCode = '' } = body;
+  const { keywords = [], max_results = 50, regionCode = '' } = body;
+  const totalLimit = Math.min(50, Math.max(1, Number(max_results) || 50));
 
   if (!Array.isArray(keywords) || keywords.length === 0) {
     return new Response(JSON.stringify({ error: 'keywords must be a non-empty array' }), {
@@ -31,7 +32,7 @@ export async function POST(req: NextRequest) {
   );
 
   const enc = new TextEncoder();
-  const inputPayload = JSON.stringify({ keywords, max_results, regionCode });
+  const inputPayload = JSON.stringify({ keywords, max_results: totalLimit, regionCode });
 
   const stream = new ReadableStream({
     start(controller) {

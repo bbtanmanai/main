@@ -50,13 +50,75 @@ function getScoreTier(score: number): { emoji: string; color: string; label: str
   return { emoji: '💤', color: 'bg-slate-600/80 text-slate-300 border-slate-500/50', label: '보통' };
 }
 
+function isRecent3Months(video: { published_at?: string; created_at?: string }): boolean {
+  const ts = video.published_at || video.created_at;
+  if (!ts) return false;
+  const d = new Date(ts);
+  if (Number.isNaN(d.getTime())) return false;
+  const days90 = 90 * 24 * 60 * 60 * 1000;
+  return Date.now() - d.getTime() <= days90;
+}
+
+function getErrorInfo(message: string) {
+  const m = (message || '').toLowerCase();
+  if (m.includes('pgrst204') || (m.includes('schema cache') && m.includes('column'))) {
+    return {
+      kind: 'db_schema',
+      title: 'DB 스키마 불일치',
+      reason: 'Supabase 테이블 컬럼이 코드에서 보내는 필드와 다름',
+      action: 'Supabase에 컬럼 추가 또는 코드에서 해당 필드 제거',
+    } as const;
+  }
+  if (m.includes('quota') || m.includes('쿼터')) {
+    return {
+      kind: 'quota',
+      title: 'YouTube API 쿼터 초과',
+      reason: 'Google API 일일 할당량이 소진되어 요청이 차단됨',
+      action: '내일 다시 시도하거나, 새 API 키로 교체/쿼터 증액',
+    } as const;
+  }
+  if (m.includes('cannot resolve channel id') || m.includes('channel id')) {
+    return {
+      kind: 'resolve_channel',
+      title: '채널 식별 실패',
+      reason: 'URL에서 채널/영상 정보를 식별하지 못함(비공개/제한/URL 오류 가능)',
+      action: '채널 홈 URL 또는 접근 가능한 영상 URL로 재시도',
+    } as const;
+  }
+  if (m.includes('supabase_url') || m.includes('service_role') || m.includes('환경변수')) {
+    return {
+      kind: 'env',
+      title: '서버 설정 누락',
+      reason: '서버 환경변수(Supabase/YouTube 키)가 설정되지 않음',
+      action: '.env 또는 배포 환경변수 설정 후 재시도',
+    } as const;
+  }
+  if (m.includes('api request failed') || m.includes('fetch')) {
+    return {
+      kind: 'api',
+      title: '서버 요청 실패',
+      reason: '서버가 정상 응답을 주지 못함(일시 장애/네트워크 문제 가능)',
+      action: '잠시 후 재시도 또는 서버 로그 확인',
+    } as const;
+  }
+  return {
+    kind: 'unknown',
+    title: '알 수 없는 오류',
+    reason: '예상하지 못한 오류가 발생함',
+    action: '오류 메시지/키워드를 확인하고 재시도',
+  } as const;
+}
+
 // --- Types ---
 type VideoItem = {
+  created_at?: string;
+  published_at?: string;
   id: number;
   video_id?: string;
   keyword: string;
   channelName: string;
   videoTitle: string;
+  description?: string;
   thumbnail: string;
   url: string;
   subscribers: string;
@@ -73,6 +135,16 @@ type VideoItem = {
   viral_reason?: string;
 };
 
+type CommentItem = {
+  author: string;
+  authorChannelUrl?: string;
+  text: string;
+  likeCount: number;
+  publishedAt?: string;
+  updatedAt?: string;
+  replyCount?: number;
+};
+
 const COUNTRIES = ['전체', 'Korea', 'USA', 'Japan', 'India'];
 const REGION_MAP: Record<string, string> = {
   Korea: 'KR', USA: 'US', Japan: 'JP', India: 'IN',
@@ -86,16 +158,35 @@ export default function KeywordCrawlingPage() {
   const [selectedCountry, setSelectedCountry] = useState('전체');
   const [isLoading, setIsLoading]     = useState(false);
   const [progressMsg, setProgressMsg] = useState('');
+  const [crawlErrors, setCrawlErrors] = useState<Array<{ keyword: string; message: string }>>([]);
+  const [sortMode, setSortMode] = useState<'latest' | 'benchmark' | 'viral'>('latest');
   const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
-  const [analyzingIds, setAnalyzingIds]   = useState<Set<string>>(new Set());
+  const [commentsList, setCommentsList] = useState<CommentItem[]>([]);
+  const [commentsLoading, setCommentsLoading] = useState(false);
+  const [commentsError, setCommentsError] = useState('');
+  const [commentsVideoId, setCommentsVideoId] = useState<string>('');
+  const errorHints = (() => {
+    const map = new Map<string, ReturnType<typeof getErrorInfo>>();
+    for (const e of crawlErrors) {
+      const info = getErrorInfo(e.message);
+      if (!map.has(info.kind)) map.set(info.kind, info);
+    }
+    return Array.from(map.values());
+  })();
   const [currentPage, setCurrentPage]     = useState(1);
   const [totalPages, setTotalPages]       = useState(1);
   const limit = 20;
 
-  const loadVideos = useCallback(async (page: number) => {
+  const loadVideos = useCallback(async (page: number, sort: 'latest' | 'benchmark' | 'viral' = 'latest') => {
     setIsFetching(true);
     try {
-      const res  = await fetch(`/api/youtube/videos?page=${page}&limit=${limit}&source=keyword`);
+      const params = new URLSearchParams({
+        page: String(page),
+        limit: String(limit),
+        source: 'keyword',
+        sort,
+      });
+      const res  = await fetch(`/api/youtube/videos?${params.toString()}`);
       const data = await res.json();
       setVideos(data.videos || []);
       setTotalVideos(data.total || 0);
@@ -108,11 +199,37 @@ export default function KeywordCrawlingPage() {
     }
   }, []);
 
-  useEffect(() => { loadVideos(1); }, [loadVideos]);
+  useEffect(() => { loadVideos(1, sortMode); }, [loadVideos, sortMode]);
+
+  useEffect(() => {
+    const vid = selectedVideo?.video_id ?? '';
+    setCommentsVideoId(vid);
+    setCommentsList([]);
+    setCommentsError('');
+    setCommentsLoading(false);
+  }, [selectedVideo?.video_id]);
+
+  const fetchComments = async (videoId: string) => {
+    if (!videoId) return;
+    if (commentsLoading) return;
+    setCommentsLoading(true);
+    setCommentsError('');
+    try {
+      const params = new URLSearchParams({ video_id: videoId, max_results: '20' });
+      const res = await fetch(`/api/youtube/comments?${params.toString()}`);
+      const json = await res.json();
+      if (!res.ok) throw new Error(json?.error || '댓글 조회 실패');
+      setCommentsList(Array.isArray(json?.comments) ? json.comments : []);
+    } catch (e) {
+      setCommentsError(e instanceof Error ? e.message : '댓글 조회 실패');
+    } finally {
+      setCommentsLoading(false);
+    }
+  };
 
   const handlePageChange = (page: number) => {
     if (page < 1 || page > totalPages) return;
-    loadVideos(page);
+    loadVideos(page, sortMode);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -127,25 +244,32 @@ export default function KeywordCrawlingPage() {
     if (activeKeywords.length === 0) return alert('최소 하나의 키워드를 입력해주세요.');
 
     setIsLoading(true);
+    setCrawlErrors([]);
     setProgressMsg('수집 준비 중...');
 
+    let errorsCount = 0;
     try {
       const regionCode = REGION_MAP[selectedCountry] || '';
       const res = await fetch('/api/youtube/keyword-crawl', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ keywords: activeKeywords, max_results: 10, regionCode }),
+        body: JSON.stringify({ keywords: activeKeywords, max_results: 50, regionCode }),
       });
 
       if (!res.ok || !res.body) throw new Error('API 요청 실패');
 
       const reader  = res.body.getReader();
       const decoder = new TextDecoder();
+      let buffer = '';
+      let totalSaved = 0;
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        const lines = decoder.decode(value).split('\n');
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() ?? '';
+
         for (const line of lines) {
           if (!line.trim().startsWith('data: ')) continue;
           try {
@@ -153,9 +277,13 @@ export default function KeywordCrawlingPage() {
             if (ev.type === 'progress') {
               setProgressMsg(`"${ev.keyword}" 수집 중... (${ev.count}/${ev.total}) ${ev.saved ?? 0}개 저장`);
             } else if (ev.type === 'done') {
-              setProgressMsg(`완료! 총 ${ev.total_saved}개 저장`);
+              totalSaved = ev.total_saved ?? 0;
             } else if (ev.type === 'error') {
-              console.error('Crawl error:', ev);
+              const keyword = String(ev.keyword || '');
+              const message = String(ev.message || '알 수 없는 오류');
+              errorsCount += 1;
+              setCrawlErrors(prev => [...prev, { keyword, message }]);
+              setProgressMsg(`오류: ${message}`);
             }
           } catch { /* skip */ }
         }
@@ -163,40 +291,19 @@ export default function KeywordCrawlingPage() {
 
       setNewKeywords(['', '']);
       await loadVideos(1);
+      if (errorsCount > 0) {
+        setProgressMsg(`완료! 총 ${totalSaved}개 저장, ${errorsCount}개 실패`);
+      } else {
+        setProgressMsg(`완료! 총 ${totalSaved}개 저장`);
+      }
     } catch (e) {
       console.error('handleAddKeywords error:', e);
-      alert('수집 중 오류가 발생했습니다. 콘솔을 확인해주세요.');
+      const message = e instanceof Error ? e.message : '수집 중 오류가 발생했습니다.';
+      errorsCount += 1;
+      setCrawlErrors(prev => [...prev, { keyword: '요청', message }]);
+      setProgressMsg(`오류: ${message}`);
     } finally {
       setIsLoading(false);
-      setProgressMsg('');
-    }
-  };
-
-  const handleAnalyzeSingle = async (videoId: string) => {
-    setAnalyzingIds(prev => new Set(prev).add(videoId));
-    try {
-      const res = await fetch('/api/youtube/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ video_ids: [videoId], batch_size: 1 }),
-      });
-      if (!res.ok || !res.body) throw new Error('API 요청 실패');
-      const reader = res.body.getReader();
-      while (true) {
-        const { done } = await reader.read();
-        if (done) break;
-      }
-      await loadVideos(currentPage);
-      // Update selectedVideo if it's open
-      setSelectedVideo(prev =>
-        prev && (prev.video_id === videoId || String(prev.id) === videoId)
-          ? { ...prev, is_analyzed: true }
-          : prev
-      );
-    } catch (e) {
-      console.error('handleAnalyzeSingle error:', e);
-    } finally {
-      setAnalyzingIds(prev => { const s = new Set(prev); s.delete(videoId); return s; });
     }
   };
 
@@ -344,6 +451,64 @@ export default function KeywordCrawlingPage() {
                   )}
                 </button>
 
+                {(progressMsg || crawlErrors.length > 0) && (
+                  <div className={`p-5 rounded-2xl border ${crawlErrors.length > 0 ? 'bg-red-500/10 border-red-500/30' : 'bg-white/5 border-white/10'}`}>
+                    <div className="flex items-center gap-2">
+                      <div className={`text-[10px] font-black uppercase tracking-widest ${crawlErrors.length > 0 ? 'text-red-300' : 'text-slate-400'}`}>
+                        {crawlErrors.length > 0 ? 'ERROR' : 'STATUS'}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => { setProgressMsg(''); setCrawlErrors([]); }}
+                        className="ml-auto w-8 h-8 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 flex items-center justify-center text-slate-400"
+                        title="메시지 지우기"
+                      >
+                        <FontAwesomeIcon icon={faTimes} className="text-xs" />
+                      </button>
+                    </div>
+
+                    {progressMsg && (
+                      <div className="mt-2 text-xs font-bold text-slate-200 leading-relaxed break-words">
+                        {progressMsg}
+                      </div>
+                    )}
+
+                    {crawlErrors.length > 0 && (
+                      <div className="mt-4 space-y-2">
+                        <div className="text-[11px] font-black text-red-300">
+                          실패 내역 ({crawlErrors.length})
+                        </div>
+                        {errorHints.length > 0 && (
+                          <div className="space-y-2">
+                            {errorHints.map(h => (
+                              <div key={h.kind} className="p-4 rounded-xl bg-black/20 border border-white/10">
+                                <div className="text-[11px] font-black text-white">{h.title}</div>
+                                <div className="text-[11px] font-bold text-slate-300 mt-1 leading-relaxed">
+                                  이유: {h.reason}
+                                </div>
+                                <div className="text-[11px] font-bold text-slate-300 mt-1 leading-relaxed">
+                                  해결: {h.action}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        <div className="max-h-40 overflow-auto rounded-xl border border-red-500/20 bg-black/20">
+                          {crawlErrors.map((e, i) => (
+                            <div key={`${e.keyword}-${i}`} className="px-4 py-3 border-b border-white/5 last:border-b-0">
+                              <div className="text-[10px] font-black text-slate-300 break-all">{e.keyword || '(키워드 없음)'}</div>
+                              <div className="text-[11px] font-bold text-red-200/90 mt-1 break-words">{e.message}</div>
+                              <div className="text-[10px] font-bold text-slate-400 mt-1 break-words">
+                                {getErrorInfo(e.message).action}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <div className="p-5 bg-[#a78bfa]/5 rounded-2xl border border-[#a78bfa]/10">
                   <h4 className="text-xs font-black text-[#a78bfa] mb-2 flex items-center gap-2">
                     <FontAwesomeIcon icon={faCheckCircle} /> 수집 팁
@@ -359,24 +524,38 @@ export default function KeywordCrawlingPage() {
           </div>
         </section>
 
-        {/* Video Grid */}
         <section className="bg-[#1c1c2e] p-10 rounded-[32px] shadow-xl border border-white/5">
           <div className="flex flex-wrap items-center justify-between mb-8 px-2 gap-4">
             <h3 className="text-xl font-black flex items-center gap-3">
-              <FontAwesomeIcon icon={faChartLine} className="text-[#a78bfa]" />
-              키워드별 수집 영상 목록
+              <FontAwesomeIcon icon={faTv} className="text-[#a78bfa]" />
+              현재 수집된 유튜브 영상
               <span className="px-2 py-0.5 bg-white/5 rounded-md text-[10px] font-black text-slate-500 border border-white/10">
                 TOTAL {totalVideos}
               </span>
             </h3>
-            <button
-              onClick={() => loadVideos(currentPage)}
-              disabled={isFetching}
-              className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white rounded-xl text-xs font-black transition-all border border-white/5 disabled:opacity-50"
-            >
-              <FontAwesomeIcon icon={faSync} className={isFetching ? 'animate-spin' : ''} />
-              새로고침
-            </button>
+            <div className="flex items-center gap-2">
+              {([
+                { key: 'latest', label: '최신순' },
+                { key: 'benchmark', label: '벤치마킹' },
+                { key: 'viral', label: '떡상' },
+              ] as const).map((it) => (
+                <button
+                  key={it.key}
+                  type="button"
+                  onClick={() => {
+                    setSortMode(it.key);
+                    setCurrentPage(1);
+                  }}
+                  className={`px-3 py-2 rounded-xl text-xs font-black border transition-all ${
+                    sortMode === it.key
+                      ? 'bg-[#a78bfa] text-white border-[#a78bfa]/50'
+                      : 'bg-white/5 text-slate-400 border-white/10 hover:bg-white/10 hover:text-white'
+                  }`}
+                >
+                  {it.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Loading skeleton */}
@@ -411,7 +590,6 @@ export default function KeywordCrawlingPage() {
                 const vid    = video.video_id ?? String(video.id);
                 const score  = video.viral_score ?? calcViralScore(video);
                 const tier   = getScoreTier(score);
-                const isAnalyzingThis = analyzingIds.has(vid);
 
                 return (
                   <div key={video.id} className="group bg-white/5 rounded-[1.5rem] md:rounded-[2rem] border border-white/5 transition-all overflow-hidden flex flex-col shadow-lg hover:border-white/10">
@@ -429,18 +607,72 @@ export default function KeywordCrawlingPage() {
                         <span>{score}</span>
                       </div>
 
-                      {/* Analysis status badge */}
-                      {video.is_analyzed && (
-                        <div className="absolute top-2 right-2 z-10 px-1.5 py-0.5 bg-emerald-500/80 border border-emerald-400/50 rounded-full text-[8px] font-black text-white backdrop-blur-sm">
-                          분석완료
+                      {score >= 30 && isRecent3Months(video) && (
+                        <div className="absolute bottom-10 left-12 z-30 px-2 py-0.5 rounded-full text-[9px] font-black border backdrop-blur-sm bg-[#a78bfa]/80 text-white border-[#a78bfa]/50">
+                          벤치마킹 1순위
                         </div>
                       )}
+                      {score >= 30 && isRecent3Months(video) && (
+                        <div className="absolute bottom-10 left-2 z-30 w-8 h-8 rounded-full bg-white/90 text-[#a78bfa] border border-white/50 backdrop-blur-sm flex items-center justify-center shadow-md">
+                          <FontAwesomeIcon icon={faThumbsUp} className="text-xs" />
+                        </div>
+                      )}
+
+                      <div className="absolute top-2 md:top-4 right-2 md:right-4 flex gap-1.5 md:gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          title="동기화"
+                          onClick={(e) => { e.stopPropagation(); }}
+                          className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-black/40 backdrop-blur-md text-white hover:bg-[#a78bfa] transition-all shadow-sm"
+                        >
+                          <FontAwesomeIcon icon={faSync} className="text-[10px] md:text-xs" />
+                        </button>
+                        <button
+                          title="삭제"
+                          onClick={(e) => { e.stopPropagation(); }}
+                          className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-black/40 backdrop-blur-md text-white hover:bg-red-500 transition-all shadow-sm"
+                        >
+                          <FontAwesomeIcon icon={faTrash} className="text-[10px] md:text-xs" />
+                        </button>
+                      </div>
                     </div>
 
                     <div className="flex justify-center -mt-3 relative z-10">
                       <span className="px-2 md:px-4 py-0.5 md:py-1 bg-[#1c1c2e] border border-white/10 rounded-full text-[7px] md:text-[9px] font-black text-[#a78bfa] shadow-2xl backdrop-blur-md">
                         수집일: {video.collectedAt}
                       </span>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-1 px-3 pt-1.5">
+                      {video.is_analyzed && video.viral_reason ? (
+                        <span className="px-1.5 py-0.5 rounded-full text-[7px] md:text-[8px] font-black bg-red-500/20 text-red-400 border border-red-500/30">
+                          🔥 떡상분석완료
+                        </span>
+                      ) : video.is_analyzed ? (
+                        <span className="px-1.5 py-0.5 rounded-full text-[7px] md:text-[8px] font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                          분석완료
+                        </span>
+                      ) : null}
+                      {video.is_analyzed && video.quality_score != null && (
+                        <span className={`px-1.5 py-0.5 rounded-full text-[7px] md:text-[8px] font-black border ${
+                          video.quality_score >= 7
+                            ? 'bg-green-500/20 text-green-400 border-green-500/30'
+                            : video.quality_score >= 4
+                            ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
+                            : 'bg-red-500/20 text-red-400 border-red-500/30'
+                        }`}>
+                          {video.quality_score.toFixed(1)}점
+                        </span>
+                      )}
+                      {video.is_analyzed && video.content_type && video.content_type !== 'unknown' && (
+                        <span className="px-1.5 py-0.5 rounded-full text-[7px] md:text-[8px] font-black bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                          {video.content_type}
+                        </span>
+                      )}
+                      {video.keyword && (
+                        <span className="px-1.5 py-0.5 rounded-full text-[7px] md:text-[8px] font-black bg-white/5 text-slate-400 border border-white/10 truncate max-w-[160px]">
+                          #{video.keyword}
+                        </span>
+                      )}
                     </div>
 
                     <div className="p-3 md:p-6 flex flex-col flex-grow">
@@ -454,34 +686,13 @@ export default function KeywordCrawlingPage() {
                           </span>
                         </div>
                         <span className="px-1.5 py-0.5 bg-white/5 rounded text-[6px] md:text-[8px] font-black text-slate-500 border border-white/10 uppercase truncate max-w-[60px]">
-                          #{video.keyword}
+                          keyword
                         </span>
                       </div>
 
                       <h4 className="text-[11px] md:text-sm font-black text-white group-hover:text-[#a78bfa] transition-colors line-clamp-2 mb-2 md:mb-3 leading-snug">
                         {video.videoTitle}
                       </h4>
-
-                      {/* AI analysis result badges */}
-                      {video.is_analyzed && (
-                        <div className="flex flex-wrap gap-1 mb-2 md:mb-3">
-                          {video.viral_reason && (
-                            <span className="px-1.5 py-0.5 bg-red-500/10 border border-red-400/20 rounded text-[7px] md:text-[9px] font-black text-red-400">
-                              🔥 떡상분석완료
-                            </span>
-                          )}
-                          {video.quality_score != null && (
-                            <span className="px-1.5 py-0.5 bg-amber-500/10 border border-amber-400/20 rounded text-[7px] md:text-[9px] font-black text-amber-400">
-                              ★ {video.quality_score.toFixed(1)}
-                            </span>
-                          )}
-                          {video.content_type && video.content_type !== 'unknown' && (
-                            <span className="px-1.5 py-0.5 bg-sky-500/10 border border-sky-400/20 rounded text-[7px] md:text-[9px] font-black text-sky-400 uppercase">
-                              {video.content_type}
-                            </span>
-                          )}
-                        </div>
-                      )}
 
                       {/* Stats */}
                       <div className="grid grid-cols-2 gap-y-2 md:gap-y-3 gap-x-2 md:gap-x-4 mb-3 md:mb-4 pt-2 md:pt-3 border-t border-white/5">
@@ -516,30 +727,6 @@ export default function KeywordCrawlingPage() {
                       </div>
 
                       <div className="mt-auto flex flex-col gap-1.5 pt-2 md:pt-3 border-t border-white/5">
-                        {/* AI 분석 버튼 — 떡상(30점+) 영상만 표시 */}
-                        {score >= 30 && (!video.is_analyzed ? (
-                          <button
-                            onClick={(e) => { e.stopPropagation(); handleAnalyzeSingle(vid); }}
-                            disabled={isAnalyzingThis}
-                            className="w-full flex items-center justify-center gap-1.5 py-1.5 md:py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg md:rounded-xl text-[8px] md:text-[10px] font-black transition-all disabled:opacity-50"
-                          >
-                            {isAnalyzingThis
-                              ? <><FontAwesomeIcon icon={faSpinner} className="animate-spin text-[8px]" /><span>분석 중...</span></>
-                              : <><FontAwesomeIcon icon={faRobot}   className="text-[8px]" /><span>🔥 떡상 이유 분석</span></>
-                            }
-                          </button>
-                        ) : (
-                          <button
-                            onClick={(e) => { e.stopPropagation(); handleAnalyzeSingle(vid); }}
-                            disabled={isAnalyzingThis}
-                            className="w-full flex items-center justify-center gap-1.5 py-1.5 md:py-2 bg-white/5 hover:bg-white/10 text-slate-500 hover:text-slate-300 rounded-lg md:rounded-xl text-[8px] md:text-[10px] font-black transition-all disabled:opacity-50"
-                          >
-                            {isAnalyzingThis
-                              ? <><FontAwesomeIcon icon={faSpinner} className="animate-spin text-[8px]" /><span>재분석 중...</span></>
-                              : <><FontAwesomeIcon icon={faSync}    className="text-[8px]" /><span>재분석</span></>
-                            }
-                          </button>
-                        ))}
                         <a
                           href={video.url}
                           target="_blank"
@@ -618,33 +805,44 @@ export default function KeywordCrawlingPage() {
         </section>
       </main>
 
-      {/* Side Panel */}
       {selectedVideo && (
         <>
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[10000]" onClick={() => setSelectedVideo(null)} />
           <aside className="fixed top-0 right-0 w-full md:w-[560px] h-full bg-[#0f0f1a] border-l border-white/10 z-[10001] shadow-[-20px_0_60px_rgba(0,0,0,0.5)] flex flex-col">
+
             <div className="flex items-center justify-between px-8 py-6 border-b border-white/10 bg-[#1c1c2e]">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-[#a78bfa]/10 flex items-center justify-center text-[#a78bfa]">
-                  <FontAwesomeIcon icon={faKey} />
+                  <FontAwesomeIcon icon={faTv} />
                 </div>
                 <div>
-                  <h2 className="text-lg font-black text-white leading-none mb-1">키워드 분석 리포트</h2>
-                  <span className="text-[10px] font-black text-[#a78bfa] tracking-widest uppercase">#{selectedVideo.keyword}</span>
+                  <h2 className="text-lg font-black text-white leading-none mb-1">영상 상세 분석</h2>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black text-[#a78bfa] tracking-widest uppercase">{selectedVideo.channelName}</span>
+                    {selectedVideo.keyword && (
+                      <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-white/5 text-slate-400 border border-white/10">
+                        #{selectedVideo.keyword}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
               <button
                 onClick={() => setSelectedVideo(null)}
-                className="w-10 h-10 rounded-full bg-white/5 text-slate-500 hover:text-red-400 transition-all flex items-center justify-center"
+                className="w-10 h-10 rounded-full bg-white/5 text-slate-500 hover:bg-red-500/20 hover:text-red-400 transition-all flex items-center justify-center"
               >
                 <FontAwesomeIcon icon={faTimes} />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-8 py-8 space-y-8">
+            <div className="flex-1 overflow-y-auto px-8 py-8 space-y-10 custom-scrollbar">
               <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-white/10 group">
                 <img src={selectedVideo.thumbnail} alt={selectedVideo.videoTitle} className="w-full object-cover aspect-video" />
-                <a href={selectedVideo.url} target="_blank" rel="noopener noreferrer"
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f1a] to-transparent opacity-40"></div>
+                <a
+                  href={selectedVideo.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                 >
                   <div className="w-16 h-16 rounded-full bg-[#a78bfa] text-white flex items-center justify-center shadow-2xl scale-90 group-hover:scale-100 transition-transform">
@@ -653,12 +851,11 @@ export default function KeywordCrawlingPage() {
                 </a>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <h3 className="text-2xl font-black text-white leading-tight">{selectedVideo.videoTitle}</h3>
-                <div className="flex items-center gap-2 text-sm text-slate-400 font-medium">
-                  <FontAwesomeIcon icon={faLink} className="text-[#a78bfa] text-xs" />
-                  {selectedVideo.channelName}
-                </div>
+                <p className="text-slate-400 text-sm leading-relaxed font-medium">
+                  {selectedVideo.description || "영상 설명이 없습니다."}
+                </p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -680,98 +877,189 @@ export default function KeywordCrawlingPage() {
                     <div className="text-lg font-black text-white">{selectedVideo.views}</div>
                   </div>
                 </div>
+                <div className="bg-[#1c1c2e] p-5 rounded-2xl border border-white/5 flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-400">
+                    <FontAwesomeIcon icon={faThumbsUp} />
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-tighter">Likes</div>
+                    <div className="text-lg font-black text-white">{selectedVideo.likes}</div>
+                  </div>
+                </div>
+                <div className="bg-[#1c1c2e] p-5 rounded-2xl border border-white/5 flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                    <FontAwesomeIcon icon={faComment} />
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-tighter">Comments</div>
+                    <div className="text-lg font-black text-white">{selectedVideo.comments}</div>
+                  </div>
+                </div>
               </div>
 
-              {/* AI Analysis result in panel */}
-              <div className="space-y-3">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                  <FontAwesomeIcon icon={faRobot} className="text-[#a78bfa]" /> AI Insight
-                </label>
-                {selectedVideo.is_analyzed ? (
-                  <div className="space-y-3">
-                    {/* 떡상 이유 */}
-                    {selectedVideo.viral_reason && (
-                      <div className="bg-red-500/5 rounded-2xl p-6 border border-red-500/20 space-y-3">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm">🔥</span>
-                          <span className="text-[10px] font-black text-red-400 uppercase tracking-widest">왜 떡상했나</span>
-                          <span className="ml-auto px-2 py-0.5 rounded-full text-[9px] font-black bg-red-500/20 text-red-400 border border-red-500/30">성공 방정식 기반</span>
-                        </div>
-                        <p className="text-red-200/80 text-xs leading-relaxed font-bold">{selectedVideo.viral_reason}</p>
-                      </div>
-                    )}
+              {(() => {
+                const score = selectedVideo.viral_score != null ? selectedVideo.viral_score : calcViralScore(selectedVideo);
+                const vid = selectedVideo.video_id ?? commentsVideoId;
+                if (score < 30) return null;
+                return (
+                  <div className="space-y-4">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] flex items-center gap-2">
+                      <FontAwesomeIcon icon={faComment} className="text-[#a78bfa]" />
+                      Comments (Top 20)
+                    </label>
                     <div className="bg-white/5 rounded-2xl p-6 border border-white/10 space-y-4">
-                      {selectedVideo.quality_score != null && (
-                        <div className="flex items-center gap-3">
-                          <span className="text-[10px] font-black text-slate-500 uppercase w-24">품질 점수</span>
-                          <div className="flex items-center gap-1">
-                            {[...Array(10)].map((_, i) => (
-                              <div
-                                key={i}
-                                className={`w-2 h-2 rounded-full ${i < Math.round(selectedVideo.quality_score!) ? 'bg-amber-400' : 'bg-white/10'}`}
-                              />
-                            ))}
-                            <span className="text-amber-400 font-black text-xs ml-2">{selectedVideo.quality_score.toFixed(1)}</span>
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() => fetchComments(vid)}
+                          disabled={commentsLoading}
+                          className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 text-white font-black rounded-xl border border-white/10 transition-all disabled:opacity-50"
+                        >
+                          {commentsLoading
+                            ? <><FontAwesomeIcon icon={faSpinner} className="animate-spin" /><span>불러오는 중...</span></>
+                            : <><FontAwesomeIcon icon={faComment} /><span>댓글 불러오기</span></>
+                          }
+                        </button>
+                        {commentsList.length > 0 && (
+                          <div className="text-[10px] font-black text-slate-500">
+                            {commentsList.length}개
                           </div>
+                        )}
+                      </div>
+
+                      {commentsError && (
+                        <div className="text-[11px] font-bold text-red-300 break-words">
+                          {commentsError}
                         </div>
                       )}
-                      {selectedVideo.content_type && (
-                        <div className="flex items-center gap-3">
-                          <span className="text-[10px] font-black text-slate-500 uppercase w-24">콘텐츠 유형</span>
-                          <span className="px-2 py-0.5 bg-sky-500/10 border border-sky-400/20 rounded text-xs font-black text-sky-400 uppercase">
-                            {selectedVideo.content_type}
-                          </span>
+
+                      {commentsList.length > 0 && (
+                        <div className="max-h-56 overflow-auto rounded-xl border border-white/10 bg-black/20">
+                          {commentsList.map((c, i) => (
+                            <div key={`${c.author}-${i}`} className="px-4 py-3 border-b border-white/5 last:border-b-0">
+                              <div className="flex items-center gap-2">
+                                {c.authorChannelUrl ? (
+                                  <a
+                                    href={c.authorChannelUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-[10px] font-black text-slate-200 hover:text-white"
+                                  >
+                                    {c.author || 'unknown'}
+                                  </a>
+                                ) : (
+                                  <div className="text-[10px] font-black text-slate-200">{c.author || 'unknown'}</div>
+                                )}
+                                {typeof c.likeCount === 'number' && (
+                                  <div className="ml-auto text-[10px] font-black text-slate-500">
+                                    👍 {c.likeCount}
+                                  </div>
+                                )}
+                              </div>
+                              <div className="text-[11px] font-bold text-slate-300 mt-2 leading-relaxed break-words whitespace-pre-wrap">
+                                {c.text}
+                              </div>
+                              {(c.replyCount != null || c.publishedAt) && (
+                                <div className="text-[10px] font-bold text-slate-600 mt-2 flex items-center gap-3">
+                                  {c.replyCount != null && <span>답글 {c.replyCount}</span>}
+                                  {c.publishedAt && <span>{c.publishedAt}</span>}
+                                </div>
+                              )}
+                            </div>
+                          ))}
                         </div>
-                      )}
-                      {selectedVideo.summary && selectedVideo.summary !== '자막 없음' && (
-                        <div>
-                          <div className="text-[10px] font-black text-slate-500 uppercase mb-2">요약</div>
-                          <p className="text-slate-400 text-xs leading-relaxed font-bold">{selectedVideo.summary}</p>
-                        </div>
-                      )}
-                      {selectedVideo.summary === '자막 없음' && (
-                        <p className="text-slate-500 text-xs font-bold">자막이 없는 영상입니다.</p>
                       )}
                     </div>
                   </div>
-                ) : (
-                  <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
-                    {(() => {
-                      const selScore = selectedVideo.viral_score ?? calcViralScore(selectedVideo);
-                      const selVid   = selectedVideo.video_id ?? String(selectedVideo.id);
-                      if (selScore < 30) {
-                        return <p className="text-slate-500 text-xs font-bold">바이럴 점수 30점 미만 영상은 AI 분석 대상이 아닙니다.</p>;
-                      }
-                      return (
-                        <>
-                          <p className="text-slate-500 text-xs font-bold mb-3">🔥 떡상 영상 — 왜 떡상했는지 분석할 수 있습니다.</p>
-                          <button
-                            onClick={() => handleAnalyzeSingle(selVid)}
-                            disabled={analyzingIds.has(selVid)}
-                            className="flex items-center gap-2 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-xl text-xs font-black transition-all disabled:opacity-50"
-                          >
-                            {analyzingIds.has(selVid)
-                              ? <><FontAwesomeIcon icon={faSpinner} className="animate-spin" /><span>분석 중...</span></>
-                              : <><FontAwesomeIcon icon={faRobot} /><span>🔥 떡상 이유 분석</span></>
-                            }
-                          </button>
-                        </>
-                      );
-                    })()}
+                );
+              })()}
+
+              <div className="space-y-4">
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] flex items-center gap-2">
+                  <FontAwesomeIcon icon={faRobot} className="text-[#a78bfa]" />
+                  AI Analysis Content
+                </label>
+                <div className="space-y-4">
+                  {selectedVideo.is_analyzed && selectedVideo.viral_reason && (
+                    <div className="bg-red-500/5 rounded-2xl p-6 border border-red-500/20 space-y-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center text-red-400 text-xs">
+                          🔥
+                        </div>
+                        <h4 className="text-sm font-black text-white uppercase tracking-wider">왜 떡상했나</h4>
+                        <span className="ml-auto px-2 py-0.5 rounded-full text-[9px] font-black bg-red-500/20 text-red-400 border border-red-500/30">
+                          성공 방정식 기반
+                        </span>
+                      </div>
+                      <p className="text-red-200/80 text-xs leading-relaxed font-bold pl-11">
+                        {selectedVideo.viral_reason}
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="bg-white/5 rounded-2xl p-6 border border-white/10 space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-[#a78bfa]/20 flex items-center justify-center text-[#a78bfa] text-xs">
+                        <FontAwesomeIcon icon={faInfoCircle} />
+                      </div>
+                      <h4 className="text-sm font-black text-white uppercase tracking-wider">영상 핵심 요약</h4>
+                      {selectedVideo.is_analyzed && selectedVideo.quality_score != null && (
+                        <span className={`ml-auto px-2 py-0.5 rounded-full text-[9px] font-black border ${
+                          selectedVideo.quality_score >= 7
+                            ? 'bg-green-500/20 text-green-400 border-green-500/30'
+                            : selectedVideo.quality_score >= 4
+                            ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
+                            : 'bg-red-500/20 text-red-400 border-red-500/30'
+                        }`}>
+                          품질 {selectedVideo.quality_score.toFixed(1)}점
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-slate-400 text-xs leading-relaxed font-bold pl-11">
+                      {selectedVideo.is_analyzed
+                        ? (selectedVideo.summary || '요약 없음')
+                        : '분석 전입니다. 30점 이상 영상만 AI 분석이 가능합니다.'}
+                    </p>
                   </div>
-                )}
+
+                  {selectedVideo.is_analyzed && (
+                    <div className="bg-white/5 rounded-2xl p-6 border border-white/10 space-y-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-xs">
+                          <FontAwesomeIcon icon={faFileAlt} />
+                        </div>
+                        <h4 className="text-sm font-black text-white uppercase tracking-wider">콘텐츠 분석</h4>
+                        {selectedVideo.content_type && selectedVideo.content_type !== 'unknown' && (
+                          <span className="ml-auto px-2 py-0.5 rounded-full text-[9px] font-black bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                            {selectedVideo.content_type}
+                          </span>
+                        )}
+                      </div>
+                      <div className="pl-11">
+                        {selectedVideo.summary === '자막 없음' && (
+                          <p className="text-slate-500 text-xs font-bold">자막을 사용할 수 없는 영상입니다.</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
             <div className="px-8 py-6 border-t border-white/10 bg-[#1c1c2e]">
-              <a
-                href={selectedVideo.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full bg-gradient-to-r from-[#a78bfa] to-[#6366f1] text-white font-black py-4 rounded-xl flex items-center justify-center gap-3 shadow-xl shadow-indigo-500/20"
-              >
-                유튜브에서 보기 <FontAwesomeIcon icon={faExternalLinkAlt} />
-              </a>
+              <div className="flex gap-3">
+                <a
+                  href={selectedVideo.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 bg-gradient-to-r from-[#a78bfa] to-[#6366f1] hover:from-[#b79cff] hover:to-[#7477ff] text-white font-black py-4 rounded-xl shadow-xl shadow-indigo-500/20 transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
+                >
+                  유튜브에서 보기
+                  <FontAwesomeIcon icon={faExternalLinkAlt} className="text-xs" />
+                </a>
+                <button className="px-6 bg-white/5 hover:bg-white/10 text-white font-black py-4 rounded-xl border border-white/10 transition-all active:scale-[0.98]">
+                  데이터 다운로드
+                </button>
+              </div>
             </div>
           </aside>
         </>

@@ -193,7 +193,8 @@ def main() -> int:
         return 1
 
     keywords:    list[str] = args.get("keywords", [])
-    max_results: int       = int(args.get("max_results", 10))
+    max_results: int       = int(args.get("max_results", 50))
+    max_results            = max(1, min(50, max_results))
     region_code: str       = args.get("regionCode", "")
 
     if not keywords:
@@ -210,7 +211,10 @@ def main() -> int:
 
     for idx, keyword in enumerate(keywords, 1):
         try:
-            saved = crawl_keyword(youtube, keyword, max_results, region_code)
+            remaining = max_results - total_saved
+            if remaining <= 0:
+                break
+            saved = crawl_keyword(youtube, keyword, remaining, region_code)
             total_saved += saved
             _sse({"type": "progress", "keyword": keyword, "count": idx, "total": total, "saved": saved})
         except Exception as exc:

@@ -16,7 +16,9 @@ function formatKorean(n: number): string {
 function toCollectedAt(ts: string | null | undefined): string {
   if (!ts) return '';
   try {
-    return new Date(ts).toISOString().split('T')[0];
+    const d = new Date(ts);
+    const s = d.toLocaleString('sv-SE', { timeZone: 'Asia/Seoul', hour12: false });
+    return s.slice(0, 16);
   } catch {
     return ts.slice(0, 10);
   }
@@ -37,6 +39,7 @@ export async function GET(req: NextRequest) {
   const limit       = Math.max(1, parseInt(searchParams.get('limit')  || '20', 10));
   const genreParam  = searchParams.get('genre')  || '';
   const sourceParam = searchParams.get('source') || '';
+  const sortParam   = (searchParams.get('sort')  || 'latest').toLowerCase();
 
   const from = (page - 1) * limit;
   const to   = from + limit - 1;
@@ -53,9 +56,26 @@ export async function GET(req: NextRequest) {
     query = query.like('keyword', 'http%');
   }
 
-  const { data, count, error } = await query
-    .order('created_at', { ascending: false })
-    .range(from, to);
+  const days90Ms = 90 * 24 * 60 * 60 * 1000;
+  const thresholdIso = new Date(Date.now() - days90Ms).toISOString();
+
+  if (sortParam === 'viral') {
+    query = query
+      .gte('viral_score', 30)
+      .order('viral_score', { ascending: false })
+      .order('created_at', { ascending: false });
+  } else if (sortParam === 'benchmark') {
+    query = query
+      .gte('viral_score', 30)
+      .or(`published_at.gte.${thresholdIso},created_at.gte.${thresholdIso}`)
+      .order('viral_score', { ascending: false })
+      .order('published_at', { ascending: false })
+      .order('created_at', { ascending: false });
+  } else {
+    query = query.order('created_at', { ascending: false });
+  }
+
+  const { data, count, error } = await query.range(from, to);
 
   if (error) {
     console.error('[youtube/videos]', error);
@@ -66,6 +86,8 @@ export async function GET(req: NextRequest) {
   const totalPages = Math.ceil(total / limit);
 
   const videos = (data || []).map((row: Record<string, unknown>, idx: number) => ({
+    created_at:   (row.created_at as string) || '',
+    published_at: (row.published_at as string) || '',
     id:           from + idx + 1,
     video_id:     (row.video_id as string) || '',
     channelName:  (row.channel as string) || '',

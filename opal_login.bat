@@ -1,5 +1,5 @@
 @echo off
-cd /d "%~dp0packages\tools\skill-3-opalvideo\opal-access"
+cd /d "%~dp0packages\tools\skill-2-video-longform1\opal-access"
 
 echo ============================================================
 echo  [LinkDrop] Opal Login

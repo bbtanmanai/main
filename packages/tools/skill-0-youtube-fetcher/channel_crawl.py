@@ -37,6 +37,7 @@ if _ROOT_ENV.exists():
             os.environ.setdefault(_k.strip(), _v.strip())
 
 from googleapiclient.discovery import build  # noqa: E402
+from googleapiclient.errors import HttpError  # noqa: E402
 from supabase import create_client, Client   # noqa: E402
 
 YOUTUBE_API_KEY = os.environ.get("YOUTUBE_API_KEY", "")
@@ -95,17 +96,50 @@ def _calc_viral_score(views: int, likes: int, comments: int, subscribers: int) -
     return round(min(10.0, view_score + eng_score + spread_score), 2)
 
 
-def _extract_video_id(url: str):
+def _extract_video_id(url: str) -> str | None:
+    s = (url or "").strip()
+    if not s:
+        return None
+
     patterns = [
-        r'(?:v=|\/)([0-9A-Za-z_-]{11}).*',
-        r'youtu\.be\/([0-9A-Za-z_-]{11})',
-        r'shorts\/([0-9A-Za-z_-]{11})',
+        r"(?:\?|&)v=([0-9A-Za-z_-]{11})(?:&|$)",
+        r"youtu\.be/([0-9A-Za-z_-]{11})(?:\?|/|$)",
+        r"/shorts/([0-9A-Za-z_-]{11})(?:\?|/|$)",
+        r"/embed/([0-9A-Za-z_-]{11})(?:\?|/|$)",
     ]
     for p in patterns:
-        m = re.search(p, url)
+        m = re.search(p, s)
         if m:
             return m.group(1)
     return None
+
+
+def _is_video_url(url: str) -> bool:
+    return _extract_video_id(url) is not None
+
+
+def _format_youtube_http_error(e: HttpError) -> str:
+    status = getattr(getattr(e, "resp", None), "status", None) or "unknown"
+    msg = str(e)
+    try:
+        raw = e.content.decode("utf-8", errors="replace") if getattr(e, "content", None) else ""
+        payload = json.loads(raw) if raw else {}
+        if isinstance(payload, dict):
+            msg = payload.get("error", {}).get("message") or msg
+    except Exception:
+        pass
+
+    lowered = msg.lower()
+    if "exceeded your" in lowered and "quota" in lowered:
+        return "YouTube API 쿼터 초과(403): 오늘 할당량이 소진되었습니다."
+    return f"YouTube API 오류({status}): {msg}"
+
+
+def _youtube_exec(fn):
+    try:
+        return fn()
+    except HttpError as e:
+        raise RuntimeError(_format_youtube_http_error(e)) from e
 
 
 def _resolve_channel_id(youtube, channel_url: str):
@@ -118,43 +152,27 @@ def _resolve_channel_id(youtube, channel_url: str):
     m = re.search(r'/@([\w.-]+)', url)
     if m:
         handle = m.group(1)
-        try:
-            res = youtube.channels().list(forHandle=f'@{handle}', part='id').execute()
-            items = res.get('items', [])
-            if items:
-                return items[0]['id']
-        except Exception:
-            pass
-        try:
-            res = youtube.search().list(q=handle, type='channel', part='id', maxResults=1).execute()
-            items = res.get('items', [])
-            if items:
-                return items[0]['id']['channelId']
-        except Exception:
-            pass
+        res = _youtube_exec(lambda: youtube.channels().list(forHandle=f'@{handle}', part='id').execute())
+        items = res.get('items', [])
+        if items:
+            return items[0]['id']
         return None
 
     m = re.search(r'(?:/c/|/user/)([\w.-]+)', url)
     if m:
         name = m.group(1)
-        try:
-            res = youtube.search().list(q=name, type='channel', part='id', maxResults=1).execute()
-            items = res.get('items', [])
-            if items:
-                return items[0]['id']['channelId']
-        except Exception:
-            pass
+        res = _youtube_exec(lambda: youtube.search().list(q=name, type='channel', part='id', maxResults=1).execute())
+        items = res.get('items', [])
+        if items:
+            return items[0]['id']['channelId']
         return None
 
     video_id = _extract_video_id(url)
     if video_id:
-        try:
-            res = youtube.videos().list(part='snippet', id=video_id).execute()
-            items = res.get('items', [])
-            if items:
-                return items[0]['snippet']['channelId']
-        except Exception:
-            pass
+        res = _youtube_exec(lambda: youtube.videos().list(part='snippet', id=video_id).execute())
+        items = res.get('items', [])
+        if items:
+            return items[0]['snippet']['channelId']
 
     return None
 
@@ -176,6 +194,9 @@ def crawl_channel(youtube, channel_url: str, max_results: int, genre: str) -> in
     if not channel_id:
         raise ValueError(f"Cannot resolve channel ID from URL: {channel_url}")
 
+    input_video_id = _extract_video_id(channel_url)
+    input_is_video = _is_video_url(channel_url)
+
     # Channel metadata
     ch_res = youtube.channels().list(id=channel_id, part='snippet,statistics').execute()
     ch_items = ch_res.get('items', [])
@@ -194,28 +215,84 @@ def crawl_channel(youtube, channel_url: str, max_results: int, genre: str) -> in
             or ''
         )
 
-    # Search recent videos
-    search_res = youtube.search().list(
-        channelId=channel_id,
-        part='id',
-        type='video',
-        order='date',
-        maxResults=min(max_results, 50),
-    ).execute()
-    video_ids = [
-        item['id']['videoId']
-        for item in search_res.get('items', [])
-        if item['id'].get('videoId')
-    ]
+    if input_is_video and input_video_id:
+        details_res = _youtube_exec(lambda: youtube.videos().list(
+            id=input_video_id,
+            part='snippet,statistics',
+        ).execute())
+
+        records = []
+        for item in details_res.get('items', []):
+            vid_id  = item['id']
+            snippet = item.get('snippet', {})
+            stats   = item.get('statistics', {})
+
+            views    = int(stats.get('viewCount',    0))
+            likes    = int(stats.get('likeCount',    0))
+            comments = int(stats.get('commentCount', 0))
+
+            record = {
+                'video_id':    vid_id,
+                'title':       snippet.get('title', ''),
+                'channel':     channel_name,
+                'channel_id':  channel_id,
+                'views':       views,
+                'subscribers': subscribers,
+                'likes':       likes,
+                'comments':    comments,
+                'viral_score': _calc_viral_score(views, likes, comments, subscribers),
+                'url':         f'https://www.youtube.com/watch?v={vid_id}',
+                'keyword':     channel_url,
+                'template_id': genre,
+                'published_at': snippet.get('publishedAt') or None,
+            }
+            records.append(record)
+
+        if not records:
+            return 0
+
+        _get_supabase().table('crawl_videos').upsert(records, on_conflict='video_id').execute()
+        return len(records)
+
+    ch_details = _youtube_exec(lambda: youtube.channels().list(
+        id=channel_id,
+        part='contentDetails',
+    ).execute())
+    uploads_playlist_id = (
+        (ch_details.get('items') or [{}])[0]
+        .get('contentDetails', {})
+        .get('relatedPlaylists', {})
+        .get('uploads')
+    )
+    if not uploads_playlist_id:
+        return 0
+
+    video_ids: list[str] = []
+    page_token: str | None = None
+    while len(video_ids) < max_results:
+        remaining = max_results - len(video_ids)
+        pl_res = _youtube_exec(lambda: youtube.playlistItems().list(
+            playlistId=uploads_playlist_id,
+            part='contentDetails',
+            maxResults=min(50, remaining),
+            pageToken=page_token,
+        ).execute())
+        for item in pl_res.get('items', []):
+            vid = (item.get('contentDetails') or {}).get('videoId')
+            if vid:
+                video_ids.append(vid)
+        page_token = pl_res.get('nextPageToken')
+        if not page_token:
+            break
 
     if not video_ids:
         return 0
 
     # Video details
-    details_res = youtube.videos().list(
+    details_res = _youtube_exec(lambda: youtube.videos().list(
         id=','.join(video_ids),
         part='snippet,statistics',
-    ).execute()
+    ).execute())
 
     records = []
     for item in details_res.get('items', []):
@@ -242,15 +319,13 @@ def crawl_channel(youtube, channel_url: str, max_results: int, genre: str) -> in
             'template_id': genre,
             'published_at': snippet.get('publishedAt') or None,
         }
-        if channel_thumbnail:
-            record['channel_thumbnail'] = channel_thumbnail
         records.append(record)
 
     if not records:
         return 0
 
-    res = _get_supabase().table('crawl_videos').upsert(records, on_conflict='video_id').execute()
-    return len(res.data or [])
+    _get_supabase().table('crawl_videos').upsert(records, on_conflict='video_id').execute()
+    return len(records)
 
 
 # ── Main ──────────────────────────────────────────────────────────────────
@@ -269,7 +344,8 @@ def main() -> int:
 
     urls:        list[str] = args.get("urls", [])
     genre:       str       = args.get("genre", "general")
-    max_results: int       = int(args.get("max_results", 30))
+    max_results: int       = int(args.get("max_results", 50))
+    max_results            = max(1, min(50, max_results))
 
     if not urls:
         _sse({"type": "error", "message": "urls list is empty"})
@@ -285,7 +361,10 @@ def main() -> int:
 
     for idx, url in enumerate(urls, 1):
         try:
-            saved = crawl_channel(youtube, url, max_results, genre)
+            remaining = max_results - total_saved
+            if remaining <= 0:
+                break
+            saved = crawl_channel(youtube, url, remaining, genre)
             total_saved += saved
             _sse({"type": "progress", "url": url, "count": idx, "total": total, "saved": saved})
         except Exception as exc:

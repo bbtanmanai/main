@@ -61,8 +61,69 @@ function getScoreTier(score: number): { emoji: string; color: string; label: str
   return { emoji: '💤', color: 'bg-slate-600/80 text-slate-300 border-slate-500/50', label: '보통' };
 }
 
+function isRecent3Months(video: { published_at?: string; created_at?: string }): boolean {
+  const ts = video.published_at || video.created_at;
+  if (!ts) return false;
+  const d = new Date(ts);
+  if (Number.isNaN(d.getTime())) return false;
+  const days90 = 90 * 24 * 60 * 60 * 1000;
+  return Date.now() - d.getTime() <= days90;
+}
+
+function getErrorInfo(message: string) {
+  const m = (message || '').toLowerCase();
+  if (m.includes('pgrst204') || (m.includes('schema cache') && m.includes('column'))) {
+    return {
+      kind: 'db_schema',
+      title: 'DB 스키마 불일치',
+      reason: 'Supabase 테이블 컬럼이 코드에서 보내는 필드와 다름',
+      action: 'Supabase에 컬럼 추가 또는 코드에서 해당 필드 제거',
+    } as const;
+  }
+  if (m.includes('quota') || m.includes('쿼터')) {
+    return {
+      kind: 'quota',
+      title: 'YouTube API 쿼터 초과',
+      reason: 'Google API 일일 할당량이 소진되어 요청이 차단됨',
+      action: '내일 다시 시도하거나, 새 API 키로 교체/쿼터 증액',
+    } as const;
+  }
+  if (m.includes('cannot resolve channel id') || m.includes('channel id')) {
+    return {
+      kind: 'resolve_channel',
+      title: '채널 식별 실패',
+      reason: 'URL에서 채널/영상 정보를 식별하지 못함(비공개/제한/URL 오류 가능)',
+      action: '채널 홈 URL 또는 접근 가능한 영상 URL로 재시도',
+    } as const;
+  }
+  if (m.includes('supabase_url') || m.includes('service_role') || m.includes('환경변수')) {
+    return {
+      kind: 'env',
+      title: '서버 설정 누락',
+      reason: '서버 환경변수(Supabase/YouTube 키)가 설정되지 않음',
+      action: '.env 또는 배포 환경변수 설정 후 재시도',
+    } as const;
+  }
+  if (m.includes('api request failed') || m.includes('fetch')) {
+    return {
+      kind: 'api',
+      title: '서버 요청 실패',
+      reason: '서버가 정상 응답을 주지 못함(일시 장애/네트워크 문제 가능)',
+      action: '잠시 후 재시도 또는 서버 로그 확인',
+    } as const;
+  }
+  return {
+    kind: 'unknown',
+    title: '알 수 없는 오류',
+    reason: '예상하지 못한 오류가 발생함',
+    action: '오류 메시지/URL을 확인하고 재시도',
+  } as const;
+}
+
 // --- Video type ---
 type VideoItem = {
+  created_at?: string;
+  published_at?: string;
   id: number;
   video_id?: string;
   channelName: string;
@@ -84,6 +145,16 @@ type VideoItem = {
   viral_reason?: string;
 };
 
+type CommentItem = {
+  author: string;
+  authorChannelUrl?: string;
+  text: string;
+  likeCount: number;
+  publishedAt?: string;
+  updatedAt?: string;
+  replyCount?: number;
+};
+
 
 export default function ChannelCrawlingPage() {
   const [videos, setVideos] = useState<VideoItem[]>([]);
@@ -93,7 +164,20 @@ export default function ChannelCrawlingPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
   const [progressMsg, setProgressMsg] = useState('');
-  const [analyzingIds, setAnalyzingIds] = useState<Set<string>>(new Set());
+  const [crawlErrors, setCrawlErrors] = useState<Array<{ url: string; message: string }>>([]);
+  const [sortMode, setSortMode] = useState<'latest' | 'benchmark' | 'viral'>('latest');
+  const [commentsList, setCommentsList] = useState<CommentItem[]>([]);
+  const [commentsLoading, setCommentsLoading] = useState(false);
+  const [commentsError, setCommentsError] = useState('');
+  const [commentsVideoId, setCommentsVideoId] = useState<string>('');
+  const errorHints = (() => {
+    const map = new Map<string, ReturnType<typeof getErrorInfo>>();
+    for (const e of crawlErrors) {
+      const info = getErrorInfo(e.message);
+      if (!map.has(info.kind)) map.set(info.kind, info);
+    }
+    return Array.from(map.values());
+  })();
 
   // Pagination States
   const [currentPage, setCurrentPage] = useState(1);
@@ -101,10 +185,10 @@ export default function ChannelCrawlingPage() {
   const totalPages = Math.ceil(totalVideos / itemsPerPage);
 
   // Load videos from API
-  const loadVideos = useCallback(async (page = 1) => {
+  const loadVideos = useCallback(async (page = 1, sort: 'latest' | 'benchmark' | 'viral' = 'latest') => {
     setIsFetching(true);
     try {
-      const params = new URLSearchParams({ page: String(page), limit: '20' });
+      const params = new URLSearchParams({ page: String(page), limit: '20', sort });
       const res = await fetch(`/api/youtube/videos?${params.toString()}`);
       if (!res.ok) throw new Error('fetch failed');
       const json = await res.json();
@@ -119,8 +203,9 @@ export default function ChannelCrawlingPage() {
 
   // Initial load
   useEffect(() => {
-    loadVideos(1);
-  }, [loadVideos]);
+    setCurrentPage(1);
+    loadVideos(1, sortMode);
+  }, [loadVideos, sortMode]);
 
   // Pagination Effect: current page should not exceed total pages
   useEffect(() => {
@@ -129,10 +214,18 @@ export default function ChannelCrawlingPage() {
     }
   }, [totalPages, currentPage]);
 
+  useEffect(() => {
+    const vid = selectedVideo?.video_id ?? '';
+    setCommentsVideoId(vid);
+    setCommentsList([]);
+    setCommentsError('');
+    setCommentsLoading(false);
+  }, [selectedVideo?.video_id]);
+
   // Page change
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    loadVideos(page);
+    loadVideos(page, sortMode);
   };
 
   const currentVideos = videos;
@@ -154,13 +247,15 @@ export default function ChannelCrawlingPage() {
     }
 
     setIsLoading(true);
+    setCrawlErrors([]);
     setProgressMsg('크롤링 시작 중...');
 
+    let errorsCount = 0;
     try {
       const res = await fetch('/api/youtube/crawl', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ urls: activeUrls, genre: 'general', max_results: 30 }),
+        body: JSON.stringify({ urls: activeUrls, genre: 'general', max_results: 50 }),
       });
 
       if (!res.ok || !res.body) {
@@ -169,14 +264,16 @@ export default function ChannelCrawlingPage() {
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
+      let buffer = '';
       let totalSaved = 0;
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
-        const text = decoder.decode(value);
-        const lines = text.split('\n');
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() ?? '';
 
         for (const line of lines) {
           const trimmed = line.trim();
@@ -189,8 +286,11 @@ export default function ChannelCrawlingPage() {
               totalSaved = event.total_saved ?? 0;
               setProgressMsg(`완료! 총 ${totalSaved}개 영상 저장됨`);
             } else if (event.type === 'error') {
-              console.error('Crawl error:', event.message);
-              setProgressMsg(`오류: ${event.message}`);
+              const url = String(event.url || '');
+              const message = String(event.message || '알 수 없는 오류');
+              errorsCount += 1;
+              setCrawlErrors(prev => [...prev, { url, message }]);
+              setProgressMsg(`오류: ${message}`);
             }
           } catch { /* non-JSON */ }
         }
@@ -199,44 +299,37 @@ export default function ChannelCrawlingPage() {
       setNewChannelUrls(['', '', '', '', '']);
       await loadVideos(1);
       setCurrentPage(1);
-      alert(`크롤링 완료! 총 ${totalSaved}개 영상이 저장되었습니다.`);
+      if (errorsCount > 0) {
+        setProgressMsg(`완료! 총 ${totalSaved}개 저장, ${errorsCount}개 실패`);
+      } else {
+        setProgressMsg(`완료! 총 ${totalSaved}개 영상 저장됨`);
+      }
     } catch (e) {
       console.error('handleAddChannel error:', e);
-      alert('크롤링 중 오류가 발생했습니다. 콘솔을 확인해 주세요.');
+      const message = e instanceof Error ? e.message : '크롤링 중 오류가 발생했습니다.';
+      errorsCount += 1;
+      setCrawlErrors(prev => [...prev, { url: '요청', message }]);
+      setProgressMsg(`오류: ${message}`);
     } finally {
       setIsLoading(false);
-      setProgressMsg('');
     }
   };
 
-  const handleAnalyzeSingle = async (videoId: string) => {
-    setAnalyzingIds(prev => new Set(prev).add(videoId));
+  const fetchComments = async (videoId: string) => {
+    if (!videoId) return;
+    if (commentsLoading) return;
+    setCommentsLoading(true);
+    setCommentsError('');
     try {
-      const res = await fetch('/api/youtube/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ video_ids: [videoId], batch_size: 1 }),
-      });
-      if (!res.ok || !res.body) throw new Error('API 요청 실패');
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const lines = decoder.decode(value).split('\n');
-        for (const line of lines) {
-          if (!line.trim().startsWith('data: ')) continue;
-          try {
-            const ev = JSON.parse(line.trim().slice(6));
-            if (ev.type === 'done' || ev.type === 'error') break;
-          } catch { /* skip */ }
-        }
-      }
-      await loadVideos(currentPage);
+      const params = new URLSearchParams({ video_id: videoId, max_results: '20' });
+      const res = await fetch(`/api/youtube/comments?${params.toString()}`);
+      const json = await res.json();
+      if (!res.ok) throw new Error(json?.error || '댓글 조회 실패');
+      setCommentsList(Array.isArray(json?.comments) ? json.comments : []);
     } catch (e) {
-      console.error('handleAnalyzeSingle error:', e);
+      setCommentsError(e instanceof Error ? e.message : '댓글 조회 실패');
     } finally {
-      setAnalyzingIds(prev => { const s = new Set(prev); s.delete(videoId); return s; });
+      setCommentsLoading(false);
     }
   };
 
@@ -385,6 +478,64 @@ export default function ChannelCrawlingPage() {
                   )}
                 </button>
 
+                {(progressMsg || crawlErrors.length > 0) && (
+                  <div className={`p-5 rounded-2xl border ${crawlErrors.length > 0 ? 'bg-red-500/10 border-red-500/30' : 'bg-white/5 border-white/10'}`}>
+                    <div className="flex items-center gap-2">
+                      <div className={`text-[10px] font-black uppercase tracking-widest ${crawlErrors.length > 0 ? 'text-red-300' : 'text-slate-400'}`}>
+                        {crawlErrors.length > 0 ? 'ERROR' : 'STATUS'}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => { setProgressMsg(''); setCrawlErrors([]); }}
+                        className="ml-auto w-8 h-8 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 flex items-center justify-center text-slate-400"
+                        title="메시지 지우기"
+                      >
+                        <FontAwesomeIcon icon={faTimes} className="text-xs" />
+                      </button>
+                    </div>
+
+                    {progressMsg && (
+                      <div className="mt-2 text-xs font-bold text-slate-200 leading-relaxed break-words">
+                        {progressMsg}
+                      </div>
+                    )}
+
+                    {crawlErrors.length > 0 && (
+                      <div className="mt-4 space-y-2">
+                        <div className="text-[11px] font-black text-red-300">
+                          실패 내역 ({crawlErrors.length})
+                        </div>
+                        {errorHints.length > 0 && (
+                          <div className="space-y-2">
+                            {errorHints.map(h => (
+                              <div key={h.kind} className="p-4 rounded-xl bg-black/20 border border-white/10">
+                                <div className="text-[11px] font-black text-white">{h.title}</div>
+                                <div className="text-[11px] font-bold text-slate-300 mt-1 leading-relaxed">
+                                  이유: {h.reason}
+                                </div>
+                                <div className="text-[11px] font-bold text-slate-300 mt-1 leading-relaxed">
+                                  해결: {h.action}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        <div className="max-h-40 overflow-auto rounded-xl border border-red-500/20 bg-black/20">
+                          {crawlErrors.map((e, i) => (
+                            <div key={`${e.url}-${i}`} className="px-4 py-3 border-b border-white/5 last:border-b-0">
+                              <div className="text-[10px] font-black text-slate-300 break-all">{e.url || '(url 없음)'}</div>
+                              <div className="text-[11px] font-bold text-red-200/90 mt-1 break-words">{e.message}</div>
+                              <div className="text-[10px] font-bold text-slate-400 mt-1 break-words">
+                                {getErrorInfo(e.message).action}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <div className="p-5 bg-[#a78bfa]/5 rounded-2xl border border-[#a78bfa]/10">
                   <h4 className="text-xs font-black text-[#a78bfa] mb-2 flex items-center gap-2">
                     <FontAwesomeIcon icon={faCheckCircle} />
@@ -411,6 +562,29 @@ export default function ChannelCrawlingPage() {
                 TOTAL {totalVideos}
               </span>
             </h3>
+            <div className="flex items-center gap-2">
+              {([
+                { key: 'latest', label: '최신순' },
+                { key: 'benchmark', label: '벤치마킹' },
+                { key: 'viral', label: '떡상' },
+              ] as const).map((it) => (
+                <button
+                  key={it.key}
+                  type="button"
+                  onClick={() => {
+                    setSortMode(it.key);
+                    setCurrentPage(1);
+                  }}
+                  className={`px-3 py-2 rounded-xl text-xs font-black border transition-all ${
+                    sortMode === it.key
+                      ? 'bg-[#a78bfa] text-white border-[#a78bfa]/50'
+                      : 'bg-white/5 text-slate-400 border-white/10 hover:bg-white/10 hover:text-white'
+                  }`}
+                >
+                  {it.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Loading skeleton */}
@@ -451,6 +625,26 @@ export default function ChannelCrawlingPage() {
                       <div className={`absolute top-2 left-2 z-10 flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black border backdrop-blur-sm ${tier.color}`}>
                         <span>{tier.emoji}</span>
                         <span>{score}</span>
+                      </div>
+                    );
+                  })()}
+                  {(() => {
+                    const score = video.viral_score != null ? video.viral_score : calcViralScore(video);
+                    if (score < 30) return null;
+                    if (!isRecent3Months(video)) return null;
+                    return (
+                      <div className="absolute bottom-10 left-12 z-30 px-2 py-0.5 rounded-full text-[9px] font-black border backdrop-blur-sm bg-[#a78bfa]/80 text-white border-[#a78bfa]/50">
+                        벤치마킹 1순위
+                      </div>
+                    );
+                  })()}
+                  {(() => {
+                    const score = video.viral_score != null ? video.viral_score : calcViralScore(video);
+                    if (score < 30) return null;
+                    if (!isRecent3Months(video)) return null;
+                    return (
+                      <div className="absolute bottom-10 left-2 z-30 w-8 h-8 rounded-full bg-white/90 text-[#a78bfa] border border-white/50 backdrop-blur-sm flex items-center justify-center shadow-md">
+                        <FontAwesomeIcon icon={faThumbsUp} className="text-xs" />
                       </div>
                     );
                   })()}
@@ -554,37 +748,6 @@ export default function ChannelCrawlingPage() {
                   </div>
                   
                   <div className="mt-auto flex flex-col gap-1.5 pt-3 md:pt-4 border-t border-white/5">
-                    {/* AI 분석 버튼 — 떡상(30점+) 영상만 표시 */}
-                    {(() => {
-                      const score = video.viral_score != null ? video.viral_score : calcViralScore(video);
-                      if (score < 30) return null;
-                      const vid = String(video.video_id ?? video.id);
-                      return !video.is_analyzed ? (
-                        <button
-                          onClick={(e) => { e.stopPropagation(); handleAnalyzeSingle(vid); }}
-                          disabled={analyzingIds.has(vid)}
-                          className="w-full flex items-center justify-center gap-1.5 py-1.5 md:py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg md:rounded-xl text-[8px] md:text-[10px] font-black transition-all disabled:opacity-50"
-                        >
-                          {analyzingIds.has(vid) ? (
-                            <><FontAwesomeIcon icon={faSpinner} className="animate-spin text-[8px]" /><span>분석 중...</span></>
-                          ) : (
-                            <><FontAwesomeIcon icon={faRobot} className="text-[8px]" /><span>🔥 떡상 이유 분석</span></>
-                          )}
-                        </button>
-                      ) : (
-                        <button
-                          onClick={(e) => { e.stopPropagation(); handleAnalyzeSingle(vid); }}
-                          disabled={analyzingIds.has(vid)}
-                          className="w-full flex items-center justify-center gap-1.5 py-1.5 md:py-2 bg-white/5 hover:bg-white/10 text-slate-500 hover:text-slate-300 rounded-lg md:rounded-xl text-[8px] md:text-[10px] font-black transition-all disabled:opacity-50"
-                        >
-                          {analyzingIds.has(vid) ? (
-                            <><FontAwesomeIcon icon={faSpinner} className="animate-spin text-[8px]" /><span>재분석 중...</span></>
-                          ) : (
-                            <><FontAwesomeIcon icon={faSync} className="text-[8px]" /><span>재분석</span></>
-                          )}
-                        </button>
-                      );
-                    })()}
                     <a
                       href={video.url}
                       target="_blank"
@@ -760,6 +923,82 @@ export default function ChannelCrawlingPage() {
                   </div>
                 </div>
               </div>
+
+              {(() => {
+                const score = selectedVideo.viral_score != null ? selectedVideo.viral_score : calcViralScore(selectedVideo);
+                const vid = selectedVideo.video_id ?? commentsVideoId;
+                if (score < 30) return null;
+                return (
+                  <div className="space-y-4">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] flex items-center gap-2">
+                      <FontAwesomeIcon icon={faComment} className="text-[#a78bfa]" />
+                      Comments (Top 20)
+                    </label>
+                    <div className="bg-white/5 rounded-2xl p-6 border border-white/10 space-y-4">
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() => fetchComments(vid)}
+                          disabled={commentsLoading}
+                          className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 text-white font-black rounded-xl border border-white/10 transition-all disabled:opacity-50"
+                        >
+                          {commentsLoading
+                            ? <><FontAwesomeIcon icon={faSpinner} className="animate-spin" /><span>불러오는 중...</span></>
+                            : <><FontAwesomeIcon icon={faComment} /><span>댓글 불러오기</span></>
+                          }
+                        </button>
+                        {commentsList.length > 0 && (
+                          <div className="text-[10px] font-black text-slate-500">
+                            {commentsList.length}개
+                          </div>
+                        )}
+                      </div>
+
+                      {commentsError && (
+                        <div className="text-[11px] font-bold text-red-300 break-words">
+                          {commentsError}
+                        </div>
+                      )}
+
+                      {commentsList.length > 0 && (
+                        <div className="max-h-56 overflow-auto rounded-xl border border-white/10 bg-black/20">
+                          {commentsList.map((c, i) => (
+                            <div key={`${c.author}-${i}`} className="px-4 py-3 border-b border-white/5 last:border-b-0">
+                              <div className="flex items-center gap-2">
+                                {c.authorChannelUrl ? (
+                                  <a
+                                    href={c.authorChannelUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-[10px] font-black text-slate-200 hover:text-white"
+                                  >
+                                    {c.author || 'unknown'}
+                                  </a>
+                                ) : (
+                                  <div className="text-[10px] font-black text-slate-200">{c.author || 'unknown'}</div>
+                                )}
+                                {typeof c.likeCount === 'number' && (
+                                  <div className="ml-auto text-[10px] font-black text-slate-500">
+                                    👍 {c.likeCount}
+                                  </div>
+                                )}
+                              </div>
+                              <div className="text-[11px] font-bold text-slate-300 mt-2 leading-relaxed break-words whitespace-pre-wrap">
+                                {c.text}
+                              </div>
+                              {(c.replyCount != null || c.publishedAt) && (
+                                <div className="text-[10px] font-bold text-slate-600 mt-2 flex items-center gap-3">
+                                  {c.replyCount != null && <span>답글 {c.replyCount}</span>}
+                                  {c.publishedAt && <span>{c.publishedAt}</span>}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* AI Analysis Section */}
               <div className="space-y-4">

@@ -325,9 +325,6 @@ class YoutubeFetcherAgent:
                 'template_id':       genre,
                 'published_at':      snippet.get('publishedAt') or None,
             }
-            if channel_thumbnail:
-                record['channel_thumbnail'] = channel_thumbnail
-
             records.append(record)
 
         if not records:
