@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>화풍 레퍼런스: 스튜디오 지브리 실사풍</title>
+  <style>
+    body {
+      background: #1a1a2e;
+      color: #e0e0e0;
+      font-family: sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      color: #90EE90;
+      font-size: 28px;
+      border-bottom: 2px solid #2d4a2d;
+      padding-bottom: 12px;
+    }
+
+    h2 {
+      color: #87CEEB;
+      font-size: 20px;
+      margin-top: 40px;
+    }
+
+    .ref-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .ref-card {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #333;
+    }
+
+    .ref-card img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      display: block;
+    }
+
+    .ref-card p {
+      padding: 8px 12px;
+      font-size: 13px;
+      color: #94a3b8;
+      margin: 0;
+    }
+
+    .palette {
+      display: flex;
+      gap: 8px;
+      margin: 16px 0;
+      flex-wrap: wrap;
+    }
+
+    .swatch {
+      width: 80px;
+      height: 50px;
+      border-radius: 8px;
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      font-size: 10px;
+      color: #000;
+      padding-bottom: 4px;
+      font-weight: bold;
+    }
+
+    .rule {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 12px 0;
+    }
+
+    .rule li {
+      margin: 6px 0;
+      line-height: 1.6;
+    }
+
+    .keyword {
+      display: inline-block;
+      background: #1e3a5f;
+      color: #93c5fd;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      margin: 3px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>🎨 화풍 레퍼런스: 스튜디오 지브리 실사풍</h1>
+  <p>이 문서는 NotebookLM 슬라이드 생성 시 시각적 스타일 레퍼런스로 사용됩니다.</p>
+  <p><strong>모든 슬라이드는 이 화풍을 따라야 하며, 텍스트/글자/라벨을 절대 포함하지 마세요.</strong></p>
+
+  <h2>1. 레퍼런스 이미지</h2>
+  <p>아래 이미지들의 색감, 구도, 빛, 분위기를 슬라이드에 그대로 반영하세요.</p>
+
+  <div class="ref-grid">
+    <div class="ref-card">
+      <img src="https://cdn.midjourney.com/469d3f9e-b07e-493a-a745-eab22bc9a4ae/0_3.png">
+    </div>
+    <div class="ref-card">
+      <img src="https://cdn.midjourney.com/44e9820a-d979-426a-a014-8a19171c5b66/0_0.png">
+    </div>
+    <div class="ref-card">
+      <img src="https://cdn.midjourney.com/b5ec5d88-023c-4b23-9db2-d9bdd56a023a/0_1.png">
+    </div>
+    <div class="ref-card">
+      <img src="https://cdn.midjourney.com/b8373324-191c-486d-a9ca-36e7374339a2/0_0.png">
+    </div>
+    <div class="ref-card">
+      <img src="https://cdn.midjourney.com/9f5184ac-c63c-4aaf-8b38-22470baffb6f/0_0.png">
+    </div>
+    <div class="ref-card">
+      <img src="https://cdn.midjourney.com/5804f063-f01f-4500-a54a-23d7d5eaa88a/0_0.png">
+    </div>
+    <div class="ref-card">
+      <img src="https://cdn.midjourney.com/7116e6a3-c6bb-4b3c-9f85-86db87c20e64/0_0.png">
+    </div>
+    <div class="ref-card">
+      <img src="https://cdn.midjourney.com/05bb3042-01e1-470e-984c-980f3c1d032e/0_3.png">
+    </div>
+    <div class="ref-card">
+      <img src="https://cdn.midjourney.com/d673904d-0a95-48be-90a5-83e39f6352ec/0_0.png">
+    </div>
+  </div>
+
+  <h2>2. 색상 팔레트</h2>
+  <div class="palette">
+    <div class="swatch" style="background:#F5E6CA">베이지</div>
+    <div class="swatch" style="background:#87CEEB">하늘색</div>
+    <div class="swatch" style="background:#90EE90">연초록</div>
+    <div class="swatch" style="background:#FFD700">황금빛</div>
+    <div class="swatch" style="background:#FFA07A">살구</div>
+    <div class="swatch" style="background:#DDA0DD">연보라</div>
+    <div class="swatch" style="background:#E8F4F8;color:#333">밝은하늘</div>
+    <div class="swatch" style="background:#2F4F4F;color:#fff">숲그림자</div>
+  </div>
+
+  <h2>3. 필수 규칙</h2>
+  <div class="rule">
+    <ul>
+      <li><strong>텍스트 금지</strong>: 슬라이드에 글자, 제목, 라벨, 워터마크를 절대 넣지 말 것</li>
+      <li><strong>풍경 중심</strong>: 인물보다 배경(하늘, 자연, 풍경)을 강조</li>
+      <li><strong>화면 비율</strong>: 화면의 2/3 이상을 하늘 또는 자연으로 채움</li>
+      <li><strong>조명</strong>: 황금빛 자연광 (golden hour), 부드러운 역광</li>
+      <li><strong>질감</strong>: 수채화 느낌의 부드러운 그라데이션, 선명한 윤곽선 없음</li>
+      <li><strong>분위기</strong>: 고요하고, 따뜻하고, 그리움이 느껴지는 평화로운 장면</li>
+      <li><strong>영화적 구도</strong>: 각 슬라이드가 지브리 영화의 한 씬처럼 구성</li>
+    </ul>
+  </div>
+
+  <h2>4. 영문 프롬프트 키워드</h2>
+  <div>
+    <span class="keyword">Studio Ghibli</span>
+    <span class="keyword">watercolor landscape</span>
+    <span class="keyword">golden hour</span>
+    <span class="keyword">soft pastel</span>
+    <span class="keyword">dreamy atmosphere</span>
+    <span class="keyword">warm natural light</span>
+    <span class="keyword">hand-painted feel</span>
+    <span class="keyword">gentle breeze</span>
+    <span class="keyword">nostalgic countryside</span>
+    <span class="keyword">Hayao Miyazaki</span>
+    <span class="keyword">background art</span>
+    <span class="keyword">cinematic composition</span>
+    <span class="keyword">no text</span>
+    <span class="keyword">no labels</span>
+  </div>
+
+</body>
+
+</html>
