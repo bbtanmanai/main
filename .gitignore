@@ -62,6 +62,11 @@ opal_test/
 packages/data/
 **/pipeline_state.json
 
+# 대용량 바이너리 (GitHub 50MB 제한)
+apps/web/public/download/*.exe
+apps/web/public/download/*.dmg
+apps/web/public/download/*.msi
+
 # System / Log files
 *.log
 npm-debug.log*
