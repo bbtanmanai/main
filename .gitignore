@@ -62,10 +62,11 @@ opal_test/
 packages/data/
 **/pipeline_state.json
 
-# 대용량 바이너리 (GitHub 50MB 제한)
+# 대용량 바이너리 (GitHub 50MB 제한 / Vercel 300MB 초과 방지)
 apps/web/public/download/*.exe
 apps/web/public/download/*.dmg
 apps/web/public/download/*.msi
+apps/web/public/assets/sfx/
 
 # System / Log files
 *.log
