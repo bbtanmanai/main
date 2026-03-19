@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 
 export const dynamic = 'force-dynamic';
 
-const supabaseUrl      = process.env.NEXT_PUBLIC_SUPABASE_URL      || '';
+const supabaseUrl      = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseKey      = process.env.SUPABASE_SERVICE_ROLE_KEY     || '';
 
 function formatKorean(n: number): string {
@@ -40,6 +40,8 @@ export async function GET(req: NextRequest) {
   const genreParam  = searchParams.get('genre')  || '';
   const sourceParam = searchParams.get('source') || '';
   const sortParam   = (searchParams.get('sort')  || 'latest').toLowerCase();
+  const keywordParam = (searchParams.get('kw') || '').trim();
+  const videoIdParam = (searchParams.get('video_id') || '').trim();
 
   const from = (page - 1) * limit;
   const to   = from + limit - 1;
@@ -51,9 +53,15 @@ export async function GET(req: NextRequest) {
   if (sourceParam === 'keyword') {
     // Videos collected via keyword search (keyword is not a URL)
     query = query.not('keyword', 'like', 'http%');
+    if (keywordParam) {
+      query = query.eq('keyword', keywordParam);
+    }
   } else if (sourceParam === 'channel') {
     // Videos collected via channel URL crawling
     query = query.like('keyword', 'http%');
+  }
+  if (videoIdParam) {
+    query = query.eq('video_id', videoIdParam);
   }
 
   const days90Ms = 90 * 24 * 60 * 60 * 1000;

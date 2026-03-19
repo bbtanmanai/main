@@ -20,7 +20,7 @@ export default function AdminOpalLogin() {
   const [isLoading, setIsLoading] = useState(false);
 
   const API_BASE = "http://localhost:8000/api/v1/opal";
-  const TARGET_URL = "https://opal.google/edit/1HveRb71BKf_XljWZxILm5B276qA7A8oC";
+  const TARGET_URL = "https://opal.google/edit/1YQTJjGO0VnQN5U38CE6hHNIhbcindUXt";
 
   // 1. 세션 정보 실시간 로드
   const fetchSessionInfo = async () => {

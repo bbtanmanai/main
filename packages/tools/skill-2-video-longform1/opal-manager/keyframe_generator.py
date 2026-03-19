@@ -519,24 +519,34 @@ def generate_keyframes(
     work_dir: Path,
     use_notebooklm: bool = False,
     use_opal: bool = False,
+    opal_max_concurrent: int = 5,
+    emotion_id: str | None = None,
+    tone_id: str | None = None,
+    use_v2: bool = True,
+    provider: str | None = None,
 ) -> list[Path]:
     """
     씬 수만큼 키프레임 PNG를 생성합니다.
 
-    기본 동작 (use_opal=False, use_notebooklm=False):
-        Pillow 그라데이션 슬라이드 즉시 생성 (< 1초)
+    provider 파라미터 (신규, 명시적 교체용):
+        provider="nlm"    → NotebookLM slide_deck (nlm_styles.json 화풍 프롬프트)
+        provider="opal"   → Opal AppCatalyst HTML → Playwright PNG
+        provider="pillow" → Pillow 그라데이션 (즉시)
 
-    Opal 모드 (use_opal=True):
-        appcatalyst API → Gemini HTML 생성 → Playwright 스크린샷 (~1-2초/씬, 인증 필요)
-
-    NLM 고품질 모드 (use_notebooklm=True):
-        NotebookLM slide_deck → PDF → 1920×1080 PNG (3~10분 소요, 타임아웃 시 Pillow 폴백)
+    기존 플래그 (하위 호환):
+        use_opal=True       → provider="opal" 와 동일
+        use_notebooklm=True → provider="nlm" 와 동일
+        둘 다 False         → provider="pillow" 와 동일
 
     Args:
-        job:             PipelineJob (clips, art_prompt, app_id 필드 필요)
-        work_dir:        PNG 저장 디렉터리
-        use_opal:        True 일 때 Opal appcatalyst HTML 모드 시도 (기본 False)
-        use_notebooklm:  True 일 때만 NLM 슬라이드 시도 (기본 False)
+        job:                  PipelineJob (clips, art_prompt, app_id 필드 필요)
+        work_dir:             PNG 저장 디렉터리
+        provider:             "nlm" | "opal" | "pillow" (None이면 use_* 플래그 사용)
+        use_opal:             True 일 때 Opal 병렬 모드 시도 (기본 False)
+        opal_max_concurrent:  동시 API 요청 수 (429 발생 시 줄임, 기본 5)
+        emotion_id:           감정 ID — scene_prompt_builder 큐레이션 프리셋 선택
+        tone_id:              톤앤매너 ID
+        use_notebooklm:       True 일 때만 NLM 슬라이드 시도 (기본 False)
 
     Returns:
         씬 순서대로 정렬된 PNG Path 목록 (len == job.clip_count)
@@ -551,13 +561,26 @@ def generate_keyframes(
 
     art_style = _extract_art_style_id(job.art_prompt or "")
 
-    # Opal HTML + Playwright 모드
+    # ── provider 명시 시: Provider 패턴으로 위임 ──────────────────────────────
+    if provider:
+        return _dispatch_to_provider(
+            provider, job, work_dir, art_style,
+            opal_max_concurrent, emotion_id, tone_id, use_v2,
+        )
+
+    # ── 기존 플래그 방식 (하위 호환) ─────────────────────────────────────────
     if use_opal:
+        result = _opal_parallel_keyframes(
+            job, work_dir, art_style,
+            emotion_id, tone_id, opal_max_concurrent, use_v2
+        )
+        if result and len(result) == job.clip_count:
+            return result
+        # 폴백: 기존 App Pool 방식 시도
         result = _opal_html_keyframes(job, work_dir)
         if result and len(result) == job.clip_count:
             return result
 
-    # NLM 고품질 모드 (명시적 요청 시만)
     if use_notebooklm:
         result = _notebooklm_keyframes(job, work_dir)
         if result and len(result) == job.clip_count:
@@ -566,6 +589,99 @@ def generate_keyframes(
     # Pillow 기본 (즉시)
     print(f"[키프레임] Pillow로 {job.clip_count}개 생성 중... (art: {art_style})")
     return _make_all_gradient_keyframes(job.clip_count, art_style, work_dir)
+
+
+def _dispatch_to_provider(
+    provider_name: str,
+    job: "PipelineJob",
+    work_dir: Path,
+    art_style: str,
+    opal_max_concurrent: int,
+    emotion_id: str | None,
+    tone_id: str | None,
+    use_v2: bool,
+) -> list[Path]:
+    """Provider 패턴으로 키프레임 생성을 위임합니다."""
+    sys.path.insert(0, str(Path(__file__).parent))
+    from keyframe_providers import get_provider, SceneRequest
+    from logic import APP_NOTEBOOK_MAP, DEFAULT_NOTEBOOK_ID
+
+    scenes = [
+        SceneRequest(
+            index=c.index,
+            scene_text=c.scene_text,
+            art_style_id=art_style,
+            art_prompt=job.art_prompt or None,
+        )
+        for c in job.clips
+    ]
+
+    kwargs: dict = {}
+    if provider_name == "nlm":
+        notebook_id = APP_NOTEBOOK_MAP.get(job.app_id, DEFAULT_NOTEBOOK_ID)
+        kwargs["notebook_id"] = notebook_id
+    elif provider_name == "opal":
+        kwargs.update(
+            max_concurrent=opal_max_concurrent,
+            emotion_id=emotion_id,
+            tone_id=tone_id,
+            use_v2=use_v2,
+        )
+
+    print(f"[키프레임] Provider: {provider_name!r} | 스타일: {art_style} | 씬: {len(scenes)}개")
+    prov = get_provider(provider_name, **kwargs)
+    return prov.generate(scenes, work_dir)
+
+
+def _opal_parallel_keyframes(
+    job: "PipelineJob",
+    work_dir: Path,
+    art_style: str,
+    emotion_id: str | None,
+    tone_id: str | None,
+    max_concurrent: int,
+    use_v2: bool = True,
+) -> list[Path] | None:
+    """
+    opal_parallel.generate_keyframes_opal 을 사용한 asyncio 병렬 생성.
+    session.json 에서 Bearer Token 자동 로드.
+    """
+    try:
+        sys.path.insert(0, str(Path(__file__).parent))
+        sys.path.insert(0, str(Path(__file__).parent.parent / "opal-access"))
+        from opal_auth import OpalAuthManager
+        from opal_parallel import generate_keyframes_opal
+
+        session = OpalAuthManager().load_session()
+        if not session or not session.bearer_token:
+            print("[키프레임] Opal 세션 없음 → 폴백")
+            return None
+
+        auth_info = {
+            "token":   session.bearer_token,
+            "cookies": session.cookie_header,
+            "headers": {},
+        }
+
+        scenes = [(c.scene_text, c.index) for c in job.clips]
+
+        result = asyncio.run(
+            generate_keyframes_opal(
+                scenes=scenes,
+                art_style_id=art_style,
+                auth_info=auth_info,
+                out_dir=work_dir,
+                emotion_id=emotion_id,
+                tone_id=tone_id,
+                max_concurrent=max_concurrent,
+                use_v2=use_v2,
+            )
+        )
+        return result if result else None
+
+    except Exception as e:
+        print(f"[키프레임] Opal 병렬 오류: {e} → 폴백")
+        return None
 
 
 def _extract_art_style_id(art_prompt: str) -> str:

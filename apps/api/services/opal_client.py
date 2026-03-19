@@ -17,7 +17,7 @@ class OpalInternalClient:
     """Opal(Google 호스팅)의 내부 요청을 모사하는 세션 기반 클라이언트"""
     BASE_URL = "https://opal.google" 
     # [1차 타깃] 링크드랍 롱폼 제작기 편집실
-    APP_URL = "https://opal.google/edit/1HveRb71BKf_XljWZxILm5B276qA7A8oC"
+    APP_URL = "https://opal.google/edit/1YQTJjGO0VnQN5U38CE6hHNIhbcindUXt"
 
     def __init__(self):
         self.client = httpx.AsyncClient(timeout=60.0) # 롱폼 렌더링을 위해 타임아웃 확장

@@ -119,7 +119,7 @@ session.is_cookie_expired()    # 쿠키 7일 초과 여부 (bool)
 ```
 1. Chrome 실행 (--remote-debugging-port=9222)
    └─ user-data-dir: ~/.linkdrop-opal/chrome-profile/
-   └─ 대상: https://opal.google/edit/1HveRb71BKf_XljWZxILm5B276qA7A8oC
+   └─ 대상: https://opal.google/edit/1YQTJjGO0VnQN5U38CE6hHNIhbcindUXt
 
 2. 사용자 Google 로그인 (수동)
 

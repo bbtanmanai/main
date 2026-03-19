@@ -13,10 +13,14 @@ function runScenarioGen(
   style: string,
   voice: string,
   art_prompt: string,
+  tone_desc?: string | null,
+  emotion_desc?: string | null,
 ): Promise<{ script: string; preview: string }> {
   return new Promise((resolve, reject) => {
     const args = [scriptPath, '--app', app_id, '--topic', topic, '--style', style, '--voice', voice];
-    if (art_prompt) args.push('--art_prompt', art_prompt);
+    if (art_prompt)    args.push('--art_prompt',    art_prompt);
+    if (tone_desc)     args.push('--tone_desc',     tone_desc);
+    if (emotion_desc)  args.push('--emotion_desc',  emotion_desc);
     const child = spawn('python', args, { cwd: path.dirname(scriptPath) });
 
     let out = '';
@@ -49,7 +53,7 @@ function runScenarioGen(
 }
 
 export async function POST(req: NextRequest) {
-  const { app_id, topic, style, voice, art_prompt } = await req.json();
+  const { app_id, topic, style, voice, art_prompt, tone_id, tone_desc, emotion_id, emotion_desc } = await req.json();
 
   if (!topic?.trim()) {
     return Response.json({ error: '주제를 입력해주세요.' }, { status: 400 });
@@ -76,6 +80,8 @@ export async function POST(req: NextRequest) {
           style      || 'ranking',
           voice      || 'ko-KR-Wavenet-D',
           art_prompt || '',
+          tone_desc    || null,
+          emotion_desc || null,
         ).then(result => {
           send({ type: 'scenario', index: i, ...result });
         }).catch(err => {

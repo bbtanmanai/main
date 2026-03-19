@@ -29,22 +29,50 @@ interface UploadedChar {
   liked: boolean; createdAt: string;
 }
 
+type RealCharacter = {
+  id: string;
+  image: string;
+  zipFile?: string;
+  bodyGrid?: string;
+  faceGrid?: string;
+};
+
+type RealCharacterCatalog = {
+  generatedAt: string;
+  total: number;
+  items: RealCharacter[];
+};
+
+type CharacterItem = {
+  id: string;
+  name: string;
+  style: string;
+  tag?: string;
+  image: string;
+  faceGrid?: string;
+  bodyGrid?: string;
+  zipFile?: string;
+};
+
 // Import Character Data from JSON
 import characterData from '@/data/content_characterimage.json';
 
 const ITEMS_PER_PAGE = 24;
 
 // Character styles and list from external JSON
-const CHARACTER_STYLES = characterData.styles;
-const BASE_CHARACTERS = characterData.characters;
+const CHARACTER_STYLES = characterData.styles as Array<{ id: string; label: string }>;
+const BASE_CHARACTERS = characterData.characters as Array<{
+  id: string;
+  name: string;
+  style: string;
+  tag?: string;
+  image?: string;
+  faceGrid?: string;
+  bodyGrid?: string;
+  zipFile?: string;
+}>;
 
-// Expanded Mock Data for Pagination
-const MOCK_CHARACTERS = [
-  ...BASE_CHARACTERS.map(c => ({ ...c, id: `${c.id}-1`, name: c.name })),
-  ...BASE_CHARACTERS.map(c => ({ ...c, id: `${c.id}-2`, name: c.name })),
-  ...BASE_CHARACTERS.map(c => ({ ...c, id: `${c.id}-3`, name: c.name })),
-  ...BASE_CHARACTERS.map(c => ({ ...c, id: `${c.id}-4`, name: c.name })),
-];
+const SVG_ANIMATION_IDS = new Set(['c10', 'c11', 'c12']);
 
 export default function CharacterImagePage() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -52,6 +80,7 @@ export default function CharacterImagePage() {
   const [activeStyle, setActiveStyle] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [modalCharacter, setModalCharacter] = useState<any | null>(null);
+  const [realCharacters, setRealCharacters] = useState<RealCharacter[]>([]);
 
   // ── 업로드 상태 ──────────────────────────────────────────────────────────────
   const [uploadedChars, setUploadedChars] = useState<UploadedChar[]>([]);
@@ -62,14 +91,46 @@ export default function CharacterImagePage() {
   const [uploadTags, setUploadTags]       = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    fetch('/api/content/character-catalog')
+      .then(async (res) => {
+        const j: RealCharacterCatalog = await res.json();
+        if (!res.ok) throw new Error('캐릭터 카탈로그 로드 실패');
+        setRealCharacters(Array.isArray(j?.items) ? j.items : []);
+      })
+      .catch(() => setRealCharacters([]));
+  }, []);
+
+  const mergedCharacters: CharacterItem[] = useMemo(() => {
+    const metaById = new Map(BASE_CHARACTERS.map((c) => [c.id, c]));
+    return realCharacters.map((r) => {
+      const meta = metaById.get(r.id);
+      return {
+        id: r.id,
+        name: meta?.name ?? r.id,
+        style: meta?.style ?? 'all',
+        tag: meta?.tag,
+        image: r.image,
+        faceGrid: r.faceGrid,
+        bodyGrid: r.bodyGrid,
+        zipFile: r.zipFile,
+      };
+    });
+  }, [realCharacters]);
+
+  const availableStyles = useMemo(() => {
+    const set = new Set(mergedCharacters.map((c) => c.style));
+    return CHARACTER_STYLES.filter((s) => s.id === 'all' || set.has(s.id));
+  }, [mergedCharacters]);
+
   // 좋아요한 업로드 캐릭터 (마이페이지 저장용)
   const likedUploaded = uploadedChars.filter(c => c.liked);
   const totalLiked    = likedIds.length + likedUploaded.length;
 
   const filteredCharacters = useMemo(() => {
-    if (activeStyle === 'all') return MOCK_CHARACTERS;
-    return MOCK_CHARACTERS.filter(char => char.style === activeStyle);
-  }, [activeStyle]);
+    if (activeStyle === 'all') return mergedCharacters;
+    return mergedCharacters.filter(char => char.style === activeStyle);
+  }, [activeStyle, mergedCharacters]);
 
   const totalPages = Math.ceil(filteredCharacters.length / ITEMS_PER_PAGE);
   
@@ -336,7 +397,7 @@ export default function CharacterImagePage() {
               <FontAwesomeIcon icon={faFilter} className="text-[10px]" />
               <span className="text-[10px] font-bold uppercase tracking-tighter">Style Filter</span>
             </div>
-            {CHARACTER_STYLES.map(style => (
+            {availableStyles.map(style => (
               <button
                 key={style.id}
                 onClick={() => setActiveStyle(style.id)}
@@ -374,10 +435,15 @@ export default function CharacterImagePage() {
                     </h3>
                   </div>
 
-                  <div className="absolute top-3 left-3 scale-75 origin-top-left">
+                  <div className="absolute top-3 left-3 scale-75 origin-top-left flex items-center gap-1">
                     <span className="px-2 py-0.5 bg-[#6366f1] border border-white/10 rounded-full text-[9px] font-black text-white uppercase tracking-widest">
                       {char.style}
                     </span>
+                    {SVG_ANIMATION_IDS.has(char.id) && (
+                      <span className="px-2 py-0.5 bg-[#a78bfa]/20 border border-[#a78bfa]/30 rounded-full text-[9px] font-black text-[#c4b5fd] uppercase tracking-widest">
+                        SVG
+                      </span>
+                    )}
                   </div>
 
                   {/* Actions (Top Right) */}

@@ -20,6 +20,7 @@ import json
 import math
 import os
 import sys
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 # ── Windows: force UTF-8 stdout ──────────────────────────────────────────
@@ -104,7 +105,7 @@ def _get_supabase() -> Client:
     return _supa
 
 
-def crawl_keyword(youtube, keyword: str, max_results: int, region_code: str) -> int:
+def crawl_keyword(youtube, keyword: str, max_results: int, region_code: str) -> tuple[int, dict]:
     """Search YouTube by keyword, upsert results to Supabase. Returns count saved."""
     search_kwargs: dict = dict(
         q=keyword,
@@ -124,7 +125,7 @@ def crawl_keyword(youtube, keyword: str, max_results: int, region_code: str) -> 
     ]
 
     if not video_ids:
-        return 0
+        return 0, {"tier": "none", "min_score": 8, "message": "기준 점수 미달로 수집 영상이 없습니다."}
 
     # Fetch video details
     details_res = youtube.videos().list(
@@ -172,10 +173,63 @@ def crawl_keyword(youtube, keyword: str, max_results: int, region_code: str) -> 
         })
 
     if not records:
-        return 0
+        return 0, {"tier": "none", "min_score": 8, "message": "기준 점수 미달로 수집 영상이 없습니다."}
 
-    res = _get_supabase().table("crawl_videos").upsert(records, on_conflict="video_id").execute()
-    return len(res.data or [])
+    def _is_recent_90_days(iso_ts: str | None) -> bool:
+        if not iso_ts:
+            return False
+        try:
+            ts = iso_ts.strip()
+            if ts.endswith("Z"):
+                ts = ts[:-1] + "+00:00"
+            dt = datetime.fromisoformat(ts)
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+            return dt >= datetime.now(timezone.utc) - timedelta(days=90)
+        except Exception:
+            return False
+
+    def _score(r: dict) -> float:
+        try:
+            return float(r.get("viral_score") or 0)
+        except Exception:
+            return 0.0
+
+    bench_recent = [r for r in records if _score(r) >= 30 and _is_recent_90_days(r.get("published_at"))]
+    viral_30     = [r for r in records if _score(r) >= 30]
+    score_15     = [r for r in records if _score(r) >= 15]
+    score_8      = [r for r in records if _score(r) >= 8]
+
+    picked: list[dict]
+    picked_tier: str
+    picked_min: int
+    if bench_recent:
+        picked = bench_recent
+        picked_tier = "benchmark"
+        picked_min = 30
+    elif viral_30:
+        picked = viral_30
+        picked_tier = "viral"
+        picked_min = 30
+    elif score_15:
+        picked = score_15
+        picked_tier = "score15"
+        picked_min = 15
+    elif score_8:
+        picked = score_8
+        picked_tier = "score8"
+        picked_min = 8
+    else:
+        return 0, {"tier": "none", "min_score": 8, "message": "기준 점수 미달로 수집 영상이 없습니다."}
+
+    res = _get_supabase().table("crawl_videos").upsert(picked, on_conflict="video_id").execute()
+    saved = len(res.data or [])
+    return saved, {
+        "tier": picked_tier,
+        "min_score": picked_min,
+        "recent_days": 90 if picked_tier == "benchmark" else None,
+        "message": "",
+    }
 
 
 # ── Main ──────────────────────────────────────────────────────────────────
@@ -214,13 +268,24 @@ def main() -> int:
             remaining = max_results - total_saved
             if remaining <= 0:
                 break
-            saved = crawl_keyword(youtube, keyword, remaining, region_code)
+            saved, meta = crawl_keyword(youtube, keyword, remaining, region_code)
             total_saved += saved
-            _sse({"type": "progress", "keyword": keyword, "count": idx, "total": total, "saved": saved})
+            _sse({
+                "type": "progress",
+                "keyword": keyword,
+                "count": idx,
+                "total": total,
+                "saved": saved,
+                **meta,
+            })
         except Exception as exc:
             _sse({"type": "error", "keyword": keyword, "message": str(exc), "count": idx, "total": total})
 
-    _sse({"type": "done", "total_saved": total_saved})
+    _sse({
+        "type": "done",
+        "total_saved": total_saved,
+        "no_results_reason": "기준 점수 미달로 수집 영상이 없습니다." if total_saved == 0 else "",
+    })
     return 0
 
 

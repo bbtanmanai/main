@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { spawn } from 'child_process';
 import path from 'path';
+import { createClient } from '@supabase/supabase-js';
 
 export const dynamic = 'force-dynamic';
 
@@ -33,6 +34,8 @@ export async function POST(req: NextRequest) {
 
   const enc = new TextEncoder();
   const inputPayload = JSON.stringify({ keywords, max_results: totalLimit, regionCode });
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
   const stream = new ReadableStream({
     start(controller) {
@@ -45,6 +48,7 @@ export async function POST(req: NextRequest) {
       child.stdin.end();
 
       let buf = '';
+      let lastTotalSaved: number | null = null;
 
       const send = (event: object) => {
         controller.enqueue(enc.encode(`data: ${JSON.stringify(event)}\n\n`));
@@ -60,7 +64,11 @@ export async function POST(req: NextRequest) {
           if (!line) continue;
           const jsonStr = line.startsWith('data: ') ? line.slice(6) : line;
           try {
-            send(JSON.parse(jsonStr));
+            const ev = JSON.parse(jsonStr);
+            if (ev?.type === 'done' && typeof ev?.total_saved === 'number') {
+              lastTotalSaved = ev.total_saved;
+            }
+            send(ev);
           } catch { /* ignore non-JSON */ }
         }
       });
@@ -73,19 +81,70 @@ export async function POST(req: NextRequest) {
       });
 
       child.on('close', (code) => {
-        if (buf.trim()) {
-          const jsonStr = buf.trim().startsWith('data: ') ? buf.trim().slice(6) : buf.trim();
-          try { send(JSON.parse(jsonStr)); } catch { /* ignore */ }
-        }
-        if (code !== 0) {
-          const errLines = stderrBuf.trim().split('\n').filter(Boolean).slice(-3).join(' | ');
-          send({ type: 'error', message: `수집기 오류: ${errLines || '알 수 없는 오류'}` });
-        }
-        controller.close();
+        (async () => {
+          if (buf.trim()) {
+            const jsonStr = buf.trim().startsWith('data: ') ? buf.trim().slice(6) : buf.trim();
+            try {
+              const ev = JSON.parse(jsonStr);
+              if (ev?.type === 'done' && typeof ev?.total_saved === 'number') {
+                lastTotalSaved = ev.total_saved;
+              }
+              send(ev);
+            } catch {
+              // ignore
+            }
+          }
+
+          if (code !== 0) {
+            const stderrLines = stderrBuf.trim().split('\n').filter(Boolean);
+            const tail = stderrLines.slice(-20).join('\n');
+            send({
+              type: 'error',
+              message: `수집기 오류(종료코드 ${code}): ${stderrLines.slice(-3).join(' | ') || '알 수 없는 오류'}`,
+              exit_code: code,
+              stderr_tail: tail,
+            });
+            controller.close();
+            return;
+          }
+
+          if (supabaseUrl && supabaseKey && Array.isArray(keywords) && keywords.length > 0) {
+            try {
+              const supa = createClient(supabaseUrl, supabaseKey);
+              const host = (() => {
+                try { return new URL(supabaseUrl).host; } catch { return ''; }
+              })();
+
+              for (const kw of keywords) {
+                const { count, error } = await supa
+                  .from('crawl_videos')
+                  .select('video_id', { count: 'exact', head: true })
+                  .eq('keyword', kw);
+                send({
+                  type: 'verify',
+                  keyword: kw,
+                  count: count ?? 0,
+                  host,
+                  total_saved: lastTotalSaved ?? 0,
+                  error: error?.message || null,
+                });
+              }
+            } catch (e) {
+              const msg = e instanceof Error ? e.message : 'verify failed';
+              send({ type: 'verify', keyword: keywords[0], count: 0, host: '', total_saved: lastTotalSaved ?? 0, error: msg });
+            }
+          }
+
+          controller.close();
+        })();
       });
 
       child.on('error', (err) => {
-        send({ type: 'error', message: `프로세스 실행 오류: ${err.message}` });
+        send({
+          type: 'error',
+          message: `프로세스 실행 오류: ${err.message}`,
+          stderr_tail: stderrBuf.trim(),
+        });
         controller.close();
       });
     },

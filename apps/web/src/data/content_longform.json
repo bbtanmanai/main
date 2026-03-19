@@ -128,6 +128,22 @@
     { "id": "expert", "icon": "faUserDoctor", "label": "전문가 조언형", "desc": "권위 있는 조언", "example": "내과 전문의 건강 팁", "directive": "Create an expert advice-style scenario with authoritative data and professional insights." },
     { "id": "before_after", "icon": "faArrowRightArrowLeft", "label": "비포/애프터형", "desc": "극적 대비 효과", "example": "한 달 만의 변화", "directive": "Create a dramatic before and after comparison scenario." }
   ],
+  "emotions": [
+    { "id": "calm_warm",   "label": "잔잔·따뜻함",      "desc": "안정적이고 따뜻한 감정선",        "emoji": "☀️" },
+    { "id": "dramatic",    "label": "극적·긴장감",       "desc": "강렬하고 드라마틱한 전개",        "emoji": "⚡" },
+    { "id": "dark",        "label": "어둡고 무거움",     "desc": "무겁고 진지한 분위기",            "emoji": "🌑" },
+    { "id": "energetic",   "label": "활기차고 역동적",   "desc": "힘차고 빠른 에너지감",            "emoji": "🔥" },
+    { "id": "mystical",    "label": "신비롭고 몽환적",   "desc": "환상적이고 이상적인 세계관",      "emoji": "✨" },
+    { "id": "nostalgic",   "label": "그리움·향수",       "desc": "따뜻한 추억과 아련함",            "emoji": "🌸" }
+  ],
+  "tones": [
+    { "id": "serious",       "label": "진지하고 격식있는",  "desc": "신뢰감 있는 전문적 어조" },
+    { "id": "playful",       "label": "가볍고 유쾌한",      "desc": "친근하고 재미있는 어조" },
+    { "id": "inspirational", "label": "감동적·도전적",      "desc": "동기를 부여하는 어조" },
+    { "id": "tense",         "label": "긴박하고 긴장된",    "desc": "빠른 전개의 긴장감" },
+    { "id": "peaceful",      "label": "평화롭고 여유로운",  "desc": "여유있고 차분한 어조" },
+    { "id": "authoritative", "label": "권위있는·전문적",    "desc": "전문가 느낌의 확신있는 어조" }
+  ],
   "voices": [
     { "id": "ko-KR-Neural2-A", "name": "고은", "gender": "FEMALE", "type": "Neural2",   "previewUrl": "/assets/audio/preview/고은.mp3" },
     { "id": "ko-KR-Neural2-C", "name": "준호", "gender": "MALE",   "type": "Neural2",   "previewUrl": "/assets/audio/preview/준호.mp3" },

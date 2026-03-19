@@ -14,7 +14,7 @@ import {
   faUserDoctor, faArrowRightArrowLeft, faPalette,
   faRobot, faKeyboard, faFileUpload, faFileAlt,
   faUsers, faExpand, faFont, faClock, faArrowUpRightFromSquare,
-  faChevronDown, faShieldHalved,
+  faChevronDown, faShieldHalved, faDownload,
 } from '@fortawesome/free-solid-svg-icons';
 import longformData from '@/data/content_longform.json';
 import disclosure from '@/data/longform_disclosure.json';
@@ -36,6 +36,12 @@ interface Voice {
   id: string; name: string; gender: 'MALE' | 'FEMALE';
   type: 'Neural2' | 'Wavenet' | 'Standard'; previewUrl: string;
 }
+interface Emotion {
+  id: string; label: string; desc: string; emoji: string;
+}
+interface Tone {
+  id: string; label: string; desc: string;
+}
 interface ScenarioCard {
   index: number; script: string; preview: string; loading: boolean;
 }
@@ -50,15 +56,6 @@ type PipelineEvent =
   | { type: 'progress'; clip_id: number; state: string; progress: number; scene_text: string; keyframe?: string }
   | { type: 'done';     url_16x9: string; url_9x16: string }
   | { type: 'error';    message: string };
-
-// ── 타입 추가 ─────────────────────────────────────────────────────────────────
-type Resolution  = '9:16' | '16:9' | '1:1';
-
-const RESOLUTIONS: { id: Resolution; label: string; ratio: string; w: number; h: number }[] = [
-  { id: '9:16', label: '세로형',   ratio: '9:16', w: 9,  h: 16 },
-  { id: '16:9', label: '가로형',   ratio: '16:9', w: 16, h: 9  },
-  { id: '1:1',  label: '정사각형', ratio: '1:1',  w: 1,  h: 1  },
-];
 
 // ── 상수 ─────────────────────────────────────────────────────────────────────
 const ICON_MAP: Record<string, any> = {
@@ -87,6 +84,8 @@ const TEMPLATES_CONTENT = TEMPLATES.filter(t => t.category === 'content');
 const VOICES: Voice[]   = longformData.voices as Voice[];
 
 const ART_STYLES: ArtStyle[] = longformData.artStyles as ArtStyle[];
+const EMOTIONS: Emotion[]   = longformData.emotions as Emotion[];
+const TONES: Tone[]         = longformData.tones as Tone[];
 
 const STYLES: Style[] = longformData.narrativeStyles.map(s => ({
   ...s, icon: ICON_MAP_STYLE[s.icon] || faMagic,
@@ -128,7 +127,8 @@ export default function LongformPage() {
   // Step 1
   const [template, setTemplate]     = useState<Template | null>(null);
   const [artStyle, setArtStyle]     = useState<ArtStyle | null>(null);
-  const [resolution, setResolution] = useState<Resolution>('9:16');
+  const [emotion, setEmotion]       = useState<Emotion | null>(null);
+  const [tone, setTone]             = useState<Tone | null>(null);
 
   // Step 2
   const [inputMode, setInputMode] = useState<'ai' | 'manual'>('ai');
@@ -147,6 +147,15 @@ export default function LongformPage() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [ttsSpeed, setTtsSpeed]   = useState<number>(1.2);
   const [textStyle, setTextStyle] = useState<'box' | 'outline'>('box');
+  const editTextareaRef  = useRef<HTMLTextAreaElement | null>(null);
+  const manualTextareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const autoResize = (el: HTMLTextAreaElement | null) => {
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = Math.max(el.scrollHeight, 400) + 'px';
+  };
+  useEffect(() => autoResize(editTextareaRef.current), [editedScript]);
+  useEffect(() => autoResize(manualTextareaRef.current), [manualScript]);
 
   // Step 3
   const [slots, setSlots]               = useState<VideoSlot[]>(DEFAULT_SLOTS);
@@ -156,10 +165,42 @@ export default function LongformPage() {
   const [finalUrl16x9, setFinalUrl16x9] = useState<string | null>(null);
   const [finalUrl9x16, setFinalUrl9x16] = useState<string | null>(null);
   const [pipelineError, setPipelineError] = useState<string | null>(null);
+  const [desktopAlive, setDesktopAlive] = useState<boolean | null>(null); // null=미확인, true=연결, false=끊김
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // ── 데스크톱 앱 헬스체크 (3초마다) ─────────────────────────────────────
+  useEffect(() => {
+    let alive = false;
+    const check = async () => {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 2000);
+      try {
+        const r = await fetch('http://localhost:7788/health', {
+          signal: controller.signal,
+          mode: 'cors',
+          cache: 'no-store',
+        });
+        clearTimeout(timer);
+        alive = r.ok;
+      } catch {
+        clearTimeout(timer);
+        alive = false;
+      }
+      setDesktopAlive(alive);
+    };
+    check();
+    const id = setInterval(check, 3000);
+    return () => clearInterval(id);
+  }, []);
+
+  // ── 폴링 정리 (언마운트 / 페이지 이탈 시) ─────────────────────────────
+  useEffect(() => {
+    return () => { if (pollRef.current) clearInterval(pollRef.current); };
+  }, []);
 
   // ── Opal 세션 타이머 ─────────────────────────────────────────────────────
   const OPAL_SESSION_SEC = 3600; // 1시간
-  const OPAL_APP_URL = 'https://opal.google/edit/1HveRb71BKf_XljWZxILm5B276qA7A8oC';
+  const OPAL_APP_URL = 'https://opal.google/edit/1YQTJjGO0VnQN5U38CE6hHNIhbcindUXt';
   const [opalSecondsLeft, setOpalSecondsLeft] = useState(OPAL_SESSION_SEC);
   useEffect(() => {
     const id = setInterval(() => setOpalSecondsLeft(s => Math.max(0, s - 1)), 1000);
@@ -245,6 +286,10 @@ export default function LongformPage() {
           voice:      voice.id,
           tts_speed:  ttsSpeed,
           art_prompt: useArt?.notebooklmPrompt ?? '',
+          tone_id:    tone?.id ?? null,
+          tone_desc:  tone ? `${tone.label} — ${tone.desc}` : null,
+          emotion_id: emotion?.id ?? null,
+          emotion_desc: emotion ? `${emotion.emoji} ${emotion.label} — ${emotion.desc}` : null,
         }),
       });
       if (!res.body) return;
@@ -293,7 +338,6 @@ export default function LongformPage() {
   // ── Step 1: 화풍 선택 ────────────────────────────────────────────────────
   const selectArtStyleItem = (a: ArtStyle) => {
     setArtStyle(a);
-    if (template) setTimeout(() => setStep(2), 240);
   };
 
   // ── Step 2: 프롬프트 스타일 선택 → 시나리오 생성 ───────────────────────
@@ -335,13 +379,76 @@ export default function LongformPage() {
     e.target.value = '';
   };
 
-  // ── Step 2 → Step 3: 파이프라인 시작 ────────────────────────────────────
+  // ── Step 2 → 데스크톱 앱으로 전송 (영상 제작은 로컬 Agent에서 처리) ────
+  const DESKTOP_API = 'http://localhost:7788';
+
+  const stopPolling = () => {
+    if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
+  };
+
+  const mapSceneToSlot = (s: any): VideoSlot => ({
+    id: s.index + 1,
+    status: s.img_state === 'done' && s.dub_state === 'done' ? 'completed' as const
+          : s.img_state === 'fail' || s.dub_state === 'fail' ? 'error' as const
+          : s.img_state === 'progress' || s.dub_state === 'progress' ? 'processing' as const
+          : 'pending' as const,
+    progress: s.img_state === 'done' && s.dub_state === 'done' ? 100
+            : s.img_state === 'done' ? 50 : s.img_state === 'progress' ? 25 : 0,
+    sceneText: s.text,
+  });
+
+  // ── 안전한 헬스체크 (AbortController 기반) ────────────────────────────
+  const checkHealth = async (timeoutMs = 2000): Promise<boolean> => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const r = await fetch(`${DESKTOP_API}/health`, {
+        signal: controller.signal,
+        mode: 'cors',
+        cache: 'no-store',
+      });
+      clearTimeout(timer);
+      return r.ok;
+    } catch {
+      clearTimeout(timer);
+      return false;
+    }
+  };
+
+  // ── 데스크톱 앱 실행 시도 (커스텀 프로토콜) ─────────────────────────────
+  const tryLaunchDesktop = async (): Promise<boolean> => {
+    // 이미 실행 중이면 바로 true
+    if (await checkHealth()) return true;
+
+    // linkdrop:// 프로토콜로 실행 시도
+    try {
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = 'linkdrop://start';
+      document.body.appendChild(iframe);
+      setTimeout(() => document.body.removeChild(iframe), 500);
+    } catch { /* 프로토콜 미등록 시 무시 */ }
+
+    // 최대 12초 대기 (1.5초 간격 헬스체크)
+    for (let i = 0; i < 8; i++) {
+      await new Promise(r => setTimeout(r, 1500));
+      if (await checkHealth(1500)) {
+        setDesktopAlive(true);
+        return true;
+      }
+    }
+    return false;
+  };
+
   const handleStart = async () => {
     const isManual = inputMode === 'manual';
     const scriptToUse = isManual ? manualScript.trim() : editedScript.trim();
     if (!template) return;
     if (!isManual && (selectedIdx === null || !style)) return;
     if (isManual && !scriptToUse) return;
+
+    // 기존 폴링 정리
+    stopPolling();
 
     setStep(3);
     setRunning(true);
@@ -350,41 +457,106 @@ export default function LongformPage() {
     setFinalUrl9x16(null);
     setSlots([]);
     setPipelineStep(0);
-    setStepMsg('파이프라인 시작 중...');
+    setStepMsg('프로그램 연결 중...');
+
+    // 프로그램이 꺼져있으면 자동 실행 시도
+    if (!desktopAlive) {
+      setStepMsg('LinkDrop 프로그램을 시작하고 있습니다...');
+      const launched = await tryLaunchDesktop();
+      if (!launched) {
+        setPipelineError(
+          '프로그램을 자동으로 실행하지 못했습니다.\n' +
+          'LinkDrop이 설치되지 않았다면 아래에서 설치해 주세요.'
+        );
+        setRunning(false);
+        return;
+      }
+    }
+
+    setStepMsg('시나리오 전송 중...');
 
     try {
-      const res = await fetch('/api/longform/start', {
+      const res = await fetch(`${DESKTOP_API}/api/load-scenario`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          app_id:     template.id,
-          topic:      topic.trim() || template.title,
-          voice:      voice.id,
-          tts_speed:  ttsSpeed,
-          script:     (inputMode === 'manual' ? manualScript : editedScript).trim() || undefined,
-          art_prompt: artStyle?.notebooklmPrompt ?? '',
-          aspect:     resolution,
+          script:      scriptToUse,
+          voice_id:    voice.id,
+          speed:       ttsSpeed,
+          style_id:    artStyle?.id ?? 'hollywood-sf',
+          art_prompt:  artStyle?.notebooklmPrompt ?? '',
+          tone_id:     tone?.id ?? null,
+          emotion_id:  emotion?.id ?? null,
+          text_style:  textStyle,
+          app_id:      template.id,
+          topic:       topic.trim() || template.title,
+          auto_start:  false,
         }),
       });
-      if (!res.ok || !res.body) { setPipelineError('서버 연결 실패.'); setRunning(false); return; }
 
-      const reader  = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buf = '';
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buf += decoder.decode(value, { stream: true });
-        const parts = buf.split('\n\n');
-        buf = parts.pop() ?? '';
-        for (const part of parts) {
-          const line = part.replace(/^data:\s*/, '').trim();
-          if (!line) continue;
-          try { handlePipelineEvent(JSON.parse(line) as PipelineEvent); } catch { /* skip */ }
-        }
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || !data.ok) {
+        setPipelineError(data.error || '데스크톱 앱 연결 실패');
+        setRunning(false);
+        return;
       }
-    } catch { setPipelineError('네트워크 오류가 발생했습니다.'); }
-    finally  { setRunning(false); }
+
+      // 데스크톱 앱이 시나리오를 수신하고 자동 시작
+      setStepMsg(`데스크톱 앱에서 영상 제작 시작 (${data.total}개 씬)`);
+      setPipelineStep(1);
+
+      // 진행 상황 폴링 (2초 간격, ref로 관리)
+      pollRef.current = setInterval(async () => {
+        try {
+          const statusRes = await fetch(`${DESKTOP_API}/api/status`, { signal: AbortSignal.timeout(3000) });
+          const status = await statusRes.json();
+
+          // 씬 상태 업데이트
+          if (status.scenes?.length > 0) {
+            setSlots(status.scenes.map(mapSceneToSlot));
+          }
+
+          const allDone = status.scenes?.every((s: any) => s.img_state === 'done' && s.dub_state === 'done');
+
+          if (allDone && !status.final_path) {
+            setPipelineStep(4);
+            setStepMsg('FFmpeg 병합 중...');
+          }
+
+          // 최종 영상 완성
+          if (status.final_path) {
+            stopPolling();
+            setPipelineStep(5);
+            setFinalUrl16x9(status.final_path);
+            setStepMsg('');
+            setRunning(false);
+          }
+
+          // 파이프라인 종료 + 미완성 → 에러
+          if (!status.is_running && !status.final_path && !allDone) {
+            const anyStarted = status.scenes?.some((s: any) => s.img_state !== 'wait');
+            if (anyStarted) {
+              stopPolling();
+              setPipelineError('일부 씬 생성에 실패했습니다. 데스크톱 앱에서 재시도하세요.');
+              setRunning(false);
+            }
+          }
+        } catch {
+          // 데스크톱 앱 종료됨
+          stopPolling();
+          setPipelineError('데스크톱 앱과의 연결이 끊어졌습니다.\nLinkDrop 앱을 다시 실행한 후 재시도하세요.');
+          setRunning(false);
+        }
+      }, 2000);
+
+    } catch {
+      setPipelineError(
+        '데스크톱 앱에 연결할 수 없습니다.\n' +
+        'LinkDrop 데스크톱 앱이 실행 중인지 확인해 주세요.'
+      );
+      setRunning(false);
+    }
   };
 
   const handlePipelineEvent = (ev: PipelineEvent) => {
@@ -416,7 +588,7 @@ export default function LongformPage() {
   const allDone = slots.length > 0 && slots.every(s => s.status === 'completed');
 
   // ── 탭 잠금 규칙 ─────────────────────────────────────────────────────────
-  const step1Done = !!(template && artStyle);
+  const step1Done = !!(template && artStyle && emotion && tone);
   const step2Done = inputMode === 'manual' ? manualScript.trim().length > 0 : selectedIdx !== null;
   const unlocked  = [step1Done, step2Done, allDone];
 
@@ -588,25 +760,28 @@ export default function LongformPage() {
         {step === 1 && (
           <div className="animate-in fade-in slide-in-from-bottom-3 duration-300">
 
-            {/* ── 템플릿 ── */}
-            <div className="flex items-center gap-2 mb-1">
+            {/* ── 템플릿 (텍스트 탭 선택) ── */}
+            <div className="flex items-center gap-2 mb-4">
               <span className="w-5 h-5 rounded-lg bg-gradient-to-br from-indigo-500 to-fuchsia-500 flex items-center justify-center text-[10px] font-black">1</span>
               <h2 className="text-sm font-black text-white uppercase tracking-widest">지식 템플릿</h2>
               <span className="text-slate-600 text-[11px]">— NotebookLM 연동 지식창고</span>
             </div>
-            <p className="text-slate-500 text-xs mb-4 pl-7">영상의 지식 기반이 되는 노트북 템플릿을 선택하세요.</p>
 
-            <GroupLabel dot="indigo" label="Vault 지식창고 시리즈" />
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-6">
-              {TEMPLATES_VAULT.map(t => (
-                <TemplateCard key={t.id} t={t} selected={template?.id === t.id} onSelect={() => selectTemplate(t)} accent="indigo" />
-              ))}
-            </div>
-
-            <GroupLabel dot="fuchsia" label="콘텐츠 제작 시리즈" />
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-10">
-              {TEMPLATES_CONTENT.map(t => (
-                <TemplateCard key={t.id} t={t} selected={template?.id === t.id} onSelect={() => selectTemplate(t)} accent="fuchsia" />
+            <div className="flex flex-wrap gap-2 mb-10">
+              {TEMPLATES.map(t => (
+                <button
+                  key={t.id}
+                  onClick={() => selectTemplate(t)}
+                  className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all border-2 ${
+                    template?.id === t.id
+                      ? t.category === 'vault'
+                        ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20'
+                        : 'bg-fuchsia-600 border-fuchsia-500 text-white shadow-lg shadow-fuchsia-500/20'
+                      : 'bg-[#1c1c2e] border-white/5 text-slate-400 hover:border-white/20 hover:text-white'
+                  }`}
+                >
+                  {t.title}
+                </button>
               ))}
             </div>
 
@@ -634,6 +809,83 @@ export default function LongformPage() {
               ))}
             </div>
 
+            {/* ── 감정 & 톤앤매너 ── */}
+            {artStyle && (
+              <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-slate-700 to-transparent" />
+                  <div className="flex items-center gap-2 px-3 py-1 bg-slate-900 border border-slate-700 rounded-full">
+                    <FontAwesomeIcon icon={faMagic} className="text-indigo-400 text-[10px]" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">감정 & 톤앤매너</span>
+                  </div>
+                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-slate-700 to-transparent" />
+                </div>
+
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-5 rounded-lg bg-gradient-to-br from-indigo-500 to-fuchsia-500 flex items-center justify-center text-[10px] font-black">3</span>
+                  <h2 className="text-sm font-black text-white uppercase tracking-widest">감정 & 톤앤매너</h2>
+                  <span className="text-slate-600 text-[11px]">— 영상의 감정선과 말하기 방식</span>
+                </div>
+                <p className="text-slate-500 text-xs mb-5 pl-7">시나리오와 이미지 생성에 반영될 감정 분위기와 어조를 선택하세요.</p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                  {/* 감정 드롭다운 */}
+                  <div>
+                    <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2">
+                      감정 분위기
+                    </label>
+                    <div className="relative">
+                      <select
+                        value={emotion?.id ?? ''}
+                        onChange={e => setEmotion(EMOTIONS.find(x => x.id === e.target.value) ?? null)}
+                        className="w-full appearance-none bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white font-semibold focus:outline-none focus:border-indigo-500 transition-colors cursor-pointer"
+                      >
+                        <option value="">감정 분위기 선택...</option>
+                        {EMOTIONS.map(em => (
+                          <option key={em.id} value={em.id}>
+                            {em.emoji} {em.label} — {em.desc}
+                          </option>
+                        ))}
+                      </select>
+                      <FontAwesomeIcon icon={faChevronDown} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-[10px] pointer-events-none" />
+                    </div>
+                    {emotion && (
+                      <p className="text-[11px] text-indigo-400 mt-1.5 pl-1 font-semibold">
+                        {emotion.emoji} {emotion.label}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* 톤앤매너 드롭다운 */}
+                  <div>
+                    <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2">
+                      톤앤매너
+                    </label>
+                    <div className="relative">
+                      <select
+                        value={tone?.id ?? ''}
+                        onChange={e => setTone(TONES.find(x => x.id === e.target.value) ?? null)}
+                        className="w-full appearance-none bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white font-semibold focus:outline-none focus:border-fuchsia-500 transition-colors cursor-pointer"
+                      >
+                        <option value="">톤앤매너 선택...</option>
+                        {TONES.map(t => (
+                          <option key={t.id} value={t.id}>
+                            {t.label} — {t.desc}
+                          </option>
+                        ))}
+                      </select>
+                      <FontAwesomeIcon icon={faChevronDown} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-[10px] pointer-events-none" />
+                    </div>
+                    {tone && (
+                      <p className="text-[11px] text-fuchsia-400 mt-1.5 pl-1 font-semibold">
+                        {tone.label}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* ── 다음 단계 CTA ── */}
             {step1Done && (
               <div className="flex justify-end animate-in fade-in duration-300">
@@ -657,6 +909,8 @@ export default function LongformPage() {
             <div className="flex flex-wrap gap-2 mb-6">
               <SelectedBadge label="템플릿" value={template?.title ?? ''} onBack={() => setStep(1)} inline />
               <SelectedBadge label="화풍"   value={artStyle?.label  ?? ''} onBack={() => setStep(1)} inline />
+              {emotion && <SelectedBadge label="감정" value={`${emotion.emoji} ${emotion.label}`} onBack={() => setStep(1)} inline />}
+              {tone    && <SelectedBadge label="톤"   value={tone.label}                           onBack={() => setStep(1)} inline />}
             </div>
 
             {/* ── 입력 모드 토글 ── */}
@@ -688,13 +942,14 @@ export default function LongformPage() {
             {/* ════ AI 생성 모드 ════ */}
             {inputMode === 'ai' && (
               <>
-                {/* ── 프롬프트 스타일 선택 ── */}
+                {/* ── 프롬프트 스타일 선택 (필수) ── */}
                 <div className="mb-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <FontAwesomeIcon icon={faMagic} className="text-indigo-400 text-xs" />
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="w-5 h-5 rounded-lg bg-gradient-to-br from-indigo-500 to-fuchsia-500 flex items-center justify-center text-[10px] font-black text-white">★</span>
                     <span className="text-xs font-black text-white uppercase tracking-widest">시나리오 스타일</span>
-                    <span className="text-slate-600 text-[11px]">— 선택 시 자동으로 3개 시나리오 생성</span>
+                    <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/30 uppercase tracking-widest">필수 선택</span>
                   </div>
+                  <p className="text-slate-500 text-xs mb-3 pl-7">스타일을 선택하면 AI가 즉시 3개 시나리오를 자동 생성합니다.</p>
                   <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
                     {STYLES.map(s => (
                       <MiniStyleCard key={s.id} s={s} selected={style?.id === s.id} onSelect={() => selectStyle(s)} />
@@ -738,29 +993,16 @@ export default function LongformPage() {
                   </div>
                 )}
 
-                {/* ── 선택된 시나리오 편집 + 성우 ── */}
+                {/* ── 선택된 시나리오 편집 + 성우 (성우 1/3 : 시나리오 2/3) ── */}
                 {selectedIdx !== null && (
-                  <div className="grid md:grid-cols-2 gap-6 mt-2 animate-in fade-in duration-300">
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <FontAwesomeIcon icon={faPenToSquare} className="text-indigo-400 text-sm" />
-                        <span className="text-sm font-black text-white">시나리오 편집</span>
-                        <span className="ml-auto text-[10px] text-slate-500">자유롭게 수정 가능</span>
-                      </div>
-                      <textarea
-                        value={editedScript}
-                        onChange={e => setEditedScript(e.target.value)}
-                        rows={16}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-2xl p-4 text-white text-sm focus:outline-none focus:border-indigo-500/50 resize-none font-mono leading-relaxed transition-all"
-                      />
-                    </div>
+                  <div className="grid md:grid-cols-3 gap-6 mt-2 animate-in fade-in duration-300">
+                    {/* 성우 선택 (1/3) — 1열 3행 */}
                     <div>
                       <div className="flex items-center gap-2 mb-2">
                         <FontAwesomeIcon icon={faMicrophone} className="text-fuchsia-400 text-sm" />
                         <span className="text-sm font-black text-white">AI 성우 선택</span>
-                        <span className="ml-auto text-[10px] text-slate-500">Google Cloud TTS</span>
                       </div>
-                      <div className="grid grid-cols-4 gap-2">
+                      <div className="grid grid-cols-3 gap-2">
                         {VOICES.map((v, idx) => (
                           <VoiceCard key={v.id} v={v} idx={idx} selected={voice.id === v.id}
                             previewing={previewing === v.id} onSelect={() => setVoice(v)} onPreview={() => handlePreview(v)} />
@@ -768,21 +1010,34 @@ export default function LongformPage() {
                       </div>
                       <TtsSpeedControl value={ttsSpeed} onChange={setTtsSpeed} />
                     </div>
+                    {/* 시나리오 편집 (2/3) — 높이 자동 확장 */}
+                    <div className="md:col-span-2 flex flex-col">
+                      <div className="flex items-center gap-2 mb-2">
+                        <FontAwesomeIcon icon={faPenToSquare} className="text-indigo-400 text-sm" />
+                        <span className="text-sm font-black text-white">시나리오 편집</span>
+                        <span className="ml-auto text-[10px] text-slate-500">자유롭게 수정 가능</span>
+                      </div>
+                      <textarea
+                        ref={editTextareaRef}
+                        value={editedScript}
+                        onChange={e => { setEditedScript(e.target.value); autoResize(editTextareaRef.current); }}
+                        onFocus={() => autoResize(editTextareaRef.current)}
+                        className="w-full min-h-[400px] bg-slate-900 border border-slate-700 rounded-2xl p-4 text-white text-sm focus:outline-none focus:border-indigo-500/50 resize-none overflow-hidden font-mono leading-relaxed transition-all"
+                      />
+                    </div>
                   </div>
                 )}
 
                 {selectedIdx !== null && (
-                  <>
-                    <TextStylePicker value={textStyle} onChange={setTextStyle} />
-                    <div className="flex justify-end mt-8">
-                      <button onClick={handleStart}
-                        className="flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white rounded-2xl font-black text-lg shadow-2xl shadow-fuchsia-500/20 hover:brightness-110 active:scale-95 transition-all">
-                        <FontAwesomeIcon icon={faPlay} />
-                        영상 제작 시작 (FFmpeg)
-                        <FontAwesomeIcon icon={faChevronRight} />
-                      </button>
-                    </div>
-                  </>
+                  <div className="flex items-center justify-end gap-4 mt-8">
+                    <DesktopStatus alive={desktopAlive} />
+                    <button onClick={handleStart}
+                      className="flex items-center gap-3 px-10 py-5 rounded-2xl font-black text-lg shadow-2xl transition-all active:scale-95 bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow-fuchsia-500/20 hover:brightness-110">
+                      <FontAwesomeIcon icon={faPlay} />
+                      영상 제작 시작
+                      <FontAwesomeIcon icon={faChevronRight} />
+                    </button>
+                  </div>
                 )}
               </>
             )}
@@ -790,24 +1045,50 @@ export default function LongformPage() {
             {/* ════ 직접 입력 / 업로드 모드 ════ */}
             {inputMode === 'manual' && (
               <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid md:grid-cols-3 gap-6">
 
-                  {/* 텍스트 입력 영역 */}
+                  {/* 성우 선택 (1/3) — 1열 3행 */}
                   <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <FontAwesomeIcon icon={faMicrophone} className="text-fuchsia-400 text-sm" />
+                      <span className="text-sm font-black text-white">AI 성우 선택</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      {VOICES.map((v, idx) => (
+                        <VoiceCard key={v.id} v={v} idx={idx} selected={voice.id === v.id}
+                          previewing={previewing === v.id} onSelect={() => setVoice(v)} onPreview={() => handlePreview(v)} />
+                      ))}
+                    </div>
+                    <TtsSpeedControl value={ttsSpeed} onChange={setTtsSpeed} />
+
+                    {/* 입력 형식 안내 */}
+                    <div className="mt-4 bg-slate-900/60 border border-slate-800 rounded-2xl p-4">
+                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">입력 형식 안내</p>
+                      <div className="space-y-1 font-mono text-[11px] text-slate-400">
+                        <p><span className="text-indigo-400">[씬1]</span> 나레이션 텍스트 (권장)</p>
+                        <p><span className="text-indigo-400">[씬2]</span> 씬 태그 없이도 동작</p>
+                        <p className="text-slate-600 pt-1">• 씬 태그 없으면 줄바꿈 기준 자동 분리</p>
+                        <p className="text-slate-600">• .txt 파일은 UTF-8 인코딩 권장</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 텍스트 입력 영역 (2/3) — 높이 자동 확장 */}
+                  <div className="md:col-span-2 flex flex-col">
                     <div className="flex items-center gap-2 mb-2">
                       <FontAwesomeIcon icon={faPenToSquare} className="text-indigo-400 text-sm" />
                       <span className="text-sm font-black text-white">시나리오 직접 입력</span>
                       <span className="ml-auto text-[10px] text-slate-500">[씬N] 형식 권장</span>
                     </div>
                     <textarea
+                      ref={manualTextareaRef}
                       value={manualScript}
-                      onChange={e => setManualScript(e.target.value)}
-                      rows={14}
+                      onChange={e => { setManualScript(e.target.value); autoResize(manualTextareaRef.current); }}
+                      onFocus={() => autoResize(manualTextareaRef.current)}
                       placeholder={`[씬1] 오늘 건강 식품 TOP 5를 알아봅시다.\n[씬2] 5위는 귀리입니다.\n[씬3] 귀리는 혈압을 낮춰줍니다.\n...`}
-                      className="w-full bg-slate-900 border border-slate-700 rounded-2xl p-4 text-white text-sm focus:outline-none focus:border-indigo-500/50 resize-none font-mono leading-relaxed placeholder:text-slate-700 transition-all"
+                      className="w-full min-h-[400px] bg-slate-900 border border-slate-700 rounded-2xl p-4 text-white text-sm focus:outline-none focus:border-indigo-500/50 resize-none overflow-hidden font-mono leading-relaxed placeholder:text-slate-700 transition-all"
                     />
                     <div className="flex items-center gap-3 mt-2">
-                      {/* 파일 업로드 */}
                       <input
                         ref={fileInputRef}
                         type="file"
@@ -833,48 +1114,19 @@ export default function LongformPage() {
                       </span>
                     </div>
                   </div>
-
-                  {/* 성우 선택 */}
-                  <div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <FontAwesomeIcon icon={faMicrophone} className="text-fuchsia-400 text-sm" />
-                      <span className="text-sm font-black text-white">AI 성우 선택</span>
-                      <span className="ml-auto text-[10px] text-slate-500">Google Cloud TTS</span>
-                    </div>
-                    <div className="grid grid-cols-4 gap-2">
-                      {VOICES.map((v, idx) => (
-                        <VoiceCard key={v.id} v={v} idx={idx} selected={voice.id === v.id}
-                          previewing={previewing === v.id} onSelect={() => setVoice(v)} onPreview={() => handlePreview(v)} />
-                      ))}
-                    </div>
-                    <TtsSpeedControl value={ttsSpeed} onChange={setTtsSpeed} />
-
-                    {/* 입력 형식 안내 */}
-                    <div className="mt-4 bg-slate-900/60 border border-slate-800 rounded-2xl p-4">
-                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">입력 형식 안내</p>
-                      <div className="space-y-1 font-mono text-[11px] text-slate-400">
-                        <p><span className="text-indigo-400">[씬1]</span> 나레이션 텍스트 (권장)</p>
-                        <p><span className="text-indigo-400">[씬2]</span> 씬 태그 없이도 동작</p>
-                        <p className="text-slate-600 pt-1">• 씬 태그 없으면 줄바꿈 기준 자동 분리</p>
-                        <p className="text-slate-600">• .txt 파일은 UTF-8 인코딩 권장</p>
-                      </div>
-                    </div>
-                  </div>
                 </div>
 
                 {/* 텍스트 오버레이 스타일 + CTA */}
                 {manualScript.trim() && (
-                  <>
-                    <TextStylePicker value={textStyle} onChange={setTextStyle} />
-                    <div className="flex justify-end mt-8 animate-in fade-in duration-300">
-                      <button onClick={handleStart}
-                        className="flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white rounded-2xl font-black text-lg shadow-2xl shadow-fuchsia-500/20 hover:brightness-110 active:scale-95 transition-all">
-                        <FontAwesomeIcon icon={faPlay} />
-                        영상 제작 시작 (FFmpeg)
-                        <FontAwesomeIcon icon={faChevronRight} />
-                      </button>
-                    </div>
-                  </>
+                  <div className="flex items-center justify-end gap-4 mt-8 animate-in fade-in duration-300">
+                    <DesktopStatus alive={desktopAlive} />
+                    <button onClick={handleStart}
+                      className="flex items-center gap-3 px-10 py-5 rounded-2xl font-black text-lg shadow-2xl transition-all active:scale-95 bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow-fuchsia-500/20 hover:brightness-110">
+                      <FontAwesomeIcon icon={faPlay} />
+                      영상 제작 시작
+                      <FontAwesomeIcon icon={faChevronRight} />
+                    </button>
+                  </div>
                 )}
               </div>
             )}
@@ -889,6 +1141,8 @@ export default function LongformPage() {
             <div className="flex flex-wrap gap-2 mb-8">
               <SelectedBadge label="템플릿" value={template?.title ?? ''} onBack={() => setStep(1)} inline />
               <SelectedBadge label="화풍"   value={artStyle?.label  ?? ''} onBack={() => setStep(1)} inline />
+              {emotion && <SelectedBadge label="감정" value={`${emotion.emoji} ${emotion.label}`} onBack={() => setStep(1)} inline />}
+              {tone    && <SelectedBadge label="톤"   value={tone.label}                           onBack={() => setStep(1)} inline />}
               <SelectedBadge label="스타일" value={style?.label     ?? ''} onBack={() => setStep(2)} inline />
             </div>
 
@@ -924,9 +1178,45 @@ export default function LongformPage() {
             )}
 
             {pipelineError && (
-              <div className="mb-6 flex items-start gap-3 bg-red-950/60 border border-red-700/40 rounded-2xl p-4">
-                <FontAwesomeIcon icon={faTriangleExclamation} className="text-red-400 mt-0.5 shrink-0" />
-                <p className="text-red-300 text-sm leading-relaxed">{pipelineError}</p>
+              <div className="mb-6 bg-red-950/60 border border-red-700/40 rounded-2xl p-6">
+                <div className="flex items-start gap-3 mb-5">
+                  <FontAwesomeIcon icon={faTriangleExclamation} className="text-red-400 mt-0.5 shrink-0 text-lg" />
+                  <p className="text-red-300 text-sm leading-relaxed whitespace-pre-line font-bold">{pipelineError}</p>
+                </div>
+
+                {/* 액션 버튼 */}
+                <div className="flex flex-col gap-3">
+                  <button
+                    onClick={() => { setPipelineError(null); handleStart(); }}
+                    className="flex items-center justify-center gap-2 py-4 bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white rounded-xl font-black text-sm hover:brightness-110 active:scale-95 transition-all"
+                  >
+                    <FontAwesomeIcon icon={faSync} />
+                    다시 시도 (프로그램 자동 실행)
+                  </button>
+
+                  {/* 미설치 시 */}
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 h-px bg-slate-800" />
+                    <span className="text-[10px] text-slate-600 font-bold">처음이신가요?</span>
+                    <div className="flex-1 h-px bg-slate-800" />
+                  </div>
+
+                  <a
+                    href="/download"
+                    className="flex items-center justify-center gap-2 py-3 bg-slate-800 border border-slate-700 text-slate-300 rounded-xl font-black text-sm hover:bg-slate-700 active:scale-95 transition-all"
+                  >
+                    <FontAwesomeIcon icon={faDownload} />
+                    LinkDrop 프로그램 설치하기 (1회)
+                  </a>
+
+                  <button
+                    onClick={() => { setPipelineError(null); setRunning(false); setStep(2); }}
+                    className="flex items-center justify-center gap-2 py-2 text-slate-500 text-xs font-bold hover:text-slate-300 transition-all"
+                  >
+                    <FontAwesomeIcon icon={faArrowLeft} />
+                    시나리오로 돌아가기
+                  </button>
+                </div>
               </div>
             )}
 
@@ -1081,152 +1371,25 @@ export default function LongformPage() {
 
 // ── 서브 컴포넌트들 ──────────────────────────────────────────────────────────
 
-// ── 텍스트 오버레이 스타일 선택기 ─────────────────────────────────────────────
-function TextStylePicker({ value, onChange }: { value: 'box' | 'outline'; onChange: (v: 'box' | 'outline') => void }) {
-  const options: { id: 'box' | 'outline'; label: string; desc: string }[] = [
-    { id: 'box',     label: '옵션 1 — 검은 박스',   desc: '반투명 검은 배경 위 흰색 텍스트' },
-    { id: 'outline', label: '옵션 2 — 흰색 외곽선', desc: '흰색 텍스트 + 검은 외곽선 (드롭섀도)' },
-  ];
 
-  // 9:16 phone frame dimensions
-  const PW = 110, PH = 196;
-  // safe zone thresholds (%)
-  const topSafe    = 0.12; // top 12% — YT/IG UI
-  const bottomSafe = 0.22; // bottom 22% — interaction buttons
-  const textAreaTop    = PH * topSafe;
-  const textAreaBottom = PH * (1 - bottomSafe);
-  const textAreaH      = textAreaBottom - textAreaTop;
-
+function DesktopStatus({ alive }: { alive: boolean | null }) {
+  if (alive === null) return <span className="text-[11px] text-slate-600 font-bold animate-pulse">앱 확인 중...</span>;
+  if (alive) return (
+    <span className="flex items-center gap-1.5 text-[11px] font-black text-emerald-400">
+      <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]" />
+      프로그램 연결됨
+    </span>
+  );
   return (
-    <div className="mt-8 animate-in fade-in duration-300">
-      {/* 섹션 헤더 */}
-      <div className="flex items-center gap-2 mb-4">
-        <FontAwesomeIcon icon={faFont} className="text-amber-400 text-sm" />
-        <span className="text-sm font-black text-white uppercase tracking-widest">텍스트 오버레이 스타일</span>
-        <span className="text-slate-600 text-[11px]">— 씬별 자막 표시 방식</span>
-      </div>
-
-      <div className="flex gap-6 flex-wrap mb-4">
-        {options.map(opt => {
-          const sel = value === opt.id;
-          return (
-            <button
-              key={opt.id}
-              onClick={() => onChange(opt.id)}
-              className={`flex flex-col items-center gap-3 p-4 rounded-2xl border transition-all duration-200 ${
-                sel
-                  ? 'bg-gradient-to-br from-amber-950/50 to-slate-900 border-amber-500/50 shadow-lg shadow-amber-500/10 scale-[1.02]'
-                  : 'bg-slate-900/60 border-slate-800 hover:border-slate-600'
-              }`}
-            >
-              {/* 9:16 phone frame preview */}
-              <div
-                className="relative rounded-xl overflow-hidden border-2 border-slate-600 flex-shrink-0"
-                style={{ width: PW, height: PH, background: 'linear-gradient(160deg,#1e1b4b 0%,#0f172a 50%,#0c0a1e 100%)' }}
-              >
-                {/* 더미 씬 이미지 느낌 (gradient) */}
-                <div className="absolute inset-0 opacity-50"
-                  style={{ background: 'radial-gradient(ellipse at 30% 40%, rgba(99,102,241,0.3) 0%, transparent 60%), radial-gradient(ellipse at 70% 70%, rgba(217,70,239,0.2) 0%, transparent 60%)' }}
-                />
-
-                {/* 상단 안전구역 라인 (노란색) — YT/IG UI */}
-                <div
-                  className="absolute left-0 right-0 border-t border-dashed border-yellow-400/70"
-                  style={{ top: textAreaTop }}
-                />
-                {/* 하단 안전구역 라인 (빨간색) — 상호작용 버튼 */}
-                <div
-                  className="absolute left-0 right-0 border-t border-dashed border-red-400/70"
-                  style={{ top: textAreaBottom }}
-                />
-
-                {/* 텍스트 오버레이 미리보기 — 하단 안전구역 바로 위 */}
-                <div
-                  className="absolute left-0 right-0 flex items-end justify-center px-2"
-                  style={{ top: textAreaTop, height: textAreaH }}
-                >
-                  {opt.id === 'box' ? (
-                    // 옵션 1: 검은 박스 스타일
-                    <div
-                      className="w-full text-center rounded"
-                      style={{
-                        background: 'rgba(0,0,0,0.72)',
-                        padding: '4px 6px',
-                        marginBottom: 4,
-                      }}
-                    >
-                      <span style={{ fontSize: 8, color: '#fff', fontWeight: 900, letterSpacing: '0.02em', lineHeight: 1.4 }}>
-                        건강한 식생활의<br />비밀을 알아봅니다
-                      </span>
-                    </div>
-                  ) : (
-                    // 옵션 2: 흰 텍스트 + 검은 외곽선
-                    <div
-                      className="w-full text-center"
-                      style={{ marginBottom: 4, padding: '0 6px' }}
-                    >
-                      <span style={{
-                        fontSize: 8, color: '#fff', fontWeight: 900,
-                        textShadow: '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 2px 4px rgba(0,0,0,0.9)',
-                        lineHeight: 1.4,
-                      }}>
-                        건강한 식생활의<br />비밀을 알아봅니다
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                {/* 상단 안전구역 라벨 */}
-                <div className="absolute left-1 flex items-center gap-0.5" style={{ top: textAreaTop + 2 }}>
-                  <span style={{ fontSize: 5, color: 'rgba(250,204,21,0.9)', fontWeight: 700 }}>▲ UI 영역</span>
-                </div>
-                {/* 하단 안전구역 라벨 */}
-                <div className="absolute left-1 flex items-center gap-0.5" style={{ top: textAreaBottom + 2 }}>
-                  <span style={{ fontSize: 5, color: 'rgba(248,113,113,0.9)', fontWeight: 700 }}>▼ 버튼 영역</span>
-                </div>
-
-                {/* 선택 표시 */}
-                {sel && (
-                  <div className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-amber-500 text-white flex items-center justify-center text-[8px] shadow-md">
-                    <FontAwesomeIcon icon={faCheckCircle} />
-                  </div>
-                )}
-              </div>
-
-              {/* 라벨 */}
-              <div className="text-center">
-                <p className={`text-xs font-black ${sel ? 'text-amber-300' : 'text-slate-300'}`}>{opt.label}</p>
-                <p className={`text-[10px] mt-0.5 ${sel ? 'text-amber-500/80' : 'text-slate-600'}`}>{opt.desc}</p>
-              </div>
-            </button>
-          );
-        })}
-
-        {/* 안전구역 가이드 범례 */}
-        <div className="flex flex-col justify-center gap-3 ml-2">
-          <div className="flex items-start gap-2">
-            <div className="w-4 h-px border-t-2 border-dashed border-yellow-400 mt-2 flex-shrink-0" />
-            <div>
-              <p className="text-[10px] font-black text-yellow-400">상단 12% — UI 영역</p>
-              <p className="text-[9px] text-slate-600 leading-snug">유튜브 채널명, 인스타 상단 UI<br />텍스트 침범 금지</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-2">
-            <div className="w-4 h-px border-t-2 border-dashed border-red-400 mt-2 flex-shrink-0" />
-            <div>
-              <p className="text-[10px] font-black text-red-400">하단 22% — 버튼 영역</p>
-              <p className="text-[9px] text-slate-600 leading-snug">좋아요·댓글·공유·팔로우 버튼<br />텍스트 침범 금지</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-2">
-            <div className="w-4 h-1.5 bg-emerald-500/30 border border-emerald-500/50 rounded-sm mt-1.5 flex-shrink-0" />
-            <div>
-              <p className="text-[10px] font-black text-emerald-400">중앙 66% — 안전 영역</p>
-              <p className="text-[9px] text-slate-600 leading-snug">텍스트 오버레이 권장 구역<br />(YouTube / Instagram 기준)</p>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div className="bg-red-950/40 border border-red-500/30 rounded-xl px-4 py-3 max-w-md">
+      <p className="flex items-center gap-1.5 text-[11px] font-black text-red-400 mb-2">
+        <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
+        영상 제작 프로그램이 실행되지 않고 있습니다
+      </p>
+      <p className="text-[11px] text-slate-400 leading-relaxed">
+        영상 제작을 위해서는 <span className="text-fuchsia-400 font-bold">LinkDrop 프로그램</span>이
+        실행 중이어야 합니다. 프로그램을 실행하면 자동으로 연결됩니다.
+      </p>
     </div>
   );
 }

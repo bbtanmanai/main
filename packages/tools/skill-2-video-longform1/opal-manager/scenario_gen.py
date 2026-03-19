@@ -36,11 +36,29 @@ def main() -> int:
     parser.add_argument("--topic",      required=True)
     parser.add_argument("--voice",      default="ko-KR-Wavenet-D")
     parser.add_argument("--style",      default="ranking")
-    parser.add_argument("--art_prompt", default="")
+    parser.add_argument("--art_prompt",   default="")
+    parser.add_argument("--tone_desc",    default="")   # 톤앤매너 라벨+설명
+    parser.add_argument("--emotion_desc", default="")   # 감정 라벨+설명
     args = parser.parse_args()
 
+    # 톤앤매너/감정을 topic에 구체적 지시문으로 주입
+    effective_topic = args.topic
+    directives = []
+    if args.emotion_desc:
+        directives.append(f"전체 감정 분위기: {args.emotion_desc}")
+    if args.tone_desc:
+        directives.append(f"말하기 톤앤매너: {args.tone_desc}")
+    if directives:
+        effective_topic = f"{args.topic}\n\n[연출 지시]\n" + "\n".join(directives)
+
     try:
-        job = PipelineJob(app_id=args.app, topic=args.topic, voice=args.voice, style=args.style, art_prompt=args.art_prompt)
+        job = PipelineJob(
+            app_id=args.app,
+            topic=effective_topic,
+            voice=args.voice,
+            style=args.style,
+            art_prompt=args.art_prompt,
+        )
         script = step1_get_script(job)
         print(json.dumps({"script": script}, ensure_ascii=False), flush=True)
         return 0

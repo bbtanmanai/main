@@ -39,7 +39,7 @@ from opal_auth import OpalAuthManager
 
 CONFIG_PATH   = Path(__file__).parent / "opal_apps_config.json"
 DRIVE_API     = "https://www.googleapis.com/drive/v3"
-A1_FILE_ID    = "1HveRb71BKf_XljWZxILm5B276qA7A8oC"
+A1_FILE_ID    = "1YQTJjGO0VnQN5U38CE6hHNIhbcindUXt"
 MAX_APPS      = 30
 
 

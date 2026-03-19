@@ -19,7 +19,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from opal_auth import OpalAuthManager, parse_cookie_string, validate_google_cookies, CDP_PORT
 
-OPAL_TARGET_URL = "https://opal.google/edit/1HveRb71BKf_XljWZxILm5B276qA7A8oC"
+OPAL_TARGET_URL = "https://opal.google/edit/1YQTJjGO0VnQN5U38CE6hHNIhbcindUXt"
 CDP_WAIT_SEC = 4
 
 

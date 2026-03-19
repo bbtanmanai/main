@@ -1,38 +1,439 @@
 {
+  "_spec": "SVG Animation Character Standard v2.0",
+  "_thumbnail": {
+    "w": 1080, "h": 1920, "ratio": "9:16",
+    "format": "PNG-24", "bg": "transparent",
+    "note": "대표이미지. 캐릭터 선택 화면 표시용"
+  },
+  "_layer_canvas": {
+    "w": 1920, "h": 1080, "ratio": "16:9",
+    "format": "PNG-24", "bg": "transparent",
+    "note": "영상 합성용 레이어. body/mouth 모두 이 크기"
+  },
+  "_layers": {
+    "mouth": ["mouth_closed.png", "mouth_half.png", "mouth_open.png"],
+    "body":  ["body_front.png", "body_tilt_left.png", "body_tilt_right.png", "body_forward.png"]
+  },
+  "_timing_default": {
+    "body_hz": 0.6,
+    "mouth_hz": 0.25,
+    "zoom_duration": 0.8
+  },
+  "_source_grids": {
+    "note": "외부 AI가 생성하는 소스 그리드 이미지 (슬라이싱 원본). 2-Grid 체계.",
+    "mouth_Grid": {
+      "ratio": "16:9",
+      "layout": "3열 × 1행",
+      "panels": ["mouth_closed", "mouth_half", "mouth_open"],
+      "naming": "c{N}_mouth_Grid.png"
+    },
+    "body_Grid": {
+      "ratio": "16:9",
+      "layout": "4열 × 1행",
+      "panels": ["body_front", "body_tilt_left", "body_tilt_right", "body_forward"],
+      "naming": "c{N}_body_Grid.png"
+    }
+  },
+
   "styles": [
-    { "id": "all", "label": "전체" },
-    { "id": "people", "label": "사람" },
-    { "id": "clay", "label": "클레이" },
-    { "id": "animal", "label": "동물" },
-    { "id": "fruit", "label": "과일" },
-    { "id": "vegetable", "label": "채소" },
-    { "id": "object", "label": "물체" },
-    { "id": "minimal", "label": "미니멀" },
-    { "id": "shinkai", "label": "신카이" },
-    { "id": "cutout", "label": "컷아웃라인" },
-    { "id": "chaotic-ink", "label": "Chaotic Ink" },
-    { "id": "anime", "label": "Anime" },
+    { "id": "all",         "label": "전체" },
+    { "id": "animal",      "label": "동물" },
+    { "id": "people",      "label": "사람" },
+    { "id": "object",      "label": "물체" },
+    { "id": "fruit",       "label": "과일" },
+    { "id": "vegetable",   "label": "채소" },
+    { "id": "clay",        "label": "클레이" },
+    { "id": "minimal",     "label": "미니멀" },
+    { "id": "vector",      "label": "벡터" },
+    { "id": "cutout",      "label": "컷아웃라인" },
+    { "id": "pixar",       "label": "픽사" },
+    { "id": "virtual-3d",  "label": "버츄얼3D" },
+    { "id": "anime",       "label": "Anime" },
+    { "id": "shinkai",     "label": "신카이" },
     { "id": "digital-art", "label": "디지털아트" },
-    { "id": "vector", "label": "벡터" },
-    { "id": "pixar", "label": "픽사" },
-    { "id": "virtual-3d", "label": "버츄얼3D" },
-    { "id": "noir", "label": "누와르" },
-    { "id": "graphic", "label": "그래픽" }
+    { "id": "chaotic-ink", "label": "Chaotic Ink" },
+    { "id": "noir",        "label": "누와르" },
+    { "id": "graphic",     "label": "그래픽" }
   ],
+
   "characters": [
-    { "id": "c1", "name": "해설가 양씨", "style": "animal", "tag": "동물", "image": "/img/content/character/c1/c1.png", "faceGrid": "/img/content/character/c1/c1_face_Grid.png", "bodyGrid": "/img/content/character/c1/c1_body_Grid.png", "zipFile": "/img/content/character/c1/c1.zip" },
-    { "id": "c2", "name": "바나나", "style": "fruit", "tag": "과일", "image": "/img/content/character/c2/c2.png", "faceGrid": "/img/content/character/c2/c2_face_Grid.png", "bodyGrid": "/img/content/character/c2/c2_body_Grid.png", "zipFile": "/img/content/character/c2/c2.zip" },
-    { "id": "c3", "name": "수달아저씨", "style": "animal", "tag": "동물", "image": "/img/content/character/c3/c3.png", "faceGrid": "/img/content/character/c3/c3_face_Grid.png", "bodyGrid": "/img/content/character/c3/c3_body_Grid.png", "zipFile": "/img/content/character/c3/c3.zip" },
-    { "id": "c4", "name": "너구리형", "style": "animal", "tag": "동물", "image": "/img/content/character/c4/c4.png", "faceGrid": "/img/content/character/c4/c4_face_Grid.png", "bodyGrid": "/img/content/character/c4/c4_body_Grid.png", "zipFile": "/img/content/character/c4/c4.zip" },
-    { "id": "c5", "name": "70대 한국할머니", "style": "cutout", "tag": "컷아웃라인", "image": "/img/content/character/c5/c5.png", "faceGrid": "/img/content/character/c5/c5_face_Grid.png", "bodyGrid": "/img/content/character/c5/c5_body_Grid.png", "zipFile": "/img/content/character/c5/c5.zip" },
-    { "id": "c6", "name": "70대 한국할아버지", "style": "cutout", "tag": "컷아웃라인", "image": "/img/content/character/c6/c6.png", "faceGrid": "/img/content/character/c6/c6_face_Grid.png", "bodyGrid": "/img/content/character/c6/c6_body_Grid.png", "zipFile": "/img/content/character/c6/c6.zip" },
-    { "id": "c7", "name": "숟가락군", "style": "object", "tag": "물체", "image": "/img/content/character/c7/c7.png", "faceGrid": "/img/content/character/c7/c7_face_Grid.png", "bodyGrid": "/img/content/character/c7/c7_body_Grid.png", "zipFile": "/img/content/character/c7/c7.zip" },
-    { "id": "c8", "name": "젓가락녀", "style": "object", "tag": "물체", "image": "/img/content/character/c8/c8.png", "faceGrid": "/img/content/character/c8/c8_face_Grid.png", "bodyGrid": "/img/content/character/c8/c8_body_Grid.png", "zipFile": "/img/content/character/c8/c8.zip" },
-    { "id": "c9", "name": "수달아줌마", "style": "animal", "tag": "동물", "image": "/img/content/character/c9/c9.png", "faceGrid": "/img/content/character/c9/c9_face_Grid.png", "bodyGrid": "/img/content/character/c9/c9_body_Grid.png", "zipFile": "/img/content/character/c9/c9.zip" },
-    { "id": "c10", "name": "플랫 요원 P", "style": "vector", "tag": "벡터/미니멀", "image": "/img/content/character/c10/c10.png", "faceGrid": "/img/content/character/c10/c10_face_Grid.png", "bodyGrid": "/img/content/character/c10/c10_body_Grid.png", "zipFile": "/img/content/character/c10/c10.zip" },
-    { "id": "c11", "name": "우주 탐험가 버즈", "style": "pixar", "tag": "픽사/가족", "image": "/img/content/character/c11/c11.png", "faceGrid": "/img/content/character/c11/c11_face_Grid.png", "bodyGrid": "/img/content/character/c11/c11_body_Grid.png", "zipFile": "/img/content/character/c11/c11.zip" },
-    { "id": "c12", "name": "메타 에이전트 X", "style": "virtual-3d", "tag": "3D/메타버스", "image": "/img/content/character/c12/c12.png", "faceGrid": "/img/content/character/c12/c12_face_Grid.png", "bodyGrid": "/img/content/character/c12/c12_body_Grid.png", "zipFile": "/img/content/character/c12/c12.zip" },
-    { "id": "c13", "name": "형사 마르코", "style": "noir", "tag": "누와르/하드보일드", "image": "/img/content/character/c13/c13.png", "faceGrid": "/img/content/character/c13/c13_face_Grid.png", "bodyGrid": "/img/content/character/c13/c13_body_Grid.png", "zipFile": "/img/content/character/c13/c13.zip" },
-    { "id": "c14", "name": "패턴 아티스트 킴", "style": "graphic", "tag": "그래픽/팝아트", "image": "/img/content/character/c14/c14.png", "faceGrid": "/img/content/character/c14/c14_face_Grid.png", "bodyGrid": "/img/content/character/c14/c14_body_Grid.png", "zipFile": "/img/content/character/c14/c14.zip" }
+    {
+      "id": "c1", "name": "해설가 양씨", "style": "animal", "tag": "동물",
+      "image":   "/img/content/character/c1/c1.png",
+      "zipFile": "/img/content/character/c1/c1.zip",
+      "layers": {
+        "mouth": ["mouth_closed", "mouth_half", "mouth_open"],
+        "body":  ["body_front", "body_tilt_left", "body_tilt_right", "body_forward"]
+      },
+      "timing": { "body_hz": 0.6, "mouth_hz": 0.25 },
+      "calibration": {
+        "mouth": {
+          "panels": {
+            "mouth_closed": [0, 0, 640, 1080],
+            "mouth_half":   [640, 0, 1280, 1080],
+            "mouth_open":   [1280, 0, 1920, 1080]
+          }
+        },
+        "body": {
+          "panels": {
+            "body_front":      [0, 0, 480, 1080],
+            "body_tilt_left":  [480, 0, 960, 1080],
+            "body_tilt_right": [960, 0, 1440, 1080],
+            "body_forward":    [1440, 0, 1920, 1080]
+          }
+        }
+      }
+    },
+    {
+      "id": "c2", "name": "바나나", "style": "fruit", "tag": "과일",
+      "image":   "/img/content/character/c2/c2.png",
+      "zipFile": "/img/content/character/c2/c2.zip",
+      "layers": {
+        "mouth": ["mouth_closed", "mouth_half", "mouth_open"],
+        "body":  ["body_front", "body_tilt_left", "body_tilt_right", "body_forward"]
+      },
+      "timing": { "body_hz": 0.5, "mouth_hz": 0.25 },
+      "calibration": {
+        "mouth": {
+          "panels": {
+            "mouth_closed": [0, 0, 640, 1080],
+            "mouth_half":   [640, 0, 1280, 1080],
+            "mouth_open":   [1280, 0, 1920, 1080]
+          }
+        },
+        "body": {
+          "panels": {
+            "body_front":      [0, 0, 480, 1080],
+            "body_tilt_left":  [480, 0, 960, 1080],
+            "body_tilt_right": [960, 0, 1440, 1080],
+            "body_forward":    [1440, 0, 1920, 1080]
+          }
+        }
+      }
+    },
+    {
+      "id": "c3", "name": "수달아저씨", "style": "animal", "tag": "동물",
+      "image":   "/img/content/character/c3/c3.png",
+      "zipFile": "/img/content/character/c3/c3.zip",
+      "layers": {
+        "mouth": ["mouth_closed", "mouth_half", "mouth_open"],
+        "body":  ["body_front", "body_tilt_left", "body_tilt_right", "body_forward"]
+      },
+      "timing": { "body_hz": 0.6, "mouth_hz": 0.25 },
+      "calibration": {
+        "mouth": {
+          "panels": {
+            "mouth_closed": [0, 0, 640, 1080],
+            "mouth_half":   [640, 0, 1280, 1080],
+            "mouth_open":   [1280, 0, 1920, 1080]
+          }
+        },
+        "body": {
+          "panels": {
+            "body_front":      [0, 0, 480, 1080],
+            "body_tilt_left":  [480, 0, 960, 1080],
+            "body_tilt_right": [960, 0, 1440, 1080],
+            "body_forward":    [1440, 0, 1920, 1080]
+          }
+        }
+      }
+    },
+    {
+      "id": "c4", "name": "너구리형", "style": "animal", "tag": "동물",
+      "image":   "/img/content/character/c4/c4.png",
+      "zipFile": "/img/content/character/c4/c4.zip",
+      "layers": {
+        "mouth": ["mouth_closed", "mouth_half", "mouth_open"],
+        "body":  ["body_front", "body_tilt_left", "body_tilt_right", "body_forward"]
+      },
+      "timing": { "body_hz": 0.6, "mouth_hz": 0.25 },
+      "calibration": {
+        "mouth": {
+          "panels": {
+            "mouth_closed": [0, 0, 640, 1080],
+            "mouth_half":   [640, 0, 1280, 1080],
+            "mouth_open":   [1280, 0, 1920, 1080]
+          }
+        },
+        "body": {
+          "panels": {
+            "body_front":      [0, 0, 480, 1080],
+            "body_tilt_left":  [480, 0, 960, 1080],
+            "body_tilt_right": [960, 0, 1440, 1080],
+            "body_forward":    [1440, 0, 1920, 1080]
+          }
+        }
+      }
+    },
+    {
+      "id": "c5", "name": "70대 한국할머니", "style": "cutout", "tag": "컷아웃라인",
+      "image":   "/img/content/character/c5/c5.png",
+      "zipFile": "/img/content/character/c5/c5.zip",
+      "layers": {
+        "mouth": ["mouth_closed", "mouth_half", "mouth_open"],
+        "body":  ["body_front", "body_tilt_left", "body_tilt_right", "body_forward"]
+      },
+      "timing": { "body_hz": 0.4, "mouth_hz": 0.28 },
+      "calibration": {
+        "mouth": {
+          "panels": {
+            "mouth_closed": [0, 0, 640, 1080],
+            "mouth_half":   [640, 0, 1280, 1080],
+            "mouth_open":   [1280, 0, 1920, 1080]
+          }
+        },
+        "body": {
+          "panels": {
+            "body_front":      [0, 0, 480, 1080],
+            "body_tilt_left":  [480, 0, 960, 1080],
+            "body_tilt_right": [960, 0, 1440, 1080],
+            "body_forward":    [1440, 0, 1920, 1080]
+          }
+        }
+      }
+    },
+    {
+      "id": "c6", "name": "70대 한국할아버지", "style": "cutout", "tag": "컷아웃라인",
+      "image":   "/img/content/character/c6/c6.png",
+      "zipFile": "/img/content/character/c6/c6.zip",
+      "layers": {
+        "mouth": ["mouth_closed", "mouth_half", "mouth_open"],
+        "body":  ["body_front", "body_tilt_left", "body_tilt_right", "body_forward"]
+      },
+      "timing": { "body_hz": 0.4, "mouth_hz": 0.28 },
+      "calibration": {
+        "mouth": {
+          "panels": {
+            "mouth_closed": [0, 0, 640, 1080],
+            "mouth_half":   [640, 0, 1280, 1080],
+            "mouth_open":   [1280, 0, 1920, 1080]
+          }
+        },
+        "body": {
+          "panels": {
+            "body_front":      [0, 0, 480, 1080],
+            "body_tilt_left":  [480, 0, 960, 1080],
+            "body_tilt_right": [960, 0, 1440, 1080],
+            "body_forward":    [1440, 0, 1920, 1080]
+          }
+        }
+      }
+    },
+    {
+      "id": "c7", "name": "숟가락군", "style": "object", "tag": "물체",
+      "image":   "/img/content/character/c7/c7.png",
+      "zipFile": "/img/content/character/c7/c7.zip",
+      "layers": {
+        "mouth": ["mouth_closed", "mouth_half", "mouth_open"],
+        "body":  ["body_front", "body_tilt_left", "body_tilt_right", "body_forward"]
+      },
+      "timing": { "body_hz": 0.8, "mouth_hz": 0.22 },
+      "calibration": {
+        "mouth": {
+          "panels": {
+            "mouth_closed": [0, 0, 640, 1080],
+            "mouth_half":   [640, 0, 1280, 1080],
+            "mouth_open":   [1280, 0, 1920, 1080]
+          }
+        },
+        "body": {
+          "panels": {
+            "body_front":      [0, 0, 480, 1080],
+            "body_tilt_left":  [480, 0, 960, 1080],
+            "body_tilt_right": [960, 0, 1440, 1080],
+            "body_forward":    [1440, 0, 1920, 1080]
+          }
+        }
+      }
+    },
+    {
+      "id": "c8", "name": "젓가락녀", "style": "object", "tag": "물체",
+      "image":   "/img/content/character/c8/c8.png",
+      "zipFile": "/img/content/character/c8/c8.zip",
+      "layers": {
+        "mouth": ["mouth_closed", "mouth_half", "mouth_open"],
+        "body":  ["body_front", "body_tilt_left", "body_tilt_right", "body_forward"]
+      },
+      "timing": { "body_hz": 0.8, "mouth_hz": 0.22 },
+      "calibration": {
+        "mouth": {
+          "panels": {
+            "mouth_closed": [0, 0, 640, 1080],
+            "mouth_half":   [640, 0, 1280, 1080],
+            "mouth_open":   [1280, 0, 1920, 1080]
+          }
+        },
+        "body": {
+          "panels": {
+            "body_front":      [0, 0, 480, 1080],
+            "body_tilt_left":  [480, 0, 960, 1080],
+            "body_tilt_right": [960, 0, 1440, 1080],
+            "body_forward":    [1440, 0, 1920, 1080]
+          }
+        }
+      }
+    },
+    {
+      "id": "c9", "name": "수달아줌마", "style": "animal", "tag": "동물",
+      "image":   "/img/content/character/c9/c9.png",
+      "zipFile": "/img/content/character/c9/c9.zip",
+      "layers": {
+        "mouth": ["mouth_closed", "mouth_half", "mouth_open"],
+        "body":  ["body_front", "body_tilt_left", "body_tilt_right", "body_forward"]
+      },
+      "timing": { "body_hz": 0.6, "mouth_hz": 0.25 },
+      "calibration": {
+        "mouth": {
+          "panels": {
+            "mouth_closed": [0, 0, 640, 1080],
+            "mouth_half":   [640, 0, 1280, 1080],
+            "mouth_open":   [1280, 0, 1920, 1080]
+          }
+        },
+        "body": {
+          "panels": {
+            "body_front":      [0, 0, 480, 1080],
+            "body_tilt_left":  [480, 0, 960, 1080],
+            "body_tilt_right": [960, 0, 1440, 1080],
+            "body_forward":    [1440, 0, 1920, 1080]
+          }
+        }
+      }
+    },
+    {
+      "id": "c10", "name": "플랫 요원 P", "style": "vector", "tag": "벡터/미니멀",
+      "image":   "/img/content/character/c10/c10.png",
+      "zipFile": "/img/content/character/c10/c10.zip",
+      "layers": {
+        "mouth": ["mouth_closed", "mouth_half", "mouth_open"],
+        "body":  ["body_front", "body_tilt_left", "body_tilt_right", "body_forward"]
+      },
+      "timing": { "body_hz": 0.7, "mouth_hz": 0.20 },
+      "calibration": {
+        "mouth": {
+          "panels": {
+            "mouth_closed": [0, 0, 640, 1080],
+            "mouth_half":   [640, 0, 1280, 1080],
+            "mouth_open":   [1280, 0, 1920, 1080]
+          }
+        },
+        "body": {
+          "panels": {
+            "body_front":      [0, 0, 480, 1080],
+            "body_tilt_left":  [480, 0, 960, 1080],
+            "body_tilt_right": [960, 0, 1440, 1080],
+            "body_forward":    [1440, 0, 1920, 1080]
+          }
+        }
+      }
+    },
+    {
+      "id": "c11", "name": "우주 탐험가 버즈", "style": "pixar", "tag": "픽사/가족",
+      "image":   "/img/content/character/c11/c11.png",
+      "zipFile": "/img/content/character/c11/c11.zip",
+      "layers": {
+        "mouth": ["mouth_closed", "mouth_half", "mouth_open"],
+        "body":  ["body_front", "body_tilt_left", "body_tilt_right", "body_forward"]
+      },
+      "timing": { "body_hz": 0.6, "mouth_hz": 0.25 },
+      "calibration": {
+        "mouth": {
+          "panels": {
+            "mouth_closed": [0, 0, 640, 1080],
+            "mouth_half":   [640, 0, 1280, 1080],
+            "mouth_open":   [1280, 0, 1920, 1080]
+          }
+        },
+        "body": {
+          "panels": {
+            "body_front":      [0, 0, 480, 1080],
+            "body_tilt_left":  [480, 0, 960, 1080],
+            "body_tilt_right": [960, 0, 1440, 1080],
+            "body_forward":    [1440, 0, 1920, 1080]
+          }
+        }
+      }
+    },
+    {
+      "id": "c12", "name": "메타 에이전트 X", "style": "virtual-3d", "tag": "3D/메타버스",
+      "image":   "/img/content/character/c12/c12.png",
+      "zipFile": "/img/content/character/c12/c12.zip",
+      "layers": {
+        "mouth": ["mouth_closed", "mouth_half", "mouth_open"],
+        "body":  ["body_front", "body_tilt_left", "body_tilt_right", "body_forward"]
+      },
+      "timing": { "body_hz": 0.5, "mouth_hz": 0.20 },
+      "calibration": {
+        "mouth": {
+          "panels": {
+            "mouth_closed": [0, 0, 640, 1080],
+            "mouth_half":   [640, 0, 1280, 1080],
+            "mouth_open":   [1280, 0, 1920, 1080]
+          }
+        },
+        "body": {
+          "panels": {
+            "body_front":      [0, 0, 480, 1080],
+            "body_tilt_left":  [480, 0, 960, 1080],
+            "body_tilt_right": [960, 0, 1440, 1080],
+            "body_forward":    [1440, 0, 1920, 1080]
+          }
+        }
+      }
+    },
+    {
+      "id": "c13", "name": "형사 마르코", "style": "noir", "tag": "누와르/하드보일드",
+      "image":   "/img/content/character/c13/c13.png",
+      "zipFile": "/img/content/character/c13/c13.zip",
+      "layers": {
+        "mouth": ["mouth_closed", "mouth_half", "mouth_open"],
+        "body":  ["body_front", "body_tilt_left", "body_tilt_right", "body_forward"]
+      },
+      "timing": { "body_hz": 0.4, "mouth_hz": 0.30 },
+      "calibration": {
+        "mouth": {
+          "panels": {
+            "mouth_closed": [0, 0, 640, 1080],
+            "mouth_half":   [640, 0, 1280, 1080],
+            "mouth_open":   [1280, 0, 1920, 1080]
+          }
+        },
+        "body": {
+          "panels": {
+            "body_front":      [0, 0, 480, 1080],
+            "body_tilt_left":  [480, 0, 960, 1080],
+            "body_tilt_right": [960, 0, 1440, 1080],
+            "body_forward":    [1440, 0, 1920, 1080]
+          }
+        }
+      }
+    },
+    {
+      "id": "c14", "name": "패턴 아티스트 킴", "style": "graphic", "tag": "그래픽/팝아트",
+      "image":   "/img/content/character/c14/c14.png",
+      "zipFile": "/img/content/character/c14/c14.zip",
+      "layers": {
+        "mouth": ["mouth_closed", "mouth_half", "mouth_open"],
+        "body":  ["body_front", "body_tilt_left", "body_tilt_right", "body_forward"]
+      },
+      "timing": { "body_hz": 0.7, "mouth_hz": 0.22 },
+      "calibration": {
+        "mouth": {
+          "panels": {
+            "mouth_closed": [0, 0, 640, 1080],
+            "mouth_half":   [640, 0, 1280, 1080],
+            "mouth_open":   [1280, 0, 1920, 1080]
+          }
+        },
+        "body": {
+          "panels": {
+            "body_front":      [0, 0, 480, 1080],
+            "body_tilt_left":  [480, 0, 960, 1080],
+            "body_tilt_right": [960, 0, 1440, 1080],
+            "body_forward":    [1440, 0, 1920, 1080]
+          }
+        }
+      }
+    }
   ]
 }

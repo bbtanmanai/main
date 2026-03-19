@@ -1,0 +1,40 @@
+{
+  "name": "linkdrop-desktop",
+  "version": "1.0.0",
+  "description": "LinkDrop 영상 생성 데스크톱 앱",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win --x64"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "com.linkdrop.desktop",
+    "productName": "LinkDrop",
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico",
+      "signAndEditExecutable": false
+    },
+    "forceCodeSigning": false,
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false
+    },
+    "protocols": [
+      {
+        "name": "LinkDrop",
+        "schemes": ["linkdrop"]
+      }
+    ],
+    "files": ["main.js", "preload.js", "index.html", "assets/**"],
+    "extraResources": [
+      { "from": "server", "to": "server" }
+    ]
+  }
+}

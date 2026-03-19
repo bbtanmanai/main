@@ -51,7 +51,7 @@ class OpalAppPool:
 
         if not app_ids:
             # 기본값: 기존 단일 App
-            app_ids = ["1HveRb71BKf_XljWZxILm5B276qA7A8oC"]
+            app_ids = ["1YQTJjGO0VnQN5U38CE6hHNIhbcindUXt"]
 
         # 슬롯 수만큼 App ID 순환 채우기 (App < max_concurrent이면 재사용)
         slots: list[str] = []

@@ -16,7 +16,6 @@ from __future__ import annotations
 import argparse
 import io
 import os
-import subprocess
 import sys
 import time
 from pathlib import Path
@@ -34,11 +33,11 @@ if _ROOT_ENV.exists():
             os.environ.setdefault(_k.strip(), _v.strip())
 
 from supabase import create_client
+from notebooklm_tools.cli.utils import get_client as get_nlm_client
+from notebooklm_tools.services.sources import add_source as nlm_add_source
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
 SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "") or os.environ.get("SUPABASE_KEY", "")
-
-NLM_EXE = Path("C:/LinkDropV2/packages/tools/notebooklm-cli/.venv/Scripts/nlm.exe")
 
 # 템플릿 → NotebookLM 노트북 ID 매핑
 NOTEBOOK_MAP: dict[str, str] = {
@@ -75,37 +74,23 @@ def get_top_urls(template_id: str, count: int) -> list[str]:
 
 
 def add_youtube_sources(notebook_id: str, urls: list[str], batch_size: int = 5) -> int:
-    """nlm CLI로 YouTube URL을 노트북에 추가. batch_size개씩 묶어서 호출."""
+    """notebooklm_tools Python API로 YouTube URL을 노트북에 추가."""
     if not urls:
         return 0
 
-    env = os.environ.copy()
-    env["PYTHONIOENCODING"] = "utf-8"
-    env["PYTHONUTF8"] = "1"
-
     success = 0
-    for i in range(0, len(urls), batch_size):
-        batch = urls[i:i + batch_size]
-        args = [str(NLM_EXE), "source", "add", notebook_id]
-        for url in batch:
-            args += ["--youtube", url]
-
-        print(f"  배치 {i//batch_size + 1}: {len(batch)}개 추가 중...")
-        result = subprocess.run(
-            args, capture_output=True, encoding="utf-8", errors="replace",
-            timeout=120, env=env
-        )
-
-        # 실제 추가 성공 여부는 source_id 포함 여부로 판단 (CP949 인코딩 오류 무시)
-        combined = (result.stdout or "") + (result.stderr or "")
-        if "source_id" in combined or result.returncode == 0:
-            success += len(batch)
+    with get_nlm_client() as client:
+        for i in range(0, len(urls), batch_size):
+            batch = urls[i:i + batch_size]
+            print(f"  배치 {i//batch_size + 1}: {len(batch)}개 추가 중...")
+            for url in batch:
+                try:
+                    nlm_add_source(client, notebook_id, "url", url=url)
+                    success += 1
+                except Exception as e:
+                    print(f"    오류 ({url[:60]}): {e}")
             print(f"    완료")
-        else:
-            err = combined.strip()[:200]
-            print(f"    오류: {err}")
-
-        time.sleep(2)  # NotebookLM API rate limit
+            time.sleep(2)  # NotebookLM API rate limit
 
     return success
 
@@ -126,10 +111,6 @@ def main() -> int:
     parser.add_argument("--template", default="all")
     parser.add_argument("--count", type=int, default=20, help="노트북당 최대 소스 수")
     args = parser.parse_args()
-
-    if not NLM_EXE.exists():
-        print(f"[오류] nlm 실행파일 없음: {NLM_EXE}")
-        return 1
 
     print("\n" + "=" * 60)
     print("NotebookLM Vault 소스 자동 투입")

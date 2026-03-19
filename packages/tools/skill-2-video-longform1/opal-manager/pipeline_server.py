@@ -71,15 +71,16 @@ def main() -> int:
     parser.add_argument("--voice",  default="ko-KR-Wavenet-D", help="Google TTS 음성 ID")
     parser.add_argument("--script",     default="", help="사전 편집된 시나리오 (전달 시 NotebookLM 건너뜀)")
     parser.add_argument("--art_prompt", default="", help="화풍 프롬프트 (Opal HTML 키프레임용)")
-    parser.add_argument("--aspect",     default="16:9", choices=["16:9", "9:16"], help="출력 종횡비 (기본: 16:9)")
     parser.add_argument("--tts_speed",  type=float, default=1.2, help="TTS 더빙 속도 (기본: 1.2)")
+    # 해상도: 1차 16:9(재사용 소재) → 2차 9:16(최종 완성본) 자동 2단계
+    # --aspect 인자 제거됨 — 파이프라인이 자동으로 16:9 → 9:16 순차 생성
     args = parser.parse_args()
 
     prev_states: dict = {}
     reporter = make_reporter(prev_states)
 
     try:
-        job = PipelineJob(app_id=args.app, topic=args.topic, voice=args.voice, tts_speed=args.tts_speed, art_prompt=args.art_prompt, aspect=args.aspect)
+        job = PipelineJob(app_id=args.app, topic=args.topic, voice=args.voice, tts_speed=args.tts_speed, art_prompt=args.art_prompt)
 
         # [0] 인증
         emit({"type": "step", "step": 0, "message": "인증 확인 중..."})

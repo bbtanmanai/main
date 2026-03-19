@@ -218,7 +218,7 @@ def main() -> None:
     parser.add_argument("--mode", default="all",
                         choices=["all", "html", "image"],
                         help="테스트 방식 (기본: all — 두 방식 모두)")
-    parser.add_argument("--outdir", default="C:/tmp/opal_test",
+    parser.add_argument("--outdir", default="C:/LinkDropV2/opal_test",
                         help="출력 폴더")
     args = parser.parse_args()
 

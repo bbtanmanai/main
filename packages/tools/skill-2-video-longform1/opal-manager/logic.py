@@ -18,6 +18,7 @@ skill-2-video-longform1 — 파이프라인 오케스트레이터
 
 from __future__ import annotations
 
+import json
 import subprocess
 import sys
 import io
@@ -169,6 +170,15 @@ STYLE_DIRECTIVES: dict[str, str] = {
 
 DEFAULT_STYLE = "ranking"
 
+# ── 감정 태그 상수 ────────────────────────────────────────────────────────────
+AVAILABLE_EMOTIONS = [
+    "neutral", "friendly", "happy", "surprised",
+    "serious", "explaining", "empathy", "excited",
+]
+AVAILABLE_BODY = [
+    "body_front", "body_tilt_left", "body_tilt_right", "body_forward",
+]
+
 
 def build_script_prompt(topic: str, style: str = DEFAULT_STYLE) -> str:
     """스타일을 반영한 시나리오 생성 프롬프트를 조립합니다."""
@@ -238,6 +248,8 @@ class ClipStatus:
     upload_url: Optional[str] = None
     keyframe_path: Optional[Path] = None  # 키프레임 PNG
     tts_path: Optional[Path] = None       # TTS MP3
+    emotion: str = "neutral"              # 씬 감정 태그 (face 레이어 선택용)
+    body: str = "body_front"              # 씬 몸 방향 태그 (body 레이어 선택용)
 
 
 @dataclass
@@ -248,11 +260,14 @@ class PipelineJob:
     tts_speed: float = 1.2             # TTS 더빙 속도 (0.5~2.0)
     style: str = "ranking"             # 시나리오 구성 스타일
     art_prompt: str = ""               # 화풍 프롬프트 (NotebookLM 슬라이드 주입용)
+    emotion_id: str = ""               # 사용자 선택 전체 감정 힌트
+    tone_id: str = ""                  # 사용자 선택 톤앤매너 힌트
     clips: list[ClipStatus] = field(default_factory=list)
     script: str = ""
     scenes_json: list[dict] = field(default_factory=list)  # [{index, text, estimated_sec}]
     hook: str = ""                     # [씬1] 텍스트 — 최종 영상 상단 오버레이용
-    aspect: str = "16:9"              # 출력 종횡비: "16:9" | "9:16"
+    # 해상도: 1차 16:9(재사용 소재) → 2차 9:16(최종 완성본) 자동 2단계
+    # aspect 필드 제거됨 — 1차는 항상 16:9, 2차 9:16 변환은 step4_merge에서 처리
     estimated_total_sec: float = 0.0
     final_url: Optional[str] = None
     started_at: float = field(default_factory=time.time)
@@ -391,6 +406,114 @@ def step1_get_script(job: PipelineJob) -> str:
 
     print(f"[1] 시나리오 로드 완료 (topic={row.get('topic')}, {len(script)}자, scenes={len(job.scenes_json)}개)")
     return script
+
+
+def step1b_enrich_emotions(job: PipelineJob) -> None:
+    """
+    [1b단계] 시나리오 씬별 감정·몸방향 태그 부여 (Gemini 후처리).
+
+    - Supabase에서 꺼낸 순수 나레이션에 emotion + body 태그를 씬마다 추가.
+    - scenes_json에 이미 emotion 필드가 있으면 스킵.
+    - Gemini 호출 실패 시 기본값(neutral / body_front)으로 진행.
+    """
+    # 이미 태그가 있으면 스킵
+    if job.scenes_json and all("emotion" in s for s in job.scenes_json):
+        print("[1b] 감정 태그 이미 존재 — 스킵")
+        return
+
+    # 씬 목록 확보
+    if job.scenes_json:
+        scenes = job.scenes_json
+    else:
+        parsed = parse_script_scenes(job.script)
+        scenes = [{"index": s.index, "text": s.text} for s in parsed]
+
+    if not scenes:
+        print("[1b] 씬 없음 — 스킵")
+        return
+
+    api_key = os.environ.get("GOOGLE_API_KEY", "")
+    if not api_key:
+        print("[1b] GOOGLE_API_KEY 없음 — 기본값 적용")
+        _apply_default_emotions(job, scenes)
+        return
+
+    # 힌트 구성
+    hints = []
+    if job.tone_id:
+        hints.append(f"전체 톤앤매너: {job.tone_id}")
+    if job.emotion_id:
+        hints.append(f"전체 감정 방향: {job.emotion_id}")
+    hint_text = f"\n참고 힌트: {', '.join(hints)}" if hints else ""
+
+    scene_lines = "\n".join(
+        f"[씬{s['index']}] {s['text']}" for s in scenes
+    )
+
+    prompt = f"""다음 시나리오의 각 씬에 감정 태그와 몸 방향 태그를 부여하라.
+
+사용 가능한 감정(emotion): {', '.join(AVAILABLE_EMOTIONS)}
+사용 가능한 몸 방향(body): {', '.join(AVAILABLE_BODY)}
+{hint_text}
+
+시나리오:
+{scene_lines}
+
+규칙:
+- 씬 내용과 분위기에 가장 잘 맞는 emotion 1개, body 1개 선택
+- 강조·충격 씬: surprised 또는 serious + body_forward
+- 설명 씬: explaining + body_front
+- 공감·위로 씬: empathy + body_tilt_left 또는 body_tilt_right
+- 마무리·인사 씬: friendly 또는 happy + body_front
+
+JSON 배열만 출력 (다른 텍스트 없음):
+[
+  {{"index": 1, "emotion": "...", "body": "..."}},
+  {{"index": 2, "emotion": "...", "body": "..."}}
+]"""
+
+    try:
+        from google import genai as _genai
+        from google.genai import types as _genai_types
+
+        client = _genai.Client(api_key=api_key)
+        response = client.models.generate_content(
+            model="gemini-2.5-flash-lite",
+            contents=prompt,
+            config=_genai_types.GenerateContentConfig(
+                temperature=0.3,
+                response_mime_type="application/json",
+            ),
+        )
+        tags = json.loads(response.text.strip())
+        tag_map = {t["index"]: t for t in tags}
+
+        enriched = []
+        for s in scenes:
+            idx = s["index"] if isinstance(s, dict) else s.index
+            tag = tag_map.get(idx, {})
+            row = dict(s) if isinstance(s, dict) else {"index": s.index, "text": s.text}
+            row["emotion"] = tag.get("emotion", "neutral")
+            row["body"]    = tag.get("body",    "body_front")
+            enriched.append(row)
+
+        job.scenes_json = enriched
+        print(f"[1b] 감정 태그 부여 완료: {len(enriched)}개 씬")
+
+    except Exception as e:
+        print(f"[1b] 감정 태그 실패 ({e}) — 기본값 적용")
+        _apply_default_emotions(job, scenes)
+
+
+def _apply_default_emotions(job: PipelineJob, scenes: list[dict]) -> None:
+    """감정 태그 기본값(neutral / body_front) 적용."""
+    enriched = []
+    for s in scenes:
+        row = dict(s) if isinstance(s, dict) else {"index": s.index, "text": s.text}
+        row.setdefault("emotion", "neutral")
+        row.setdefault("body",    "body_front")
+        enriched.append(row)
+    job.scenes_json = enriched
 
 
 def step2_parse_and_validate(job: PipelineJob) -> None:

@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Optional
 
 OPAL_BASE_URL   = "https://opal.google"
-OPAL_EDIT_URL   = "https://opal.google/edit/1HveRb71BKf_XljWZxILm5B276qA7A8oC"
+OPAL_EDIT_URL   = "https://opal.google/edit/1YQTJjGO0VnQN5U38CE6hHNIhbcindUXt"
 DRIVE_API_BASE  = "https://www.googleapis.com/drive/v3"
 STORAGE_DIR     = Path.home() / ".linkdrop-opal"
 DEFAULT_PROFILE = "default"
@@ -339,7 +339,7 @@ class OpalAuthManager:
         except Exception:
             return False
 
-    def validate_project_access(self, file_id: str = "1HveRb71BKf_XljWZxILm5B276qA7A8oC") -> bool:
+    def validate_project_access(self, file_id: str = "1YQTJjGO0VnQN5U38CE6hHNIhbcindUXt") -> bool:
         """특정 오팔 프로젝트 파일 접근 가능 여부 확인."""
         session = self.load_session()
         if not session or not session.bearer_token:

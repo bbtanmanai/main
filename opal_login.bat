@@ -18,7 +18,7 @@ if errorlevel 1 (
     echo Chrome is not running. Launching Chrome...
     echo.
 
-    set OPAL_URL=https://opal.google/edit/1HveRb71BKf_XljWZxILm5B276qA7A8oC
+    set OPAL_URL=https://opal.google/edit/1YQTJjGO0VnQN5U38CE6hHNIhbcindUXt
     set CHROME_PROFILE=%USERPROFILE%\.linkdrop-opal\chrome-profile
 
     if exist "C:\Program Files\Google\Chrome\Application\chrome.exe" (

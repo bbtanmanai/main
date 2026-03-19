@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src http://localhost:7788; frame-src https://labs.google https://grok.com https://*.google.com">
+<title>LinkDrop 영상 생성</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; height: 100%; }
+  body { font-family: 'Segoe UI', 'Apple SD Gothic Neo', sans-serif; background: #0f0f1a; color: #e2e8f0; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* ── 헤더 ── */
+  .header { background: #1a1a2e; border-bottom: 1px solid #2d2d44; padding: 12px 20px; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+  .header-top { display: flex; align-items: center; gap: 12px; }
+  .title { font-size: 16px; font-weight: 700; color: #a78bfa; }
+  .server-dot { width: 8px; height: 8px; border-radius: 50%; background: #475569; flex-shrink: 0; }
+  .server-dot.ready { background: #22c55e; }
+  .server-dot.error { background: #ef4444; }
+  .server-msg { font-size: 11px; color: #64748b; }
+
+  /* 진행률 */
+  .progress-section { display: flex; align-items: center; gap: 10px; flex: 1; }
+  .progress-label { font-size: 13px; color: #94a3b8; white-space: nowrap; }
+  .progress-bar-wrap { flex: 1; background: #2d2d44; border-radius: 6px; height: 8px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; border-radius: 6px; background: linear-gradient(90deg, #7c3aed, #a78bfa); transition: width 0.4s ease; }
+  .progress-count { font-size: 13px; font-weight: 700; color: #a78bfa; white-space: nowrap; min-width: 60px; text-align: right; }
+
+  /* 컨트롤 */
+  .controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  select { background: #2d2d44; border: 1px solid #4a4a6a; color: #e2e8f0; padding: 6px 28px 6px 10px; border-radius: 6px; font-size: 13px; appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a78bfa' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; }
+  select:focus { outline: none; border-color: #7c3aed; }
+  .btn { padding: 7px 16px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.15s; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-primary { background: #7c3aed; color: #fff; }
+  .btn-primary:not(:disabled):hover { background: #6d28d9; }
+  .btn-secondary { background: #2d2d44; color: #a78bfa; border: 1px solid #4a4a6a; }
+  .btn-secondary:not(:disabled):hover { background: #3a3a58; }
+  .spacer { flex: 1; }
+
+  /* ── 메인 ── */
+  .main { display: flex; flex: 1; overflow: hidden; }
+
+  /* 폰 패널 */
+  .phone-panel { width: 400px; flex-shrink: 0; background: #13131f; border-right: 1px solid #2d2d44; display: flex; flex-direction: column; align-items: center; padding: 20px 12px; gap: 12px; }
+  .phone-label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+  .phone-frame { width: 280px; background: #111; border-radius: 40px; border: 4px solid #333; padding: 14px 10px; box-shadow: 0 0 0 1px #000, 0 8px 32px rgba(0,0,0,0.7); cursor: pointer; transition: transform 0.2s; }
+  .phone-frame:hover { transform: scale(1.02); }
+  .phone-notch { width: 60px; height: 8px; background: #222; border-radius: 4px; margin: 0 auto 8px; }
+  .phone-screen { background: #0a0a14; border-radius: 6px; overflow: hidden; aspect-ratio: 9/16; position: relative; }
+  .phone-screen img, .phone-screen video { width: 100%; height: 100%; object-fit: contain; background: #000; }
+  .phone-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #3a3a58; }
+  .phone-placeholder .ico { font-size: 40px; }
+  .phone-placeholder span { font-size: 13px; text-align: center; color: #4a4a6a; }
+  .phone-home { width: 50px; height: 5px; background: #333; border-radius: 3px; margin: 8px auto 0; }
+  .phone-info { text-align: center; }
+  .phone-scene-now { font-size: 14px; color: #a78bfa; font-weight: 600; }
+  .phone-time-info { font-size: 12px; color: #64748b; margin-top: 2px; }
+  .btn-fullscreen { font-size: 12px; width: 240px; }
+
+  /* 씬 테이블 */
+  .table-panel { flex: 1; overflow-y: auto; }
+  .scene-table { width: 100%; border-collapse: collapse; }
+  .scene-table thead th { background: #1a1a2e; padding: 10px 12px; font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; text-align: left; border-bottom: 1px solid #2d2d44; position: sticky; top: 0; z-index: 10; }
+  .scene-table thead th.center { text-align: center; }
+  .scene-table tbody tr { border-bottom: 1px solid #1e1e30; transition: background 0.1s; cursor: pointer; }
+  .scene-table tbody tr:hover { background: #16162a; }
+  .scene-table tbody tr.active-row { background: #1e1535; border-left: 3px solid #7c3aed; }
+  .scene-table tbody tr.selected-row { background: #1a1040; border-left: 3px solid #a78bfa; }
+  .scene-table tbody td { padding: 8px 12px; vertical-align: middle; font-size: 13px; }
+
+  /* 씬 번호 */
+  td.num { text-align: center; font-weight: 700; color: #64748b; font-size: 12px; min-width: 40px; }
+
+  /* 썸네일 */
+  td.thumb { width: 100px; text-align: center; }
+  .thumb-box { width: 80px; height: 45px; border-radius: 4px; overflow: hidden; background: #2d2d44; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #3a3a58; position: relative; }
+  .thumb-box img { width: 100%; height: 100%; object-fit: cover; }
+  .thumb-shimmer { background: linear-gradient(90deg,#1e1535 0%,#2d1d50 50%,#1e1535 100%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+  .thumb-txt { font-size: 9px; color: #7c3aed; }
+  .thumb-wait { font-size: 9px; color: #3a3a58; }
+
+  /* 시나리오 */
+  td.scenario { color: #cbd5e1; line-height: 1.5; }
+
+  /* 배지 */
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .b-wait     { background:#1e1e2e; color:#475569; }
+  .b-wait .badge-dot { background:#475569; }
+  .b-progress { background:#1e3a5f; color:#93c5fd; }
+  .b-progress .badge-dot { background:#3b82f6; animation: pulse 1s infinite; }
+  .b-done     { background:#14532d; color:#86efac; }
+  .b-done .badge-dot { background:#22c55e; }
+  .b-fail     { background:#450a0a; color:#fca5a5; }
+  .b-fail .badge-dot { background:#ef4444; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  td.action { text-align: center; min-width: 52px; }
+  .btn-retry { padding: 4px 8px; font-size: 11px; border-radius: 4px; border: none; cursor: pointer; background: #2d2d44; color: #94a3b8; }
+  .btn-retry:hover { background: #7c3aed; color: #fff; }
+
+  /* 모달 */
+  .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:100; align-items:center; justify-content:center; }
+  .modal.open { display:flex; }
+  .modal-inner { background:#1a1a2e; border-radius:16px; padding:24px; width:420px; }
+  .modal-phone { width:320px; margin:0 auto; }
+  .modal-phone .phone-frame { width:100%; }
+  .modal-close { display:block; margin-top:14px; text-align:center; font-size:13px; color:#64748b; cursor:pointer; }
+  .modal-close:hover { color:#a78bfa; }
+
+  /* 스크롤바 */
+  .table-panel::-webkit-scrollbar { width:6px; }
+  .table-panel::-webkit-scrollbar-track { background:#0f0f1a; }
+  .table-panel::-webkit-scrollbar-thumb { background:#2d2d44; border-radius:3px; }
+
+  /* 업로드 드롭존 */
+  .thumb-upload { cursor:pointer; transition:all 0.15s; }
+  .thumb-upload:hover { border-color:#7c3aed !important; background:#1e1535 !important; }
+  .thumb-upload.dragover { border-color:#a78bfa !important; background:#2d1b69 !important; }
+  .thumb-upload input[type=file] { display:none; }
+
+  /* 프롬프트 모달 */
+  .prompt-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:100; align-items:center; justify-content:center; }
+  .prompt-modal.open { display:flex; }
+  .prompt-list { background:#1a1a2e; border-radius:16px; padding:20px; width:700px; max-height:80vh; overflow-y:auto; }
+  .prompt-item { display:flex; gap:10px; align-items:start; padding:8px 0; border-bottom:1px solid #2d2d44; }
+  .prompt-item:last-child { border-bottom:none; }
+  .prompt-num { color:#7c3aed; font-weight:700; font-size:12px; min-width:36px; }
+  .prompt-text { font-size:12px; color:#94a3b8; line-height:1.5; flex:1; font-family:monospace; }
+  .prompt-copy { padding:3px 8px; font-size:11px; border-radius:4px; border:none; cursor:pointer; background:#2d2d44; color:#a78bfa; white-space:nowrap; }
+  .prompt-copy:hover { background:#7c3aed; color:#fff; }
+
+  /* 서버 로그 */
+  .log-bar { background:#13131f; border-top:1px solid #2d2d44; padding:4px 16px; font-size:11px; color:#475569; font-family:monospace; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex-shrink:0; }
+
+  /* 대기 안내 배너 */
+  .waiting-banner { display:none; background:linear-gradient(135deg,#1e1050,#2d1b69); border:1px solid #7c3aed; border-radius:10px; margin:10px 16px; padding:14px 20px; flex-shrink:0; }
+  .waiting-banner.show { display:flex; align-items:center; gap:16px; }
+  .waiting-banner .wb-icon { font-size:32px; flex-shrink:0; }
+  .waiting-banner .wb-text { flex:1; }
+  .waiting-banner .wb-title { font-size:16px; font-weight:700; color:#c4b5fd; margin-bottom:4px; }
+  .waiting-banner .wb-sub { font-size:13px; color:#94a3b8; line-height:1.5; }
+  .waiting-banner .wb-spinner { width:32px; height:32px; border:3px solid #3a1a6e; border-top:3px solid #a78bfa; border-radius:50%; animation:spin 1s linear infinite; flex-shrink:0; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<!-- 헤더 -->
+<div class="header">
+  <div class="header-top">
+    <div class="title">🎬 LinkDrop 영상 생성</div>
+    <div class="server-dot" id="serverDot"></div>
+    <div class="server-msg" id="serverMsg">서버 연결 중...</div>
+    <div class="spacer"></div>
+
+    <!-- 단계 표시: 1차 / 2차 -->
+    <div style="display:flex;align-items:center;gap:6px" id="phaseIndicator">
+      <div id="phase1" style="display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:8px;font-size:12px;font-weight:700;background:#1e1e2e;border:1px solid #2d2d44;color:#475569;transition:all 0.3s">
+        <span id="phase1Dot" style="width:7px;height:7px;border-radius:50%;background:#475569;flex-shrink:0"></span>
+        1차 16:9
+      </div>
+      <span style="color:#2d2d44;font-size:10px">→</span>
+      <div id="phase2" style="display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:8px;font-size:12px;font-weight:700;background:#1e1e2e;border:1px solid #2d2d44;color:#475569;transition:all 0.3s">
+        <span id="phase2Dot" style="width:7px;height:7px;border-radius:50%;background:#475569;flex-shrink:0"></span>
+        2차 9:16
+      </div>
+    </div>
+
+    <div style="width:1px;height:20px;background:#2d2d44;margin:0 8px"></div>
+
+    <div class="progress-section">
+      <span class="progress-label" id="progressLabel">대기</span>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+      <span class="progress-count" id="progressCount">0 / 0</span>
+    </div>
+  </div>
+  <div class="controls">
+    <select id="styleSelect"><option value="">화풍 로딩중...</option></select>
+    <select id="voiceSelect"><option value="">성우 로딩중...</option></select>
+    <div style="display:flex;align-items:center;gap:6px;background:#2d2d44;border:1px solid #4a4a6a;border-radius:6px;padding:4px 10px;">
+      <span style="font-size:12px;color:#94a3b8;white-space:nowrap">더빙 속도</span>
+      <input type="range" id="speedRange" min="0.7" max="2.0" step="0.1" value="1.2"
+        style="width:80px;accent-color:#7c3aed;cursor:pointer"
+        oninput="document.getElementById('speedLabel').textContent=parseFloat(this.value).toFixed(1)+'x'">
+      <span id="speedLabel" style="font-size:12px;color:#a78bfa;min-width:32px;text-align:right;font-weight:700">1.2x</span>
+    </div>
+    <!-- 자막 설정 토글 -->
+    <button class="btn btn-secondary" onclick="toggleOverlayPanel()" style="font-size:12px">🖊 자막 설정</button>
+    <button class="btn btn-secondary" id="promptBtn" onclick="openImagePrompts()" disabled style="font-size:12px">🎨 이미지 프롬프트</button>
+    <button class="btn btn-secondary" id="calBtn" onclick="openCalibration()" style="font-size:12px">🎯 캐릭터 설정</button>
+    <div class="spacer"></div>
+    <button class="btn btn-secondary" id="resetBtn" onclick="resetAll()" disabled>↺ 초기화</button>
+    <button class="btn btn-primary"   id="startBtn" onclick="startGeneration()" disabled style="display:none">▶ 생성 시작</button>
+    <button class="btn btn-primary"   id="remotionBtn" onclick="startRemotionRender()" disabled style="background:linear-gradient(135deg,#7c3aed,#ec4899);border:none">🎬 1차 16:9 비디오 제작</button>
+    <button class="btn btn-primary"   id="synthBtn" onclick="startSynthesize()" disabled style="display:none;background:#059669;border-color:#059669">🎬 비디오 합성</button>
+    <button class="btn btn-secondary" id="stopBtn" onclick="stopGeneration()" style="display:none;background:#7f1d1d;color:#fca5a5;border-color:#991b1b">■ 중지</button>
+  </div>
+
+  <!-- 오버레이 설정 패널 -->
+  <div id="overlayPanel" style="display:none;background:#0d0d1a;border-top:2px solid #2d2d44;padding:12px 20px;flex-direction:column;gap:10px;">
+
+    <!-- 1행: 샘플 텍스트 입력 + 활성화 토글 -->
+    <div style="display:flex;align-items:center;gap:12px">
+      <span style="font-size:11px;color:#7c3aed;font-weight:700;white-space:nowrap;letter-spacing:0.5px">🖊 자막 설정</span>
+      <label style="font-size:12px;color:#94a3b8;display:flex;align-items:center;gap:4px;white-space:nowrap">
+        <input type="checkbox" id="overlayEnabled" checked style="accent-color:#7c3aed" onchange="schedulePreview()"> 오버레이 사용
+      </label>
+      <div style="flex:1;display:flex;gap:8px">
+        <input id="previewTitle" type="text" value="제목을 여기에 입력하세요"
+          placeholder="상단 타이틀 (2줄)"
+          style="flex:1;background:#2d2d44;border:1px solid #4a4a6a;color:#e2e8f0;padding:5px 10px;border-radius:4px;font-size:13px"
+          oninput="schedulePreview()">
+        <input id="previewSubtitle" type="text" value="혹시 일상이 주는 힘이 생각보다 훨씬 크다는 사실, 알고 계셨습니까?"
+          placeholder="하단 자막 (2줄)"
+          style="flex:1.4;background:#2d2d44;border:1px solid #4a4a6a;color:#e2e8f0;padding:5px 10px;border-radius:4px;font-size:13px"
+          oninput="schedulePreview()">
+      </div>
+    </div>
+
+    <!-- 2행: 상단 타이틀 옵션 | 하단 자막 옵션 -->
+    <div style="display:grid;grid-template-columns:1fr 1px 1fr;gap:0;background:#1a1a2e;border-radius:8px;overflow:hidden">
+
+      <!-- 타이틀 설정 -->
+      <div style="padding:10px 16px;display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:11px;color:#7c3aed;font-weight:700;letter-spacing:0.5px">상단 타이틀</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:12px;color:#64748b;width:40px">폰트</span>
+          <select id="titleFont" onchange="schedulePreview()" style="flex:1;background:#2d2d44;border:1px solid #4a4a6a;color:#e2e8f0;padding:4px 8px;border-radius:4px;font-size:12px">
+            <option value="paperlogy-black">Paperlogy Black</option>
+            <option value="paperlogy-extrabold">Paperlogy ExtraBold</option>
+            <option value="paperlogy-bold" selected>Paperlogy Bold</option>
+            <option value="seoul-namsan-eb">서울남산 ExtraBold</option>
+            <option value="seoul-namsan-b">서울남산 Bold</option>
+            <option value="seoul-hangang-eb">서울한강 ExtraBold</option>
+            <option value="seoul-alrim-eb">서울알림 ExtraBold</option>
+            <option value="keris-bold">교육서체 Bold</option>
+            <option value="notosans">Noto Sans KR</option>
+            <option value="notoserif">Noto Serif KR</option>
+            <option value="malgunbd">맑은고딕 Bold (시스템)</option>
+          </select>
+          <input type="color" id="titleColor" value="#ffffff" title="텍스트 색상"
+            style="width:22px;height:22px;border:none;background:none;cursor:pointer;padding:0;flex-shrink:0"
+            oninput="schedulePreview()">
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:12px;color:#64748b;width:40px">크기</span>
+          <input type="range" id="titleFontSize" min="20" max="60" step="2" value="36"
+            style="flex:1;accent-color:#7c3aed"
+            oninput="document.getElementById('titleFontLabel').textContent=this.value+'pt';schedulePreview()">
+          <span id="titleFontLabel" style="font-size:12px;color:#a78bfa;width:32px;font-weight:700;text-align:right">36pt</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:12px;color:#64748b;width:40px">바높이</span>
+          <input type="range" id="titleBarH" min="40" max="160" step="10" value="90"
+            style="flex:1;accent-color:#7c3aed"
+            oninput="document.getElementById('titleBarHLabel').textContent=this.value+'px';schedulePreview()">
+          <span id="titleBarHLabel" style="font-size:12px;color:#a78bfa;width:36px;font-weight:700;text-align:right">90px</span>
+        </div>
+      </div>
+
+      <!-- 구분선 -->
+      <div style="background:#2d2d44"></div>
+
+      <!-- 자막 설정 -->
+      <div style="padding:10px 16px;display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:11px;color:#38bdf8;font-weight:700;letter-spacing:0.5px">하단 자막</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:12px;color:#64748b;width:40px">폰트</span>
+          <select id="subFont" onchange="schedulePreview()" style="flex:1;background:#2d2d44;border:1px solid #4a4a6a;color:#e2e8f0;padding:4px 8px;border-radius:4px;font-size:12px">
+            <option value="paperlogy-semibold">Paperlogy SemiBold</option>
+            <option value="paperlogy-bold" selected>Paperlogy Bold</option>
+            <option value="paperlogy-medium">Paperlogy Medium</option>
+            <option value="paperlogy-regular">Paperlogy Regular</option>
+            <option value="seoul-namsan-b">서울남산 Bold</option>
+            <option value="seoul-hangang-b">서울한강 Bold</option>
+            <option value="seoul-alrim-bold">서울알림 Bold</option>
+            <option value="keris-regular">교육서체</option>
+            <option value="keris-bold">교육서체 Bold</option>
+            <option value="notosans">Noto Sans KR</option>
+            <option value="notoserif">Noto Serif KR</option>
+            <option value="malgun">맑은고딕 (시스템)</option>
+          </select>
+          <input type="color" id="subColor" value="#ffffd2" title="텍스트 색상"
+            style="width:22px;height:22px;border:none;background:none;cursor:pointer;padding:0;flex-shrink:0"
+            oninput="schedulePreview()">
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:12px;color:#64748b;width:40px">크기</span>
+          <input type="range" id="subFontSize" min="16" max="48" step="2" value="28"
+            style="flex:1;accent-color:#38bdf8"
+            oninput="document.getElementById('subFontLabel').textContent=this.value+'pt';schedulePreview()">
+          <span id="subFontLabel" style="font-size:12px;color:#38bdf8;width:32px;font-weight:700;text-align:right">28pt</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:12px;color:#64748b;width:40px">바높이</span>
+          <input type="range" id="subBarH" min="40" max="160" step="10" value="90"
+            style="flex:1;accent-color:#38bdf8"
+            oninput="document.getElementById('subBarHLabel').textContent=this.value+'px';schedulePreview()">
+          <span id="subBarHLabel" style="font-size:12px;color:#38bdf8;width:36px;font-weight:700;text-align:right">90px</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 메인 -->
+<div class="main">
+  <!-- 폰 미리보기 -->
+  <div class="phone-panel">
+    <div class="phone-label">미리보기</div>
+    <div class="phone-frame" onclick="openModal()">
+      <div class="phone-notch"></div>
+      <div class="phone-screen" id="phoneScreen">
+        <div class="phone-placeholder">
+          <div class="ico">▶</div>
+          <span>생성 완료 후<br>미리보기</span>
+        </div>
+      </div>
+      <div class="phone-home"></div>
+    </div>
+    <div class="phone-info">
+      <div class="phone-scene-now" id="phoneSceneNow">대기중</div>
+      <div class="phone-time-info" id="phoneTimeInfo">–</div>
+    </div>
+    <button class="btn btn-secondary btn-fullscreen" onclick="openModal()">⛶ 전체화면 미리보기</button>
+    <button class="btn btn-secondary btn-fullscreen" id="openFolderBtn" onclick="openOutputFolder()" style="display:none">📁 결과물 폴더 열기</button>
+  </div>
+
+  <!-- 우측 패널: Google Flow (기본) ↔ 씬 테이블 (시나리오 수신 후) -->
+  <div class="table-panel" id="rightPanel">
+    <!-- Google Flow 웹뷰 (초기 화면) -->
+    <div id="flowPanel" style="width:100%;height:100%;display:flex;flex-direction:column">
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#1a1a2e;border-bottom:1px solid #2d2d44;flex-shrink:0">
+        <span style="font-size:14px">🌐</span>
+        <span style="font-size:12px;font-weight:700;color:#a78bfa">Google Flow</span>
+        <span style="font-size:11px;color:#475569">— 이미지 생성 도구</span>
+        <div style="flex:1"></div>
+        <button class="btn btn-secondary" onclick="switchToGrok()" style="font-size:11px;padding:4px 10px">🤖 Grok으로 전환</button>
+        <button class="btn btn-secondary" id="showTableBtn" onclick="switchToTable()" style="font-size:11px;padding:4px 10px;display:none">📋 씬 테이블</button>
+      </div>
+      <webview id="flowWebview" src="https://labs.google/fx/ko/tools/flow" style="flex:1;width:100%;border:none" allowpopups></webview>
+    </div>
+
+    <!-- 씬 테이블 (시나리오 수신 후) -->
+    <div id="tablePanel" style="display:none;width:100%;height:100%;overflow-y:auto">
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#1a1a2e;border-bottom:1px solid #2d2d44;position:sticky;top:0;z-index:10">
+        <span style="font-size:14px">📋</span>
+        <span style="font-size:12px;font-weight:700;color:#a78bfa">씬 테이블</span>
+        <div style="flex:1"></div>
+        <button class="btn btn-secondary" onclick="switchToFlow()" style="font-size:11px;padding:4px 10px">🌐 이미지 생성</button>
+      </div>
+      <table class="scene-table">
+        <thead>
+          <tr>
+            <th class="center" style="width:48px">씬</th>
+            <th class="center" style="width:104px">키프레임</th>
+            <th>시나리오</th>
+            <th class="center" style="width:100px">이미지</th>
+            <th class="center" style="width:90px">더빙</th>
+            <th class="center" style="width:54px"></th>
+          </tr>
+        </thead>
+        <tbody id="sceneBody">
+          <tr><td colspan="6" style="text-align:center;padding:40px;color:#3a3a58;">
+            웹에서 시나리오를 기다리는 중...
+          </td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 대기 안내 배너 -->
+<div class="waiting-banner" id="waitingBanner">
+  <div class="wb-icon">☕</div>
+  <div class="wb-text">
+    <div class="wb-title">AI가 키프레임을 생성하는 중입니다 (약 3~10분 소요)</div>
+    <div class="wb-sub">다른 작업을 하셔도 됩니다. 생성이 완료되면 알림으로 알려드립니다.</div>
+  </div>
+  <div class="wb-spinner"></div>
+</div>
+
+<!-- 로그 바 -->
+<div class="log-bar" id="logBar">LinkDrop Desktop v1.0</div>
+
+<!-- 전체화면 모달 -->
+<div class="modal" id="modal">
+  <div class="modal-inner">
+    <div class="modal-phone">
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen" id="modalScreen">
+          <div class="phone-placeholder">
+            <div class="ico" style="font-size:50px">▶</div>
+            <span>생성 완료 후<br>미리보기 가능</span>
+          </div>
+        </div>
+        <div class="phone-home"></div>
+      </div>
+    </div>
+    <div class="modal-close" onclick="closeModal()">✕ 닫기</div>
+  </div>
+</div>
+
+<!-- 이미지 프롬프트 모달 -->
+<div class="prompt-modal" id="promptModal">
+  <div class="prompt-list">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+      <span style="font-size:18px">🎨</span>
+      <span style="font-size:15px;font-weight:700;color:#a78bfa">이미지 생성 프롬프트</span>
+      <span style="font-size:12px;color:#64748b" id="promptStyleLabel"></span>
+      <div style="flex:1"></div>
+      <button class="btn btn-secondary" onclick="copyAllPrompts()" style="font-size:12px">📋 전체 복사</button>
+      <button class="btn btn-secondary" onclick="window.open('https://labs.google/fx/ko/tools/flow','_blank')" style="font-size:12px">🌐 Google Flow</button>
+      <button class="btn btn-secondary" onclick="window.open('https://grok.com','_blank')" style="font-size:12px">🤖 Grok</button>
+      <span style="cursor:pointer;font-size:18px;color:#64748b" onclick="closePromptModal()">✕</span>
+    </div>
+    <div id="promptListBody"></div>
+  </div>
+</div>
+
+<!-- 캐릭터 캘리브레이션 모달 -->
+<div class="prompt-modal" id="calModal">
+  <div class="prompt-list" style="width:900px;max-height:90vh">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+      <span style="font-size:18px">🎯</span>
+      <span style="font-size:15px;font-weight:700;color:#a78bfa">캐릭터 파츠 캘리브레이션</span>
+      <div style="flex:1"></div>
+      <select id="calCharSelect" onchange="loadCalibration(this.value)" style="background:#2d2d44;border:1px solid #4a4a6a;color:#e2e8f0;padding:4px 10px;border-radius:6px;font-size:13px">
+        <option value="c3">c3 — 수달아저씨</option>
+      </select>
+      <button class="btn btn-primary" onclick="saveCalibrationUI()" style="font-size:12px">💾 저장</button>
+      <span style="cursor:pointer;font-size:18px;color:#64748b" onclick="closeCalModal()">✕</span>
+    </div>
+
+    <div style="display:flex;gap:16px">
+      <!-- 캐릭터 이미지 (클릭으로 좌표 지정) -->
+      <div style="flex:0 0 320px">
+        <div style="position:relative;background:#1a1a2e;border-radius:12px;overflow:hidden;border:1px solid #2d2d44" id="calImageWrap">
+          <img id="calImage" style="width:100%;display:block;cursor:crosshair" onclick="onCalClick(event)" />
+          <!-- 파츠 마커들 -->
+          <div id="calMarkers"></div>
+        </div>
+        <div id="calCoordInfo" style="font-size:11px;color:#64748b;margin-top:8px;text-align:center">
+          이미지를 클릭하여 파츠 위치를 지정하세요
+        </div>
+      </div>
+
+      <!-- 파츠 좌표 편집 -->
+      <div style="flex:1;overflow-y:auto;max-height:70vh">
+        <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">
+          파츠 좌표 (비율 0~1)
+        </div>
+
+        <div id="calPartsList" style="display:flex;flex-direction:column;gap:8px">
+          <!-- JS로 동적 생성 -->
+        </div>
+
+        <div style="margin-top:16px;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">
+          그리드 파일 상태
+        </div>
+        <div id="calGridStatus"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── 설정 ─────────────────────────────────────────────────────────────────────
+const POLL_MS = 1500;  // 상태 폴링 간격
+let pollTimer = null;
+let serverReady = false;
+let isRunning = false;
+let _selectedScene = -1;    // 선택된 씬 인덱스
+let _scenesCache = [];       // 최신 씬 목록 캐시
+
+// (샘플 시나리오 제거됨 — 웹에서 시나리오를 전송받아 사용)
+
+// ── API 호출 래퍼 ─────────────────────────────────────────────────────────────
+async function callApi(method, path, body) {
+  if (window.api) {
+    // Electron 환경
+    return window.api.call(method, path, body);
+  } else {
+    // 브라우저 직접 실행 (개발용)
+    const r = await fetch(`http://localhost:7788${path}`, {
+      method, headers: {'Content-Type':'application/json'},
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    return { ok: true, data: await r.json() };
+  }
+}
+
+// ── 서버 이벤트 ───────────────────────────────────────────────────────────────
+if (window.api) {
+  window.api.onServerReady(() => onServerReady());
+  window.api.onServerError((msg) => onServerError(msg));
+  window.api.onServerLog((msg) => setLog(msg));
+}
+// Electron/브라우저 모두 폴링으로 서버 준비 감지 (IPC 이벤트를 놓쳤을 경우 대비)
+checkServerDirect();
+
+async function checkServerDirect() {
+  if (serverReady) return;
+  try {
+    const r = await fetch('http://localhost:7788/health');
+    if (r.ok) onServerReady();
+    else setTimeout(checkServerDirect, 1000);
+  } catch { setTimeout(checkServerDirect, 1000); }
+}
+
+async function onServerReady() {
+  if (serverReady) return;
+  serverReady = true;
+  document.getElementById('serverDot').className = 'server-dot ready';
+  document.getElementById('serverMsg').textContent = '서버 연결됨';
+  document.getElementById('startBtn').disabled = false;
+  document.getElementById('resetBtn').disabled = false;
+  document.getElementById('promptBtn').disabled = false;
+  document.getElementById('remotionBtn').disabled = false;
+  setLog('Python 서버 연결 완료');
+  await loadOptions();
+  await setupJob();
+  // 저장된 자막 설정 복원 후 패널 열기
+  loadOverlaySettings();
+  document.getElementById('overlayPanel').style.display = 'flex';
+  setTimeout(fetchPreview, 500);
+  // 항상 3초마다 서버 상태 동기화 (비생성 중에도)
+  setInterval(syncStatus, 3000);
+}
+
+let _lastJobId = null;
+async function syncStatus() {
+  const res = await callApi('GET', '/api/status');
+  if (!res.ok || !res.data.scenes || !res.data.scenes.length) return;
+  const st = res.data;
+
+  // 새 시나리오 수신 시 테이블로 전환
+  if (st.job_id && st.job_id !== _lastJobId) {
+    _lastJobId = st.job_id;
+    showTableWithScenario();
+  }
+
+  // 서버에서 생성이 시작되었으면 자동으로 폴링 전환
+  if (st.is_running && !isRunning) {
+    isRunning = true;
+    document.getElementById('startBtn').style.display = 'none';
+    document.getElementById('stopBtn').style.display = '';
+    document.getElementById('waitingBanner').classList.add('show');
+    startPolling();
+    setLog(`웹에서 시나리오 수신 — ${st.scenes.length}개 씬 생성 시작`);
+  }
+
+  renderTable(st.scenes);
+  updateProgress(st.done, st.total);
+  updatePhonePreview(st.scenes);
+
+  // 비디오 합성 버튼 업데이트
+  updateSynthButton();
+
+  // 서버 값으로 드롭다운 동기화
+  if (st.style_id) {
+    const ss = document.getElementById('styleSelect');
+    if (ss.value !== st.style_id) ss.value = st.style_id;
+  }
+  if (st.voice_id) {
+    const vs = document.getElementById('voiceSelect');
+    if (vs.value !== st.voice_id) vs.value = st.voice_id;
+  }
+
+  if (st.done === st.total && st.total > 0 && st.job_id) {
+    window._outputDir = `C:\\LinkDropV2\\tmp\\${st.job_id}`;
+    document.getElementById('openFolderBtn').style.display = '';
+  }
+  if (st.final_path && !window._finalVideoShown) {
+    showFinalVideo(st.final_path);
+  }
+}
+
+function onServerError(msg) {
+  document.getElementById('serverDot').className = 'server-dot error';
+  document.getElementById('serverMsg').textContent = '서버 오류: ' + msg;
+  setLog('[오류] ' + msg);
+}
+
+// ── 드롭다운 로드 ─────────────────────────────────────────────────────────────
+async function loadOptions() {
+  const res = await callApi('GET', '/api/styles');
+  if (!res.ok) return;
+  const { styles, voices } = res.data;
+  const ss = document.getElementById('styleSelect');
+  ss.innerHTML = styles.map(s => `<option value="${s.id}">${s.label}</option>`).join('');
+  const vs = document.getElementById('voiceSelect');
+  vs.innerHTML = voices.map(v => `<option value="${v.id}">${v.label}</option>`).join('');
+}
+
+// ── 초기 상태 확인 ──────────────────────────────────────────────────────────
+async function setupJob() {
+  const res = await callApi('GET', '/api/status');
+  if (res.ok && res.data.scenes && res.data.scenes.length > 0) {
+    const st = res.data;
+    renderTable(st.scenes);
+    updateProgress(st.done, st.total);
+    updatePhonePreview(st.scenes);
+    // 드롭다운 동기화
+    if (st.style_id) document.getElementById('styleSelect').value = st.style_id;
+    if (st.voice_id) document.getElementById('voiceSelect').value = st.voice_id;
+    if (st.done > 0 && st.done === st.total) {
+      window._outputDir = `C:\\LinkDropV2\\tmp\\${st.job_id}`;
+      document.getElementById('openFolderBtn').style.display = '';
+      setLog(`이전 작업 표시 중 (${st.total}개 씬) — 웹에서 새 시나리오를 보내면 자동 교체됩니다`);
+    } else {
+      setLog(`시나리오 ${st.total}개 대기 중 — 검토 후 "생성 시작" 버튼을 눌러주세요`);
+    }
+    return;
+  }
+  // 서버에 작업 없으면 빈 대기 상태
+  document.getElementById('sceneBody').innerHTML =
+    '<tr><td colspan="6" style="text-align:center;padding:60px;color:#4a4a6a;">' +
+    '<div style="font-size:32px;margin-bottom:12px">☕</div>' +
+    '<div style="font-size:14px;font-weight:700;color:#64748b;margin-bottom:6px">웹에서 시나리오를 기다리는 중</div>' +
+    '<div style="font-size:12px;color:#475569">linkdrop 웹사이트에서 시나리오를 생성하면 자동으로 여기에 표시됩니다</div>' +
+    '</td></tr>';
+  updateProgress(0, 0);
+  setLog('대기 중 — 웹에서 시나리오를 전송해 주세요');
+}
+
+// ── 생성 시작 ─────────────────────────────────────────────────────────────────
+function getOverlaySettings() {
+  return {
+    enabled:         document.getElementById('overlayEnabled').checked,
+    title_bar_h:     parseInt(document.getElementById('titleBarH').value),
+    sub_bar_h:       parseInt(document.getElementById('subBarH').value),
+    title_font_size: parseInt(document.getElementById('titleFontSize').value),
+    sub_font_size:   parseInt(document.getElementById('subFontSize').value),
+    title_font:      document.getElementById('titleFont').value,
+    sub_font:        document.getElementById('subFont').value,
+    title_color:     document.getElementById('titleColor').value,
+    sub_color:       document.getElementById('subColor').value,
+  };
+}
+
+function toggleOverlayPanel() {
+  const p = document.getElementById('overlayPanel');
+  p.style.display = p.style.display === 'none' ? 'flex' : 'none';
+}
+
+async function startGeneration() {
+  if (!serverReady || isRunning) return;
+  const style_id = document.getElementById('styleSelect').value;
+  const voice_id = document.getElementById('voiceSelect').value;
+  const speed    = parseFloat(document.getElementById('speedRange').value);
+  const overlay  = getOverlaySettings();
+  // 현재 서버에 로드된 시나리오로 생성 (설정만 업데이트)
+  const statusCheck = await callApi('GET', '/api/status');
+  if (!statusCheck.ok || !statusCheck.data.scenes || statusCheck.data.scenes.length === 0) {
+    setLog('⚠ 시나리오가 없습니다. 웹에서 시나리오를 먼저 전송해 주세요.');
+    return;
+  }
+  const currentScenes = statusCheck.data.scenes.map(s => s.text);
+  await callApi('POST', '/api/setup', { scenes: currentScenes, style_id, voice_id, speed, overlay });
+  const res = await callApi('POST', '/api/generate');
+  if (res.ok && res.data.ok) {
+    isRunning = true;
+    document.getElementById('startBtn').style.display = 'none';
+    document.getElementById('stopBtn').style.display = '';
+    document.getElementById('waitingBanner').classList.add('show');
+    startPolling();
+    setLog('생성 시작됨 — AI 키프레임 생성 중 (3~10분 소요)');
+  }
+}
+
+// ── 초기화 ───────────────────────────────────────────────────────────────────
+async function resetAll() {
+  if (isRunning) return;
+  stopPolling();
+  await callApi('POST', '/api/reset');
+  _selectedScene = -1;
+  _overlayPreviewMode = false;
+  window._finalVideoShown = false;  // Task 4: 비디오 상태 초기화
+  await setupJob();
+  document.getElementById('startBtn').disabled = false;
+  document.getElementById('startBtn').textContent = '▶ 생성 시작';
+  // 초기화 후 오버레이 샘플 프리뷰 복원
+  fetchPreview();
+  setPhase('idle');
+  setLog('초기화 완료');
+}
+
+// ── 생성 중지 ─────────────────────────────────────────────────────────────────
+async function stopGeneration() {
+  const res = await callApi('POST', '/api/stop');
+  if (res.ok) {
+    isRunning = false;
+    stopPolling();
+    document.getElementById('waitingBanner').classList.remove('show');
+    document.getElementById('startBtn').disabled = false;
+    document.getElementById('startBtn').textContent = '▶ 생성 시작';
+    document.getElementById('startBtn').style.display = '';
+    document.getElementById('stopBtn').style.display = 'none';
+    setLog('⏹ 생성이 중지되었습니다. 완료된 씬은 유지됩니다.');
+  }
+}
+
+// ── 씬 재시도 ─────────────────────────────────────────────────────────────────
+async function retryScene(idx) {
+  await callApi('POST', `/api/retry/${idx}`);
+  if (!pollTimer) startPolling();
+  setLog(`씬 ${idx+1} 재시도 시작`);
+}
+
+// ── 폴링 ─────────────────────────────────────────────────────────────────────
+function startPolling() { if (!pollTimer) pollTimer = setInterval(pollStatus, POLL_MS); }
+function stopPolling()  { if (pollTimer) { clearInterval(pollTimer); pollTimer = null; } }
+
+async function pollStatus() {
+  const res = await callApi('GET', '/api/status');
+  if (!res.ok) return;
+  const st = res.data;
+  isRunning = st.is_running;
+  renderTable(st.scenes);
+  updateProgress(st.done, st.total);
+  updatePhonePreview(st.scenes);
+
+  // 단계 표시 (실행 중)
+  if (st.is_running) {
+    if (st.final_path_16x9 && !st.final_path_9x16) {
+      setPhase('phase2_active');
+    }
+  }
+
+  // 완성 영상 재생
+  if (st.final_path_9x16 && !window._finalVideoShown) {
+    showFinalVideo(st.final_path_9x16);  // 9:16 최종본 미리보기
+  } else if (st.final_path && !window._finalVideoShown) {
+    showFinalVideo(st.final_path);
+  }
+
+  if (!isRunning && pollTimer) {
+    stopPolling();
+    document.getElementById('waitingBanner').classList.remove('show');
+    document.getElementById('stopBtn').style.display = 'none';
+    document.getElementById('remotionBtn').style.display = '';
+    document.getElementById('remotionBtn').disabled = false;
+
+    if (st.final_path_9x16) {
+      // 1차 + 2차 모두 완료
+      setPhase('phase2_done');
+      document.getElementById('remotionBtn').textContent = '✓ 전체 완료 — 다시 제작';
+      setLog(`전체 완료! 1차(16:9) + 2차(9:16) → C:\\LinkDropV2\\tmp\\${st.job_id}`);
+      showDoneNotification(st.total);
+      document.getElementById('openFolderBtn').style.display = '';
+      window._outputDir = `C:\\LinkDropV2\\tmp\\${st.job_id}`;
+      // Flow로 전환 (배경 이미지 제작 안내)
+      switchToFlowWithGuide();
+    } else if (st.final_path) {
+      // 1차만 완료 (2차 진행 중이거나 실패)
+      setPhase('phase1_done');
+      document.getElementById('remotionBtn').textContent = '✓ 1차 완료 — 다시 제작';
+      setLog(`1차 16:9 완료 → C:\\LinkDropV2\\tmp\\${st.job_id}`);
+      document.getElementById('openFolderBtn').style.display = '';
+      window._outputDir = `C:\\LinkDropV2\\tmp\\${st.job_id}`;
+    } else {
+      setPhase('idle');
+      document.getElementById('remotionBtn').textContent = '🎬 1차 16:9 비디오 제작';
+    }
+  }
+}
+
+// ── 진행률 업데이트 ───────────────────────────────────────────────────────────
+function updateProgress(done, total) {
+  const pct = total ? Math.round(done / total * 100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressCount').textContent = `${done} / ${total}`;
+}
+
+// ── 폰 미리보기 업데이트 ─────────────────────────────────────────────────────
+function updatePhonePreview(scenes) {
+  const inProgress = scenes.find(s => s.img_state === 'progress' || s.dub_state === 'progress');
+  const done = scenes.filter(s => s.img_state === 'done').length;
+
+  if (inProgress) {
+    document.getElementById('phoneSceneNow').textContent = `씬 ${inProgress.index+1} 생성중`;
+    document.getElementById('phoneTimeInfo').textContent = `${done}/${scenes.length} 완료`;
+  } else if (done === scenes.length && scenes.length > 0) {
+    document.getElementById('phoneSceneNow').textContent = '✓ 생성 완료';
+    document.getElementById('phoneTimeInfo').textContent = `${scenes.length}개 씬`;
+  }
+
+  // 오버레이 미리보기 모드가 아닐 때만 씬 썸네일로 업데이트
+  if (!_overlayPreviewMode) {
+    const firstDone = scenes.find(s => s.img_state === 'done' && s.thumb_b64);
+    if (firstDone) {
+      document.getElementById('phoneScreen').innerHTML =
+        `<img src="${firstDone.thumb_b64}">`;
+      document.getElementById('modalScreen').innerHTML =
+        `<img src="${firstDone.thumb_b64}">`;
+    }
+  }
+}
+
+// ── Task 4: 완성 영상 재생 ────────────────────────────────────────────────────
+function showFinalVideo(finalPath) {
+  window._finalVideoShown = true;
+  _overlayPreviewMode = false;
+
+  // file:/// URI 변환 (Windows 경로 → URI)
+  const fileUri = 'file:///' + finalPath.replace(/\\/g, '/');
+
+  const videoHtml = `<video src="${fileUri}" controls autoplay loop
+    style="width:100%;height:100%;object-fit:contain;background:#000"
+    onerror="this.style.display='none';document.getElementById('phoneScreen').innerHTML='<div class=phone-placeholder><div class=ico>⚠</div><span>영상 로드 실패</span></div>'"
+  ></video>`;
+
+  document.getElementById('phoneScreen').innerHTML = videoHtml;
+  document.getElementById('modalScreen').innerHTML = videoHtml;
+  document.getElementById('phoneSceneNow').textContent = '✓ 완성 영상';
+  document.getElementById('phoneTimeInfo').textContent = finalPath.split('\\').pop() || 'final.mp4';
+
+  setLog('완성 영상 재생 중: ' + finalPath);
+}
+
+// ── 테이블 렌더링 ─────────────────────────────────────────────────────────────
+function badge(state, labels) {
+  const map = {
+    wait:     ['b-wait',     labels[0]],
+    progress: ['b-progress', labels[1]],
+    done:     ['b-done',     labels[2]],
+    fail:     ['b-fail',     '실패'],
+  };
+  const [cls, label] = map[state] || map.wait;
+  return `<span class="badge ${cls}"><span class="badge-dot"></span>${label}</span>`;
+}
+
+function thumbHtml(s) {
+  if (s.img_state === 'done' && s.thumb_b64)
+    return `<div class="thumb-box" style="cursor:pointer" onclick="triggerUpload(${s.index})" title="클릭하여 교체"><img src="${s.thumb_b64}"></div>`;
+  if (s.img_state === 'progress')
+    return `<div class="thumb-box thumb-shimmer"><span class="thumb-txt">생성중…</span></div>`;
+  if (s.img_state === 'fail')
+    return `<div class="thumb-box" style="border-color:#7f1d1d"><span style="font-size:9px;color:#fca5a5">실패</span></div>`;
+  // 업로드 가능한 드롭존
+  return `<div class="thumb-box thumb-upload"
+    onclick="triggerUpload(${s.index})"
+    ondragover="event.preventDefault();this.classList.add('dragover')"
+    ondragleave="this.classList.remove('dragover')"
+    ondrop="event.preventDefault();this.classList.remove('dragover');handleDrop(${s.index},event)"
+    title="클릭 또는 드래그하여 이미지 추가">
+    <span style="font-size:16px;color:#4a4a6a">+</span>
+  </div>`;
+}
+
+function triggerUpload(idx) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/png,image/jpeg,image/webp';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (file) uploadKeyframe(idx, file);
+  };
+  input.click();
+}
+
+function handleDrop(idx, event) {
+  const file = event.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) uploadKeyframe(idx, file);
+}
+
+function renderTable(scenes) {
+  _scenesCache = scenes;
+  const tbody = document.getElementById('sceneBody');
+  if (!scenes || !scenes.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#3a3a58;">시나리오 없음</td></tr>';
+    return;
+  }
+  const isActive = s => s.img_state === 'progress' || s.dub_state === 'progress';
+  const canRetry = s => s.img_state === 'fail' || s.dub_state === 'fail' ||
+                        (s.img_state === 'done' && s.dub_state === 'done');
+  tbody.innerHTML = scenes.map(s => `
+    <tr class="${isActive(s) ? 'active-row' : (s.index === _selectedScene ? 'selected-row' : '')}"
+        id="row-${s.index}" onclick="selectScene(${s.index})">
+      <td class="num">씬${s.index+1}</td>
+      <td class="thumb">${thumbHtml(s)}</td>
+      <td class="scenario">${s.text}</td>
+      <td class="action">${badge(s.img_state, ['대기중','생성중','완료'])}</td>
+      <td class="action">${badge(s.dub_state, ['대기중','더빙중','완료'])}</td>
+      <td class="action">${canRetry(s)
+        ? `<button class="btn-retry" onclick="event.stopPropagation();retryScene(${s.index})">↺</button>` : ''}</td>
+    </tr>`).join('');
+
+  // 오버레이 미리보기 모드가 아닐 때만 선택된 씬 썸네일 갱신
+  if (!_overlayPreviewMode && _selectedScene >= 0) {
+    const sel = scenes[_selectedScene];
+    if (sel && sel.thumb_b64) {
+      document.getElementById('phoneScreen').innerHTML = `<img src="${sel.thumb_b64}">`;
+      document.getElementById('modalScreen').innerHTML = `<img src="${sel.thumb_b64}">`;
+    }
+  }
+
+  // 현재 진행 씬으로 스크롤
+  const active = scenes.find(isActive);
+  if (active) {
+    const row = document.getElementById(`row-${active.index}`);
+    if (row) row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+// ── 오버레이 미리보기 ─────────────────────────────────────────────────────────
+let _previewTimer = null;
+let _overlayPreviewMode = false;  // true 이면 syncStatus/updatePhonePreview 가 폰 화면을 덮어쓰지 않음
+
+const LS_OVERLAY_KEY = 'ld_overlay_settings_v1';
+
+function saveOverlaySettings() {
+  const s = getOverlaySettings();
+  s.previewTitle    = document.getElementById('previewTitle').value;
+  s.previewSubtitle = document.getElementById('previewSubtitle').value;
+  localStorage.setItem(LS_OVERLAY_KEY, JSON.stringify(s));
+}
+
+function loadOverlaySettings() {
+  try {
+    const raw = localStorage.getItem(LS_OVERLAY_KEY);
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    if (s.title_bar_h)     { document.getElementById('titleBarH').value     = s.title_bar_h;     document.getElementById('titleBarHLabel').textContent  = s.title_bar_h  + 'px'; }
+    if (s.sub_bar_h)       { document.getElementById('subBarH').value       = s.sub_bar_h;       document.getElementById('subBarHLabel').textContent    = s.sub_bar_h    + 'px'; }
+    if (s.title_font_size) { document.getElementById('titleFontSize').value = s.title_font_size; document.getElementById('titleFontLabel').textContent  = s.title_font_size + 'pt'; }
+    if (s.sub_font_size)   { document.getElementById('subFontSize').value   = s.sub_font_size;   document.getElementById('subFontLabel').textContent    = s.sub_font_size   + 'pt'; }
+    if (s.title_font)       document.getElementById('titleFont').value      = s.title_font;
+    if (s.sub_font)         document.getElementById('subFont').value        = s.sub_font;
+    if (s.title_color)      document.getElementById('titleColor').value     = s.title_color;
+    if (s.sub_color)        document.getElementById('subColor').value       = s.sub_color;
+    if (s.enabled !== undefined) document.getElementById('overlayEnabled').checked = s.enabled;
+    if (s.previewTitle)     document.getElementById('previewTitle').value    = s.previewTitle;
+    if (s.previewSubtitle)  document.getElementById('previewSubtitle').value = s.previewSubtitle;
+  } catch(e) { /* 손상된 데이터 무시 */ }
+}
+
+function schedulePreview() {
+  clearTimeout(_previewTimer);
+  saveOverlaySettings();
+  _previewTimer = setTimeout(fetchPreview, 400);
+}
+
+async function fetchPreview() {
+  if (!serverReady) return;
+  const title    = document.getElementById('previewTitle').value    || '제목을 여기에 입력하세요';
+  const subtitle = document.getElementById('previewSubtitle').value || '자막 내용입니다.';
+  const ov = getOverlaySettings();
+  const res = await callApi('POST', '/api/preview', { title, subtitle, overlay: ov });
+  if (res.ok && res.data.ok) {
+    _overlayPreviewMode = true;
+    document.getElementById('phoneScreen').innerHTML = `<img src="${res.data.img}">`;
+    document.getElementById('modalScreen').innerHTML = `<img src="${res.data.img}">`;
+    document.getElementById('phoneSceneNow').textContent = '미리보기';
+    document.getElementById('phoneTimeInfo').textContent = '자막 설정 반영됨';
+  }
+}
+
+// ── 씬 선택 → 프리뷰 변경 ────────────────────────────────────────────────────
+function selectScene(idx) {
+  _selectedScene = idx;
+  const scene = _scenesCache[idx];
+  if (!scene) return;
+
+  // 선택 행 강조 갱신
+  document.querySelectorAll('.scene-table tbody tr').forEach(tr => {
+    tr.classList.remove('selected-row');
+  });
+  const row = document.getElementById(`row-${idx}`);
+  if (row && !row.classList.contains('active-row')) row.classList.add('selected-row');
+
+  // 이미지가 있을 때만 프리뷰 전환 (시나리오 단계에선 오버레이 프리뷰 유지)
+  if (scene.thumb_b64) {
+    _overlayPreviewMode = false;
+    document.getElementById('phoneScreen').innerHTML = `<img src="${scene.thumb_b64}">`;
+    document.getElementById('modalScreen').innerHTML = `<img src="${scene.thumb_b64}">`;
+    document.getElementById('phoneSceneNow').textContent = `씬 ${idx + 1} 선택됨`;
+    document.getElementById('phoneTimeInfo').textContent = scene.text.slice(0, 20) + (scene.text.length > 20 ? '…' : '');
+  }
+  // 이미지 없으면 프리뷰 그대로, 행 강조만 변경
+}
+
+// ── 폴더 열기 ─────────────────────────────────────────────────────────────────
+function openOutputFolder() {
+  const dir = window._outputDir;
+  if (!dir) return;
+  if (window.api) window.api.openFolder(dir);
+  else setLog('폴더: ' + dir);
+}
+
+// ── 완료 알림 ─────────────────────────────────────────────────────────────────
+function showDoneNotification(total) {
+  if (window.Notification && Notification.permission !== 'denied') {
+    Notification.requestPermission().then(p => {
+      if (p === 'granted') {
+        new Notification('LinkDrop 영상 생성 완료! 🎬', {
+          body: `${total}개 씬 키프레임·더빙이 모두 완성되었습니다.`,
+          icon: 'assets/icon.ico',
+        });
+      }
+    });
+  }
+}
+
+// ── 로그 ─────────────────────────────────────────────────────────────────────
+function setLog(msg) { document.getElementById('logBar').textContent = msg; }
+
+// ── 패널 전환 (Flow ↔ 씬 테이블) ─────────────────────────────────────────────
+function switchToFlow() {
+  document.getElementById('flowPanel').style.display = 'flex';
+  document.getElementById('tablePanel').style.display = 'none';
+}
+
+function switchToGrok() {
+  const wv = document.getElementById('flowWebview');
+  if (wv) wv.src = 'https://grok.com';
+  // 버튼 라벨 변경
+  const btn = event.target;
+  if (btn.textContent.includes('Grok')) {
+    btn.textContent = '🌐 Flow로 전환';
+    btn.onclick = () => { wv.src = 'https://labs.google/fx/ko/tools/flow'; btn.textContent = '🤖 Grok으로 전환'; btn.onclick = () => switchToGrok(); };
+  }
+}
+
+function switchToTable() {
+  document.getElementById('flowPanel').style.display = 'none';
+  document.getElementById('tablePanel').style.display = '';
+}
+
+function showTableWithScenario() {
+  // 시나리오 수신 시 테이블 표시 + Flow 전환 버튼 노출
+  document.getElementById('showTableBtn').style.display = '';
+  switchToTable();
+}
+
+function switchToFlowWithGuide() {
+  // 1차 완료 후 Flow로 전환 + 배경 이미지 제작 안내 배너
+  switchToFlow();
+
+  // 안내 배너 업데이트
+  const wb = document.getElementById('waitingBanner');
+  wb.classList.add('show');
+  document.querySelector('.wb-icon').textContent = '🎨';
+  document.querySelector('.wb-title').textContent = '1차 비디오 완성! 이제 배경 이미지를 만들어 보세요';
+  document.querySelector('.wb-sub').innerHTML =
+    '① 좌측 <b>프롬프트 복사</b> 버튼으로 이미지 프롬프트를 복사하세요<br>' +
+    '② 이 화면(Flow 또는 Grok)에서 배경 이미지를 생성하세요<br>' +
+    '③ 생성된 이미지를 씬 테이블의 <b>이미지 추가</b>에 업로드하세요';
+  // 스피너 숨김
+  const spinner = wb.querySelector('.wb-spinner');
+  if (spinner) spinner.style.display = 'none';
+
+  // 5초 후 배너 자동 닫기 (사용자가 읽을 시간)
+  setTimeout(() => {
+    wb.classList.remove('show');
+    if (spinner) spinner.style.display = '';
+  }, 15000);
+}
+
+// ── 모달 ─────────────────────────────────────────────────────────────────────
+function openModal()  { document.getElementById('modal').classList.add('open'); }
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal')) closeModal();
+});
+
+// ── 키프레임 업로드 ──────────────────────────────────────────────────────────
+async function uploadKeyframe(sceneIndex, file) {
+  const fd = new FormData();
+  fd.append('file', file);
+  try {
+    const r = await fetch(`http://localhost:7788/api/upload-keyframe/${sceneIndex}`, { method: 'POST', body: fd });
+    const data = await r.json();
+    if (data.ok) {
+      setLog(`씬 ${sceneIndex + 1} 키프레임 업로드 완료 (${data.size_kb}KB)`);
+      updateSynthButton();
+    } else {
+      setLog(`씬 ${sceneIndex + 1} 업로드 실패: ${data.error}`);
+    }
+  } catch (e) {
+    setLog(`씬 ${sceneIndex + 1} 업로드 오류: ${e.message}`);
+  }
+}
+
+function updateSynthButton() {
+  // 업로드된 이미지가 1개 이상이면 비디오 합성 버튼 표시
+  const uploaded = _scenesCache.filter(s => s.img_state === 'done').length;
+  const synthBtn = document.getElementById('synthBtn');
+  if (uploaded > 0) {
+    synthBtn.style.display = '';
+    synthBtn.disabled = false;
+    synthBtn.textContent = `🎬 비디오 합성 (${uploaded}/${_scenesCache.length})`;
+  } else {
+    synthBtn.style.display = 'none';
+  }
+}
+
+// ── 단계 표시 업데이트 ────────────────────────────────────────────────────────
+function setPhase(phase) {
+  // phase: 'idle' | 'phase1_active' | 'phase1_done' | 'phase2_active' | 'phase2_done'
+  const p1 = document.getElementById('phase1');
+  const p1d = document.getElementById('phase1Dot');
+  const p2 = document.getElementById('phase2');
+  const p2d = document.getElementById('phase2Dot');
+  const lbl = document.getElementById('progressLabel');
+
+  // 리셋
+  [p1, p2].forEach(el => { el.style.background = '#1e1e2e'; el.style.borderColor = '#2d2d44'; el.style.color = '#475569'; });
+  [p1d, p2d].forEach(el => { el.style.background = '#475569'; el.style.animation = 'none'; });
+
+  if (phase === 'phase1_active') {
+    p1.style.background = '#1e1535'; p1.style.borderColor = '#7c3aed'; p1.style.color = '#a78bfa';
+    p1d.style.background = '#7c3aed'; p1d.style.animation = 'pulse 1s infinite';
+    lbl.textContent = '1차 제작 중';
+  } else if (phase === 'phase1_done') {
+    p1.style.background = '#14532d'; p1.style.borderColor = '#22c55e'; p1.style.color = '#86efac';
+    p1d.style.background = '#22c55e';
+    lbl.textContent = '1차 완료';
+  } else if (phase === 'phase2_active') {
+    p1.style.background = '#14532d'; p1.style.borderColor = '#22c55e'; p1.style.color = '#86efac';
+    p1d.style.background = '#22c55e';
+    p2.style.background = '#1e1535'; p2.style.borderColor = '#ec4899'; p2.style.color = '#f9a8d4';
+    p2d.style.background = '#ec4899'; p2d.style.animation = 'pulse 1s infinite';
+    lbl.textContent = '2차 제작 중';
+  } else if (phase === 'phase2_done') {
+    p1.style.background = '#14532d'; p1.style.borderColor = '#22c55e'; p1.style.color = '#86efac';
+    p1d.style.background = '#22c55e';
+    p2.style.background = '#14532d'; p2.style.borderColor = '#22c55e'; p2.style.color = '#86efac';
+    p2d.style.background = '#22c55e';
+    lbl.textContent = '전체 완료';
+  } else {
+    lbl.textContent = '대기';
+  }
+}
+
+// ── 1차 16:9 비디오 제작 ──────────────────────────────────────────────────────
+async function startRemotionRender() {
+  if (!serverReady || isRunning) return;
+
+  // 시나리오 확인
+  const statusCheck = await callApi('GET', '/api/status');
+  if (!statusCheck.ok || !statusCheck.data.scenes || statusCheck.data.scenes.length === 0) {
+    setLog('⚠ 시나리오가 없습니다. 웹에서 시나리오를 먼저 전송해 주세요.');
+    return;
+  }
+
+  const res = await callApi('POST', '/api/render-remotion');
+  if (res.ok && res.data.ok) {
+    isRunning = true;
+    document.getElementById('remotionBtn').style.display = 'none';
+    document.getElementById('stopBtn').style.display = '';
+    document.getElementById('waitingBanner').classList.add('show');
+    document.querySelector('.wb-title').textContent = '1차 16:9 비디오를 제작하고 있습니다';
+    document.querySelector('.wb-sub').textContent = '화면 구성 → 더빙 생성 → 영상 합성 (약 1~3분 소요)';
+    // 씬 테이블로 전환 (제작 과정 표시)
+    switchToTable();
+    startPolling();
+    setPhase('phase1_active');
+    setLog('1차 16:9 비디오 제작 시작 — 화면 구성 + 더빙 + 영상 합성 중...');
+  } else {
+    setLog(`렌더링 실패: ${res.data?.error || '알 수 없는 오류'}`);
+  }
+}
+
+// ── 비디오 합성 (TTS + FFmpeg만) ─────────────────────────────────────────────
+async function startSynthesize() {
+  if (!serverReady || isRunning) return;
+  const res = await callApi('POST', '/api/synthesize');
+  if (res.ok && res.data.ok) {
+    isRunning = true;
+    document.getElementById('synthBtn').style.display = 'none';
+    document.getElementById('startBtn').style.display = 'none';
+    document.getElementById('stopBtn').style.display = '';
+    document.getElementById('waitingBanner').classList.add('show');
+    startPolling();
+    setLog(`비디오 합성 시작 — TTS 더빙 + FFmpeg 합성 중...`);
+  } else {
+    setLog(`비디오 합성 실패: ${res.data?.error || '알 수 없는 오류'}`);
+  }
+}
+
+// ── 이미지 프롬프트 모달 ─────────────────────────────────────────────────────
+let _cachedPrompts = [];
+
+async function openImagePrompts() {
+  const res = await callApi('GET', '/api/image-prompts');
+  if (!res.ok || !res.data.ok) { setLog('프롬프트 생성 실패'); return; }
+  _cachedPrompts = res.data.prompts;
+  document.getElementById('promptStyleLabel').textContent = `화풍: ${res.data.style}`;
+  const body = document.getElementById('promptListBody');
+  body.innerHTML = _cachedPrompts.map(p => `
+    <div class="prompt-item">
+      <span class="prompt-num">씬${p.index + 1}</span>
+      <span class="prompt-text" id="pt-${p.index}">${p.prompt}</span>
+      <button class="prompt-copy" onclick="copyPrompt(${p.index})">복사</button>
+    </div>
+  `).join('');
+  document.getElementById('promptModal').classList.add('open');
+}
+
+function closePromptModal() {
+  document.getElementById('promptModal').classList.remove('open');
+}
+document.getElementById('promptModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('promptModal')) closePromptModal();
+});
+
+function copyPrompt(idx) {
+  const p = _cachedPrompts.find(x => x.index === idx);
+  if (p) {
+    navigator.clipboard.writeText(p.prompt);
+    setLog(`씬 ${idx + 1} 프롬프트 복사됨`);
+  }
+}
+
+// ── 캐릭터 캘리브레이션 ───────────────────────────────────────────────────────
+let _calData = {};
+let _calActivePart = 'mouth';
+
+const CAL_PARTS = [
+  { id: 'head',      label: '🗣 머리',     color: '#a78bfa', fields: ['anchor', 'pivot'] },
+  { id: 'mouth',     label: '👄 입',       color: '#f472b6', fields: ['on_head', 'scale'] },
+  { id: 'eyes',      label: '👁 눈',       color: '#38bdf8', fields: ['on_head', 'scale'] },
+  { id: 'arm_left',  label: '🤚 왼팔',    color: '#4ade80', fields: ['anchor', 'pivot'] },
+  { id: 'arm_right', label: '✋ 오른팔',   color: '#fb923c', fields: ['anchor', 'pivot'] },
+  { id: 'body',      label: '🧍 몸통',     color: '#94a3b8', fields: ['anchor'] },
+];
+
+async function openCalibration() {
+  document.getElementById('calModal').classList.add('open');
+  await loadCalibration('c3');
+}
+
+function closeCalModal() {
+  document.getElementById('calModal').classList.remove('open');
+}
+document.getElementById('calModal')?.addEventListener('click', e => {
+  if (e.target === document.getElementById('calModal')) closeCalModal();
+});
+
+async function loadCalibration(charId) {
+  const res = await callApi('GET', `/api/calibration/${charId}`);
+  if (!res.ok || !res.data.ok) return;
+
+  const d = res.data;
+  document.getElementById('calImage').src = d.image;
+  _calData = d.calibration?.parts || {};
+
+  // 기본값 채우기
+  CAL_PARTS.forEach(p => {
+    if (!_calData[p.id]) {
+      _calData[p.id] = p.fields.includes('on_head')
+        ? { on_head: [0.5, 0.5], scale: 0.3 }
+        : { anchor: [0.5, 0.5], pivot: [0.5, 0.5] };
+    }
+  });
+
+  renderCalParts();
+  renderCalMarkers();
+
+  // 그리드 상태
+  const gs = document.getElementById('calGridStatus');
+  gs.innerHTML = Object.entries(d.grids).map(([k, exists]) =>
+    `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;margin:2px;border-radius:12px;font-size:11px;font-weight:600;background:${exists ? '#14532d' : '#1e1e2e'};color:${exists ? '#86efac' : '#475569'};border:1px solid ${exists ? '#22c55e33' : '#2d2d44'}">
+      ${exists ? '✅' : '⬜'} ${k}
+    </span>`
+  ).join('');
+}
+
+function renderCalParts() {
+  const el = document.getElementById('calPartsList');
+  el.innerHTML = CAL_PARTS.map(p => {
+    const data = _calData[p.id] || {};
+    const active = _calActivePart === p.id;
+    const coordKey = p.fields.includes('on_head') ? 'on_head' : 'anchor';
+    const coord = data[coordKey] || [0.5, 0.5];
+
+    return `<div style="padding:8px 12px;border-radius:8px;border:2px solid ${active ? p.color : '#2d2d44'};background:${active ? p.color + '15' : '#1e1e2e'};cursor:pointer"
+      onclick="_calActivePart='${p.id}';renderCalParts();renderCalMarkers()">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <span style="width:8px;height:8px;border-radius:50%;background:${p.color}"></span>
+        <span style="font-size:13px;font-weight:700;color:${active ? '#fff' : '#94a3b8'}">${p.label}</span>
+        ${active ? '<span style="font-size:9px;color:' + p.color + ';margin-left:auto">클릭으로 위치 지정</span>' : ''}
+      </div>
+      <div style="display:flex;gap:12px;font-size:11px;color:#64748b">
+        <span>X: ${coord[0].toFixed(2)}</span>
+        <span>Y: ${coord[1].toFixed(2)}</span>
+        ${data.scale !== undefined ? `<span>크기: ${data.scale.toFixed(2)}</span>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderCalMarkers() {
+  const el = document.getElementById('calMarkers');
+  el.innerHTML = CAL_PARTS.map(p => {
+    const data = _calData[p.id] || {};
+    const coordKey = p.fields.includes('on_head') ? 'on_head' : 'anchor';
+    const coord = data[coordKey] || [0.5, 0.5];
+    const active = _calActivePart === p.id;
+
+    return `<div style="position:absolute;left:${coord[0] * 100}%;top:${coord[1] * 100}%;transform:translate(-50%,-50%);
+      width:${active ? 16 : 10}px;height:${active ? 16 : 10}px;border-radius:50%;
+      background:${p.color};border:2px solid #fff;opacity:${active ? 1 : 0.6};
+      box-shadow:0 0 ${active ? 8 : 4}px ${p.color};pointer-events:none;z-index:10;
+      transition:all 0.15s"></div>`;
+  }).join('');
+}
+
+function onCalClick(event) {
+  const img = document.getElementById('calImage');
+  const rect = img.getBoundingClientRect();
+  const x = (event.clientX - rect.left) / rect.width;
+  const y = (event.clientY - rect.top) / rect.height;
+
+  const part = CAL_PARTS.find(p => p.id === _calActivePart);
+  if (!part) return;
+
+  const coordKey = part.fields.includes('on_head') ? 'on_head' : 'anchor';
+  if (!_calData[_calActivePart]) _calData[_calActivePart] = {};
+  _calData[_calActivePart][coordKey] = [parseFloat(x.toFixed(3)), parseFloat(y.toFixed(3))];
+
+  document.getElementById('calCoordInfo').textContent =
+    `${part.label} → X: ${x.toFixed(3)}, Y: ${y.toFixed(3)}`;
+
+  renderCalParts();
+  renderCalMarkers();
+}
+
+async function saveCalibrationUI() {
+  const charId = document.getElementById('calCharSelect').value;
+  const res = await callApi('POST', `/api/calibration/${charId}`, { parts: _calData });
+  if (res.ok && res.data.ok) {
+    setLog(`캐릭터 ${charId} 캘리브레이션 저장 완료`);
+    closeCalModal();
+  } else {
+    setLog(`저장 실패: ${res.data?.error || ''}`);
+  }
+}
+
+function copyAllPrompts() {
+  const all = _cachedPrompts.map(p => `[씬${p.index + 1}]\n${p.prompt}`).join('\n\n');
+  navigator.clipboard.writeText(all);
+  setLog(`전체 ${_cachedPrompts.length}개 프롬프트 복사됨`);
+}
+</script>
+</body>
+</html>
