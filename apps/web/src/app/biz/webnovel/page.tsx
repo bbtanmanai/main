@@ -235,9 +235,12 @@ export default function WebNovelPage() {
 
   return (
     <div className="bg-[#0f0f1a] min-h-screen text-white pb-24 font-sans antialiased">
-      <header className="relative pt-24 pb-24 text-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0f0f1a] via-[#1c1c2e] to-[#0f0f1a] opacity-90" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(167,139,250,0.22),transparent_45%),radial-gradient(circle_at_80%_30%,rgba(99,102,241,0.22),transparent_45%)]" />
+      <header 
+        className="relative pt-24 pb-24 text-center overflow-hidden bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/img/biz/webnovel/webnovel_top_bg.webp')" }}
+      >
+        <div className="absolute inset-0 bg-[#0f0f1a]/80" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(167,139,250,0.15),transparent_45%),radial-gradient(circle_at_80%_30%,rgba(99,102,241,0.15),transparent_45%)]" />
         <div className="relative z-10 max-w-6xl mx-auto px-[5%] lg:px-[8%]">
           <div className="flex items-center justify-center gap-3 mb-8">
             <button
