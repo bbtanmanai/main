@@ -82,7 +82,7 @@ export default function ScenarioFactoryPage() {
   }, [filterTemplate, filterStyle, filterUsed]);
 
   useEffect(() => { loadStats(); }, [loadStats]);
-  useEffect(() => { loadList(1); }, [filterTemplate, filterStyle, filterUsed]);
+  useEffect(() => { loadList(1); }, [loadList]);
 
   const totalPages = Math.ceil(total / 20);
 

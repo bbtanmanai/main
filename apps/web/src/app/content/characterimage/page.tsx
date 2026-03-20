@@ -355,6 +355,7 @@ export default function CharacterImagePage() {
                       {/* 투명 PNG 체커보드 배경 */}
                       <div className="absolute inset-0"
                         style={{ backgroundImage: 'linear-gradient(45deg,#1a1a2e 25%,transparent 25%),linear-gradient(-45deg,#1a1a2e 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#1a1a2e 75%),linear-gradient(-45deg,transparent 75%,#1a1a2e 75%)', backgroundSize: '8px 8px', backgroundPosition: '0 0,0 4px,4px -4px,-4px 0' }} />
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={ch.url} alt={ch.name} className="relative z-10 w-full h-full object-contain" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-20" />
 
@@ -426,6 +427,7 @@ export default function CharacterImagePage() {
                 className={`group relative bg-[#1c1c2e] rounded-2xl overflow-hidden border-2 transition-all cursor-pointer ${isSelected ? 'border-[#a78bfa] ring-4 ring-[#a78bfa]/10' : 'border-white/5 hover:border-white/20'}`}
               >
                 <div className="aspect-[3/4] relative overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={char.image} alt={char.name} className={`w-full h-full object-cover transition-transform duration-700 ${isSelected ? 'scale-110' : 'group-hover:scale-105'}`} />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-70"></div>
 
@@ -488,10 +490,11 @@ export default function CharacterImagePage() {
               </button>
 
               {/* Large Image */}
-              <img 
-                src={modalCharacter.image} 
-                alt={modalCharacter.name} 
-                className="w-full h-auto max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-white/10" 
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={modalCharacter.image}
+                alt={modalCharacter.name}
+                className="w-full h-auto max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-white/10"
               />
             </div>
           </div>

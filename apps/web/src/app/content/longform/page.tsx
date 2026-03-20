@@ -229,7 +229,7 @@ export default function LongformPage() {
     if (typeof window === 'undefined') return;
     const agreed = localStorage.getItem(LS_KEY);
     if (!agreed) setShowDisclosure(true);
-  }, []);
+  }, [LS_KEY]);
 
   const handleAgree = async () => {
     if (!disclosureChecked || disclosureSubmitting) return;
