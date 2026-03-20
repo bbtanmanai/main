@@ -9,6 +9,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import mjConfig from '@/data/content_midjourney.json';
 import styleConfig from '@/data/content_styleimage.json';
+import LiquidChrome from '@/components/LiquidChrome';
 
 // --- Types ---
 interface ParamItem {
@@ -212,13 +213,22 @@ export default function MidjourneyImgPage() {
   return (
     <div className="bg-[#0f0f1a] min-h-screen text-slate-200 font-sans pb-20 antialiased">
       
-      {/* Hero Header (styleimage 구조를 완벽하게 계승) */}
-      <header 
-        className="relative pt-20 pb-28 text-center overflow-hidden bg-[#0f0f1a] text-white bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/img/content/midjourney/mj_top_bg.webp')" }}
-      >
-        <div className="absolute inset-0 bg-[#0f0f1a]/80"></div>
-        <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_50%_50%,#6366f1_0%,transparent_70%)]"></div>
+      {/* Hero Header */}
+      <header className="relative pt-20 pb-28 text-center overflow-hidden text-white">
+        {/* Liquid Chrome WebGL 배경 */}
+        <div className="absolute inset-0">
+          <LiquidChrome
+            baseColor={[0.08, 0.06, 0.22]}
+            speed={0.15}
+            amplitude={0.25}
+            frequencyX={3.5}
+            frequencyY={3.5}
+            interactive={true}
+          />
+        </div>
+        {/* 어두운 오버레이 — 텍스트 가독성 */}
+        <div className="absolute inset-0 bg-[#0f0f1a]/55"></div>
+        <div className="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_50%_50%,#6366f1_0%,transparent_70%)]"></div>
         
         <div className="relative z-10 max-w-5xl mx-auto px-6">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-indigo-400 text-[10px] font-black tracking-wider mb-6 uppercase">

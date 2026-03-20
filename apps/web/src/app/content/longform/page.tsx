@@ -4,10 +4,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faPlay, faVideo, faMicrophone, faMagic, faCloudUploadAlt,
+  faPlay, faVideo, faMagic, faCloudUploadAlt,
   faCheckCircle, faSync, faChevronRight, faArrowLeft,
   faHeartbeat, faChartLine, faQuoteRight,
-  faMars, faVenus, faVolumeUp, faTriangleExclamation,
+  faVolumeUp, faTriangleExclamation,
   faBolt, faRocket, faBook, faHashtag, faLeaf, faCog,
   faLaptopCode, faPenToSquare, faRotate, faSpinner,
   faTrophy, faBookOpen, faCircleQuestion, faScaleBalanced,
@@ -18,23 +18,23 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import longformData from '@/data/content_longform.json';
 import disclosure from '@/data/longform_disclosure.json';
+import Aurora from '@/components/Aurora';
 
 // ── 타입 ─────────────────────────────────────────────────────────────────────
 interface Template {
   id: string; title: string; icon: any; bgImage: string;
   color: string; category: 'vault' | 'content'; notebookId: string;
+  compatibleStyles?: string[];
 }
 interface ArtStyle {
   id: string; label: string; desc: string;
   bgImage: string; notebooklmPrompt: string;
+  textOnly?: boolean;
 }
 interface Style {
   id: string; icon: any; label: string; desc: string; example: string;
+  bgImage?: string;
   directive: string;
-}
-interface Voice {
-  id: string; name: string; gender: 'MALE' | 'FEMALE';
-  type: 'Neural2' | 'Wavenet' | 'Standard'; previewUrl: string;
 }
 interface Emotion {
   id: string; label: string; desc: string; emoji: string;
@@ -81,7 +81,8 @@ const TEMPLATES: Template[] = longformData.templates.map(t => ({
 }));
 const TEMPLATES_VAULT   = TEMPLATES.filter(t => t.category === 'vault');
 const TEMPLATES_CONTENT = TEMPLATES.filter(t => t.category === 'content');
-const VOICES: Voice[]   = longformData.voices as Voice[];
+const DEFAULT_CHARACTER_ID = 'c13';
+const DEFAULT_VOICE_ID     = 'andrew';
 
 const ART_STYLES: ArtStyle[] = longformData.artStyles as ArtStyle[];
 const EMOTIONS: Emotion[]   = longformData.emotions as Emotion[];
@@ -142,9 +143,6 @@ export default function LongformPage() {
   const [manualScript, setManualScript] = useState('');
   const [uploadFileName, setUploadFileName] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [voice, setVoice]         = useState<Voice>(VOICES[0]);
-  const [previewing, setPreviewing] = useState<string | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [ttsSpeed, setTtsSpeed]   = useState<number>(1.2);
   const [textStyle, setTextStyle] = useState<'box' | 'outline'>('box');
   const editTextareaRef  = useRef<HTMLTextAreaElement | null>(null);
@@ -283,8 +281,9 @@ export default function LongformPage() {
           app_id:     tmpl.id,
           topic:      useTopic,
           style:      sty.id,
-          voice:      voice.id,
-          tts_speed:  ttsSpeed,
+          character_id: DEFAULT_CHARACTER_ID,
+          voice:        DEFAULT_VOICE_ID,
+          tts_speed:    ttsSpeed,
           art_prompt: useArt?.notebooklmPrompt ?? '',
           tone_id:    tone?.id ?? null,
           tone_desc:  tone ? `${tone.label} — ${tone.desc}` : null,
@@ -332,7 +331,12 @@ export default function LongformPage() {
   // ── Step 1: 템플릿 선택 ──────────────────────────────────────────────────
   const selectTemplate = (t: Template) => {
     setTemplate(t);
-    if (artStyle) setTimeout(() => setStep(2), 240);
+    // 현재 선택된 화풍이 새 템플릿과 호환되지 않으면 자동 해제
+    if (artStyle && t.compatibleStyles && !t.compatibleStyles.includes(artStyle.id)) {
+      setArtStyle(null);
+    } else if (artStyle) {
+      setTimeout(() => setStep(2), 240);
+    }
   };
 
   // ── Step 1: 화풍 선택 ────────────────────────────────────────────────────
@@ -353,17 +357,6 @@ export default function LongformPage() {
     setEditedScript(card.script);
   };
 
-  // ── 성우 미리듣기 ────────────────────────────────────────────────────────
-  const handlePreview = async (v: Voice) => {
-    if (previewing === v.id) { audioRef.current?.pause(); setPreviewing(null); return; }
-    setPreviewing(v.id);
-    try {
-      const a = new Audio(v.previewUrl);
-      audioRef.current = a;
-      await a.play();
-      a.onended = () => setPreviewing(null);
-    } catch { setPreviewing(null); }
-  };
 
   // ── 파일 업로드 핸들러 ───────────────────────────────────────────────────
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -481,8 +474,9 @@ export default function LongformPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           script:      scriptToUse,
-          voice_id:    voice.id,
-          speed:       ttsSpeed,
+          character_id: DEFAULT_CHARACTER_ID,
+          voice_id:     DEFAULT_VOICE_ID,
+          speed:        ttsSpeed,
           style_id:    artStyle?.id ?? 'hollywood-sf',
           art_prompt:  artStyle?.notebooklmPrompt ?? '',
           tone_id:     tone?.id ?? null,
@@ -597,16 +591,17 @@ export default function LongformPage() {
     <div className="min-h-screen bg-[#0f0f1a] text-white font-sans">
 
       {/* ── 헤더 ──────────────────────────────────────────────────────────── */}
-      <header 
-        className="relative pt-12 pb-0 px-6 overflow-hidden"
-        style={{
-          backgroundImage: 'url("/img/content/longform/longform_top_bg.webp")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center top',
-        }}
-      >
-        {/* Dark Overlay for readability */}
-        <div className="absolute inset-0 bg-[#0f0f1a]/80" />
+      <header className="relative pt-12 pb-0 px-6 overflow-hidden bg-[#0f0f1a]">
+        {/* Aurora WebGL 배경 */}
+        <Aurora
+          colorStops={['#3b0764', '#7c3aed', '#1e1b4b']}
+          amplitude={1.2}
+          blend={0.6}
+          speed={2.2}
+          yOffset={0.35}
+        />
+        {/* 가독성 오버레이 */}
+        <div className="absolute inset-0 bg-[#0f0f1a]/50" />
         
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1 rounded-full mb-4">
@@ -623,7 +618,7 @@ export default function LongformPage() {
           <div className="flex items-center gap-0.5 border-b border-white/10 overflow-x-auto">
             {[
               { step: 1, label: '템플릿 · 화풍' },
-              { step: 2, label: '시나리오 · 성우' },
+              { step: 2, label: '시나리오' },
               { step: 3, label: '영상 제작' },
             ].map(({ step: s, label }, i) => (
               <React.Fragment key={s}>
@@ -804,9 +799,18 @@ export default function LongformPage() {
             <p className="text-slate-500 text-xs mb-5 pl-7">씬별 키프레임 이미지 생성에 적용할 시각 스타일입니다.</p>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
-              {ART_STYLES.map(a => (
-                <ArtStyleCard key={a.id} a={a} selected={artStyle?.id === a.id} onSelect={() => selectArtStyleItem(a)} />
-              ))}
+              {ART_STYLES.map(a => {
+                const disabled = !!(template?.compatibleStyles && !template.compatibleStyles.includes(a.id));
+                return (
+                  <ArtStyleCard
+                    key={a.id}
+                    a={a}
+                    selected={artStyle?.id === a.id}
+                    disabled={disabled}
+                    onSelect={() => !disabled && selectArtStyleItem(a)}
+                  />
+                );
+              })}
             </div>
 
             {/* ── 감정 & 톤앤매너 ── */}
@@ -950,7 +954,7 @@ export default function LongformPage() {
                     <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/30 uppercase tracking-widest">필수 선택</span>
                   </div>
                   <p className="text-slate-500 text-xs mb-3 pl-7">스타일을 선택하면 AI가 즉시 3개 시나리오를 자동 생성합니다.</p>
-                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
                     {STYLES.map(s => (
                       <MiniStyleCard key={s.id} s={s} selected={style?.id === s.id} onSelect={() => selectStyle(s)} />
                     ))}
@@ -993,25 +997,12 @@ export default function LongformPage() {
                   </div>
                 )}
 
-                {/* ── 선택된 시나리오 편집 + 성우 (성우 1/3 : 시나리오 2/3) ── */}
+                {/* ── 선택된 시나리오 편집 + 더빙 속도 (1열) ── */}
                 {selectedIdx !== null && (
-                  <div className="grid md:grid-cols-3 gap-6 mt-2 animate-in fade-in duration-300">
-                    {/* 성우 선택 (1/3) — 1열 3행 */}
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <FontAwesomeIcon icon={faMicrophone} className="text-fuchsia-400 text-sm" />
-                        <span className="text-sm font-black text-white">AI 성우 선택</span>
-                      </div>
-                      <div className="grid grid-cols-3 gap-2">
-                        {VOICES.map((v, idx) => (
-                          <VoiceCard key={v.id} v={v} idx={idx} selected={voice.id === v.id}
-                            previewing={previewing === v.id} onSelect={() => setVoice(v)} onPreview={() => handlePreview(v)} />
-                        ))}
-                      </div>
-                      <TtsSpeedControl value={ttsSpeed} onChange={setTtsSpeed} />
-                    </div>
-                    {/* 시나리오 편집 (2/3) — 높이 자동 확장 */}
-                    <div className="md:col-span-2 flex flex-col">
+                  <div className="flex flex-col gap-4 mt-2 animate-in fade-in duration-300">
+                    <TtsSpeedControl value={ttsSpeed} onChange={setTtsSpeed} />
+                    {/* 시나리오 편집 — 높이 자동 확장 */}
+                    <div className="flex flex-col">
                       <div className="flex items-center gap-2 mb-2">
                         <FontAwesomeIcon icon={faPenToSquare} className="text-indigo-400 text-sm" />
                         <span className="text-sm font-black text-white">시나리오 편집</span>
@@ -1045,36 +1036,23 @@ export default function LongformPage() {
             {/* ════ 직접 입력 / 업로드 모드 ════ */}
             {inputMode === 'manual' && (
               <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-                <div className="grid md:grid-cols-3 gap-6">
+                <div className="flex flex-col gap-4">
 
-                  {/* 성우 선택 (1/3) — 1열 3행 */}
-                  <div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <FontAwesomeIcon icon={faMicrophone} className="text-fuchsia-400 text-sm" />
-                      <span className="text-sm font-black text-white">AI 성우 선택</span>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2">
-                      {VOICES.map((v, idx) => (
-                        <VoiceCard key={v.id} v={v} idx={idx} selected={voice.id === v.id}
-                          previewing={previewing === v.id} onSelect={() => setVoice(v)} onPreview={() => handlePreview(v)} />
-                      ))}
-                    </div>
-                    <TtsSpeedControl value={ttsSpeed} onChange={setTtsSpeed} />
+                  <TtsSpeedControl value={ttsSpeed} onChange={setTtsSpeed} />
 
-                    {/* 입력 형식 안내 */}
-                    <div className="mt-4 bg-slate-900/60 border border-slate-800 rounded-2xl p-4">
-                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">입력 형식 안내</p>
-                      <div className="space-y-1 font-mono text-[11px] text-slate-400">
-                        <p><span className="text-indigo-400">[씬1]</span> 나레이션 텍스트 (권장)</p>
-                        <p><span className="text-indigo-400">[씬2]</span> 씬 태그 없이도 동작</p>
-                        <p className="text-slate-600 pt-1">• 씬 태그 없으면 줄바꿈 기준 자동 분리</p>
-                        <p className="text-slate-600">• .txt 파일은 UTF-8 인코딩 권장</p>
-                      </div>
+                  {/* 입력 형식 안내 */}
+                  <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4">
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">입력 형식 안내</p>
+                    <div className="space-y-1 font-mono text-[11px] text-slate-400">
+                      <p><span className="text-indigo-400">[씬1]</span> 나레이션 텍스트 (권장)</p>
+                      <p><span className="text-indigo-400">[씬2]</span> 씬 태그 없이도 동작</p>
+                      <p className="text-slate-600 pt-1">• 씬 태그 없으면 줄바꿈 기준 자동 분리</p>
+                      <p className="text-slate-600">• .txt 파일은 UTF-8 인코딩 권장</p>
                     </div>
                   </div>
 
-                  {/* 텍스트 입력 영역 (2/3) — 높이 자동 확장 */}
-                  <div className="md:col-span-2 flex flex-col">
+                  {/* 텍스트 입력 영역 — 높이 자동 확장 */}
+                  <div className="flex flex-col">
                     <div className="flex items-center gap-2 mb-2">
                       <FontAwesomeIcon icon={faPenToSquare} className="text-indigo-400 text-sm" />
                       <span className="text-sm font-black text-white">시나리오 직접 입력</span>
@@ -1447,32 +1425,35 @@ function TemplateCard({ t, selected, onSelect, accent }: { t: Template; selected
   );
 }
 
-function ArtStyleCard({ a, selected, onSelect }: { a: ArtStyle; selected: boolean; onSelect: () => void }) {
+function ArtStyleCard({ a, selected, disabled, onSelect }: { a: ArtStyle; selected: boolean; disabled?: boolean; onSelect: () => void }) {
+  const hasImage = !!a.bgImage;
   return (
     <button
       onClick={onSelect}
+      disabled={disabled}
       className={`group relative h-40 rounded-2xl overflow-hidden border transition-all duration-300 text-left ${
-        selected
-          ? 'border-fuchsia-400/60 scale-[1.02] shadow-[0_16px_32px_-8px_rgba(217,70,239,0.4)] ring-2 ring-fuchsia-500/20'
-          : 'border-white/10 hover:border-white/20 hover:scale-[1.01]'
+        disabled
+          ? 'opacity-25 cursor-not-allowed border-white/5'
+          : selected
+            ? 'border-fuchsia-400/60 scale-[1.02] shadow-[0_16px_32px_-8px_rgba(217,70,239,0.4)] ring-2 ring-fuchsia-500/20'
+            : 'border-white/10 hover:border-white/20 hover:scale-[1.01]'
       }`}
     >
-      {/* 배경 이미지 */}
-      <div 
-        className="absolute inset-0 transition-transform duration-700 group-hover:scale-110"
-        style={{
-          backgroundImage: `url(${a.bgImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      />
-
-      {/* 필터 오버레이 */}
-      <div className={`absolute inset-0 transition-all duration-500 ${
-        selected 
-          ? 'bg-violet-950/30 backdrop-blur-[1px]' 
-          : 'bg-black/50 group-hover:bg-black/30'
-      }`} />
+      {hasImage ? (
+        <>
+          <div
+            className="absolute inset-0 transition-transform duration-700 group-hover:scale-110"
+            style={{ backgroundImage: `url(${a.bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+          />
+          <div className={`absolute inset-0 transition-all duration-500 ${selected ? 'bg-violet-950/30 backdrop-blur-[1px]' : 'bg-black/50 group-hover:bg-black/30'}`} />
+        </>
+      ) : (
+        <div className={`absolute inset-0 transition-all duration-300 ${
+          selected
+            ? 'bg-gradient-to-br from-fuchsia-950 via-indigo-950 to-slate-900'
+            : 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 group-hover:from-slate-800 group-hover:via-slate-700 group-hover:to-slate-800'
+        }`} />
+      )}
 
       {/* 선택 상단 라인 */}
       {selected && <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-indigo-500 to-fuchsia-500 z-20" />}
@@ -1483,9 +1464,14 @@ function ArtStyleCard({ a, selected, onSelect }: { a: ArtStyle; selected: boolea
             <FontAwesomeIcon icon={faCheckCircle} />
           </div>
         )}
+        {!hasImage && !disabled && (
+          <div className="absolute top-3 left-3 px-1.5 py-0.5 rounded text-[9px] font-bold bg-slate-700/80 text-slate-400 border border-slate-600/50 z-10">
+            준비중
+          </div>
+        )}
         <div>
-          <p className={`font-black text-base mb-0.5 text-white drop-shadow-lg`}>{a.label}</p>
-          <p className={`text-[11px] leading-relaxed ${selected ? 'text-fuchsia-200' : 'text-white/60'} drop-shadow-md`}>{a.desc}</p>
+          <p className={`font-black text-base mb-0.5 ${hasImage ? 'text-white drop-shadow-lg' : selected ? 'text-fuchsia-200' : 'text-slate-200'}`}>{a.label}</p>
+          <p className={`text-[11px] leading-relaxed ${selected ? 'text-fuchsia-200' : hasImage ? 'text-white/60 drop-shadow-md' : 'text-slate-400'}`}>{a.desc}</p>
         </div>
       </div>
     </button>
@@ -1493,22 +1479,55 @@ function ArtStyleCard({ a, selected, onSelect }: { a: ArtStyle; selected: boolea
 }
 
 function MiniStyleCard({ s, selected, onSelect }: { s: Style; selected: boolean; onSelect: () => void }) {
+  const hasBg = !!s.bgImage;
   return (
     <button
       onClick={onSelect}
-      className={`group flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all duration-200 text-center ${
+      className={`group relative rounded-xl border overflow-hidden transition-all duration-200 text-center ${
         selected
-          ? 'bg-gradient-to-br from-indigo-950 to-fuchsia-950 border-fuchsia-500/50 shadow-lg shadow-fuchsia-500/10 scale-[1.03]'
-          : 'bg-slate-900/60 border-slate-800 hover:border-slate-600'
+          ? 'border-fuchsia-500/60 shadow-lg shadow-fuchsia-500/20 scale-[1.03] ring-2 ring-fuchsia-500/20'
+          : 'border-slate-800 hover:border-slate-600 hover:scale-[1.02]'
       }`}
+      style={{ aspectRatio: '1 / 1' }}
     >
-      {selected && <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-indigo-500 to-fuchsia-500 rounded-t-xl" />}
-      <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm transition-all ${
-        selected ? 'bg-gradient-to-br from-indigo-500 to-fuchsia-500 text-white' : 'bg-slate-800 text-slate-400 group-hover:text-white'
-      }`}>
-        <FontAwesomeIcon icon={s.icon} />
+      {/* 배경 */}
+      {hasBg ? (
+        <div
+          className="absolute inset-0 transition-transform duration-500 group-hover:scale-110"
+          style={{ backgroundImage: `url(${s.bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+        />
+      ) : (
+        <div className={`absolute inset-0 transition-all duration-200 ${
+          selected
+            ? 'bg-gradient-to-br from-indigo-950 to-fuchsia-950'
+            : 'bg-slate-900/80 group-hover:bg-slate-800/80'
+        }`} />
+      )}
+
+      {/* 오버레이 */}
+      <div className={`absolute inset-0 ${hasBg ? (selected ? 'bg-black/40' : 'bg-black/55 group-hover:bg-black/35') : ''}`} />
+
+      {/* 선택 상단 라인 */}
+      {selected && <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-indigo-500 to-fuchsia-500 z-20" />}
+
+      {/* 선택 체크 */}
+      {selected && (
+        <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-fuchsia-500 flex items-center justify-center text-[9px] text-white z-20">
+          <FontAwesomeIcon icon={faCheckCircle} />
+        </div>
+      )}
+
+      {/* 콘텐츠 */}
+      <div className="relative z-10 h-full flex flex-col items-center justify-center gap-2 p-3">
+        <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-sm transition-all ${
+          selected ? 'bg-fuchsia-500/80 text-white' : 'bg-slate-800/80 text-slate-400 group-hover:text-white'
+        }`}>
+          <FontAwesomeIcon icon={s.icon} />
+        </div>
+        <span className={`text-[10px] font-black leading-tight drop-shadow ${selected ? 'text-white' : hasBg ? 'text-white/80' : 'text-slate-400'}`}>
+          {s.label}
+        </span>
       </div>
-      <span className={`text-[10px] font-black leading-tight ${selected ? 'text-white' : 'text-slate-400'}`}>{s.label}</span>
     </button>
   );
 }
@@ -1576,38 +1595,6 @@ function ScenarioCardUI({ card, selected, onSelect }: { card: ScenarioCard; sele
   );
 }
 
-function VoiceCard({ v, idx, selected, previewing, onSelect, onPreview }: {
-  v: Voice; idx: number; selected: boolean; previewing: boolean;
-  onSelect: () => void; onPreview: () => void;
-}) {
-  return (
-    <div onClick={onSelect} className={`group relative aspect-square rounded-2xl border overflow-hidden cursor-pointer transition-all duration-300 ${
-      selected ? 'border-violet-400 scale-[1.04] shadow-[0_8px_24px_-8px_rgba(217,70,239,0.4)]' : 'border-white/10 hover:border-white/25'
-    }`}>
-      <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-110"
-        style={{
-          backgroundImage: `url(${['지수','다인','영철'].includes(v.name) ? '/img/content/longform/Voiceactor2.webp' : '/img/content/longform/Voiceactor.webp'})`,
-          backgroundSize: '400% 200%',
-          backgroundPosition: `${(idx % 4) * 33.3}% ${Math.floor(idx / 4) * 100}%`,
-          opacity: 0.7,
-        }} />
-      <div className={`absolute inset-0 transition-all ${selected ? 'bg-violet-950/50' : 'bg-black/60 group-hover:bg-black/40'}`} />
-      <div className="relative z-10 h-full flex flex-col items-center justify-center gap-1.5 px-1">
-        <button onClick={e => { e.stopPropagation(); onPreview(); }}
-          className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${
-            previewing ? 'bg-gradient-to-br from-fuchsia-500 to-indigo-500 text-white animate-pulse' : 'bg-white/10 text-white hover:bg-gradient-to-br hover:from-indigo-500 hover:to-fuchsia-500'
-          }`}>
-          <FontAwesomeIcon icon={previewing ? faSync : faVolumeUp} className={`text-xs ${previewing ? 'animate-spin' : ''}`} />
-        </button>
-        <span className="text-white text-[11px] font-black drop-shadow">{v.name}</span>
-        <div className="flex items-center gap-1">
-          <FontAwesomeIcon icon={v.gender === 'MALE' ? faMars : faVenus} className="text-[9px] text-slate-300" />
-          <span className="text-[8px] text-slate-400 font-bold uppercase">{v.type}</span>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function TtsSpeedControl({ value, onChange }: { value: number; onChange: (v: number) => void }) {
   const presets = [0.8, 1.0, 1.2, 1.5];

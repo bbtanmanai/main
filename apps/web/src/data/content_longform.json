@@ -7,7 +7,8 @@
       "bgImage": "/img/content/longform/health-senior.webp",
       "color": "bg-rose-500",
       "category": "vault",
-      "notebookId": "b9d4db2d-bc89-46a6-b5ec-b85579c8dc30"
+      "notebookId": "b9d4db2d-bc89-46a6-b5ec-b85579c8dc30",
+      "compatibleStyles": ["health-senior-1", "health-senior-2", "ghibli-real", "reality", "lifestyle-2", "pixar-3d"]
     },
     {
       "id": "stock-news",
@@ -16,7 +17,8 @@
       "bgImage": "/img/content/longform/stock-news.webp",
       "color": "bg-emerald-500",
       "category": "vault",
-      "notebookId": "a8891e02-4fc9-4593-8fc7-fb13333ea6a7"
+      "notebookId": "a8891e02-4fc9-4593-8fc7-fb13333ea6a7",
+      "compatibleStyles": ["stock-news-1", "stock-news-2", "economy-global", "news-anchor", "reality", "tech-trend-1"]
     },
     {
       "id": "tech-trend",
@@ -25,7 +27,8 @@
       "bgImage": "/img/content/longform/tech-trend.webp",
       "color": "bg-indigo-500",
       "category": "vault",
-      "notebookId": "1522568a-5833-45f4-baa3-8ad2d6afb795"
+      "notebookId": "1522568a-5833-45f4-baa3-8ad2d6afb795",
+      "compatibleStyles": ["tech-trend-1", "tech-trend-2", "anime-sf", "reality", "economy-global"]
     },
     {
       "id": "wisdom-quotes",
@@ -34,7 +37,8 @@
       "bgImage": "/img/content/longform/wisdom-quotes.webp",
       "color": "bg-amber-500",
       "category": "vault",
-      "notebookId": "6a6dee66-1811-4939-80cc-4ab57f50810b"
+      "notebookId": "6a6dee66-1811-4939-80cc-4ab57f50810b",
+      "compatibleStyles": ["wisdom-quotes-1", "wisdom-quotes-2", "ghibli-night", "ghibli-real"]
     },
     {
       "id": "lifestyle",
@@ -43,7 +47,8 @@
       "bgImage": "/img/content/longform/lifestyle.webp",
       "color": "bg-teal-500",
       "category": "vault",
-      "notebookId": "fe5bcad7-cc23-412d-804d-b2d1f0277527"
+      "notebookId": "fe5bcad7-cc23-412d-804d-b2d1f0277527",
+      "compatibleStyles": ["lifestyle-1", "lifestyle-2", "ghibli-real", "pixar-3d", "ghibli-night"]
     },
     {
       "id": "shorts-viral",
@@ -52,7 +57,8 @@
       "bgImage": "/img/content/longform/shorts-viral.webp",
       "color": "bg-fuchsia-500",
       "category": "content",
-      "notebookId": "ff2dce84-b2a0-4033-8c0b-030e9c9f8fd9"
+      "notebookId": "ff2dce84-b2a0-4033-8c0b-030e9c9f8fd9",
+      "compatibleStyles": ["anime-sf", "ghibli-real", "pixar-3d", "lifestyle-1", "tech-trend-1"]
     },
     {
       "id": "insta-marketing",
@@ -61,7 +67,8 @@
       "bgImage": "/img/content/longform/insta-marketing.webp",
       "color": "bg-pink-500",
       "category": "content",
-      "notebookId": "39ee7e22-a2d8-43f1-96c2-3facbe9495c2"
+      "notebookId": "39ee7e22-a2d8-43f1-96c2-3facbe9495c2",
+      "compatibleStyles": ["lifestyle-1", "lifestyle-2", "ghibli-real", "pixar-3d", "anime-sf"]
     },
     {
       "id": "blog-seo",
@@ -70,7 +77,8 @@
       "bgImage": "/img/content/longform/blog-seo.webp",
       "color": "bg-orange-500",
       "category": "content",
-      "notebookId": "477e9b88-d64c-4678-9e0f-e2978b3bd1e0"
+      "notebookId": "477e9b88-d64c-4678-9e0f-e2978b3bd1e0",
+      "compatibleStyles": ["ghibli-real", "reality", "wisdom-quotes-1", "lifestyle-1", "ghibli-night"]
     },
     {
       "id": "ai-video-ads",
@@ -79,7 +87,8 @@
       "bgImage": "/img/content/longform/ai-video-ads.webp",
       "color": "bg-violet-600",
       "category": "content",
-      "notebookId": "4aed5fdc-3c29-4682-ae9a-4d699349950e"
+      "notebookId": "4aed5fdc-3c29-4682-ae9a-4d699349950e",
+      "compatibleStyles": ["tech-trend-1", "tech-trend-2", "anime-sf", "ghibli-real", "reality"]
     },
     {
       "id": "ai-business",
@@ -88,7 +97,8 @@
       "bgImage": "/img/content/longform/ai-business.webp",
       "color": "bg-sky-500",
       "category": "content",
-      "notebookId": "e415edf8-2366-4cb5-81d8-fa63bd8f2b34"
+      "notebookId": "e415edf8-2366-4cb5-81d8-fa63bd8f2b34",
+      "compatibleStyles": ["tech-trend-1", "tech-trend-2", "economy-global", "stock-news-1", "reality", "news-anchor"]
     },
     {
       "id": "digital-product",
@@ -97,7 +107,8 @@
       "bgImage": "/img/content/longform/digital-product.webp",
       "color": "bg-cyan-600",
       "category": "content",
-      "notebookId": "3c353b30-0945-4d5e-b88f-ce87f54a5784"
+      "notebookId": "3c353b30-0945-4d5e-b88f-ce87f54a5784",
+      "compatibleStyles": ["lifestyle-1", "lifestyle-2", "ghibli-real", "pixar-3d", "tech-trend-1"]
     },
     {
       "id": "workflow",
@@ -106,19 +117,28 @@
       "bgImage": "/img/content/longform/workflow.webp",
       "color": "bg-slate-600",
       "category": "content",
-      "notebookId": "8508afbe-75a6-4c35-baee-58b60c825b15"
+      "notebookId": "8508afbe-75a6-4c35-baee-58b60c825b15",
+      "compatibleStyles": ["tech-trend-1", "tech-trend-2", "reality", "economy-global", "news-anchor"]
     }
   ],
   "artStyles": [
-    { "id": "hollywood-sf", "label": "Hollywood SF", "desc": "네온 사이버펑크 조명", "bgImage": "/img/content/longform/hollywood-sf.webp", "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nHollywood SF cinematic cyberpunk neon lighting, UE5 quality." },
-    { "id": "anime-sf", "label": "일본 애니 SF", "desc": "지브리 스타일 수채화", "bgImage": "/img/content/longform/anime-sf.webp", "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nJapanese anime SF, Ghibli style watercolor, vivid pastel colors." },
-    { "id": "ink-wash", "label": "수묵화", "desc": "전통 수묵 필치", "bgImage": "/img/content/longform/Ink-wash.webp", "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nTraditional Oriental ink wash painting, dynamic brush strokes." },
-    { "id": "pixar-3d", "label": "픽사 3D", "desc": "따뜻한 3D 렌더링", "bgImage": "/img/content/longform/pixar-3d.webp", "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nPixar 3D animation style, warm lighting, pastel palette." },
-    { "id": "neo-noir", "label": "네오 누와르", "desc": "흑백 고대비 연출", "bgImage": "/img/content/longform/neo-noir.webp", "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nNeo-noir graphic novel style, high contrast black and white, scarlet red accent." },
-    { "id": "pop-art", "label": "팝아트", "desc": "앤디워홀 망점 패턴", "bgImage": "/img/content/longform/pop-art.webp", "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nPop art style, halftone patterns, vivid primary colors, Andy Warhol aesthetic." },
-    { "id": "reality", "label": "실사", "desc": "RAW 사진 퀄리티", "bgImage": "/img/content/longform/reality.webp", "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nRealistic RAW photo quality, detailed textures, natural lighting." },
-    { "id": "ghibli-real", "label": "지브리+실사", "desc": "하이브리드 감성", "bgImage": "/img/content/longform/ghibli-real.webp", "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nHybrid Ghibli watercolor background with realistic cinematic focus." },
-    { "id": "sticker-cutout", "label": "스티커 컷아웃", "desc": "굿즈 캐릭터 스타일", "bgImage": "/img/content/longform/sticker-cutout.webp", "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nSticker cutout style, white die-cut borders, character-focused goods quality." }
+    { "id": "ghibli-real",     "label": "지브리 실사풍",       "desc": "따뜻한 황금빛 목가적 풍경",   "bgImage": "/img/content/longform/ghibli-real.webp",   "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nHybrid Ghibli watercolor background with realistic cinematic focus." },
+    { "id": "ghibli-night",    "label": "지브리 야경",          "desc": "별빛 마을 감성 야경",          "bgImage": "/img/content/longform/ghibli-night.webp",  "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nStudio Ghibli magical night scene, starry sky, glowing village, fireflies." },
+    { "id": "reality",         "label": "실사 다큐풍",          "desc": "BBC 다큐 시네마틱 연출",       "bgImage": "/img/content/longform/reality.webp",       "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nRealistic RAW photo quality, detailed textures, natural lighting." },
+    { "id": "anime-sf",        "label": "애니메이션 SF",        "desc": "도시 야경 미래 도시",          "bgImage": "/img/content/longform/anime-sf.webp",      "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nJapanese anime SF, Ghibli style watercolor, vivid pastel colors." },
+    { "id": "pixar-3d",        "label": "픽사 3D",              "desc": "따뜻한 3D 렌더링",             "bgImage": "/img/content/longform/pixar-3d.webp",      "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nPixar 3D animation style, warm lighting, pastel palette." },
+    { "id": "health-senior-1", "label": "시니어건강 따뜻한치유", "desc": "치유·힐링 황금빛 새벽",       "bgImage": "/img/content/longform/health-senior-1.webp", "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nWarm healing morning light, golden green nature, senior wellness atmosphere." },
+    { "id": "health-senior-2", "label": "시니어건강 자연치유",  "desc": "숲속 빛내림 치유 공간",        "bgImage": "/img/content/longform/health-senior-2.webp", "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nForest nature therapy, sunlight through canopy, falling leaves, healing atmosphere." },
+    { "id": "tech-trend-1",    "label": "기술트렌드 사이버미래", "desc": "데이터 스트림 사이버 공간",   "bgImage": "/img/content/longform/tech-trend-1.webp",    "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nFuturistic cyber technology, data streams, hexagonal grids, neon circuit traces." },
+    { "id": "tech-trend-2",    "label": "기술트렌드 혁신연구소", "desc": "빛의 폭발 아이디어 공간",    "bgImage": "/img/content/longform/tech-trend-2.webp",    "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nInnovation lab, violet light burst, rotating rings, geometric particles, blueprint grid." },
+    { "id": "stock-news-1",    "label": "주식재테크 상승강세",  "desc": "골드 파티클 강세장 에너지",    "bgImage": "/img/content/longform/stock-news-1.webp",    "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nBull market financial background, rising chart lines, golden particles, wealth energy." },
+    { "id": "stock-news-2",    "label": "주식재테크 데이터분석", "desc": "앰버 데이터 그리드 분석",     "bgImage": "/img/content/longform/stock-news-2.webp",    "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nData analysis financial background, amber grid lines, bar chart silhouettes, warm bokeh." },
+    { "id": "news-anchor",     "label": "시사뉴스 방송스튜디오", "desc": "딥네이비 방송 권위 무게감",   "bgImage": "/img/content/longform/news-anchor.webp",     "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nAuthoritative broadcast news studio, deep navy, horizontal light bars, radar pulse rings." },
+    { "id": "economy-global",  "label": "글로벌경제 세계데이터", "desc": "세계지도 무역 데이터 흐름",   "bgImage": "/img/content/longform/economy-global.webp",  "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nGlobal economy world grid, trade arc routes, glowing nodes, gold capital flow streams." },
+    { "id": "wisdom-quotes-1", "label": "명언지혜 선명상",      "desc": "수묵 산수 안개 명상 공간",    "bgImage": "/img/content/longform/wisdom-quotes-1.webp", "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nZen meditation ink-wash mountains, mist bands, water ripple, falling petals, stillness." },
+    { "id": "wisdom-quotes-2", "label": "명언지혜 우주성찰",    "desc": "별빛 은하 우주적 성찰",        "bgImage": "/img/content/longform/wisdom-quotes-2.webp", "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nCosmic contemplation, deep space star field, Milky Way arc, wisdom aurora gold and teal." },
+    { "id": "lifestyle-1",     "label": "라이프스타일 아늑한일상","desc": "따뜻한 오후 보케 감성",      "bgImage": "/img/content/longform/lifestyle-1.webp",     "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nCozy lifestyle, warm amber light bloom, pastel bokeh, floating comfort shapes." },
+    { "id": "lifestyle-2",     "label": "라이프스타일 자연활력", "desc": "맑은 아침 테일 자연 에너지",  "bgImage": "/img/content/longform/lifestyle-2.webp",      "notebooklmPrompt": "각각의 슬라이드가 키프레임이 되도록 해주고 슬라이드에는 텍스트를 넣지 말아줘.\nActive nature lifestyle, fresh teal sky, morning light rays, breeze particles, water shimmer." }
   ],
   "narrativeStyles": [
     { "id": "ranking", "icon": "faTrophy", "label": "랭킹형", "desc": "TOP N 순위 제공", "example": "건강식품 TOP 5 추천", "directive": "Create a ranking-style scenario from lowest to highest rank." },

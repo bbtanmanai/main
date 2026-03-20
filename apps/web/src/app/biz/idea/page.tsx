@@ -24,6 +24,7 @@ import {
   faUsers,
   faEye,
 } from '@fortawesome/free-solid-svg-icons';
+import TextType from '@/components/TextType';
 
 function parseKorNum(s: string): number {
   if (!s) return 0;
@@ -840,10 +841,18 @@ export default function BizIdeaPage() {
             <span className="text-[#a78bfa] text-xs font-black uppercase tracking-[0.25em]">IDEA · BENCHMARK</span>
           </div>
           <h1 className="text-4xl lg:text-5xl font-black tracking-tighter mb-3 leading-tight">
-            아이디어 리서치{' '}
-            <span className="bg-gradient-to-r from-[#a78bfa] to-[#6366f1] bg-clip-text text-transparent">
-              벤치마킹 분석
-            </span>
+            <TextType
+              as="span"
+              text={['아이디어 리서치 벤치마킹 분석', '유튜브 트렌드 분석', '경쟁 콘텐츠 벤치마킹', '바이럴 아이디어 발굴']}
+              typingSpeed={55}
+              deletingSpeed={25}
+              pauseDuration={2500}
+              loop={true}
+              showCursor={true}
+              cursorCharacter="|"
+              className="bg-gradient-to-r from-[#a78bfa] to-[#6366f1] bg-clip-text text-transparent"
+              cursorClassName="text-[#a78bfa]"
+            />
           </h1>
           <p className="text-slate-400 text-sm lg:text-base font-medium max-w-2xl mx-auto leading-relaxed">
             벤치마킹 소스에서 아이디어 초안을 만들고, 시나리오 작성으로 이어집니다.

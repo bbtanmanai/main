@@ -4,6 +4,9 @@ import fs from 'fs/promises';
 
 export const runtime = 'nodejs';
 
+const R2_ASSETS_PUBLIC_URL =
+  process.env.R2_ASSETS_PUBLIC_URL ?? 'https://pub-9b7c116d09c3476691ecd17c044ca347.r2.dev';
+
 type SfxItem = {
   id: string;
   name: string;
@@ -55,24 +58,24 @@ function safeIdFromPath(relPath: string) {
 }
 
 async function buildCatalog(): Promise<SfxCatalog> {
-  const publicDir = path.join(process.cwd(), 'public');
-  const sfxDir = path.join(publicDir, 'assets', 'sfx');
+  const sfxDir = path.join(process.cwd(), 'public', 'assets', 'sfx');
 
   const files = await walkFiles(sfxDir);
   const items: SfxItem[] = [];
 
   for (const full of files) {
-    const rel = toPosix(path.relative(publicDir, full));
-    const urlPath = '/' + rel.split('/').map((seg) => encodeURIComponent(seg)).join('/');
-    const segs = rel.split('/');
-    const mainCategory = segs[2] || '기타';
-    const subCategory = segs[3] || '기타';
+    const relToSfx = toPosix(path.relative(sfxDir, full));
+    const segs = relToSfx.split('/');
+    const mainCategory = segs[0] || '기타';
+    const subCategory = segs.length > 2 ? segs[1] : '기타';
     const base = path.basename(full);
     const name = base.replace(path.extname(base), '');
+    const r2Path = 'sfx/' + relToSfx.split('/').map((seg) => encodeURIComponent(seg)).join('/');
+    const r2Url = `${R2_ASSETS_PUBLIC_URL}/${r2Path}`;
     items.push({
-      id: safeIdFromPath(rel),
+      id: safeIdFromPath(relToSfx),
       name,
-      path: urlPath,
+      path: r2Url,
       mainCategory,
       subCategory,
     });
