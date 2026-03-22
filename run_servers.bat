@@ -29,23 +29,17 @@ if exist "apps\web\.next\cache" (
 
 :: 3. 백엔드 기동 (FastAPI)
 echo [3/5] Launching Backend Engine (Port 8000)...
-cd /d "%~dp0apps\api"
-start "LinkDrop-Backend" /min cmd /k "set PYTHONUTF8=1 && .venv\Scripts\python.exe main.py"
-cd /d "%~dp0"
+start "LinkDrop-Backend" /D "%~dp0apps\api" cmd /k ".venv\Scripts\python.exe -X utf8 main.py"
 timeout /t 3 /nobreak >nul
 
 :: 4. 프론트엔드 기동 (Next.js)
 echo [4/5] Launching Frontend (Port 3000)...
-cd /d "%~dp0apps\web"
-start "LinkDrop-Frontend" /min cmd /k "npm run dev"
-cd /d "%~dp0"
+start "LinkDrop-Frontend" /D "%~dp0apps\web" cmd /k "npm run dev"
 
 :: 5. 데스크톱 앱 기동 (Electron + Pipeline Server 7788)
 echo [5/5] Launching Desktop App (Port 7788)...
 timeout /t 2 /nobreak >nul
-cd /d "%~dp0apps\desktop"
-start "LinkDrop-Desktop" /min cmd /k "npm start"
-cd /d "%~dp0"
+start "LinkDrop-Desktop" /D "%~dp0apps\desktop" cmd /k "npm start"
 
 :: 웹 서버 대기
 echo.
