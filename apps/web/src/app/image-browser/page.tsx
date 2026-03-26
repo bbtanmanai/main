@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import keyframeToolsData from '@/data/keyframe_tools.json';
 
@@ -11,6 +11,14 @@ type KeyframeTool = {
 const TOOLS = keyframeToolsData.tools as KeyframeTool[];
 
 export default function ImageBrowserPage() {
+  return (
+    <Suspense>
+      <ImageBrowserInner />
+    </Suspense>
+  );
+}
+
+function ImageBrowserInner() {
   const searchParams = useSearchParams();
   const initScene    = Number(searchParams.get('scene') ?? 0);
   const initToolId   = searchParams.get('tool') ?? TOOLS[0].id;
@@ -301,3 +309,4 @@ export default function ImageBrowserPage() {
     </div>
   );
 }
+
