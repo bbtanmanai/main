@@ -9,6 +9,9 @@ admin-static/
 docs/
 0. docs/
 0. rules/
+.obsidian/
+Ob/
+링크드랍/
 
 # Environment and Secrets
 .env
@@ -57,6 +60,7 @@ dist/
 
 # Local test scratch
 opal_test/
+tmp/
 
 # Data and Artifacts
 packages/data/
