@@ -19,8 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko">
-      <body className={`${notoShadow.className} bg-[#f8fafc]`}>
+    <html lang="ko" suppressHydrationWarning>
+      <body className={`${notoShadow.className} bg-[#f8fafc]`} suppressHydrationWarning>
         {/* 루트에서는 공통 GNB를 제거하고 각 서비스 레이아웃에서 처리함 */}
         {children}
       </body>

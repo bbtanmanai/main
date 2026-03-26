@@ -1,0 +1,14 @@
+{
+  "voices": [
+    { "id": "ko-KR-SunHiNeural", "name": "서윤", "gender": "F", "age": "20-30", "engine": "edge-tts", "preview": "/assets/audio/preview/서윤.mp3" },
+    { "id": "ko-KR-InJoonNeural", "name": "도윤", "gender": "M", "age": "20-30", "engine": "edge-tts", "preview": "/assets/audio/preview/도윤.mp3" },
+    { "id": "ko-KR-JiMinNeural", "name": "미소", "gender": "F", "age": "40-50", "engine": "edge-tts", "preview": "/assets/audio/preview/미소.mp3" },
+    { "id": "ko-KR-HyunsuNeural", "name": "하준", "gender": "M", "age": "40-50", "engine": "edge-tts", "preview": "/assets/audio/preview/하준.mp3" },
+    { "id": "ko-KR-SeoHyeonNeural", "name": "고은", "gender": "F", "age": "50-60", "engine": "edge-tts", "preview": "/assets/audio/preview/고은.mp3" },
+    { "id": "ko-KR-GookMinNeural", "name": "영철", "gender": "M", "age": "50-60", "engine": "edge-tts", "preview": "/assets/audio/preview/영철.mp3" },
+    { "id": "ko-KR-YuJinNeural", "name": "다인", "gender": "F", "age": "senior", "engine": "edge-tts", "preview": "/assets/audio/preview/다인.mp3" },
+    { "id": "ko-KR-BongJinNeural", "name": "준호", "gender": "M", "age": "senior", "engine": "edge-tts", "preview": "/assets/audio/preview/준호.mp3" },
+    { "id": "ko-KR-SoonBokNeural", "name": "순자", "gender": "F", "age": "senior", "engine": "edge-tts", "preview": "" },
+    { "id": "andrew", "name": "만복", "gender": "M", "age": "senior", "engine": "supertone", "preview": "" }
+  ]
+}

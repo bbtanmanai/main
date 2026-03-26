@@ -10,8 +10,11 @@ interface PartLayout {
 }
 
 interface CharacterCalibration {
-  ref_width: number;  // 기준 컨테이너 폭 (보통 430)
-  ref_height: number; // 기준 컨테이너 높이 (보통 764)
+  ref_width: number;
+  ref_height: number;
+  useBodyImage?: boolean;
+  fullImageLipSync?: boolean; // true = mouth 파일이 캐릭터 전체 이미지 (c13 방식)
+  mouthPrefix?: string;       // mouth 파일명 앞에 붙는 접두사 (예: "c13_")
   parts: {
     head:      PartLayout & { pivot: [number, number] };
     eyes:      PartLayout;
@@ -31,11 +34,24 @@ const CALIBRATIONS: Record<string, CharacterCalibration> = {
   c6: {
     ref_width: 430,
     ref_height: 764,
+    useBodyImage: true,
     parts: {
       head:      { left: 158, top: 20,  width: 123, pivot: [0.5, 0.88] },
       eyes:      { left: 177, top: 68,  width: 87 },
       mouth:     { left: 189, top: 118, width: 65 },
       arm_right: { left: 227, top: 169, width: 78, pivot: [0.36, 0.15] },
+    },
+  },
+  c13: {
+    ref_width: 300,
+    ref_height: 450,
+    fullImageLipSync: true, // mouth 파일이 캐릭터 전체 이미지
+    mouthPrefix: "c13_",    // c13_mouth_closed.png 등
+    parts: {
+      head:      { left: 0, top: 0, width: 300, pivot: [0.5, 0.5] },
+      eyes:      { left: 0, top: 0, width: 300 },
+      mouth:     { left: 0, top: 0, width: 300 },
+      arm_right: { left: 0, top: 0, width: 300, pivot: [0.5, 0.5] },
     },
   },
 };
@@ -78,7 +94,7 @@ export const Character: React.FC<{
   const charBase = `/img/content/character/${characterId}`;
 
   const cal = CALIBRATIONS[characterId] ?? DEFAULT_CAL;
-  const { ref_width, ref_height, parts } = cal;
+  const { ref_width, ref_height, parts, useBodyImage = true, fullImageLipSync = false, mouthPrefix = "" } = cal;
 
   // ── 등장 / 퇴장 ────────────────────────────────────────────────────
   const enterY = interpolate(frame, [0, 15, 22, 28], [80, -6, 3, 0], { extrapolateRight: "clamp" });
@@ -128,17 +144,23 @@ export const Character: React.FC<{
   // ── 컨테이너 크기 + 위치 ──────────────────────────────────────────
   let sizeScale = scale;
   let displayMode: "fullbody" | "upperbody" = "fullbody";
-  switch (visualType) {
-    case "comparison_table": case "split_screen": case "ranking_list":
-      sizeScale *= 0.85; displayMode = "upperbody"; break;
-    case "icon_grid": case "flowchart":
-      sizeScale *= 0.80; displayMode = "upperbody"; break;
-    case "stat_card": case "timeline":
-      sizeScale *= 0.90; break;
+
+  if (fullImageLipSync) {
+    // c13 방식: 항상 fullbody, 1.3배 크기, 하단 밀착
+    sizeScale *= 1.3;
+  } else {
+    switch (visualType) {
+      case "comparison_table": case "split_screen": case "ranking_list":
+        sizeScale *= 0.85; displayMode = "upperbody"; break;
+      case "icon_grid": case "flowchart":
+        sizeScale *= 0.80; displayMode = "upperbody"; break;
+      case "stat_card": case "timeline":
+        sizeScale *= 0.90; break;
+    }
   }
 
   const containerWidth = ref_width * sizeScale;
-  const bottomOffset   = displayMode === "fullbody" ? 10 : -260 * sizeScale;
+  const bottomOffset   = fullImageLipSync ? -15 : (displayMode === "fullbody" ? 10 : -260 * sizeScale);
 
   let posStyle: React.CSSProperties = {};
   if      (position === "right")  posStyle = { right: 30 };
@@ -158,6 +180,28 @@ export const Character: React.FC<{
   });
 
   // ── 렌더 ──────────────────────────────────────────────────────────
+
+  // c13 방식: mouth 파일이 전체 캐릭터 이미지 → 단순 이미지 교체
+  if (fullImageLipSync) {
+    return (
+      <div style={{
+        position: "absolute",
+        bottom: bottomOffset,
+        ...posStyle,
+        width: containerWidth,
+        opacity,
+        transform: `translateY(${enterY}px) scaleY(${breathe})`,
+        transformOrigin: "bottom center",
+        zIndex: 5,
+      }}>
+        <Img
+          src={staticFile(`${charBase}/${mouthPrefix}${mouthFile}.png`)}
+          style={{ width: "100%", display: "block" }}
+        />
+      </div>
+    );
+  }
+
   return (
     <div style={{
       position: "absolute",
@@ -168,16 +212,21 @@ export const Character: React.FC<{
       transform: `translateY(${enterY}px)`,
       zIndex: 5,
     }}>
-      {/* 레이어 1: body (전신 — 호흡 애니메이션) */}
+      {/* 레이어 1: body (호흡 애니메이션) — useBodyImage=false 시 투명 공간만 확보 */}
       <div style={{
         position: "relative",
         transform: `scaleY(${breathe})`,
         transformOrigin: "bottom center",
       }}>
-        <Img
-          src={staticFile(`${charBase}/${characterId}.png`)}
-          style={{ width: "100%", display: "block" }}
-        />
+        {useBodyImage ? (
+          <Img
+            src={staticFile(`${charBase}/${characterId}.png`)}
+            style={{ width: "100%", display: "block" }}
+          />
+        ) : (
+          /* 파트 파일만 사용 — 컨테이너 높이 확보용 투명 div */
+          <div style={{ width: "100%", paddingBottom: `${(ref_height / ref_width) * 100}%` }} />
+        )}
 
         {/* 레이어 2: arm_right (팔 — body 위) */}
         <Img

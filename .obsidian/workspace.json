@@ -1,0 +1,252 @@
+{
+  "main": {
+    "id": "9d81c3d82b5aafae",
+    "type": "split",
+    "children": [
+      {
+        "id": "0f1e434db9ffe4ef",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f8f1942541b344cf",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Ob/Ob/Etc/잡다한 지식.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "잡다한 지식"
+            }
+          },
+          {
+            "id": "5bebd53423f24cdb",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Ob/Ob/Video/★ 효과음 릴스 조회수 폭발한 캡컷 효과음 30가지.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "★ 효과음 릴스 조회수 폭발한 캡컷 효과음 30가지"
+            }
+          },
+          {
+            "id": "8a4540027d566215",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Ob/Ob/★ 이미지 제작 기술서(상처가 아문 자리).md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "★ 이미지 제작 기술서(상처가 아문 자리)"
+            }
+          }
+        ],
+        "currentTab": 2
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "e9779afbcb8c2246",
+    "type": "split",
+    "children": [
+      {
+        "id": "9ab7da360b2c77c3",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e45c72b96e0e10d1",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "파일 탐색기"
+            }
+          },
+          {
+            "id": "a4f993e48e844d38",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "검색"
+            }
+          },
+          {
+            "id": "cfa713be6155bad0",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "북마크"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 281.5
+  },
+  "right": {
+    "id": "1f959bc803c40b6e",
+    "type": "split",
+    "children": [
+      {
+        "id": "115894dec798888a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b9cc01d3de8b8b17",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Ob/Ob/★ 이미지 제작 기술서(상처가 아문 자리).md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "★ 이미지 제작 기술서(상처가 아문 자리) 의 백링크"
+            }
+          },
+          {
+            "id": "eefa68731457a767",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Ob/Ob/★ 이미지 제작 기술서(상처가 아문 자리).md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "★ 이미지 제작 기술서(상처가 아문 자리) 의 나가는 링크"
+            }
+          },
+          {
+            "id": "fc6b1232ec9c8644",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "태그"
+            }
+          },
+          {
+            "id": "feca99ebef1ced94",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "모든 속성"
+            }
+          },
+          {
+            "id": "08c2c6c5c06a1657",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Ob/Ob/★ 이미지 제작 기술서(상처가 아문 자리).md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "★ 이미지 제작 기술서(상처가 아문 자리) 의 개요"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:빠른 전환기 열기": false,
+      "canvas:새 캔버스 만들기": false,
+      "daily-notes:오늘의 일일 노트 열기": false,
+      "templates:템플릿 삽입": false,
+      "command-palette:명령어 팔레트 열기": false,
+      "bases:새 베이스 생성하기": false
+    }
+  },
+  "active": "8a4540027d566215",
+  "lastOpenFiles": [
+    "Ob/Ob/바이브코딩/링크드랍.md",
+    "Ob/Ob/★ 이미지 제작 기술서(상처가 아문 자리).md",
+    "Ob/Ob/바이브코딩",
+    "Ob/Ob/Etc/잡다한 지식.md",
+    "02. 충남 예산군(260830)/2.jpeg",
+    "02. 충남 예산군(260830)/미확인 878977.crdownload",
+    "02. 충남 예산군(260830)/1.jpeg",
+    "02. 충남 예산군(260830)/미확인 837263.crdownload",
+    "02. 충남 예산군(260830)/외계인1.png",
+    "02. 충남 예산군(260830)/화면 캡처 2026-02-15 000035.png",
+    "02. 충남 예산군(260830)/화면 캡처 2026-02-14 235926.png",
+    "02. 충남 예산군(260830)",
+    "충남 예산군",
+    "마도요",
+    "영화진흥위원회/2026년 AI 기반 영화 제작지원 단편 부문 사업요강.pdf",
+    "영화진흥위원회/(양식2) 제작계획서_작품명_신청자(사)명_AI단편.hwp",
+    "영화진흥위원회/(양식1-2, 사업자 신청자용) 공통서류_작품명_신청사명_AI단편.hwp",
+    "영화진흥위원회/(양식1-1, 개인 신청자용) 공통서류_작품명_신청자명_AI단편.hwp",
+    "Ob/Ob/★ 유튜브 업로드 템플릿 01.md",
+    "s04(shorts)/3.jpeg",
+    "s04(shorts)/2.jpeg",
+    "s04(shorts)/1.jpeg",
+    "소재꺼리/19.png",
+    "소재꺼리/18.png",
+    "Ob/Ob/Video/★ 효과음 릴스 조회수 폭발한 캡컷 효과음 30가지.md",
+    "Ob/Ob/Image/★ 미드져니 파라미터.md",
+    "Ob/Ob/Image/★ 스토리기반 이미지 대량 생산 (노트북 LM 기반).md",
+    "Ob/Ob/시나리오/제4장 - 호뢰관 전투.md",
+    "Ob/Ob/Video/이미지 전용 워크플로우.md",
+    "Ob/Ob/Image/★ 이미지 작업 순서.md",
+    "Ob/Ob/Video/효과음.md",
+    "Ob/Ob/Etc/★ AI 툴 정보.md",
+    "60일 챌린지 1일차.md",
+    "시나리오 기반 프레임별 이미지 프롬프트 앱 설계.md",
+    "Ob/Ob/Video/이미지 전용 워크플로우 2.md"
+  ]
+}

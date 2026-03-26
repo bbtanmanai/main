@@ -1,4 +1,17 @@
 {
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/enforce-crlf.sh"
+          }
+        ]
+      }
+    ]
+  },
   "model": "claude-sonnet-4-6",
   "smallModel": "claude-haiku-4-5-20251001",
   "modelAliases": {

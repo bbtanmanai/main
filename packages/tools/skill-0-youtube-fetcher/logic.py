@@ -294,6 +294,7 @@ class YoutubeFetcherAgent:
             return []
 
         # 4. Get video details (snippet + statistics)
+        print(f">>> [DEBUG] Batch fetching metadata for {len(video_ids)} videos...")
         details_res = youtube.videos().list(
             id=','.join(video_ids),
             part='snippet,statistics',
@@ -328,13 +329,19 @@ class YoutubeFetcherAgent:
             records.append(record)
 
         if not records:
+            print(">>> [DEBUG] No records built.")
             return []
 
-        # 5. Upsert to Supabase
-        res = supabase.table('crawl_videos').upsert(records, on_conflict='video_id').execute()
-        saved = res.data or []
-        print(f'✅ Channel {channel_name}: {len(saved)} videos saved to crawl_videos')
-        return saved
+        # 5. Upsert to Supabase (Non-blocking check)
+        print(f">>> [DEBUG] Upserting {len(records)} records to Supabase...")
+        try:
+            supabase.table('crawl_videos').upsert(records, on_conflict='video_id').execute()
+            print(f">>> [DEBUG] ✅ Supabase sync complete.")
+        except Exception as se:
+            print(f">>> [DEBUG] ⚠️ Supabase Upsert Failed: {str(se)}")
+            # DB 저장은 실패해도 리스트는 반환하여 UI 출력 보장
+        
+        return records
 
 
 youtube_fetcher_agent = YoutubeFetcherAgent()

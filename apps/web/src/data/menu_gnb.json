@@ -2,60 +2,47 @@
   {
     "name": "자료수집",
     "items": [
+      { "name": "유튜브 채널분석", "href": "/crawling/channel" },
+      { "name": "유튜브 키워드", "href": "/crawling/keyword" }
+    ]
+  },
+  {
+    "name": "영상제작",
+    "type": "complex",
+    "subgroups": [
       {
-        "name": "유튜브채널",
-        "href": "/crawling/channel"
+        "title": "1단계 · 대본",
+        "items": [
+          { "name": "벤치마킹 & 대본", "href": "/content/script" }
+        ]
       },
       {
-        "name": "유튜브 키워드",
-        "href": "/crawling/keyword"
+        "title": "2단계 · 제작",
+        "items": [
+          { "name": "16:9 영상", "href": "/content/longform" },
+          { "name": "9:16 영상", "href": "/content/shorts" },
+          { "name": "광고 영상", "href": "/content/ad" }
+        ]
       }
     ]
   },
   {
-    "name": "컨텐츠제작",
+    "name": "이미지제작",
     "type": "complex",
     "subgroups": [
       {
-        "title": "이미지 기반",
+        "title": "캐릭터 · 스타일",
         "items": [
-          {
-            "name": "캐릭터 선택",
-            "href": "/content/characterimage"
-          },
-          {
-            "name": "스타일",
-            "href": "/content/styleimage"
-          },
-          {
-            "name": "미드저니 이미지",
-            "href": "/content/midjourneyimg"
-          },
-          {
-            "name": "카드뉴스",
-            "href": "/content/cardnews"
-          },
-          {
-            "name": "인스타툰",
-            "href": "/content/instatoon"
-          }
+          { "name": "캐릭터 선택", "href": "/content/characterimage" },
+          { "name": "스타일", "href": "/content/styleimage" },
+          { "name": "미드저니 이미지", "href": "/content/midjourneyimg" }
         ]
       },
       {
-        "title": "영상 기반",
+        "title": "콘텐츠",
         "items": [
-          {
-            "name": "쇼츠제작",
-            "href": "/content/shorts"
-          },
-          {
-            "name": "광고영상",
-            "href": "/content/ad"
-          },
-          {
-            "name": "롱폼제작",
-            "href": "/content/longform"
-          }
+          { "name": "카드뉴스", "href": "/content/cardnews" },
+          { "name": "인스타툰", "href": "/content/instatoon" }
         ]
       }
     ]
@@ -67,35 +54,17 @@
       {
         "title": "아이디어",
         "items": [
-          {
-            "name": "아이디어공장",
-            "href": "/biz/idea"
-          },
-          {
-            "name": "온라인 부업 가이드",
-            "href": "/biz/sidejob"
-          },
-          {
-            "name": "인스타 유형 분석",
-            "href": "/biz/instagramType"
-          },
-          {
-            "name": "초보 유튜버의 현실",
-            "href": "/biz/youtuber"
-          }
+          { "name": "아이디어공장", "href": "/biz/idea" },
+          { "name": "온라인 부업 가이드", "href": "/biz/sidejob" },
+          { "name": "인스타 유형 분석", "href": "/biz/instagramType" },
+          { "name": "초보 유튜버의 현실", "href": "/biz/youtuber" }
         ]
       },
       {
         "title": "전문 창작",
         "items": [
-          {
-            "name": "웹소설 작가",
-            "href": "/biz/webnovel"
-          },
-          {
-            "name": "전자책 출판",
-            "href": "/biz/ebook"
-          }
+          { "name": "웹소설 작가", "href": "/biz/webnovel" },
+          { "name": "전자책 출판", "href": "/biz/ebook" }
         ]
       }
     ]
@@ -103,48 +72,16 @@
   {
     "name": "프롬프트",
     "items": [
-      {
-        "name": "AI 실무 가이드",
-        "href": "/prompt/basic"
-      },
-      {
-        "name": "프롬프트 라이브러리",
-        "href": "/prompt/library"
-      },
-      {
-        "name": "효과음",
-        "href": "/prompt/sfx"
-      }
+      { "name": "AI 실무 가이드", "href": "/prompt/basic" },
+      { "name": "프롬프트 라이브러리", "href": "/prompt/library" },
+      { "name": "효과음", "href": "/prompt/sfx" }
     ]
   },
   {
-    "name": "프론트",
+    "name": "개발",
+    "dev": true,
     "items": [
-      {
-        "name": "필수단어",
-        "href": "/front/word"
-      },
-      {
-        "name": "색상 가이드",
-        "href": "/front/color"
-      },
-      {
-        "name": "디자인 템플릿",
-        "href": "/front/design"
-      }
-    ]
-  },
-  {
-    "name": "마케팅",
-    "items": [
-      {
-        "name": "뉴스레터",
-        "href": "/marketing/news"
-      },
-      {
-        "name": "SNS 마케팅",
-        "href": "#"
-      }
+      { "name": "키프레임 제작", "href": "/content/keyframe" }
     ]
   }
 ]

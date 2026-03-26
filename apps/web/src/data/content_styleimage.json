@@ -424,6 +424,7 @@
   ],
   "quality": [
     { "id": "q_master", "label": "걸작 (Masterpiece)", "val": "Masterpiece, best quality, ultra-high resolution, extremely detailed, professional photography", "desc": "최고 품질의 걸작 수준으로 디테일 강화" },
+    { "id": "q_illustration", "label": "일러스트 걸작", "val": "Masterpiece, best quality, ultra-detailed illustration, beautiful color composition, artstation trending", "desc": "일러스트/페인팅 스타일 최고 품질 (사진 용어 없음)" },
     { "id": "q_8k", "label": "8K 초고해상도", "val": "8k resolution, UHD, sharp focus, highly detailed textures, realistic skin", "desc": "8K 초고해상도 및 선명한 질감 표현" },
     { "id": "q_unreal", "label": "언리얼 엔진 5", "val": "Unreal Engine 5 render, ray tracing, global illumination, incredibly cinematic", "desc": "최신 게임 엔진 스타일의 웅장한 후보정" },
     { "id": "q_raw", "label": "RAW 사진 품질", "val": "RAW photo, unedited, realistic, high dynamic range, natural skin texture", "desc": "무보정 사진 같은 사실적인 질감 및 톤" },
@@ -432,8 +433,13 @@
   "negative": [
     { "id": "n_standard", "label": "저품질 제외", "val": "low quality, bad quality, blurry, distorted, grainy, low resolution", "desc": "흐림, 왜곡, 노이즈 등 기본 품질 저하 요소 배제" },
     { "id": "n_character", "label": "인물 오류 방지", "val": "deformed fingers, extra limbs, mutated hands, missing arms, bad anatomy, double faces", "desc": "기형적인 손가락, 팔다리 오류 등 인물 묘사 결함 방지" },
-    { "id": "n_text", "label": "글자/워터마크 제거", "val": "text, caption, watermark, signature, letters, words, logo, writing", "desc": "문자, 워터마크, 로고 등 불필요한 글자 배제" },
+    { "id": "n_text", "label": "글자/워터마크 제거", "val": "text, caption, watermark, signature, letters, words, logo, writing, typography, subtitles, captions, labels, numbers, titles, headings, speech bubbles, banners, inscriptions, any written characters, any text overlay", "desc": "문자, 워터마크, 자막, 타이포그래피 등 모든 종류의 글자 완전 배제" },
     { "id": "n_aesthetic", "label": "비심미적 요소 배제", "val": "unreal, cartoon, (when photo), ugly, messy, watermark, signature, text", "desc": "지저분하거나 비심미적인 구성 요소 최소화" },
-    { "id": "n_lighting", "label": "조명 오류 수정", "val": "overexposed, underexposed, harsh shadows (unless noir), flat lighting", "desc": "노출 과다/부족 및 밋밋한 조명 효과 수정" }
+    { "id": "n_lighting", "label": "조명 오류 수정", "val": "overexposed, underexposed, harsh shadows (unless noir), flat lighting", "desc": "노출 과다/부족 및 밋밋한 조명 효과 수정" },
+    { "id": "n_anti_photo", "label": "사진 화풍 차단", "val": "realistic, photorealistic, photography, photo, RAW, DSLR, lens flare, 35mm, documentary, cinematic realism", "desc": "일러스트/애니 계열에서 사진 스타일 키워드 차단" },
+    { "id": "n_anti_illust", "label": "일러스트 화풍 차단", "val": "anime, ghibli, studio ghibli, watercolor, illustration, painted, cartoon, hand-drawn, sketch, manga, cel shading", "desc": "실사/다큐 계열에서 일러스트 스타일 키워드 차단" },
+    { "id": "n_anti_3d", "label": "3D 렌더 화풍 차단", "val": "3D render, CGI, Unreal Engine, Pixar, clay, plastic, toy, miniature", "desc": "실사/일러스트 계열에서 3D 렌더 스타일 키워드 차단" },
+    { "id": "n_anti_dark", "label": "밝은 분위기 보호", "val": "dark, gloomy, horror, grimy, dystopian, noir, harsh shadows", "desc": "따뜻한/밝은 화풍에서 어두운 분위기 키워드 차단" },
+    { "id": "n_anti_cute", "label": "진지한 분위기 보호", "val": "cute, kawaii, chibi, pastel rainbow, cheerful cartoon, playful, whimsical", "desc": "다큐/뉴스/드라마 계열에서 귀여운 스타일 키워드 차단" }
   ]
 }

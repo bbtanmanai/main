@@ -1,6 +1,8 @@
 import React from "react";
 import { Composition } from "remotion";
 import { LinkDropVideo } from "./Video";
+import { ObjectShowcase } from "./components/ObjectShowcase";
+import animData from "./data/object_animations.json";
 
 // 테스트용 샘플 데이터
 const SAMPLE_SCENES = [
@@ -60,6 +62,19 @@ export const RemotionRoot: React.FC = () => {
           }}
         />
       ))}
+      {/* 오브젝트 쇼케이스 */}
+      <Composition
+        id="ObjectShowcase"
+        component={ObjectShowcase}
+        durationInFrames={Math.ceil(Object.keys(animData).length / 12) * 150}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        defaultProps={{
+          objects: Object.keys(animData),
+          sceneDurationFrames: 150,
+        }}
+      />
     </>
   );
 };

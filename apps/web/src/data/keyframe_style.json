@@ -1,0 +1,256 @@
+{
+  "artStyles": [
+    {
+      "id": "ghibli-real",
+      "label": "지브리 실사풍",
+      "desc": "따뜻한 황금빛 목가적 풍경",
+      "bgImage": "/img/content/longform/ghibli-real.webp",
+      "customPrompt": "Studio Ghibli art style, hand-painted watercolor brushstrokes, soft warm lighting, cinematic depth of field, golden hour glow, delicate color blending",
+      "colorPalette": "warm pastels, vibrant greens, soft blues",
+      "qualityId": "q_illustration",
+      "negativeIds": ["n_standard", "n_text", "n_anti_photo", "n_anti_3d"]
+    },
+    {
+      "id": "ghibli-night",
+      "label": "지브리 야경",
+      "desc": "별빛 마을 감성 야경",
+      "bgImage": "/img/content/longform/ghibli-night.webp",
+      "customPrompt": "Studio Ghibli night art style, hand-painted watercolor, magical glowing atmosphere, starry sky tones, firefly-lit ambiance, soft moonlit color grading",
+      "colorPalette": "deep indigo, teal, silver moonlight",
+      "qualityId": "q_illustration",
+      "negativeIds": ["n_standard", "n_text", "n_anti_photo", "n_anti_3d"]
+    },
+    {
+      "id": "reality",
+      "label": "실사 다큐풍",
+      "desc": "BBC 다큐 시네마틱 연출",
+      "bgImage": "/img/content/longform/reality.webp",
+      "customPrompt": "RAW documentary photography style, 35mm wide-angle lens, natural sunlight, candid composition, detailed textures, desaturated cinematic grading",
+      "colorPalette": "true-to-life colors, desaturated midtones",
+      "qualityId": "q_raw",
+      "negativeIds": ["n_standard", "n_text", "n_anti_illust", "n_anti_3d"]
+    },
+    {
+      "id": "anime-sf",
+      "label": "애니메이션 SF",
+      "desc": "도시 야경 미래 도시",
+      "bgImage": "/img/content/longform/anime-sf.webp",
+      "customPrompt": "Japanese anime sci-fi art style, neon-lit vibrant rendering, futuristic atmosphere, detailed linework, pastel color palette, dramatic perspective",
+      "colorPalette": "electric blue, neon purple, metallic silver",
+      "qualityId": "q_unreal",
+      "negativeIds": ["n_standard", "n_text", "n_anti_photo"]
+    },
+    {
+      "id": "pixar-3d",
+      "label": "픽사 3D",
+      "desc": "따뜻한 3D 렌더링",
+      "bgImage": "/img/content/longform/pixar-3d.webp",
+      "customPrompt": "Pixar-style 3D rendering, volumetric light rays, warm subsurface scattering, smooth rounded forms, vibrant saturated colors, cozy atmosphere",
+      "colorPalette": "vibrant saturated colors, warm highlights",
+      "qualityId": "q_unreal",
+      "negativeIds": ["n_standard", "n_text", "n_character", "n_anti_photo", "n_anti_illust"]
+    },
+    {
+      "id": "health-senior-1",
+      "label": "시니어건강 따뜻한치유",
+      "desc": "치유·힐링 황금빛 새벽",
+      "bgImage": "/img/content/longform/health-senior-1.webp",
+      "customPrompt": "warm healing atmosphere, golden morning light, soft bokeh rendering, serene tranquil mood, gentle color grading, wellness aesthetic",
+      "colorPalette": "warm earth tones, soft greens, gentle beige",
+      "qualityId": "q_master",
+      "negativeIds": ["n_standard", "n_text", "n_anti_dark"]
+    },
+    {
+      "id": "health-senior-2",
+      "label": "시니어건강 자연치유",
+      "desc": "숲속 빛내림 치유 공간",
+      "bgImage": "/img/content/longform/health-senior-2.webp",
+      "customPrompt": "nature therapy aesthetic, dappled sunlight filtering, peaceful woodland atmosphere, organic texture detail, soft green color grading, meditative mood",
+      "colorPalette": "fresh greens, sky blue, warm white",
+      "qualityId": "q_master",
+      "negativeIds": ["n_standard", "n_text", "n_anti_dark"]
+    },
+    {
+      "id": "tech-trend-1",
+      "label": "기술트렌드 사이버미래",
+      "desc": "데이터 스트림 사이버 공간",
+      "bgImage": "/img/content/longform/tech-trend-1.webp",
+      "customPrompt": "futuristic cyberspace aesthetic, glowing neon circuit patterns, holographic rendering, data stream visual effects, deep blue-black color grading",
+      "colorPalette": "electric blue, white, metallic grey",
+      "qualityId": "q_unreal",
+      "negativeIds": ["n_standard", "n_text", "n_anti_illust", "n_anti_cute"]
+    },
+    {
+      "id": "tech-trend-2",
+      "label": "기술트렌드 혁신연구소",
+      "desc": "빛의 폭발 아이디어 공간",
+      "bgImage": "/img/content/longform/tech-trend-2.webp",
+      "customPrompt": "innovation lab aesthetic, violet energy burst lighting, geometric abstract rendering, blueprint grid overlay, particle system effects, tech-forward atmosphere",
+      "colorPalette": "cyan, magenta, dark navy background",
+      "qualityId": "q_unreal",
+      "negativeIds": ["n_standard", "n_text", "n_anti_illust", "n_anti_cute"]
+    },
+    {
+      "id": "stock-news-1",
+      "label": "주식재테크 상승강세",
+      "desc": "골드 파티클 강세장 에너지",
+      "bgImage": "/img/content/longform/stock-news-1.webp",
+      "customPrompt": "bull market energy aesthetic, golden particle effects, rising momentum visual, dark dramatic backdrop, wealth atmosphere, financial visualization style",
+      "colorPalette": "gold, deep blue, financial red and green accents",
+      "qualityId": "q_8k",
+      "negativeIds": ["n_standard", "n_text", "n_anti_illust", "n_anti_cute"]
+    },
+    {
+      "id": "stock-news-2",
+      "label": "주식재테크 데이터분석",
+      "desc": "앰버 데이터 그리드 분석",
+      "bgImage": "/img/content/longform/stock-news-2.webp",
+      "customPrompt": "financial data aesthetic, amber grid overlay rendering, warm bokeh data points, dashboard-inspired composition, analytical mood, navy-gold color grading",
+      "colorPalette": "navy blue, white, gold highlights",
+      "qualityId": "q_8k",
+      "negativeIds": ["n_standard", "n_text", "n_anti_illust", "n_anti_cute"]
+    },
+    {
+      "id": "news-anchor",
+      "label": "시사뉴스 방송스튜디오",
+      "desc": "딥네이비 방송 권위 무게감",
+      "bgImage": "/img/content/longform/news-anchor.webp",
+      "customPrompt": "professional broadcast aesthetic, authoritative deep navy lighting, horizontal light bar accents, studio monitor glow, crisp clean rendering, news authority atmosphere",
+      "colorPalette": "neutral tones, authoritative blue, crisp white",
+      "qualityId": "q_8k",
+      "negativeIds": ["n_standard", "n_text", "n_lighting", "n_anti_illust", "n_anti_cute"]
+    },
+    {
+      "id": "economy-global",
+      "label": "글로벌경제 세계데이터",
+      "desc": "세계지도 무역 데이터 흐름",
+      "bgImage": "/img/content/longform/economy-global.webp",
+      "customPrompt": "global economy aesthetic, illuminated network visualization, gold data stream effects, interconnected node rendering, steel blue-charcoal color grading, macro-scale perspective",
+      "colorPalette": "steel blue, gold, dark charcoal",
+      "qualityId": "q_8k",
+      "negativeIds": ["n_standard", "n_text", "n_anti_illust", "n_anti_cute"]
+    },
+    {
+      "id": "wisdom-quotes-1",
+      "label": "명언지혜 선명상",
+      "desc": "수묵 산수 안개 명상 공간",
+      "bgImage": "/img/content/longform/wisdom-quotes-1.webp",
+      "customPrompt": "Zen ink wash painting style, misty layered depth, water ripple reflections, falling petal effects, contemplative serene mood, golden amber tones",
+      "colorPalette": "golden amber, soft cream, warm brown",
+      "qualityId": "q_illustration",
+      "negativeIds": ["n_standard", "n_text", "n_anti_photo", "n_anti_3d"]
+    },
+    {
+      "id": "wisdom-quotes-2",
+      "label": "명언지혜 우주성찰",
+      "desc": "별빛 은하 우주적 성찰",
+      "bgImage": "/img/content/longform/wisdom-quotes-2.webp",
+      "customPrompt": "cosmic deep space aesthetic, star field rendering, aurora nebula wisps, vast galactic perspective, purple twilight-gold color grading, contemplative scale",
+      "colorPalette": "warm orange, purple twilight, soft gold",
+      "qualityId": "q_master",
+      "negativeIds": ["n_standard", "n_text", "n_anti_illust"]
+    },
+    {
+      "id": "lifestyle-1",
+      "label": "라이프스타일 아늑한일상",
+      "desc": "따뜻한 오후 보케 감성",
+      "bgImage": "/img/content/longform/lifestyle-1.webp",
+      "customPrompt": "cozy lifestyle aesthetic, warm amber light bloom, pastel bokeh rendering, comfortable soft textures, gentle depth of field, inviting atmosphere",
+      "colorPalette": "warm pastels, vibrant fresh tones, light and breezy",
+      "qualityId": "q_vibrant",
+      "negativeIds": ["n_standard", "n_text", "n_anti_dark"]
+    },
+    {
+      "id": "lifestyle-2",
+      "label": "라이프스타일 자연활력",
+      "desc": "맑은 아침 테일 자연 에너지",
+      "bgImage": "/img/content/longform/lifestyle-2.webp",
+      "customPrompt": "active nature aesthetic, fresh morning teal tones, light ray effects, water shimmer rendering, breeze particle effects, energetic outdoor atmosphere",
+      "colorPalette": "earthy tones, terracotta, warm honey",
+      "qualityId": "q_vibrant",
+      "negativeIds": ["n_standard", "n_text", "n_anti_dark"]
+    },
+    {
+      "id": "econ-infographic",
+      "label": "경제 데이터 인포그래픽",
+      "desc": "플랫 차트·그래프 시각화",
+      "bgImage": "/img/content/longform/stock-news-2.webp",
+      "customPrompt": "flat design infographic illustration style, clean minimal rendering, data visualization aesthetic, geometric shapes, vibrant flat colors, white background composition",
+      "colorPalette": "vibrant coral, teal, purple, clean white background",
+      "qualityId": "q_master",
+      "negativeIds": ["n_standard", "n_text", "n_character", "n_anti_photo", "n_anti_3d"]
+    },
+    {
+      "id": "econ-documentary",
+      "label": "경제 다큐 와이드샷",
+      "desc": "BBC 와이드 환경 시네마틱",
+      "bgImage": "/img/content/longform/reality.webp",
+      "customPrompt": "BBC documentary cinematography style, wide environmental shot composition, natural lighting, real-world texture detail, desaturated earth tone grading",
+      "colorPalette": "natural desaturated tones, blue-grey, warm earth",
+      "qualityId": "q_raw",
+      "negativeIds": ["n_standard", "n_text", "n_anti_illust", "n_anti_3d", "n_anti_cute"]
+    },
+    {
+      "id": "econ-abstract",
+      "label": "경제 추상 개념화",
+      "desc": "자금흐름·네트워크 추상 아트",
+      "bgImage": "/img/content/longform/economy-global.webp",
+      "customPrompt": "abstract conceptual digital art style, flowing energy stream effects, network node rendering, geometric shapes, glowing wave visual, deep blue-gold gradients",
+      "colorPalette": "deep blue, gold, luminous white, subtle gradients",
+      "qualityId": "q_unreal",
+      "negativeIds": ["n_standard", "n_text", "n_character", "n_anti_cute"]
+    },
+    {
+      "id": "econ-dark-drama",
+      "label": "경제 다크 드라마",
+      "desc": "어둡고 묵직한 현실 연출",
+      "bgImage": "/img/content/longform/news-anchor.webp",
+      "customPrompt": "gritty dramatic cinematography, moody chiaroscuro shadow play, dark tension atmosphere, cinematic wide composition, muted rust-grey color grading",
+      "colorPalette": "dark grey, muted rust, shadowed black, cold blue",
+      "qualityId": "q_master",
+      "negativeIds": ["n_standard", "n_text", "n_anti_illust", "n_anti_cute", "n_anti_3d"]
+    },
+    {
+      "id": "econ-corporate",
+      "label": "경제 코퍼레이트 클린",
+      "desc": "유리빌딩·오피스 미니멀",
+      "bgImage": "/img/content/longform/tech-trend-2.webp",
+      "customPrompt": "modern corporate photography style, minimalist clean lines, architectural composition, professional atmosphere, white-steel-blue color grading",
+      "colorPalette": "clean white, steel grey, accent blue, minimal contrast",
+      "qualityId": "q_8k",
+      "negativeIds": ["n_standard", "n_text", "n_character", "n_anti_illust", "n_anti_cute"]
+    }
+  ],
+  "nicheCompat": [
+    {
+      "keywords": ["재테크", "금융", "경제", "주식", "투자", "부동산", "돈", "자산", "펀드", "절약", "저축", "finance", "money", "stock", "invest"],
+      "styles": ["econ-infographic", "econ-documentary", "econ-abstract", "econ-dark-drama", "econ-corporate", "stock-news-1", "stock-news-2", "economy-global", "news-anchor", "reality"],
+      "genreEn": "personal finance & economics"
+    },
+    {
+      "keywords": ["건강", "시니어", "헬스", "의료", "다이어트", "운동", "영양", "치유", "health", "senior", "wellness"],
+      "styles": ["health-senior-1", "health-senior-2", "reality", "lifestyle-1", "lifestyle-2", "ghibli-real"],
+      "genreEn": "senior health & wellness"
+    },
+    {
+      "keywords": ["기술", "IT", "AI", "테크", "앱", "코딩", "개발", "스타트업", "디지털", "tech", "software"],
+      "styles": ["tech-trend-1", "tech-trend-2", "anime-sf", "reality", "news-anchor", "economy-global"],
+      "genreEn": "technology & innovation"
+    },
+    {
+      "keywords": ["명언", "지혜", "철학", "동기", "인생", "성공", "자기계발", "마음", "성장", "wisdom", "motivation"],
+      "styles": ["wisdom-quotes-1", "wisdom-quotes-2", "lifestyle-1", "ghibli-real", "ghibli-night"],
+      "genreEn": "wisdom & self-development"
+    },
+    {
+      "keywords": ["라이프", "일상", "여행", "음식", "패션", "뷰티", "취미", "문화", "lifestyle", "daily"],
+      "styles": ["lifestyle-1", "lifestyle-2", "ghibli-real", "ghibli-night", "reality", "pixar-3d"],
+      "genreEn": "lifestyle & daily life"
+    },
+    {
+      "keywords": ["시사", "뉴스", "정치", "사회", "국제", "news", "current"],
+      "styles": ["news-anchor", "reality", "economy-global", "tech-trend-1"],
+      "genreEn": "current affairs & news"
+    }
+  ]
+}

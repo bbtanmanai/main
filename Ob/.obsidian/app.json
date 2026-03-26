@@ -1,0 +1,10 @@
+{
+  "strictLineBreaks": true,
+  "foldHeading": false,
+  "showLineNumber": true,
+  "vimMode": false,
+  "foldIndent": false,
+  "showUnsupportedFiles": true,
+  "alwaysUpdateLinks": true,
+  "useMarkdownLinks": true
+}

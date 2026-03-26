@@ -1,11 +1,35 @@
 import sys
+import os
 import httpx
 import logging
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 
-# skill-3-opalvideo 독립 인증 모듈 로드
-_SKILL_PATH = Path("C:/LinkDropV2/packages/tools/skill-3-opalvideo/opal-access")
+# opal-access 인증 모듈 로드
+def _resolve_opal_access_path() -> Path:
+    env_path = os.getenv("OPAL_ACCESS_PATH") or os.getenv("OPAL_SKILL_PATH")
+    if env_path:
+        p = Path(env_path).expanduser()
+        if p.is_dir():
+            return p
+
+    repo_root = Path(__file__).resolve().parents[3]
+    candidates = [
+        repo_root / "packages" / "tools" / "skill-2-video-longform1" / "opal-access",
+        repo_root / "packages" / "tools" / "skill-3-opalvideo" / "opal-access",
+    ]
+    for c in candidates:
+        if c.is_dir():
+            return c
+
+    tried = "\n".join([f"- {c}" for c in candidates])
+    raise FileNotFoundError(
+        "opal-access directory not found. Set OPAL_ACCESS_PATH (or OPAL_SKILL_PATH) or create one of:\n"
+        + tried
+    )
+
+
+_SKILL_PATH = _resolve_opal_access_path()
 if str(_SKILL_PATH) not in sys.path:
     sys.path.insert(0, str(_SKILL_PATH))
 from opal_auth import OpalAuthManager as _OpalAuthManager

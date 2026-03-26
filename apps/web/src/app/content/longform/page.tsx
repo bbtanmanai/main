@@ -612,7 +612,24 @@ export default function LongformPage() {
             AI 롱폼{' '}
             <span className="bg-gradient-to-r from-indigo-400 to-fuchsia-500 bg-clip-text text-transparent">영상 제작</span>
           </h1>
-          <p className="text-slate-400 text-sm mb-6">템플릿 · 화풍 선택 → 시나리오 생성 → FFmpeg 영상 합성</p>
+          <p className="text-slate-400 text-sm mb-4">템플릿 · 화풍 선택 → 시나리오 생성 → FFmpeg 영상 합성</p>
+
+          {/* 영상 제작 팁 배너 */}
+          <Link
+            href="/content/keyframe/tips"
+            className="flex items-center justify-between w-full px-6 py-4 mb-6 rounded-2xl border border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-orange-500/10 hover:from-amber-500/20 hover:to-orange-500/20 hover:border-amber-500/50 transition-all group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center text-xl shrink-0">
+                💡
+              </div>
+              <div>
+                <p className="text-sm font-black text-amber-300">영상 수동 제작 팁</p>
+                <p className="text-xs text-amber-500/70 mt-0.5">훅 전략 · Google Flow · 직접 촬영 · 썸네일 — 첫 15초로 YouTube 알고리즘을 이기는 법</p>
+              </div>
+            </div>
+            <FontAwesomeIcon icon={faChevronRight} className="text-amber-500/50 group-hover:text-amber-400 transition-colors shrink-0" />
+          </Link>
 
           {/* 탭 */}
           <div className="flex items-center gap-0.5 border-b border-white/10 overflow-x-auto">

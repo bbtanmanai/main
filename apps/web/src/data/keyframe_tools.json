@@ -1,0 +1,70 @@
+{
+  "tools": [
+    {
+      "id": "google-flow",
+      "name": "Google Flow",
+      "nameKo": "구글 Flow",
+      "icon": "🎬",
+      "logoUrl": "https://www.google.com/s2/favicons?domain=flow.google.com&sz=64",
+      "tier": "free",
+      "url": "https://labs.google/fx/ko/tools/flow/",
+      "desc": "구글이 만든 무료 AI 이미지 생성 도구. 구글 계정만 있으면 바로 사용 가능.",
+      "tips": "① 버튼을 누르면 프롬프트가 자동으로 복사됩니다.\n② 사이트가 열리면 빈 칸에 Ctrl+V 로 붙여넣기 하세요.\n③ 화면 비율을 16:9(가로) 또는 9:16(세로)로 선택하세요.\n④ '생성' 버튼을 누르면 이미지가 만들어집니다.\n⑤ 마음에 드는 이미지를 저장 후 왼쪽 씬에 업로드하세요."
+    },
+    {
+      "id": "adobe-firefly",
+      "name": "Adobe Firefly",
+      "nameKo": "어도비",
+      "icon": "🔥",
+      "logoUrl": "https://www.google.com/s2/favicons?domain=firefly.adobe.com&sz=64",
+      "tier": "free",
+      "url": "https://firefly.adobe.com/generate/images",
+      "desc": "어도비에서 만든 무료 AI 이미지 도구. 매달 무료 사용 횟수 제공.",
+      "tips": "① 버튼을 누르면 프롬프트가 자동으로 복사됩니다.\n② 사이트가 열리면 입력 칸에 Ctrl+V 로 붙여넣기 하세요.\n③ '스타일'에서 '사진(Photo)'을 선택하면 더 사실적인 이미지가 나옵니다.\n④ '생성' 버튼을 누르세요.\n⑤ 마음에 드는 이미지를 저장 후 왼쪽 씬에 업로드하세요."
+    },
+    {
+      "id": "leonardo",
+      "name": "Leonardo.ai",
+      "nameKo": "레오나르도",
+      "icon": "🦁",
+      "logoUrl": "https://www.google.com/s2/favicons?domain=leonardo.ai&sz=64",
+      "tier": "free",
+      "url": "https://app.leonardo.ai/image-generation",
+      "desc": "매일 무료 사용 가능. 다양한 그림 스타일을 선택할 수 있는 AI 도구.",
+      "tips": "① 버튼을 누르면 프롬프트가 자동으로 복사됩니다.\n② 사이트가 열리면 '이미지 생성(Image Generation)' 메뉴를 클릭하세요.\n③ 입력 칸에 Ctrl+V 로 붙여넣기 하세요.\n④ 화면 비율을 선택한 뒤 생성 버튼을 누르세요.\n⑤ 마음에 드는 이미지를 저장 후 왼쪽 씬에 업로드하세요."
+    },
+    {
+      "id": "mixboard",
+      "name": "Mixboard",
+      "nameKo": "믹스보드",
+      "icon": "🎭",
+      "logoUrl": "https://www.google.com/s2/favicons?domain=labs.google.com&sz=64",
+      "tier": "free",
+      "url": "https://labs.google.com/mixboard/welcome",
+      "desc": "구글 Labs의 AI 이미지 믹싱 도구. 여러 스타일을 조합하여 이미지 생성.",
+      "tips": "① 버튼을 누르면 프롬프트가 자동으로 복사됩니다.\n② 사이트가 열리면 입력 칸에 Ctrl+V 로 붙여넣기 하세요.\n③ 스타일을 선택하고 생성 버튼을 누르세요.\n④ 마음에 드는 이미지를 저장하세요.\n⑤ 저장한 이미지를 왼쪽 씬에 업로드하세요."
+    },
+    {
+      "id": "yupp",
+      "name": "Yupp",
+      "nameKo": "옙",
+      "icon": "🟠",
+      "logoUrl": "https://www.google.com/s2/favicons?domain=yupp.ai&sz=64",
+      "tier": "free",
+      "url": "https://yupp.ai/get-started",
+      "desc": "Yupp AI 이미지 생성 도구.",
+      "tips": "① 버튼을 누르면 프롬프트가 자동으로 복사됩니다.\n② 사이트가 열리면 입력 칸에 Ctrl+V 로 붙여넣기 하세요.\n③ 생성 버튼을 클릭하세요.\n④ 마음에 드는 이미지를 저장하세요.\n⑤ 저장한 이미지를 왼쪽 씬에 업로드하세요."
+    },
+    {
+      "id": "bing-creator",
+      "name": "Bing 이미지 생성",
+      "nameKo": "빙 이미지",
+      "icon": "🔷",
+      "logoUrl": "https://www.google.com/s2/favicons?domain=bing.com&sz=64",
+      "tier": "free",
+      "url": "https://www.bing.com/images/create",
+      "desc": "마이크로소프트(MS)의 무료 AI 이미지 도구. MS 계정만 있으면 즉시 사용 가능.",
+      "tips": "① 버튼을 누르면 프롬프트가 자동으로 복사됩니다.\n② 사이트가 열리면 입력 칸에 Ctrl+V 로 붙여넣기 하세요.\n③ '만들기' 버튼을 클릭하면 이미지 4장이 생성됩니다.\n④ 하루에 만들 수 있는 횟수에 제한이 있습니다.\n⑤ 마음에 드는 이미지를 저장 후 왼쪽 씬에 업로드하세요."
+    }
+  ]
+}

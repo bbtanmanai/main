@@ -27,12 +27,17 @@ export default function FrontGNB() {
       <nav className="hidden lg:flex items-center gap-1">
         {navItems.map((group: any) => (
           <div key={group.name} className="relative group py-2">
-            <span className="flex items-center gap-1 px-3 py-1.5 text-slate-400 text-xs font-bold rounded-lg hover:text-[#c4b5fd] hover:bg-white/5 cursor-pointer transition-all">
+            <span className={`flex items-center gap-1 px-3 py-1.5 text-xs font-bold rounded-lg cursor-pointer transition-all ${
+              group.dev
+                ? 'text-orange-400 hover:text-orange-300 hover:bg-orange-500/10 border border-orange-500/20'
+                : 'text-slate-400 hover:text-[#c4b5fd] hover:bg-white/5'
+            }`}>
+              {group.dev && <span className="text-[9px] font-black bg-orange-500/20 text-orange-300 px-1.5 py-0.5 rounded">DEV</span>}
               {group.name} <FontAwesomeIcon icon={faChevronDown} className="text-[8px] opacity-50 group-hover:rotate-180 transition-transform" />
             </span>
             
             {/* Dropdown Panel */}
-            <div className={`absolute top-[calc(100%-4px)] left-0 bg-[#1c1c2e] border border-white/10 rounded-xl p-2 shadow-2xl opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto translate-y-[-8px] group-hover:translate-y-0 transition-all duration-200 ${group.type === 'complex' ? 'min-w-[320px] flex gap-4' : 'min-w-[160px]'}`}>
+            <div className={`absolute top-[calc(100%-4px)] left-0 bg-[#1c1c2e] border border-white/10 rounded-xl p-2 shadow-2xl opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto translate-y-[-8px] group-hover:translate-y-0 transition-all duration-200 max-w-[calc(100vw-2rem)] ${group.type === 'complex' ? 'min-w-[320px] flex gap-4' : 'min-w-[160px]'}`}>
               
               {/* 3단 구성 (Complex Type) */}
               {group.type === 'complex' ? (
@@ -98,7 +103,10 @@ export default function FrontGNB() {
           <div className="flex-1 overflow-y-auto space-y-4">
             {navItems.map((group: any) => (
               <div key={group.name} className="border-b border-white/5 pb-2">
-                <div className="text-[#a78bfa] font-black text-sm mb-2">{group.name}</div>
+                <div className={`font-black text-sm mb-2 flex items-center gap-2 ${group.dev ? 'text-orange-400' : 'text-[#a78bfa]'}`}>
+                  {group.dev && <span className="text-[9px] font-black bg-orange-500/20 text-orange-300 px-1.5 py-0.5 rounded">DEV</span>}
+                  {group.name}
+                </div>
                 <div className="grid grid-cols-2 gap-2">
                   {group.type === 'complex' ? (
                     group.subgroups.flatMap((s: any) => s.items).map((item: any) => (

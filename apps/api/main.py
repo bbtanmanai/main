@@ -187,6 +187,20 @@ async def get_design_thumbnail(moban_id: str):
     if os.path.exists(abs_path): return FileResponse(abs_path)
     raise HTTPException(status_code=404, detail="Thumbnail not found.")
 
+# Register Routers
+from routers.opal import router as opal_router
+from routers.youtube import router as youtube_router
+from routers.nlm_video import router as nlm_video_router
+from routers.translate import router as translate_router
+from routers.browser import router as browser_router
+from routers.video import router as video_router
+app.include_router(opal_router)
+app.include_router(youtube_router)
+app.include_router(nlm_video_router)
+app.include_router(translate_router)
+app.include_router(browser_router)
+app.include_router(video_router)
+
 # Mount MCP
 mcp.mount_sse()
 
