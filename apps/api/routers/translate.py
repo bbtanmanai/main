@@ -9,23 +9,22 @@ load_dotenv()
 
 router = APIRouter(prefix="/api/v1/translate", tags=["Translate"])
 
-GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY", "")
-
-
 class SceneTranslateRequest(BaseModel):
     scenes: list[str]
     genre_en: str = ""
     art_style: str = ""  # 선택된 화풍 ID (ghibli-real, reality 등)
+    api_key: str = ""    # 클라이언트가 전달하는 Google API Key
 
 
 class SceneTranslateResponse(BaseModel):
     success: bool
     visual_prompts: list[str]
+    accents: list[list] = []
 
 
-def _clean_scene(text: str) -> str:
+def _clean_scene(text: str, max_len: int = 2000) -> str:
     text = re.sub(r'\[씬\s*\d+\]', '', text)
-    return text.strip()[:500]
+    return text.strip()[:max_len]
 
 
 ART_STYLE_RULES = {
@@ -39,53 +38,81 @@ ART_STYLE_RULES = {
 }
 
 
-def _extract_visual_keywords_gemini(scenes: list[str], genre_en: str, art_style: str = "") -> list[str]:
-    """Gemini Flash로 씬 텍스트 → 이미지 생성용 비주얼 키워드 추출"""
+def _extract_visual_keywords_gemini(scenes: list[str], genre_en: str, art_style: str = "", api_key: str = "") -> tuple[list[str], list[list]]:
+    """Gemini Flash로 씬 텍스트 → 이미지 비주얼 키워드 + 강조 accent 배열 동시 추출"""
+    import json as _json
     from google import genai
 
-    client = genai.Client(api_key=GOOGLE_API_KEY)
-
+    client = genai.Client(api_key=api_key)
     style_rule = ART_STYLE_RULES.get(art_style, "")
 
-    results = []
+    visual_results: list[str] = []
+    accent_results: list[list] = []
+
     for scene in scenes:
         cleaned = _clean_scene(scene)
         if not cleaned:
-            results.append("")
+            visual_results.append("")
+            accent_results.append([])
             continue
 
-        prompt = f"""You are an image prompt keyword extractor.
+        prompt = f"""You are an image prompt and visual accent extractor for Korean video scenes.
 
-Given a Korean scene description, extract 5-8 English visual keywords for AI image generation.
+Given a Korean scene description, output ONLY a single JSON object with these fields:
 
-Rules:
-- Output ONLY comma-separated English keywords, nothing else
+{{
+  "visual_prompt": "<5-8 comma-separated English visual keywords for AI image generation>",
+  "accents": [<accent objects>]
+}}
+
+visual_prompt rules:
+- Comma-separated English keywords only, no sentences
 - Focus on: subject, environment, lighting, mood, composition, camera angle
-- Be specific and visual (e.g. "golden hour sunlight" not just "light")
-- No sentences, no explanations, no numbering
-- Keywords must match the given art style — do NOT include conflicting style keywords
+- Be specific (e.g. "golden hour sunlight" not "light")
+- Must match art style — do NOT include conflicting style keywords
 {f'- {style_rule}' if style_rule else ''}
+
+accents rules:
+- Extract ALL impactful statistics worth visualizing (up to 5 items), as a JSON array
+- [] if no clear statistics
+- IGNORE years (2024, 2023 etc)
+- PREFER: 만/억/조 unit counts, percentages, head-to-head comparisons, ordered lists
+- Each item at a DIFFERENT point in the text
+- Each item MUST include "hint": exact short phrase (5-15 chars) from the text near that statistic
+- Types:
+  - "num":  {{"type":"num",  "value":"49만개",  "label":"사업장 폐업",             "hint":"49만 개의 사업장"}}
+  - "bar":  {{"type":"bar",  "left":{{"label":"이삭","value":"39.8%"}},"right":{{"label":"파리크라상","value":"50%이상"}}, "hint":"39.8퍼센트야"}}
+  - "flow": {{"type":"flow", "steps":["1단계","2단계"],                            "hint":"먼저 스트레칭"}}
+  - "list": {{"type":"list", "items":["항목1","항목2"],                            "hint":"첫째 아침"}}
 
 Genre: {genre_en or 'general'}
 
 Scene:
 {cleaned}
 
-Keywords:"""
+JSON:"""
 
         try:
             response = client.models.generate_content(
                 model="gemini-2.5-flash",
                 contents=prompt,
             )
-            keywords = response.text.strip()
-            keywords = re.sub(r'^\d+[\.\)]\s*', '', keywords, flags=re.MULTILINE)
-            keywords = keywords.replace('\n', ', ').strip().strip(',').strip()
-            results.append(keywords)
+            raw = response.text.strip()
+            # JSON 블록 추출
+            raw = re.sub(r'^```(?:json)?\s*', '', raw, flags=re.MULTILINE)
+            raw = re.sub(r'\s*```$', '', raw, flags=re.MULTILINE)
+            parsed = _json.loads(raw)
+            visual_results.append(parsed.get("visual_prompt", "").strip())
+            raw_accents = parsed.get("accents") or parsed.get("accent") or []
+            if isinstance(raw_accents, dict):
+                raw_accents = [raw_accents]
+            accent_results.append(raw_accents if isinstance(raw_accents, list) else [])
         except Exception:
-            results.append(_translate_fallback(cleaned))
+            # 파싱 실패 시 폴백: 텍스트 번역만
+            visual_results.append(_translate_fallback(cleaned))
+            accent_results.append([])
 
-    return results
+    return visual_results, accent_results
 
 
 def _translate_fallback(text: str) -> str:
@@ -104,15 +131,18 @@ async def translate_scenes(req: SceneTranslateRequest):
     if not req.scenes:
         raise HTTPException(status_code=400, detail="씬 목록이 비어 있습니다.")
 
+    effective_key = req.api_key.strip() or os.environ.get("GOOGLE_API_KEY", "")
+
     try:
-        if GOOGLE_API_KEY:
-            visual_prompts = await asyncio.to_thread(
-                _extract_visual_keywords_gemini, req.scenes, req.genre_en, req.art_style
+        if effective_key:
+            visual_prompts, accents = await asyncio.to_thread(
+                _extract_visual_keywords_gemini, req.scenes, req.genre_en, req.art_style, effective_key
             )
         else:
             visual_prompts = await asyncio.to_thread(
                 lambda: [_translate_fallback(_clean_scene(s)) for s in req.scenes],
             )
-        return SceneTranslateResponse(success=True, visual_prompts=visual_prompts)
+            accents = [None] * len(req.scenes)
+        return SceneTranslateResponse(success=True, visual_prompts=visual_prompts, accents=accents)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"번역 실패: {str(e)}")

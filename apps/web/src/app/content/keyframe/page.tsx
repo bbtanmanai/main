@@ -152,10 +152,11 @@ const API = 'http://localhost:8000/api/v1';
 async function translateScenesToVisual(
   scenes: string[], genreEn: string, artStyleId: string = ''
 ): Promise<{ visual_prompts: string[]; accents: object[][] }> {
+  const apiKey = localStorage.getItem('ld_google_api_key') ?? '';
   const res = await fetch(`${API}/translate/scenes`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ scenes, genre_en: genreEn, art_style: artStyleId }),
+    body: JSON.stringify({ scenes, genre_en: genreEn, art_style: artStyleId, api_key: apiKey }),
   });
   if (!res.ok) throw new Error('번역 API 오류');
   const data = await res.json();
@@ -324,6 +325,51 @@ export default function KeyframePage() {
   React.useEffect(() => {
     setIsMobile(window.innerWidth < 768);
   }, []);
+
+  // 씬 삽입 (afterIdx 다음에 빈 씬 추가)
+  const addEmptyScene = (afterIdx: number) => {
+    const insertAt = afterIdx + 1;
+
+    setScenes(prev => {
+      const next = [...prev];
+      next.splice(insertAt, 0, '');
+      // keyframe_data의 scenes도 IDB에 즉시 반영 (새로고침 후에도 유지)
+      loadStateIDB('keyframe_data').then(saved => {
+        if (saved) saveStateIDB('keyframe_data', { ...saved, scenes: next });
+      });
+      return next;
+    });
+    setPrompts(prev => {
+      const next = [...prev];
+      next.splice(insertAt, 0, buildStructuredPrompt('', insertAt, null, '', ''));
+      return next;
+    });
+    setTranslatedScenes(prev => {
+      if (prev.length === 0) return prev;
+      const next = [...prev];
+      next.splice(insertAt, 0, '');
+      return next;
+    });
+    // 삽입 위치 이후 이미지 인덱스를 +1씩 밀기
+    setSceneImages(prev => {
+      const next: Record<number, string> = {};
+      for (const [k, v] of Object.entries(prev)) {
+        const idx = Number(k);
+        next[idx < insertAt ? idx : idx + 1] = v;
+      }
+      return next;
+    });
+    // nlEdits 인덱스도 +1씩 밀기
+    setNlEdits(prev => {
+      const next: Record<number, string> = {};
+      for (const [k, v] of Object.entries(prev)) {
+        const idx = Number(k);
+        next[idx < insertAt ? idx : idx + 1] = v;
+      }
+      return next;
+    });
+    setSelectedIdx(insertAt);
+  };
 
   // 프롬프트 변경 시 IndexedDB에 저장
   React.useEffect(() => {
@@ -731,19 +777,31 @@ export default function KeyframePage() {
                   <p className="text-xs font-black text-slate-300 uppercase tracking-widest">씬 목록</p>
                   <span className="ml-auto text-[10px] font-black text-indigo-300 bg-indigo-500/15 border border-indigo-500/30 px-2 py-0.5 rounded-full">{scenes.length}개</span>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-0">
                   {scenes.map((scene, i) => (
-                    <SceneCard
-                      key={i} idx={i} scene={scene}
-                      selected={selectedIdx === i}
-                      imageUrl={sceneImages[i]}
-                      onSelect={() => setSelectedIdx(i)}
-                      onImageAdd={file => {
-                        const url = URL.createObjectURL(file);
-                        setSceneImages(prev => ({ ...prev, [i]: url }));
-                        saveImageIDB(getSessionId(), i, file);
-                      }}
-                    />
+                    <React.Fragment key={i}>
+                      <SceneCard
+                        idx={i} scene={scene}
+                        selected={selectedIdx === i}
+                        imageUrl={sceneImages[i]}
+                        onSelect={() => setSelectedIdx(i)}
+                        onImageAdd={file => {
+                          const url = URL.createObjectURL(file);
+                          setSceneImages(prev => ({ ...prev, [i]: url }));
+                          saveImageIDB(getSessionId(), i, file);
+                        }}
+                      />
+                      {/* 씬 사이 + 버튼 */}
+                      <div className="flex items-center justify-center h-5 group">
+                        <button
+                          onClick={() => addEmptyScene(i)}
+                          className="opacity-0 group-hover:opacity-100 flex items-center gap-1 px-2 py-0.5 rounded-full bg-indigo-500/20 hover:bg-indigo-500/40 border border-indigo-500/30 text-indigo-300 text-[10px] font-black transition-all"
+                          title="빈 씬 추가"
+                        >
+                          + 씬 추가
+                        </button>
+                      </div>
+                    </React.Fragment>
                   ))}
                 </div>
               </div>
