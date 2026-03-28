@@ -1,6 +1,6 @@
 # LinkDrop 개발 백로그
 
-> 최종 업데이트: 2026-03-26
+> 최종 업데이트: 2026-03-28
 > 규칙: 새 항목 발견 시 즉시 여기에 추가. 완료 시 ✅ 체크. 대화마다 이 파일 확인.
 
 ---
@@ -49,6 +49,26 @@
 
 ---
 
+## 🔶 MP4 프롬프트 생성기 (122번 문서) — 2026-03-28 구현 완료 / 추가 개선 대기
+
+> 경로: `/content/mp4-prompt-generator` | 문서: `docs/product/122-MP4-프롬프트-생성기.md`
+
+| # | 항목 | 상태 | 비고 |
+|---|------|------|------|
+| MP-1 | 3컬럼 카드 레이아웃 + 라이트 테마 전환 | ✅ | Aurora 제거, bg-gray-100, 카드 기반 |
+| MP-2 | 씬 유형 모드 분리 (캐릭터 있음/없음) | ✅ | 모드별 카메라·속도·우선순위 독립 |
+| MP-3 | 후크 강도 옵션 5종 추가 | ✅ | 없음/시각충격/긴장감/드라마틱/미스터리. 프롬프트 최상단 삽입 |
+| MP-4 | 네거티브 프롬프트 다중 선택 + 별도 복사 | ✅ | 11종, 텍스트 포함 |
+| MP-5 | 키프레임 IDB 자동 로드 (기본 프롬프트) | ✅ | nl_edits[0] → translated_scenes[0] 폴백 |
+| MP-6 | AI 분석 첨가 버튼 | ✅ | Gemini 2.5 Flash Vision. 이미지+한글 → 영문 키워드 자동변환. 비용 툴팁 |
+| MP-7 | 프롬프트 출력 검정 배경 + 색상 코딩 | ✅ | bg-gray-950, 구성요소별 색상 범례 |
+| MP-8 | 한글 설명 카드 (카메라 desc 버그 수정) | ✅ | activeMoveOptions.find() 로 수정 |
+| MP-9 | 품질 부스터 옵션 | ⬜ | `8K`, `smooth motion`, `high frame rate` 등 다중 선택 추가 |
+| MP-10 | 씬 선택 확장 (씬1 외 2~N 씬 선택) | ⬜ | 현재 씬1 고정. 사용자가 씬 번호 선택 가능하도록 |
+| MP-11 | 프롬프트 히스토리 저장 | ⬜ | 생성한 프롬프트 IDB에 저장, 재사용 가능 |
+
+---
+
 ## 🟡 키프레임 페이지 (진행 중 / 미완료)
 
 | # | 항목 | 상태 | 비고 |
@@ -76,6 +96,28 @@
 | LF-9 | Remotion 화풍 CSS 테마 시스템 | ✅ | 9개 테마: ghibli-real, hollywood-sf, anime-sf, neo-noir, pop-art, ink-wash, pixar-3d, reality, sticker-cutout |
 | LF-10 | edge-tts SRT 타이밍 출력 | ✅ | tts_client.py — MP3 + SRT(문장별 타임스탬프) + word_timings JSON 동시 출력 |
 | LF-11 | Gemini 비주얼타입 JSON 생성 프롬프트 | ✅ | `visual_type_generator.py` — 20씬 테스트 완료. gemini-2.5-flash 사용. |
+
+---
+
+## 🟠 팀원 개별 영상 자동화 (Team OH 시리즈)
+
+> 설계 확정 (2026-03-27): 팀원 1명이 OH-1 → OH-2 → OH-3... 순서대로 끝까지 수행하는 개인 전용 영상 자동화 파이프라인. 링크드랍 메인 워크플로우와 독립 운영.
+
+### 아키텍처 원칙
+- OH 페이지 전체는 **1명이 순서대로** 완주하는 단계별 워크플로우
+- 각 페이지는 독립된 작업 단계 (대본 → 키프레임 → 영상합성 → ...)
+- 팀원이 여러 명일 경우, 팀원별로 별도 시리즈 운영 (예: OH = 오정화, KJ = 김지수 등)
+- `/content/keyframe`으로 직접 넘기지 않음 → 팀원 고유 화풍 고정 보장
+- 단계 간 데이터 전달: `sessionStorage('oh1_script_data')` → 다음 단계 페이지에서 읽기
+- 공용 컴포넌트: `apps/web/src/components/TeamKeyframePanel.tsx` (artStyle prop으로 화풍 고정)
+
+| # | 항목 | 상태 | 비고 |
+|---|------|------|------|
+| OH-1 | `/team/oh-1` 1단계: 대본 생성 | ✅ | content/script 동일 디자인/로직. 채널명 기본값: 지화 |
+| OH-2 | `/team/oh-2` 2단계: 키프레임 생성 | ⬜ | TeamKeyframePanel 공용 컴포넌트 구현 후 연결. 화풍: 오정화 팀 확정 필요 |
+| OH-3+ | `/team/oh-3` 이후 단계 | ⬜ | 영상 합성, 업로드 등 — 단계 설계 미확정 |
+| OH-C | `TeamKeyframePanel.tsx` 공용 컴포넌트 | ⬜ | **선행 조건**: `/content/keyframe` 핵심 로직 추출. props: `{ artStyle: string; scenes: string[]; analysis: any; channelName: string }` |
+| OH-NLM | 팀원별 NotebookLM 노트북 독립 운영 | ⬜ | **개발 단계부터** 팀원 각자 본인 Google 계정 + 본인 NLM 노트북 사용. 이유: 원거리 팀원이 동일한 NOTEBOOKLM_BL 쿠키를 서로 다른 IP에서 동시 사용 시 Google이 보안 위협으로 감지 → 세션 강제 만료. 각자 `.env`에 본인 `NOTEBOOKLM_BL` + `FIXED_NOTEBOOK_ID` 설정. venom9833 계정은 팀장 개발·테스트 전용. |
 
 ---
 
@@ -126,3 +168,4 @@
 | D-13 | c3 캐릭터 소스 3장 품질 검증 통과 | 2026-03-18 | |
 | D-14 | apps/desktop Electron 앱 전체 삭제 | 2026-03-24 | U-3 웹 전용 전환 결정에 따라 폐기 |
 | D-15 | keyframe_style.json 화풍 22종 + nicheCompat | 2026-03-24 | 사용자 직접 편집 가능 외부 JSON. 인물 중심 → 환경/주제 키워드 전환 완료 |
+| D-16 | MP4 프롬프트 생성기 1차 구현 (MP-1~8) | 2026-03-28 | 3컬럼 레이아웃, 모드분리, 후크강도, AI분석첨가, 검정배경 출력. 문서: 122번 |

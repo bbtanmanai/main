@@ -7,17 +7,18 @@ import {
   faPlay, faPause, faSpinner, faCheckCircle,
   faVolumeUp, faFilm, faArrowRight, faArrowLeft,
 } from '@fortawesome/free-solid-svg-icons';
-import voiceData from '@/data/voice-dubbing.json';
+import voicesRaw from '@/data/voices.json';
 
 const API = 'http://localhost:8000/api/v1';
 
-type Voice = { id: string; name: string; gender: string; age: string; engine: string; preview: string };
-const VOICES = voiceData.voices as Voice[];
+type Voice = { id: string; name: string; voice_id: string; engine?: string; gender: string; age: string; language: string; preview: string };
+const VOICES = voicesRaw as Voice[];
 
 export default function VoiceDubbingPage() {
   const [scenes, setScenes]         = React.useState<string[]>([]);
   const [idea, setIdea]             = React.useState('');
-  const [selectedVoice, setSelectedVoice] = React.useState('ko-KR-SunHiNeural');
+  const [selectedVoice, setSelectedVoice] = React.useState('ko-KR-InJoonNeural');
+  const [voiceAccordionOpen, setVoiceAccordionOpen] = React.useState(false);
   const [ttsSpeed, setTtsSpeed]   = React.useState(1.0);
   const [ttsStatus, setTtsStatus]   = React.useState<Record<number, 'idle' | 'generating' | 'done' | 'error'>>({});
   const [playingIdx, setPlayingIdx] = React.useState<number | null>(null);
@@ -79,9 +80,12 @@ export default function VoiceDubbingPage() {
       .then(r => r.json())
       .then(async data => {
         if (data.scenes?.length) {
-          setScenes(data.scenes);
+          // TODO: 테스트 완료 후 아래 2줄 제거 → data.scenes 직접 사용
+          const SCENE_LIMIT = 3;
+          const sceneList = data.scenes.slice(0, SCENE_LIMIT);
+          setScenes(sceneList);
           // 저장된 TTS 복원
-          const saved = await loadAllTtsIDB(data.scenes.length);
+          const saved = await loadAllTtsIDB(sceneList.length);
           const restored: Record<number, 'done'> = {};
           for (const idx of Object.keys(saved)) restored[Number(idx)] = 'done';
           if (Object.keys(restored).length > 0) setTtsStatus(restored);
@@ -115,8 +119,8 @@ export default function VoiceDubbingPage() {
       formData.append('scene_idx', String(idx));
       formData.append('text', cleanScene(scenes[idx]));
       const voice = VOICES.find(v => v.id === selectedVoice);
-      formData.append('voice', selectedVoice);
-      formData.append('engine', voice?.engine || 'edge-tts');
+      formData.append('voice', voice?.voice_id || selectedVoice);
+      formData.append('engine', voice?.engine || 'supertone');
       formData.append('speed', String(ttsSpeed));
       const res = await fetch(`${API}/video/tts`, { method: 'POST', body: formData });
       if (res.ok) {
@@ -158,6 +162,10 @@ export default function VoiceDubbingPage() {
   };
 
   const allDone = scenes.length > 0 && scenes.every((_, i) => ttsStatus[i] === 'done');
+
+  // 개발 기간 중 슈퍼톤 유료 성우 TTS 생성 금지 (미리듣기는 허용)
+  const selectedVoiceObj = VOICES.find(v => v.id === selectedVoice);
+  const isSupertoneSelected = selectedVoiceObj?.engine !== 'edge-tts';
 
   // 렌더링 시작
   const startRender = async (ratio: '16:9' | '9:16') => {
@@ -209,68 +217,81 @@ export default function VoiceDubbingPage() {
         </div>
         <p className="text-slate-400 text-sm mb-8">씬별 TTS 음성을 생성하고 미리듣기 후 영상을 제작합니다.</p>
 
-        {/* 성우 선택 카드 */}
-        <div className="mb-6 space-y-4">
-          <div className="flex items-center justify-between">
+        {/* 성우 선택 아코디언 */}
+        <div className="mb-6 border border-white/10 rounded-2xl overflow-hidden">
+          <button
+            onClick={() => setVoiceAccordionOpen(o => !o)}
+            className="w-full flex items-center justify-between px-5 py-3.5 bg-white/[0.03] hover:bg-white/[0.06] transition-colors"
+          >
             <div className="flex items-center gap-2">
               <FontAwesomeIcon icon={faVolumeUp} className="text-indigo-400" />
-              <h2 className="text-sm font-black text-white">성우 선택</h2>
+              <span className="text-sm font-black text-white">성우 선택</span>
+              {(() => {
+                const v = VOICES.find(v => v.id === selectedVoice);
+                return v ? (
+                  <span className="flex items-center gap-1 ml-2 px-2 py-0.5 rounded-lg bg-indigo-600/30 border border-indigo-500/40">
+                    <span className={`text-xs font-black ${v.gender === 'female' ? 'text-pink-400' : 'text-sky-400'}`}>
+                      {v.gender === 'female' ? '♀' : '♂'}
+                    </span>
+                    <span className="text-xs font-black text-white">{v.name}</span>
+                  </span>
+                ) : null;
+              })()}
             </div>
-            <button
-              onClick={generateAll}
-              disabled={scenes.length === 0}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl font-black text-sm bg-indigo-600 text-white hover:brightness-110 active:scale-95 transition-all"
-            >
-              전체 TTS 생성 ({doneCount}/{scenes.length})
-            </button>
-          </div>
+            <span className={`text-slate-400 text-xs transition-transform duration-200 ${voiceAccordionOpen ? 'rotate-180' : ''}`}>▼</span>
+          </button>
 
-          <div className="grid grid-cols-4 gap-2">
-            {VOICES.map((v, vi) => (
-              <div
-                key={`${v.id}-${vi}`}
-                onClick={() => setSelectedVoice(v.id)}
-                role="button"
-                tabIndex={0}
-                className={`relative p-3 rounded-xl border text-left transition-all ${
-                  selectedVoice === v.id
-                    ? 'bg-indigo-600/20 border-indigo-500/60 ring-1 ring-indigo-500/30'
-                    : 'bg-white/[0.03] border-white/10 hover:border-white/20 hover:bg-white/[0.06]'
-                }`}
-              >
-                {selectedVoice === v.id && (
-                  <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-indigo-500 flex items-center justify-center">
-                    <FontAwesomeIcon icon={faCheckCircle} className="text-white text-[8px]" />
+          {voiceAccordionOpen && (
+            <div className="px-5 pt-4 pb-5 space-y-4 border-t border-white/10">
+              {(['청년', '중년', '시니어', '아이'] as const).map(ageGroup => {
+                const group = VOICES.filter(v => v.age === ageGroup);
+                if (!group.length) return null;
+                return (
+                  <div key={ageGroup}>
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 pl-1">{ageGroup}</p>
+                    <div className="grid grid-cols-4 gap-2">
+                      {group.map((v) => (
+                        <div
+                          key={v.id}
+                          onClick={() => { setSelectedVoice(v.id); setVoiceAccordionOpen(false); }}
+                          role="button"
+                          tabIndex={0}
+                          className={`relative p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                            selectedVoice === v.id
+                              ? 'bg-indigo-600/20 border-indigo-500/60 ring-1 ring-indigo-500/30'
+                              : 'bg-white/[0.03] border-white/10 hover:border-white/20 hover:bg-white/[0.06]'
+                          }`}
+                        >
+                          <div className="flex items-center gap-1.5">
+                            <span className={`text-xs font-black ${v.gender === 'female' ? 'text-pink-400' : 'text-sky-400'}`}>
+                              {v.gender === 'female' ? '♀' : '♂'}
+                            </span>
+                            <span className="text-sm font-black text-white">{v.name}</span>
+                            {v.engine === 'edge-tts' && (
+                              <span className="ml-1 px-1 py-0 text-[8px] font-black rounded bg-emerald-600/40 text-emerald-300 leading-4">무료</span>
+                            )}
+                            {v.preview && (
+                              <button
+                                onClick={(e) => previewVoice(v, e)}
+                                className={`ml-auto w-6 h-6 rounded-full flex items-center justify-center transition-all ${
+                                  previewingVoice === v.id
+                                    ? 'bg-fuchsia-500 text-white'
+                                    : 'bg-white/10 text-slate-400 hover:bg-white/20 hover:text-white'
+                                }`}
+                                title="미리듣기"
+                              >
+                                <FontAwesomeIcon icon={previewingVoice === v.id ? faPause : faPlay} className="text-[8px]" />
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                )}
-                <div className="flex items-center gap-1.5">
-                  <span className={`text-xs font-black ${v.gender === 'F' ? 'text-pink-400' : 'text-sky-400'}`}>
-                    {v.gender === 'F' ? '♀' : '♂'}
-                  </span>
-                  <span className="text-sm font-black text-white">{v.name}</span>
-                  <span className="text-[10px] text-slate-500">-</span>
-                  <span className="text-[11px] text-slate-400">
-                    {v.age === '20-30' ? '20대' : v.age === '40-50' ? '40대' : v.age === '50-60' ? '50대' : '시니어'} {v.gender === 'F' ? '여성' : '남성'}
-                  </span>
-                  {v.preview ? (
-                    <button
-                      onClick={(e) => previewVoice(v, e)}
-                      className={`ml-auto w-6 h-6 rounded-full flex items-center justify-center transition-all ${
-                        previewingVoice === v.id
-                          ? 'bg-fuchsia-500 text-white'
-                          : 'bg-white/10 text-slate-400 hover:bg-white/20 hover:text-white'
-                      }`}
-                      title="미리듣기"
-                    >
-                      <FontAwesomeIcon icon={previewingVoice === v.id ? faPause : faPlay} className="text-[8px]" />
-                    </button>
-                  ) : (
-                    <span className="ml-auto text-[9px] text-slate-600 font-black">준비중</span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* 영상 제목 + 더빙 속도 */}
@@ -356,21 +377,25 @@ export default function VoiceDubbingPage() {
                     <FontAwesomeIcon icon={playingIdx === idx ? faPause : faPlay} className="text-xs" />
                   </button>
                 )}
-                <button
-                  onClick={() => generateTts(idx)}
-                  disabled={ttsStatus[idx] === 'generating'}
-                  className={`px-4 py-2 rounded-lg text-[11px] font-black transition-all ${
-                    ttsStatus[idx] === 'generating'
-                      ? 'bg-indigo-500/30 text-indigo-300 cursor-wait'
-                      : ttsStatus[idx] === 'done'
-                        ? 'bg-slate-700 text-slate-300 hover:bg-slate-600'
-                        : 'bg-indigo-600 text-white hover:brightness-110'
-                  }`}
-                >
-                  {ttsStatus[idx] === 'generating' ? (
-                    <><FontAwesomeIcon icon={faSpinner} className="animate-spin mr-1" /> 생성중</>
-                  ) : ttsStatus[idx] === 'done' ? '재생성' : 'TTS 생성'}
-                </button>
+                {isSupertoneSelected ? (
+                  <span className="px-3 py-2 rounded-lg text-[11px] font-black bg-slate-800 text-slate-500 cursor-not-allowed" title="개발 기간 중 슈퍼톤 성우 생성 불가">🔒 유료 전용</span>
+                ) : (
+                  <button
+                    onClick={() => generateTts(idx)}
+                    disabled={ttsStatus[idx] === 'generating'}
+                    className={`px-4 py-2 rounded-lg text-[11px] font-black transition-all ${
+                      ttsStatus[idx] === 'generating'
+                        ? 'bg-indigo-500/30 text-indigo-300 cursor-wait'
+                        : ttsStatus[idx] === 'done'
+                          ? 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                          : 'bg-indigo-600 text-white hover:brightness-110'
+                    }`}
+                  >
+                    {ttsStatus[idx] === 'generating' ? (
+                      <><FontAwesomeIcon icon={faSpinner} className="animate-spin mr-1" /> 생성중</>
+                    ) : ttsStatus[idx] === 'done' ? '재생성' : 'TTS 생성'}
+                  </button>
+                )}
               </div>
             </div>
           ))}

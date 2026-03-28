@@ -69,6 +69,8 @@ class GenerateIdeasRequest(BaseModel):
     notebook_id: str
     analysis: Optional[Dict[str, Any]] = None
     count: int = 20
+    raw_content: str = ""
+    video_title: str = ""
 
 class GenerateScriptRequest(BaseModel):
     notebook_id: str
@@ -473,23 +475,27 @@ async def whisper_stt(req: WhisperRequest):
 async def generate_ideas(req: GenerateIdeasRequest):
     """채널 분석 결과 기반 독창적 영상 아이디어 20개 생성"""
     context = ""
+    if req.video_title:
+        context += f"원본 영상 제목: {req.video_title}\n"
+    if req.raw_content:
+        context += f"영상 자막 일부:\n\"\"\"\n{req.raw_content[:800]}\n\"\"\"\n"
     if req.analysis:
         a = req.analysis
         if a.get("niche"):        context += f"채널 틈새시장: {a['niche']}\n"
         if a.get("target"):       context += f"핵심 타겟: {a['target']}\n"
-        if a.get("title_pattern"):context += f"제목 공식: {a['title_pattern']}\n"
-        if a.get("hook"):         context += f"훅 패턴: {a['hook']}\n"
+        if a.get("title_pattern"):context += f"검증된 제목 공식: {a['title_pattern']}\n"
+        if a.get("hook"):         context += f"오프닝 훅 패턴: {a['hook']}\n"
 
     prompt = (
         f"{context}\n"
-        f"위 채널 분석을 바탕으로, 이 채널에서 만들 수 있는 독창적이고 "
-        f"대중들이 좋아할 만하면서 흔하지 않은 영상 아이디어 {req.count}가지를 만들어줘. "
-        "조건: "
-        "1) 사람들이 잘 모르는 흥미로운 주제일 것. "
-        "2) 실제 업로드할 영상 제목 형태로 출력. "
-        "3) 클릭을 유도하는 훅(숫자·의문·충격·공감) 포함. "
-        "4) ★ 제목 길이는 반드시 15자 이상 25자 이하로 제한. 공백 포함 25자 초과 절대 금지. "
-        "5) 부제목·설명 추가 금지. 제목 하나만 출력. "
+        f"위 영상 내용과 채널 분석을 바탕으로, 이 영상에서 파생할 수 있는 독창적인 "
+        f"후속 영상 아이디어 {req.count}가지를 만들어줘.\n"
+        "조건:\n"
+        "1) 반드시 위 자막 내용과 직접 연관된 주제일 것 (범용 아이디어 금지).\n"
+        "2) 실제 업로드할 영상 제목 형태로 출력.\n"
+        "3) 클릭을 유도하는 훅(숫자·의문·충격·공감) 포함.\n"
+        "4) 제목 길이는 15자 이상 35자 이하.\n"
+        "5) 부제목·설명 추가 금지. 제목 하나만 출력.\n"
         "다른 설명 없이 JSON 배열만 출력해:\n"
         '["아이디어1","아이디어2",...]'
     )

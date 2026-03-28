@@ -1,4 +1,5 @@
 import "./globals.css";
+// Removed milkdown nord css to avoid tailwind @layer conflicts
 import React from "react";
 import { Noto_Sans_KR } from 'next/font/google';
 

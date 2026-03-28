@@ -1,6 +1,7 @@
 import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
 import { Theme } from "../themes";
+import { VisualBackdrop } from "./VisualBackdrop";
 
 interface FullVisualData {
   mood?: string;
@@ -22,16 +23,34 @@ export const FullVisual: React.FC<{ data: FullVisualData; theme: Theme }> = ({ d
   const frame = useCurrentFrame();
   const opacity = interpolate(frame, [0, 25], [0, 1], { extrapolateRight: "clamp" });
   const zoom = interpolate(frame, [0, 150], [1, 1.05], { extrapolateRight: "clamp" });
+  const drift = interpolate(frame, [0, 240], [0, 1], { extrapolateRight: "extend" });
+  const leakX = Math.sin(drift * Math.PI * 2) * 120;
+  const leakY = Math.cos(drift * Math.PI * 2) * 70;
 
   const moodOverlay = MOOD_OVERLAYS[data.mood || "warm"] || MOOD_OVERLAYS.warm;
 
   return (
     <AbsoluteFill style={{ background: "transparent" }}>
-      {/* 줌 효과 배경 (투명) */}
       <AbsoluteFill style={{ transform: `scale(${zoom})` }} />
-      {/* 무드 오버레이 */}
-      <AbsoluteFill style={{ background: moodOverlay }} />
-      {/* 1차 영상: 자막/텍스트 없음 (2차 9:16에서 자막 추가) */}
+      <VisualBackdrop theme={theme} intensity={0.9} />
+      <AbsoluteFill style={{ background: moodOverlay, opacity: 0.95 }} />
+      <AbsoluteFill
+        style={{
+          opacity,
+          transform: `translate(${leakX}px, ${leakY}px)`,
+          backgroundImage:
+            "radial-gradient(circle at 30% 35%, rgba(255,255,255,0.10) 0%, transparent 55%),radial-gradient(circle at 75% 60%, rgba(255,255,255,0.06) 0%, transparent 58%)",
+          mixBlendMode: "overlay",
+        }}
+      />
+      <AbsoluteFill
+        style={{
+          opacity: 0.16 * opacity,
+          backgroundImage:
+            "repeating-linear-gradient(0deg, rgba(255,255,255,0.10) 0 1px, transparent 1px 5px)",
+          mixBlendMode: "soft-light",
+        }}
+      />
     </AbsoluteFill>
   );
 };

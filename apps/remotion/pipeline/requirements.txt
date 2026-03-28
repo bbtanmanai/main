@@ -1,0 +1,5 @@
+# apps/remotion/pipeline 의존성
+# 설치: pip install -r requirements.txt
+
+# TTS는 apps/api에서 이미 생성 — 여기서는 불필요
+# ffprobe는 FFmpeg 설치 시 포함 (tts_duration 측정용)

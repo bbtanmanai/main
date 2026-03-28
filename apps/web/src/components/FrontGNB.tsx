@@ -97,10 +97,10 @@ export default function FrontGNB() {
   const navItems = menuData;
 
   return (
-    <header className="fixed top-0 left-0 right-0 h-[52px] bg-[#13131f] border-b border-white/10 flex items-center justify-between px-4 md:px-6 z-[9999]">
+    <header suppressHydrationWarning className="fixed top-0 left-0 right-0 h-[52px] bg-[#13131f] border-b border-white/10 flex items-center justify-between px-4 md:px-6 z-[9999]">
       {/* Logo */}
       <Link href="/front" className="text-lg font-black text-[#a78bfa] tracking-tighter flex items-center gap-1.5 z-[10001]">
-        Link<span className="text-[#6366f1]">Drop</span>
+        Link<span suppressHydrationWarning className="text-[#6366f1]">Drop</span>
       </Link>
 
       {/* Desktop Navigation */}

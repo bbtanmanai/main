@@ -2,6 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faImage, faArrowRight, faArrowLeft, faChevronRight,
@@ -99,6 +101,22 @@ async function saveImageIDB(sessionId: string, idx: number, blob: Blob) {
   tx.objectStore(IDB_IMAGES).put(blob, `${sessionId}_${idx}`);
 }
 
+async function saveMp4IDB(sessionId: string, blob: Blob) {
+  const db = await openIDB();
+  const tx = db.transaction(IDB_IMAGES, 'readwrite');
+  tx.objectStore(IDB_IMAGES).put(blob, `${sessionId}_mp4_0`);
+}
+
+async function loadMp4IDB(sessionId: string): Promise<string | null> {
+  const db = await openIDB();
+  return new Promise(res => {
+    const tx  = db.transaction(IDB_IMAGES, 'readonly');
+    const req = tx.objectStore(IDB_IMAGES).get(`${sessionId}_mp4_0`);
+    req.onsuccess = () => res(req.result instanceof Blob ? URL.createObjectURL(req.result) : null);
+    req.onerror   = () => res(null);
+  });
+}
+
 async function loadImagesIDB(sessionId: string, count: number): Promise<Record<number, string>> {
   const db     = await openIDB();
   const result: Record<number, string> = {};
@@ -167,6 +185,14 @@ async function translateScenesToVisual(
 }
 
 // ── 구조화 프롬프트 생성 ──────────────────────────────────────────────────────
+// 씬 역할별 시각 모디파이어 (씬 인덱스 기준)
+const SCENE_ROLE_MODIFIERS: Record<number, string> = {
+  0: 'dramatic close-up composition, high contrast tension, shock atmosphere, extreme visual impact',
+  1: 'warm eye-level shot, approachable conversational mood, trust-building atmosphere, soft lighting',
+  2: 'clear explanatory composition, data visualization aesthetic, informative wide shot, authoritative mood',
+};
+const DEFAULT_SCENE_MODIFIER = 'cinematic composition, balanced lighting, engaging visual';
+
 function buildStructuredPrompt(
   sceneEn: string,
   idx: number,
@@ -174,11 +200,12 @@ function buildStructuredPrompt(
   quality: string,
   negative: string,
 ): StructuredPrompt {
-  const def       = art ? STYLE_MAP[art.id] : null;
-  const styleBase = def?.customPrompt || 'dramatic cinematic environment, ultra-detailed, 4K';
+  const def        = art ? STYLE_MAP[art.id] : null;
+  const styleBase  = def?.customPrompt || 'dramatic cinematic environment, ultra-detailed, 4K';
+  const roleModifier = SCENE_ROLE_MODIFIERS[idx] ?? DEFAULT_SCENE_MODIFIER;
   return {
     style:                   styleBase,
-    background_and_location: sceneEn || `scene ${idx + 1}`,
+    background_and_location: sceneEn ? `${sceneEn}, ${roleModifier}` : `scene ${idx + 1}, ${roleModifier}`,
     color_palette:           def?.colorPalette || '',
     quality_boosters:        quality,
     negative_prompt:         negative,
@@ -237,12 +264,16 @@ function ArtStyleCard({ a, selected, disabled, onSelect }: {
 }
 
 // ── 씬 카드 ───────────────────────────────────────────────────────────────────
-function SceneCard({ idx, scene, selected, imageUrl, onSelect, onImageAdd }: {
-  idx: number; scene: string; selected: boolean; imageUrl?: string;
-  onSelect: () => void; onImageAdd: (file: File) => void;
+function SceneCard({ idx, scene, selected, imageUrl, mp4Url, onSelect, onImageAdd, onMp4Add, mp4PageHref }: {
+  idx: number; scene: string; selected: boolean; imageUrl?: string; mp4Url?: string;
+  onSelect: () => void; onImageAdd: (file: File) => void; onMp4Add?: (file: File) => void;
+  mp4PageHref?: string;
 }) {
-  const fileRef = React.useRef<HTMLInputElement>(null);
-  const preview = scene.replace(/\[씬\s*\d+\]/gi, '').trim().slice(0, 60);
+  const fileRef  = React.useRef<HTMLInputElement>(null);
+  const mp4Ref   = React.useRef<HTMLInputElement>(null);
+  const preview  = scene.replace(/\[씬\s*\d+\]/gi, '').trim().slice(0, 60);
+  const hasMp4   = idx === 0 && !!mp4Url;
+  const showImg  = !hasMp4 && !!imageUrl;
   return (
     <div className={`w-full rounded-2xl border transition-all ${
       selected
@@ -251,9 +282,19 @@ function SceneCard({ idx, scene, selected, imageUrl, onSelect, onImageAdd }: {
     }`}>
       <div className="flex gap-3 p-3">
 
-        {/* 1:1 이미지 영역 */}
+        {/* 1:1 미디어 영역 */}
         <div className="w-14 h-14 shrink-0 rounded-xl overflow-hidden relative group/img">
-          {imageUrl ? (
+          {hasMp4 ? (
+            <>
+              <video src={mp4Url} className="w-full h-full object-cover" muted playsInline />
+              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
+                <button
+                  onClick={e => { e.stopPropagation(); mp4Ref.current?.click(); }}
+                  className="text-[10px] text-white font-black bg-white/20 px-2 py-1 rounded-lg"
+                >교체</button>
+              </div>
+            </>
+          ) : showImg ? (
             <>
               <img src={imageUrl} alt={`씬 ${idx + 1}`} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
@@ -264,13 +305,21 @@ function SceneCard({ idx, scene, selected, imageUrl, onSelect, onImageAdd }: {
               </div>
             </>
           ) : (
-            <button
-              onClick={e => { e.stopPropagation(); fileRef.current?.click(); }}
-              className="w-full h-full flex flex-col items-center justify-center gap-0.5 bg-slate-800/60 border border-dashed border-slate-600 rounded-xl hover:border-indigo-500/60 hover:bg-indigo-950/40 transition-all"
-            >
-              <span className="text-slate-500 text-base leading-none">＋</span>
-              <span className="text-[9px] text-slate-500 font-black leading-tight">이미지<br/>추가</span>
-            </button>
+            <div className="w-full h-full flex flex-col items-center justify-center gap-0.5 bg-slate-800/60 border border-dashed border-slate-600 rounded-xl">
+              <button
+                onClick={e => { e.stopPropagation(); fileRef.current?.click(); }}
+                className="w-full flex flex-col items-center justify-center gap-0.5 hover:opacity-70 transition-opacity"
+              >
+                <span className="text-slate-500 text-base leading-none">＋</span>
+                <span className="text-[9px] text-slate-500 font-black leading-tight">이미지<br/>추가</span>
+              </button>
+              {idx === 0 && (
+                <button
+                  onClick={e => { e.stopPropagation(); mp4Ref.current?.click(); }}
+                  className="text-[8px] text-sky-400 font-black hover:text-sky-300 transition-colors leading-tight"
+                >MP4</button>
+              )}
+            </div>
           )}
         </div>
 
@@ -282,11 +331,24 @@ function SceneCard({ idx, scene, selected, imageUrl, onSelect, onImageAdd }: {
               ? <span className="text-[10px] font-black text-indigo-400 bg-indigo-500/20 px-2 py-0.5 rounded-full">선택됨</span>
               : <span className="text-[10px] text-slate-500">씬 {idx + 1}</span>
             }
-            {imageUrl && (
+            {hasMp4 && (
+              <span className="ml-auto text-[9px] font-black text-sky-400 bg-sky-500/15 border border-sky-500/30 px-1.5 py-0.5 rounded-full">MP4 ✓</span>
+            )}
+            {!hasMp4 && imageUrl && (
               <span className="ml-auto text-[9px] font-black text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-1.5 py-0.5 rounded-full">이미지 ✓</span>
             )}
           </div>
           <p className="text-xs text-slate-300 leading-relaxed line-clamp-2">{preview}…</p>
+          {mp4PageHref && (
+            <Link
+              href={mp4PageHref}
+              onClick={e => e.stopPropagation()}
+              className="inline-flex items-center gap-1 mt-2 px-2 py-1 rounded-lg text-[10px] font-black text-sky-300 bg-sky-500/15 border border-sky-500/30 hover:bg-sky-500/25 transition-all"
+            >
+              🎬 MP4 생성
+              {mp4Url && <span className="text-[9px] text-emerald-400 ml-0.5">✓</span>}
+            </Link>
+          )}
         </button>
       </div>
 
@@ -294,12 +356,23 @@ function SceneCard({ idx, scene, selected, imageUrl, onSelect, onImageAdd }: {
         ref={fileRef} type="file" accept="image/*" className="hidden"
         onChange={e => { const f = e.target.files?.[0]; if (f) onImageAdd(f); e.target.value = ''; }}
       />
+      {idx === 0 && (
+        <input
+          ref={mp4Ref} type="file" accept="video/mp4,video/*" className="hidden"
+          onChange={e => { const f = e.target.files?.[0]; if (f && onMp4Add) onMp4Add(f); e.target.value = ''; }}
+        />
+      )}
     </div>
   );
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
-export default function KeyframePage() {
+function KeyframePageInner() {
+  const searchParams = useSearchParams();
+  // TODO: 테스트 완료 후 아래 SCENE_LIMIT 제거 → null 로 복원
+  const SCENE_LIMIT = 3;
+  const sampleLimit = searchParams.get('sample') ? parseInt(searchParams.get('sample')!, 10) : SCENE_LIMIT;
+
   const [scenes, setScenes]       = React.useState<string[]>([]);
   const [analysis, setAnalysis]   = React.useState<any>(null);
   const [idea, setIdea]           = React.useState('');
@@ -311,6 +384,9 @@ export default function KeyframePage() {
   const [translatedScenes, setTranslatedScenes] = React.useState<string[]>([]);
   const [isTranslating, setIsTranslating]       = React.useState(false);
   const [sceneImages, setSceneImages]           = React.useState<Record<number, string>>({});
+  const [sceneMp4s, setSceneMp4s]               = React.useState<Record<number, string>>({});
+  // 서버 이미지 슬롯 매핑: serverIdx → sceneIdx (씬 삽입 시 같이 시프트)
+  const [serverImageSlots, setServerImageSlots] = React.useState<Record<number, number>>({});
   const [editingIdx, setEditingIdx]             = React.useState<number | null>(null);
   const [editingPrompt, setEditingPrompt]       = React.useState('');
   const [copied, setCopied]                     = React.useState<{ idx: number; type: 'nl' | 'json' } | null>(null);
@@ -368,7 +444,62 @@ export default function KeyframePage() {
       }
       return next;
     });
+    // 서버 이미지 슬롯 매핑도 +1씩 밀기 (새 씬은 매핑 없음 → loadBrowserImages 미할당)
+    setServerImageSlots(prev => {
+      const next: Record<number, number> = {};
+      for (const [k, v] of Object.entries(prev)) {
+        const sceneIdx = Number(v);
+        next[Number(k)] = sceneIdx < insertAt ? sceneIdx : sceneIdx + 1;
+      }
+      return next;
+    });
     setSelectedIdx(insertAt);
+  };
+
+  // 씬 삭제 (최소 1개 유지)
+  const deleteScene = (delIdx: number) => {
+    if (scenes.length <= 1) return;
+    setScenes(prev => prev.filter((_, i) => i !== delIdx));
+    setPrompts(prev => prev.filter((_, i) => i !== delIdx));
+    setTranslatedScenes(prev => prev.length ? prev.filter((_, i) => i !== delIdx) : prev);
+    // 삭제 위치 이후 이미지 인덱스 -1씩 당기기
+    setSceneImages(prev => {
+      const next: Record<number, string> = {};
+      for (const [k, v] of Object.entries(prev)) {
+        const idx = Number(k);
+        if (idx === delIdx) continue;
+        next[idx < delIdx ? idx : idx - 1] = v;
+      }
+      return next;
+    });
+    setNlEdits(prev => {
+      const next: Record<number, string> = {};
+      for (const [k, v] of Object.entries(prev)) {
+        const idx = Number(k);
+        if (idx === delIdx) continue;
+        next[idx < delIdx ? idx : idx - 1] = v;
+      }
+      return next;
+    });
+    setServerImageSlots(prev => {
+      const next: Record<number, number> = {};
+      for (const [k, v] of Object.entries(prev)) {
+        const sceneIdx = Number(v);
+        if (sceneIdx === delIdx) continue;
+        next[Number(k)] = sceneIdx < delIdx ? sceneIdx : sceneIdx - 1;
+      }
+      return next;
+    });
+    setSelectedIdx(prev => Math.min(prev, scenes.length - 2));
+    // localStorage 씬 목록 갱신
+    try {
+      const raw = localStorage.getItem('ld_keyframe_data');
+      if (raw) {
+        const data = JSON.parse(raw);
+        data.scenes = data.scenes.filter((_: any, i: number) => i !== delIdx);
+        localStorage.setItem('ld_keyframe_data', JSON.stringify(data));
+      }
+    } catch (_) {}
   };
 
   // 프롬프트 변경 시 IndexedDB에 저장
@@ -407,50 +538,65 @@ export default function KeyframePage() {
         const t = Date.now();
         const newImages: Record<number, string> = {};
         for (let i = 0; i < data.count; i++) {
-          newImages[i] = `${API}/browser/images/${i}?t=${t}`;
+          // 슬롯 매핑 우선: 씬 삽입 후에도 올바른 sceneIdx에 할당
+          const sceneIdx = serverImageSlots[i] ?? i;
+          newImages[sceneIdx] = `${API}/browser/images/${i}?t=${t}`;
         }
         setSceneImages(prev => ({ ...prev, ...newImages }));
       }
     } catch (_) {}
-  }, [scenes]);
+  }, [scenes, serverImageSlots]);
 
-  // 윈도우 포커스 시 자동 확인 (링크브라우저 닫힌 후)
+  // 윈도우 포커스 시에만 확인 (링크브라우저에서 돌아올 때)
+  // 초기 자동 호출 제거 — IDB 복원이 담당, 서버 이미지 자동 로드 차단
   React.useEffect(() => {
     const onFocus = () => loadBrowserImages();
     window.addEventListener('focus', onFocus);
-    // 초기 로드 시에도 1회 확인 (이전에 링크브라우저에서 업로드한 이미지 복원)
-    loadBrowserImages();
     return () => window.removeEventListener('focus', onFocus);
   }, [loadBrowserImages]);
 
   React.useEffect(() => {
     (async () => {
-      // 1. IndexedDB에서 저장된 상태 복원 시도
-      const savedData = await loadStateIDB('keyframe_data');
-      const savedArtId = await loadStateIDB('art_style_id');
-      const savedNlEdits = await loadStateIDB('nl_edits');
-
-      // 2. sessionStorage 폴백 (script 페이지에서 넘어온 경우)
-      let data = savedData;
-      if (!data) {
-        try {
-          const raw = sessionStorage.getItem('ld_keyframe_data');
-          if (raw) data = JSON.parse(raw);
-        } catch (_) {}
-      }
+      // 1. localStorage에서 대본 데이터 로드 (script 페이지가 저장, 텍스트 전용)
+      let data: any = null;
+      try {
+        const raw = localStorage.getItem('ld_keyframe_data');
+        if (raw) data = JSON.parse(raw);
+      } catch (_) {}
 
       if (!data || !data.scenes?.length) return;
 
-      const sceneList: string[] = data.scenes;
+      // 2. script_id 비교 → 새 대본 여부 판단
+      const scriptId = localStorage.getItem('ld_script_id') || '';
+      const lastScriptId = localStorage.getItem('ld_img_script_id') || '';
+      const isNewScript = scriptId !== lastScriptId;
+
+      if (isNewScript) {
+        // 새 대본: 이미지 세션 교체 + IDB 파생 캐시 초기화 + 서버 이미지 초기화
+        localStorage.setItem('ld_img_session', crypto.randomUUID());
+        localStorage.setItem('ld_img_script_id', scriptId);
+        await saveStateIDB('translated_scenes', null);
+        await saveStateIDB('translated_style_id', null);
+        await saveStateIDB('nl_edits', null);
+        await saveStateIDB('scene_accents', null);
+        fetch(`${API}/browser/clear-images`, { method: 'DELETE' }).catch(() => {});
+      }
+
+      // 3. IDB에서 파생 상태 복원 (번역, 화풍, 프롬프트 수정)
+      const savedArtId = await loadStateIDB('art_style_id');
+      const savedNlEdits = isNewScript ? null : await loadStateIDB('nl_edits');
+
+      const sceneList: string[] = sampleLimit ? data.scenes.slice(0, sampleLimit) : data.scenes;
       setScenes(sceneList);
+      // 서버 이미지 슬롯 초기화: serverIdx → sceneIdx (1:1 매핑)
+      const initSlots: Record<number, number> = {};
+      for (let i = 0; i < sceneList.length; i++) initSlots[i] = i;
+      setServerImageSlots(initSlots);
       setAnalysis(data.analysis || null);
       setIdea(data.idea || '');
       setPrompts(sceneList.map((_, i) => buildStructuredPrompt('', i, null, '', '')));
 
-      // IndexedDB에 데이터 영구 저장 (sessionStorage → IDB 이관)
-      await saveStateIDB('keyframe_data', data);
-
-      // 화풍 복원: 저장된 화풍 → niche 자동 선택 → ghibli-real 폴백
+      // 4. 화풍 복원: 저장된 화풍 → niche 자동 선택 → ghibli-real 폴백
       let selectedArt: ArtStyleDef | null = null;
       if (savedArtId) {
         selectedArt = ART_STYLES.find(a => a.id === savedArtId) || null;
@@ -467,15 +613,19 @@ export default function KeyframePage() {
       if (!selectedArt) selectedArt = ART_STYLES.find(a => a.id === 'ghibli-real') || null;
       if (selectedArt) setArtStyle(selectedArt);
 
-      // 사용자 프롬프트 수정 복원
+      // 5. 프롬프트 수정 복원
       if (savedNlEdits && Object.keys(savedNlEdits).length > 0) {
         setNlEdits(savedNlEdits);
       }
 
-      // 세션 이미지 복원
+      // 6. IDB 이미지 복원 (현재 세션 기준 — 새 대본이면 새 세션이므로 자동 빈 상태)
       const sid = getSessionId();
       const imgs = await loadImagesIDB(sid, sceneList.length);
       if (Object.keys(imgs).length > 0) setSceneImages(imgs);
+
+      // 7. IDB MP4 복원 (씬1 전용)
+      const mp4Url = await loadMp4IDB(sid);
+      if (mp4Url) setSceneMp4s({ 0: mp4Url });
     })();
   }, []);
 
@@ -780,17 +930,33 @@ export default function KeyframePage() {
                 <div className="space-y-0">
                   {scenes.map((scene, i) => (
                     <React.Fragment key={i}>
-                      <SceneCard
-                        idx={i} scene={scene}
-                        selected={selectedIdx === i}
-                        imageUrl={sceneImages[i]}
-                        onSelect={() => setSelectedIdx(i)}
-                        onImageAdd={file => {
-                          const url = URL.createObjectURL(file);
-                          setSceneImages(prev => ({ ...prev, [i]: url }));
-                          saveImageIDB(getSessionId(), i, file);
-                        }}
-                      />
+                      <div className="relative group/scene">
+                        <SceneCard
+                          idx={i} scene={scene}
+                          selected={selectedIdx === i}
+                          imageUrl={sceneImages[i]}
+                          mp4Url={sceneMp4s[i]}
+                          onSelect={() => setSelectedIdx(i)}
+                          onImageAdd={file => {
+                            const url = URL.createObjectURL(file);
+                            setSceneImages(prev => ({ ...prev, [i]: url }));
+                            saveImageIDB(getSessionId(), i, file);
+                          }}
+                          onMp4Add={i === 0 ? file => {
+                            const url = URL.createObjectURL(file);
+                            setSceneMp4s(prev => ({ ...prev, [0]: url }));
+                            saveMp4IDB(getSessionId(), file);
+                          } : undefined}
+                          mp4PageHref={i === 0 ? '/content/mp4-prompt-generator' : undefined}
+                        />
+                        {scenes.length > 1 && (
+                          <button
+                            onClick={() => deleteScene(i)}
+                            className="absolute top-1 right-1 opacity-0 group-hover/scene:opacity-100 w-5 h-5 rounded-full bg-red-500/80 hover:bg-red-500 text-white text-[9px] font-black flex items-center justify-center transition-all z-10"
+                            title="씬 삭제"
+                          >✕</button>
+                        )}
+                      </div>
                       {/* 씬 사이 + 버튼 */}
                       <div className="flex items-center justify-center h-5 group">
                         <button
@@ -941,28 +1107,36 @@ export default function KeyframePage() {
         </div>
 
         {/* 하단 CTA — 음성 더빙 페이지로 이동 */}
-        <div className="flex items-center justify-center gap-4 mt-12">
+        <div className="flex items-center justify-center gap-4 mt-12 flex-wrap">
           <Link href="/content/script" className="px-6 py-3 rounded-xl font-black text-sm text-slate-400 bg-white/5 border border-white/10 hover:text-white hover:border-white/20 transition-all">
             ← 대본으로 돌아가기
           </Link>
-          {Object.keys(sceneImages).length === scenes.length && scenes.length > 0 ? (
-            <Link
-              href="/content/voice-dubbing"
-              className="flex items-center gap-3 px-8 py-4 rounded-2xl font-black text-sm text-white transition-all active:scale-95 shadow-2xl border bg-gradient-to-r from-fuchsia-600 to-indigo-600 border-fuchsia-500/40 shadow-fuchsia-500/20 hover:brightness-110"
-            >
-              <FontAwesomeIcon icon={faFilm} />
-              음성 더빙 + 영상 제작
-              <FontAwesomeIcon icon={faArrowRight} className="text-xs" />
-            </Link>
-          ) : (
-            <div className="flex items-center gap-3 px-8 py-4 rounded-2xl font-black text-sm text-slate-500 border bg-slate-800/50 border-slate-700 cursor-not-allowed">
-              <FontAwesomeIcon icon={faFilm} />
-              음성 더빙 + 영상 제작
-              <span className="text-[10px] text-slate-600 ml-1">
-                (이미지 {Object.keys(sceneImages).length}/{scenes.length})
-              </span>
-            </div>
-          )}
+          {(() => {
+            // 씬1은 MP4 또는 이미지 중 하나만 있어도 충족
+            const filledCount = scenes.reduce((acc, _, i) => {
+              if (i === 0) return acc + (sceneMp4s[0] || sceneImages[0] ? 1 : 0);
+              return acc + (sceneImages[i] ? 1 : 0);
+            }, 0);
+            const allFilled = filledCount === scenes.length && scenes.length > 0;
+            return allFilled ? (
+              <Link
+                href="/content/voice-dubbing"
+                className="flex items-center gap-3 px-8 py-4 rounded-2xl font-black text-sm text-white transition-all active:scale-95 shadow-2xl border bg-gradient-to-r from-fuchsia-600 to-indigo-600 border-fuchsia-500/40 shadow-fuchsia-500/20 hover:brightness-110"
+              >
+                <FontAwesomeIcon icon={faFilm} />
+                음성 더빙 + 영상 제작
+                <FontAwesomeIcon icon={faArrowRight} className="text-xs" />
+              </Link>
+            ) : (
+              <div className="flex items-center gap-3 px-8 py-4 rounded-2xl font-black text-sm text-slate-500 border bg-slate-800/50 border-slate-700 cursor-not-allowed">
+                <FontAwesomeIcon icon={faFilm} />
+                음성 더빙 + 영상 제작
+                <span className="text-[10px] text-slate-600 ml-1">
+                  (미디어 {filledCount}/{scenes.length})
+                </span>
+              </div>
+            );
+          })()}
         </div>
 
       </main>}
@@ -1170,5 +1344,13 @@ export default function KeyframePage() {
       </div>
 
     </div>
+  );
+}
+
+export default function KeyframePage() {
+  return (
+    <Suspense>
+      <KeyframePageInner />
+    </Suspense>
   );
 }
