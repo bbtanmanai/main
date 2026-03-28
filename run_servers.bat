@@ -9,12 +9,18 @@ echo ======================================================
 
 :: 1. 좀비 프로세스 정리
 echo [1/4] Cleaning zombie processes (3000, 8000)...
+:: 창 타이틀로 이전 서버 프로세스 트리 종료
+taskkill /F /FI "WINDOWTITLE eq LinkDrop-Backend" /T >nul 2>&1
+taskkill /F /FI "WINDOWTITLE eq LinkDrop-Frontend" /T >nul 2>&1
+:: 포트별 PID 종료 (orphan worker 포함)
 for /f "tokens=5" %%a in ('netstat -aon ^| findstr :3000 ^| findstr LISTENING') do (
     taskkill /F /PID %%a /T >nul 2>&1
 )
 for /f "tokens=5" %%a in ('netstat -aon ^| findstr :8000 ^| findstr LISTENING') do (
     taskkill /F /PID %%a /T >nul 2>&1
 )
+:: WMI로 uvicorn spawn worker 잔여 프로세스 정리
+powershell -Command "Get-WmiObject Win32_Process | Where-Object { $_.CommandLine -like '*multiprocessing-fork*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }" >nul 2>&1
 echo    - Cleanup complete.
 
 :: 2. 백엔드 기동 (FastAPI)

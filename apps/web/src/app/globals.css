@@ -40,3 +40,17 @@ body {
   height: 100% !important;
   display: block;
 }
+
+/* ── HTML Builder 인쇄/PDF ─────────────────────────────────────────────────── */
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff !important; margin: 0 !important; }
+  .print-page {
+    width: 100% !important;
+    min-height: unset !important;
+    padding: 40px 60px !important;
+    background: white !important;
+    background-image: none !important;
+  }
+  @page { size: A4; margin: 0; }
+}

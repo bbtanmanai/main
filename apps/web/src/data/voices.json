@@ -1,0 +1,329 @@
+[
+  {
+    "id": "andrew",
+    "name": "앤드류",
+    "voice_id": "4653d63d07d5340656b6bc",
+    "gender": "male",
+    "age": "청년",
+    "language": "ko",
+    "preview": "/assets/audio/preview/andrew.mp3"
+  },
+  {
+    "id": "gwangsu",
+    "name": "광수",
+    "voice_id": "8543e71920f0cc353ad872",
+    "gender": "male",
+    "age": "청년",
+    "language": "ko",
+    "preview": "/assets/audio/preview/gwangsu.mp3"
+  },
+  {
+    "id": "eddy",
+    "name": "에디",
+    "voice_id": "39efcf380136480f3941b5",
+    "gender": "male",
+    "age": "청년",
+    "language": "ko",
+    "preview": "/assets/audio/preview/eddy.mp3"
+  },
+  {
+    "id": "dohyun",
+    "name": "도현",
+    "voice_id": "ab7cd18e645b54d7536e0f",
+    "gender": "male",
+    "age": "중년",
+    "language": "ko",
+    "preview": "/assets/audio/preview/dohyun.mp3"
+  },
+  {
+    "id": "david",
+    "name": "데이비드",
+    "voice_id": "94e497243c197cbc3e3112",
+    "gender": "male",
+    "age": "중년",
+    "language": "ko",
+    "preview": "/assets/audio/preview/david.mp3"
+  },
+  {
+    "id": "garrett",
+    "name": "가렛",
+    "voice_id": "ff700760946618e1dcf7bd",
+    "gender": "male",
+    "age": "중년",
+    "language": "ko",
+    "preview": "/assets/audio/preview/garrett.mp3"
+  },
+  {
+    "id": "goro",
+    "name": "고로",
+    "voice_id": "7923018d32ff96a5d2ccc5",
+    "gender": "male",
+    "age": "중년",
+    "language": "ko",
+    "preview": "/assets/audio/preview/goro.mp3"
+  },
+  {
+    "id": "presley",
+    "name": "프레슬리",
+    "voice_id": "52a9463b3e3dfb858e3c52",
+    "gender": "male",
+    "age": "중년",
+    "language": "ko",
+    "preview": "/assets/audio/preview/presley.mp3"
+  },
+  {
+    "id": "lavito",
+    "name": "래비토",
+    "voice_id": "cb82ff1d6972ece7efb27e",
+    "gender": "male",
+    "age": "중년",
+    "language": "ko",
+    "preview": "/assets/audio/preview/lavito.mp3"
+  },
+  {
+    "id": "giautama",
+    "name": "기우타마",
+    "voice_id": "63481531575c53a193ba0d",
+    "gender": "male",
+    "age": "중년",
+    "language": "ko",
+    "preview": "/assets/audio/preview/giautama.mp3"
+  },
+  {
+    "id": "harrison",
+    "name": "해리슨",
+    "voice_id": "5738805d9ea062990e7c4d",
+    "gender": "male",
+    "age": "시니어",
+    "language": "ko",
+    "preview": "/assets/audio/preview/harrison.mp3"
+  },
+  {
+    "id": "osman",
+    "name": "오스만",
+    "voice_id": "8defc488f52f5efb9901f7",
+    "gender": "male",
+    "age": "시니어",
+    "language": "ko",
+    "preview": "/assets/audio/preview/osman.mp3"
+  },
+  {
+    "id": "alphonse",
+    "name": "알폰세",
+    "voice_id": "c3c0898fd41489a8e8919c",
+    "gender": "male",
+    "age": "시니어",
+    "language": "ko",
+    "preview": "/assets/audio/preview/alphonse.mp3"
+  },
+  {
+    "id": "jihu",
+    "name": "지후",
+    "voice_id": "59901b1bf6d0a41d49397f",
+    "gender": "male",
+    "age": "아이",
+    "language": "ko",
+    "preview": "/assets/audio/preview/jihu.mp3"
+  },
+  {
+    "id": "aydin",
+    "name": "에이딘",
+    "voice_id": "2d5a380030e78fcab0c82a",
+    "gender": "male",
+    "age": "아이",
+    "language": "ko",
+    "preview": "/assets/audio/preview/aydin.mp3"
+  },
+  {
+    "id": "dudumchi",
+    "name": "두둠치",
+    "voice_id": "709bebd6baa7cc0d9610c3",
+    "gender": "male",
+    "age": "아이",
+    "language": "ko",
+    "preview": "/assets/audio/preview/dudumchi.mp3"
+  },
+  {
+    "id": "akari",
+    "name": "아카리",
+    "voice_id": "b6c59d12355a00040d70a1",
+    "gender": "female",
+    "age": "청년",
+    "language": "ko",
+    "preview": "/assets/audio/preview/akari.mp3"
+  },
+  {
+    "id": "angelina",
+    "name": "안젤리나",
+    "voice_id": "195e1922033a6168f0c90f",
+    "gender": "female",
+    "age": "청년",
+    "language": "ko",
+    "preview": "/assets/audio/preview/angelina.mp3"
+  },
+  {
+    "id": "tilly",
+    "name": "틸리",
+    "voice_id": "084714312eb4ec06fbfe51",
+    "gender": "female",
+    "age": "청년",
+    "language": "ko",
+    "preview": "/assets/audio/preview/tilly.mp3"
+  },
+  {
+    "id": "dayun",
+    "name": "다윤",
+    "voice_id": "3472b57de21b044868eacc",
+    "gender": "female",
+    "age": "청년",
+    "language": "ko",
+    "preview": "/assets/audio/preview/dayun.mp3"
+  },
+  {
+    "id": "despera",
+    "name": "데스페라",
+    "voice_id": "18139042935bc2849cb6ca",
+    "gender": "female",
+    "age": "중년",
+    "language": "ko",
+    "preview": "/assets/audio/preview/despera.mp3"
+  },
+  {
+    "id": "misook",
+    "name": "미숙",
+    "voice_id": "50dc1207d6698473ad8381",
+    "gender": "female",
+    "age": "중년",
+    "language": "ko",
+    "preview": "/assets/audio/preview/misook.mp3"
+  },
+  {
+    "id": "laura",
+    "name": "로라",
+    "voice_id": "32c38cb38d994a6c6d3d04",
+    "gender": "female",
+    "age": "중년",
+    "language": "ko",
+    "preview": "/assets/audio/preview/laura.mp3"
+  },
+  {
+    "id": "satiroos",
+    "name": "사티루스",
+    "voice_id": "5e5a1f390548967b2028fa",
+    "gender": "female",
+    "age": "중년",
+    "language": "ko",
+    "preview": "/assets/audio/preview/satiroos.mp3"
+  },
+  {
+    "id": "cindy",
+    "name": "씬디",
+    "voice_id": "39f27eaab088024ff6f9ac",
+    "gender": "female",
+    "age": "시니어",
+    "language": "ko",
+    "preview": "/assets/audio/preview/cindy.mp3"
+  },
+  {
+    "id": "grace",
+    "name": "그레이스",
+    "voice_id": "bacc385ac094a4e0c187a0",
+    "gender": "female",
+    "age": "시니어",
+    "language": "ko",
+    "preview": "/assets/audio/preview/grace.mp3"
+  },
+  {
+    "id": "else",
+    "name": "엘쎄",
+    "voice_id": "87f8e92bda3f7997715795",
+    "gender": "female",
+    "age": "시니어",
+    "language": "ko",
+    "preview": "/assets/audio/preview/else.mp3"
+  },
+  {
+    "id": "esther",
+    "name": "에스더",
+    "voice_id": "67e1039beb489d8a8bd133",
+    "gender": "female",
+    "age": "시니어",
+    "language": "ko",
+    "preview": "/assets/audio/preview/esther.mp3"
+  },
+  {
+    "id": "juliet",
+    "name": "쥴리엣",
+    "voice_id": "5f91e0cb18c95641a1af2b",
+    "gender": "female",
+    "age": "시니어",
+    "language": "ko",
+    "preview": "/assets/audio/preview/juliet.mp3"
+  },
+  {
+    "id": "chiki",
+    "name": "치키",
+    "voice_id": "d40bae491c78a65f2f8488",
+    "gender": "female",
+    "age": "아이",
+    "language": "ko",
+    "preview": "/assets/audio/preview/chiki.mp3"
+  },
+  {
+    "id": "lang",
+    "name": "랭",
+    "voice_id": "400c24c9a2718734a5b404",
+    "gender": "female",
+    "age": "아이",
+    "language": "ko",
+    "preview": "/assets/audio/preview/lang.mp3"
+  },
+  {
+    "id": "amanda",
+    "name": "아만다",
+    "voice_id": "451e6fa92768affdcced52",
+    "gender": "female",
+    "age": "아이",
+    "language": "ko",
+    "preview": "/assets/audio/preview/amanda.mp3"
+  },
+  {
+    "id": "blitz",
+    "name": "블리츠",
+    "voice_id": "aeda85bfe699f338b74d68",
+    "gender": "female",
+    "age": "아이",
+    "language": "ko",
+    "preview": "/assets/audio/preview/blitz.mp3"
+  },
+  {
+    "id": "ko-KR-InJoonNeural",
+    "name": "인준 (무료)",
+    "voice_id": "ko-KR-InJoonNeural",
+    "engine": "edge-tts",
+    "gender": "male",
+    "age": "청년",
+    "language": "ko",
+    "preview": "/assets/audio/preview/ko-KR-InJoonNeural.mp3"
+  },
+  {
+    "id": "ko-KR-HyunsuMultilingualNeural",
+    "name": "현수 (무료)",
+    "voice_id": "ko-KR-HyunsuMultilingualNeural",
+    "engine": "edge-tts",
+    "gender": "male",
+    "age": "중년",
+    "language": "ko",
+    "preview": "/assets/audio/preview/ko-KR-HyunsuMultilingualNeural.mp3"
+  },
+  {
+    "id": "ko-KR-SunHiNeural",
+    "name": "선희 (무료)",
+    "voice_id": "ko-KR-SunHiNeural",
+    "engine": "edge-tts",
+    "gender": "female",
+    "age": "청년",
+    "language": "ko",
+    "preview": "/assets/audio/preview/ko-KR-SunHiNeural.mp3"
+  }
+]

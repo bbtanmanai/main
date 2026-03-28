@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChevronRight, faFlask, faBrain,
@@ -9,7 +8,7 @@ import {
   faCheckCircle, faSpinner, faCircle,
   faCopy, faCheck, faArrowRight,
   faVolumeUp, faFileAlt, faLightbulb,
-  faPlay,
+  faPlay, faUpload, faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import { faYoutube } from '@fortawesome/free-brands-svg-icons';
 import Aurora from '@/components/Aurora';
@@ -52,9 +51,9 @@ const SCRIPT_PROMPT_TEMPLATE = (idea: string, analysis: any, name: string) => `
 위 채널 특성을 완전히 반영해서 아래 제목으로 유튜브 대본을 써줘: "${idea}"
 
 ⚠️ 출력 형식 규칙 (반드시 준수):
-- 대본은 반드시 [씬1], [씬2], [씬3] ... 형식으로 씬을 구분해서 작성해.
+- 대본은 반드시 [씬1], [씬2], [씬3] 형식으로 씬을 구분해서 작성해.
 - 각 씬은 [씬N] 태그로 시작하고, 씬 내용만 작성해. 제목이나 설명 줄은 넣지 마.
-- 씬 개수는 6~10개로 구성해.
+- 씬 개수는 반드시 3개로만 구성해. 4개 이상 절대 금지. (TODO: 테스트 완료 후 "6~10개로 구성해"로 복원)
 - [씬N] 태그 외 다른 마크다운(**, ##, --- 등)은 절대 사용하지 마.
 
 씬 구성 원칙:
@@ -64,24 +63,18 @@ const SCRIPT_PROMPT_TEMPLATE = (idea: string, analysis: any, name: string) => `
   C) 공포 시나리오형 — "지금 이 순간 아무것도 안 바꾸면, 70살의 당신은 새벽 5시에 첫차를 타고 있을 거야."
   D) 금기 폭로형  — "아무도 말 안 해줬지? 월급 300에서 국민연금 빼면 노후 준비가 0이라는 거."
 [씬2] 도입부 — "내 이름은 ${name || '닉'}이야. 만약 네가 [시청자의 고민] 때문에 힘들다면 구독 눌러줘."
-[씬3 이후] 본론을 내용에 맞게 자연스럽게 씬으로 나눠서 전개. 마지막 씬은 핵심 요약 + 구독/좋아요 유도로 마무리.
-씬 개수는 대본 흐름에 맞게 자유롭게 구성하되, 공백 제외 3,000자 ~ 5,000자를 채워야 한다.
+[씬3] 핵심 본론 1가지 + 마무리 — 가장 중요한 인사이트 1개를 깊게 다루고, 핵심 요약 + 구독/좋아요 유도로 마무리.
+각 씬은 공백 제외 300자 ~ 600자로 작성해.
 
 💡 스타일 가이드:
 - 친구랑 말하듯이 자연스럽게 써. ('사실 말이야...', '자 봐봐', '음' 같은 표현 활용)
 - 영상 초반에 사람들이 흔히 믿는 상식을 깨부숴줘.
 - 신뢰할 수 있는 출처의 놀라운 통계 수치나 데이터를 넣어줘.
 - 구체적인 수치와 계산 예시로 실감나게 보여줘.
-- 왜 그런 결정을 내리는지 심리적인 이유를 설명해줘.
-- 시청자가 반박할 만한 내용에 미리 대답해줘. ('지금 이런 생각 들지?' 등)
 - 어려운 개념은 쉬운 비유를 들어서 설명해.
-- 뒤로 갈수록 더 놀라운 통찰력을 보여줘야 해.
-- '사람들이 진짜 모르는 게 뭐냐면...', '여기서부터 진짜 재밌어진다...' 같은 표현을 써줘.
 
 📋 콘텐츠 요구사항:
-- 분량: 10~15분 영상에 맞는 길이
-- 주제의 계산적인 부분과 심리적인 부분의 균형을 맞춰줘.
-- 시청자가 바로 따라 할 수 있는 구체적인 단계를 알려줘.
+- 분량: 1~2분 영상에 맞는 길이 (테스트용 단편 구조)
 - 중요한 포인트는 스토리텔링으로 풀어줘.
 - 마지막엔 강력한 동기부여와 함께 구독/좋아요를 유도하며 끝내줘.
 
@@ -160,6 +153,31 @@ export default function NotebookLMVideoPage() {
   const [isResolving, setIsResolving] = React.useState(false);
   const [videos, setVideos] = React.useState<any[]>([]);
   const [selectedVideoIdx, setSelectedVideoIdx] = React.useState<number | null>(null);
+  const [srtText, setSrtText] = React.useState('');
+  const [srtFileName, setSrtFileName] = React.useState('');
+  const srtInputRef = React.useRef<HTMLInputElement>(null);
+
+  const parseSrt = (raw: string): string => {
+    return raw
+      .split(/\n\n+/)
+      .map(block => block.split('\n').filter(l => !/^\d+$/.test(l.trim()) && !/-->/.test(l)).join(' '))
+      .join(' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  };
+
+  const handleSrtUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const text = parseSrt(ev.target?.result as string);
+      setSrtText(text);
+      setSrtFileName(file.name);
+    };
+    reader.readAsText(file, 'utf-8');
+    e.target.value = '';
+  };
 
   // Step 2
   const [nlmState, setNlmState] = React.useState<'wait' | 'running' | 'done'>('wait');
@@ -221,8 +239,8 @@ export default function NotebookLMVideoPage() {
   };
 
   const handleStartAnalysis = async () => {
-    if (selectedVideoIdx === null) return;
-    const video = videos[selectedVideoIdx];
+    if (selectedVideoIdx === null && !srtText) return;
+    const video = selectedVideoIdx !== null ? videos[selectedVideoIdx] : null;
     setStep(2);
     setStep2Error('');
     setNlmState('running');
@@ -233,16 +251,23 @@ export default function NotebookLMVideoPage() {
     );
 
     try {
-      // 1. URL → NLM 주입
+      // 1. URL → NLM 주입 (SRT 있으면 text_content 우선 사용)
+      const nlmBody: any = {
+        notebook_name: srtText && !video
+          ? `SRT 직접 분석 — ${srtFileName || '자막파일'}`
+          : `벤치마킹 — ${video?.title?.slice(0, 30) || '채널분석'}`,
+        existing_notebook_id: FIXED_NOTEBOOK_ID,
+      };
+      if (srtText) {
+        nlmBody.text_content = `[영상 제목] ${video?.title || srtFileName || 'SRT 직접 분석'}\n\n[자막 전문]\n${srtText}`;
+      } else {
+        nlmBody.urls = [video!.url];
+      }
       const nlmRes = await Promise.race([
         fetch(`${API}/nlm-video/init-notebook`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            urls: [video.url],
-            notebook_name: `벤치마킹 — ${video.title?.slice(0, 30) || '채널분석'}`,
-            existing_notebook_id: FIXED_NOTEBOOK_ID,
-          }),
+          body: JSON.stringify(nlmBody),
         }),
         timeout(180000),
       ]);
@@ -276,7 +301,13 @@ export default function NotebookLMVideoPage() {
         fetch(`${API}/nlm-video/generate-ideas`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ notebook_id: nbId, analysis: ana, count: 20 }),
+          body: JSON.stringify({
+            notebook_id: nbId,
+            analysis: ana,
+            count: 20,
+            raw_content: srtText ? srtText.slice(0, 800) : '',
+            video_title: video?.title || srtFileName || '',
+          }),
         }),
         timeout(180000),
       ]);
@@ -326,6 +357,8 @@ export default function NotebookLMVideoPage() {
           notebook_id: notebookId,
           analysis: analysis,
           count: 20,
+          raw_content: srtText ? srtText.slice(0, 800) : '',
+          video_title: videos[selectedVideoIdx ?? 0]?.title || srtFileName || '',
         }),
       });
       const data = await res.json();
@@ -476,7 +509,7 @@ export default function NotebookLMVideoPage() {
                   <p className="text-[11px] text-slate-600 mt-1.5 pl-2">대본에서 진행자 이름으로 사용됩니다.</p>
                 </div>
 
-                {/* URL 입력 */}
+                {/* URL 입력 + SRT 업로드 */}
                 <div className="w-full max-w-2xl flex items-center gap-2 mb-4">
                   <div className="flex-1 bg-white/5 border border-white/10 p-1.5 rounded-[1.5rem] flex items-center gap-2 focus-within:border-fuchsia-500/50 transition-all">
                     <div className="pl-4 text-slate-500">
@@ -500,11 +533,41 @@ export default function NotebookLMVideoPage() {
                   </div>
                   <button
                     onClick={handleStartAnalysis}
-                    disabled={selectedVideoIdx === null}
+                    disabled={selectedVideoIdx === null && !srtText}
                     className="px-5 py-3 rounded-[1rem] font-black text-xs text-white bg-gradient-to-r from-fuchsia-600 to-indigo-600 hover:brightness-110 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 shrink-0 flex items-center gap-2"
                   >
                     <FontAwesomeIcon icon={faBrain} />
                     영상 분석 시작
+                  </button>
+                </div>
+
+                {/* SRT 업로드 옵션 */}
+                <div className="w-full max-w-2xl mb-4 flex items-center gap-2">
+                  <input ref={srtInputRef} type="file" accept=".srt,.txt" className="hidden" onChange={handleSrtUpload} />
+                  {srtFileName ? (
+                    <div className="flex-1 flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-3 py-1.5">
+                      <FontAwesomeIcon icon={faFileAlt} className="text-emerald-400 text-xs shrink-0" />
+                      <span className="text-emerald-300 text-[11px] font-black flex-1 truncate">{srtFileName}</span>
+                      <span className="text-emerald-500 text-[9px] font-black bg-emerald-500/20 px-1.5 py-0.5 rounded-full shrink-0">적용됨</span>
+                      <button onClick={() => { setSrtText(''); setSrtFileName(''); }} className="text-slate-500 hover:text-red-400 transition-colors shrink-0">
+                        <FontAwesomeIcon icon={faTimes} className="text-[10px]" />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => srtInputRef.current?.click()}
+                      className="flex-1 flex items-center gap-1.5 bg-white/3 hover:bg-white/6 border border-dashed border-white/15 hover:border-fuchsia-500/40 rounded-xl px-3 py-1.5 transition-all group"
+                    >
+                      <FontAwesomeIcon icon={faUpload} className="text-slate-600 group-hover:text-fuchsia-400 text-xs transition-colors shrink-0" />
+                      <span className="text-slate-600 group-hover:text-slate-400 text-[11px] font-black transition-colors">SRT 자막 업로드 (선택 — 분석 정밀도 향상)</span>
+                    </button>
+                  )}
+                  <button
+                    onClick={() => window.open('/how-to-save-srt-files.html', '_blank')}
+                    className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 hover:border-indigo-500/40 text-indigo-400 hover:text-indigo-300 text-[11px] font-black transition-all"
+                  >
+                    <FontAwesomeIcon icon={faFileAlt} className="text-xs" />
+                    SRT 확보 방법
                   </button>
                 </div>
 
@@ -767,6 +830,7 @@ export default function NotebookLMVideoPage() {
                             <div className={`w-14 shrink-0 flex flex-col items-center justify-center py-4 gap-1 ${isEditing ? 'bg-indigo-600' : 'bg-[#3D405B]'}`}>
                               <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest">씬</span>
                               <span className="text-xl font-black text-white">{i + 1}</span>
+                              {i === 0 && <span className="text-[7px] font-black text-amber-300 bg-amber-500/20 rounded px-1 py-0.5 leading-tight text-center">후크</span>}
                             </div>
                             {/* 씬 내용 */}
                             <div className="flex-1 p-4">
@@ -823,7 +887,9 @@ export default function NotebookLMVideoPage() {
                       </button>
                       <button
                         onClick={() => {
-                          sessionStorage.setItem('ld_keyframe_data', JSON.stringify({
+                          // 대본 데이터 localStorage 저장 + 새 script_id 발급
+                          localStorage.setItem('ld_script_id', crypto.randomUUID());
+                          localStorage.setItem('ld_keyframe_data', JSON.stringify({
                             scenes,
                             analysis,
                             idea: selectedIdea,

@@ -209,6 +209,17 @@ async def submit_all_images():
     return {"success": True, "count": len(images)}
 
 
+@router.delete("/clear-images")
+async def clear_browser_images():
+    """새 대본 시작 시 서버 이미지 전체 초기화"""
+    if not IMAGES_DIR.exists():
+        return {"success": True, "cleared": 0}
+    images = list(IMAGES_DIR.glob("scene_*.png"))
+    for f in images:
+        f.unlink(missing_ok=True)
+    return {"success": True, "cleared": len(images)}
+
+
 def _gemini_call(client, prompt: str) -> list | dict | None:
     """Gemini 호출 → JSON 파싱. 실패 시 None."""
     try:

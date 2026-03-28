@@ -384,7 +384,7 @@ export const LinkDropVideo: React.FC<{
             )}
 
             {/* Layer 1: 비주얼 오버레이 (텍스트 카드) */}
-            <SceneRenderer scene={seq.scene} topicId={topicId} />
+            <SceneRenderer scene={seq.scene} topicId={topicId} styleId={styleId} />
 
             {/* Layer 5: 자막 */}
             <SubtitleOverlay text={subtitles[i] || ""} durationInFrames={seq.dur} />
