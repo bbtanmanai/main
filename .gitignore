@@ -16,6 +16,7 @@ Ob/
 # Environment and Secrets
 .env
 .env.local
+.mcp.json
 .venv/
 node_modules/
 venv/
