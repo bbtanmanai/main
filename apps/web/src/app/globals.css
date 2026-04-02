@@ -285,8 +285,8 @@ body {
 
 :root {
   --neu-bg:        #e6e9ef;
-  --neu-shadow-d:  #b8bcc2;
-  --neu-shadow-l:  #ffffff;
+  --neu-shadow-d:  #b0b4ba;
+  --neu-shadow-l:  #c8ccd2;
   --neu-text:      #374151;
   --neu-text-sub:  #6b7280;
   --neu-accent:    #7c3aed;
@@ -302,15 +302,23 @@ body {
   background: var(--neu-bg);
 }
 
-/* 튀어오른 카드 — 강한 그림자 */
+/* 튀어오른 카드 — 4면 균등 그림자 */
 .neu-raised {
   background: var(--neu-bg);
-  box-shadow: 12px 12px 24px var(--neu-shadow-d), -12px -12px 24px var(--neu-shadow-l);
+  box-shadow:
+    10px 10px 20px var(--neu-shadow-d),
+    -10px -10px 20px var(--neu-shadow-l),
+    10px -6px 16px rgba(176,180,186,0.35),
+    -6px 10px 16px rgba(176,180,186,0.35);
   border-radius: 1.5rem;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 .neu-raised:hover {
-  box-shadow: 16px 16px 32px var(--neu-shadow-d), -16px -16px 32px var(--neu-shadow-l);
+  box-shadow:
+    14px 14px 28px var(--neu-shadow-d),
+    -14px -14px 28px var(--neu-shadow-l),
+    14px -8px 20px rgba(176,180,186,0.4),
+    -8px 14px 20px rgba(176,180,186,0.4);
   transform: translateY(-2px);
 }
 
@@ -324,21 +332,33 @@ body {
 /* 평평한 카드 */
 .neu-flat {
   background: var(--neu-bg);
-  box-shadow: 6px 6px 12px var(--neu-shadow-d), -6px -6px 12px var(--neu-shadow-l);
+  box-shadow:
+    6px 6px 12px var(--neu-shadow-d),
+    -6px -6px 12px var(--neu-shadow-l),
+    6px -4px 10px rgba(176,180,186,0.3),
+    -4px 6px 10px rgba(176,180,186,0.3);
   border-radius: 1rem;
 }
 
 /* 소형 튀어오름 (버튼, 태그) */
 .neu-raised-sm {
   background: var(--neu-bg);
-  box-shadow: 5px 5px 10px var(--neu-shadow-d), -5px -5px 10px var(--neu-shadow-l);
+  box-shadow:
+    5px 5px 10px var(--neu-shadow-d),
+    -5px -5px 10px var(--neu-shadow-l),
+    5px -3px 8px rgba(176,180,186,0.28),
+    -3px 5px 8px rgba(176,180,186,0.28);
   border-radius: 0.875rem;
 }
 
 /* ── 버튼 ────────────────────────────────────────────────────────────────── */
 .neu-btn {
   background: var(--neu-bg);
-  box-shadow: 5px 5px 10px var(--neu-shadow-d), -5px -5px 10px var(--neu-shadow-l);
+  box-shadow:
+    5px 5px 10px var(--neu-shadow-d),
+    -5px -5px 10px var(--neu-shadow-l),
+    5px -3px 8px rgba(176,180,186,0.28),
+    -3px 5px 8px rgba(176,180,186,0.28);
   border-radius: 0.875rem;
   transition: all 0.18s ease;
   cursor: pointer;
@@ -347,7 +367,11 @@ body {
 }
 .neu-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 8px 8px 16px var(--neu-shadow-d), -8px -8px 16px var(--neu-shadow-l);
+  box-shadow:
+    8px 8px 16px var(--neu-shadow-d),
+    -8px -8px 16px var(--neu-shadow-l),
+    8px -5px 12px rgba(176,180,186,0.35),
+    -5px 8px 12px rgba(176,180,186,0.35);
 }
 .neu-btn:active,
 .neu-btn-active {
@@ -509,4 +533,82 @@ body {
     background-color: var(--background);
     color: var(--foreground);
   }
+}
+
+/* ==========================================================================
+   NEUROMORPHIC — 영상자동화2 /series/* 전용
+   ========================================================================== */
+:root {
+  --neu-bg:           #e6e9ef;
+  --neu-bg2:          #d1d5db;
+  --neu-shadow-dark:  #b0b4ba;
+  --neu-shadow-light: #c8ccd2;
+  --neu-primary:      #7c3aed;
+  --neu-primary-dark: #6d28d9;
+}
+
+.neu-bg {
+  background: linear-gradient(145deg, var(--neu-bg), var(--neu-bg2));
+  min-height: 100vh;
+}
+
+.neu-raised {
+  background: linear-gradient(145deg, var(--neu-bg), var(--neu-bg2));
+  box-shadow:
+    8px 8px 16px var(--neu-shadow-dark),
+    -8px -8px 16px var(--neu-shadow-light),
+    8px -5px 13px rgba(176,180,186,0.32),
+    -5px 8px 13px rgba(176,180,186,0.32);
+}
+
+.neu-raised-sm {
+  background: linear-gradient(145deg, var(--neu-bg), var(--neu-bg2));
+  box-shadow:
+    4px 4px 8px var(--neu-shadow-dark),
+    -4px -4px 8px var(--neu-shadow-light),
+    4px -3px 7px rgba(176,180,186,0.28),
+    -3px 4px 7px rgba(176,180,186,0.28);
+}
+
+.neu-inset {
+  background: linear-gradient(145deg, var(--neu-bg2), var(--neu-bg));
+  box-shadow:
+    inset 4px 4px 8px var(--neu-shadow-dark),
+    inset -4px -4px 8px var(--neu-shadow-light),
+    inset 4px -3px 7px rgba(176,180,186,0.2),
+    inset -3px 4px 7px rgba(176,180,186,0.2);
+}
+
+.neu-btn {
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+.neu-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+.neu-btn:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: inset 2px 2px 4px var(--neu-shadow-dark), inset -2px -2px 4px var(--neu-shadow-light);
+}
+.neu-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.neu-primary-btn {
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  color: white;
+  box-shadow: 4px 4px 12px rgba(109,40,217,0.4), -2px -2px 8px rgba(255,255,255,0.5);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+.neu-primary-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 16px rgba(109,40,217,0.5), -2px -2px 8px rgba(255,255,255,0.6);
+}
+.neu-primary-btn:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: inset 2px 2px 6px rgba(0,0,0,0.3);
+}
+.neu-primary-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
