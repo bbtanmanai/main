@@ -61,7 +61,7 @@ class OpalService:
     - 105번 설계도 규격을 100% 준수하는 오팔 노드 제어 엔진
     """
     def __init__(self):
-        self.project_root = Path("C:/LinkDropV2")
+        self.project_root = Path(__file__).resolve().parents[3]
         self.state_dir = self.project_root / "packages" / "data" / "04_출고_대기실" / "오팔_상태창"
         self.state_dir.mkdir(parents=True, exist_ok=True)
         self.active_projects: Dict[str, Any] = {}
@@ -144,10 +144,11 @@ class OpalService:
         """[이감독님 제안] 독립적인 오팔 전용 브릿지 창을 띄움"""
         try:
             import subprocess
-            script_path = "C:/LinkDropV2/packages/tools/skill-3-opalvideo/opal-access/scripts/login.py"
+            _project_root = Path(__file__).resolve().parents[3]
+            script_path = str(_project_root / "packages" / "tools" / "skill-3-opalvideo" / "opal-access" / "scripts" / "login.py")
             # 노트북LM과는 완전히 독립된 별도의 프로세스 실행
-            subprocess.Popen([sys.executable, script_path], 
-                             cwd="C:/LinkDropV2", 
+            subprocess.Popen([sys.executable, script_path],
+                             cwd=str(_project_root),
                              creationflags=subprocess.CREATE_NEW_CONSOLE)
             return True
         except Exception as e:

@@ -13,149 +13,51 @@
     ]
   },
   {
-    "name": "영상제작",
-    "type": "complex",
-    "subgroups": [
+    "name": "이미지제작",
+    "items": [
       {
-        "title": "1단계 · 대본",
-        "items": [
-          {
-            "name": "벤치마킹 & 대본",
-            "href": "/content/script"
-          }
-        ]
-      },
-      {
-        "title": "2단계 · 제작",
-        "items": [
-          {
-            "name": "16:9 영상",
-            "href": "/content/longform"
-          },
-          {
-            "name": "9:16 영상",
-            "href": "/content/shorts"
-          },
-          {
-            "name": "광고 영상",
-            "href": "/content/ad"
-          }
-        ]
+        "name": "미드저니 이미지",
+        "href": "/content/midjourneyimg"
       }
     ]
   },
   {
-    "name": "이미지제작",
+    "name": "영상자동화",
     "type": "complex",
     "subgroups": [
       {
-        "title": "캐릭터 · 스타일",
+        "title": "제작 파이프라인",
         "items": [
           {
-            "name": "캐릭터 선택",
+            "name": "대본작성",
+            "href": "/content/script"
+          },
+          {
+            "name": "키프레임",
+            "href": "/content/keyframe1"
+          },
+          {
+            "name": "TTS더빙",
+            "href": "/content/voice-dubbing"
+          },
+          {
+            "name": "리모션",
+            "href": "/content/remotion"
+          }
+        ]
+      },
+      {
+        "title": "도구",
+        "items": [
+          {
+            "name": "캐릭터",
             "href": "/content/characterimage"
           },
           {
-            "name": "스타일",
-            "href": "/content/styleimage"
-          },
-          {
-            "name": "미드저니 이미지",
-            "href": "/content/midjourneyimg"
+            "name": "MP4 프롬프트",
+            "href": "/content/mp4-prompt-generator"
           }
         ]
-      },
-      {
-        "title": "콘텐츠",
-        "items": [
-          {
-            "name": "카드뉴스",
-            "href": "/content/cardnews"
-          },
-          {
-            "name": "인스타툰",
-            "href": "/content/instatoon"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "name": "1인 기업",
-    "type": "complex",
-    "subgroups": [
-      {
-        "title": "아이디어",
-        "items": [
-          {
-            "name": "아이디어공장",
-            "href": "/biz/idea"
-          },
-          {
-            "name": "온라인 부업 가이드",
-            "href": "/biz/sidejob"
-          },
-          {
-            "name": "인스타 유형 분석",
-            "href": "/biz/instagramType"
-          },
-          {
-            "name": "초보 유튜버의 현실",
-            "href": "/biz/youtuber"
-          }
-        ]
-      },
-      {
-        "title": "전문 창작",
-        "items": [
-          {
-            "name": "웹소설 작가",
-            "href": "/biz/webnovel"
-          },
-          {
-            "name": "전자책 출판",
-            "href": "/biz/ebook"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "name": "프롬프트",
-    "items": [
-      {
-        "name": "AI 실무 가이드",
-        "href": "/prompt/basic"
-      },
-      {
-        "name": "프롬프트 라이브러리",
-        "href": "/prompt/library"
-      },
-      {
-        "name": "효과음",
-        "href": "/prompt/sfx"
-      },
-      {
-        "name": "HTML 생성기",
-        "href": "/prompt/html-builder"
-      }
-    ]
-  },
-  {
-    "name": "개발",
-    "dev": true,
-    "items": [
-      {
-        "name": "키프레임 제작",
-        "href": "/content/keyframe"
-      },
-      {
-        "name": "성우 더빙",
-        "href": "/content/voice-dubbing"
-      },
-      {
-        "name": "리모션",
-        "href": "/content/remotion"
       }
     ]
   },
@@ -171,8 +73,8 @@
         "href": "/team/park-1"
       },
       {
-        "name": "권희녕",
-        "href": "/team/kwon-1"
+        "name": "전우진",
+        "href": "/team/jun-1"
       },
       {
         "name": "손수정",

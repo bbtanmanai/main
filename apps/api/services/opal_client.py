@@ -119,7 +119,7 @@ class OpalInternalClient:
         intent: str,
         scene_text: str | None = None,
         user_instruction: str | None = None,
-        model: str = "gemini-2.5-flash",
+        model: str = "gemini-3-flash-preview",
         app_id: str | None = None,
         debug: bool = False,
     ) -> str:

@@ -8,7 +8,7 @@ from typing import Dict, Any, List, Optional
 from pathlib import Path
 
 # 독립 스킬 패키지를 참조할 수 있도록 sys.path 추가
-PROJECT_ROOT = Path("C:/LinkDropV2")
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 TOOLS_PATH = PROJECT_ROOT / "packages" / "tools"
 if str(TOOLS_PATH) not in sys.path:
     sys.path.insert(0, str(TOOLS_PATH))

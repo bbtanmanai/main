@@ -1,6 +1,6 @@
 # LinkDrop 개발 백로그
 
-> 최종 업데이트: 2026-03-28
+> 최종 업데이트: 2026-03-30
 > 규칙: 새 항목 발견 시 즉시 여기에 추가. 완료 시 ✅ 체크. 대화마다 이 파일 확인.
 
 ---
@@ -10,6 +10,7 @@
 | # | 항목 | 상태 | 비고 |
 |---|------|------|------|
 | F-1 | Whisper 기반 영상 정밀 분석 (script 페이지) | ⬜ | 현재: YouTube URL → NLM 자동자막 기반 분석 (표면적). 개선: yt-dlp 오디오 추출 → faster-whisper STT → 전체 발화 텍스트 → NLM 주입 → 심층 분석. 인프라 준비 완료(`whisper-stt` 엔드포인트, `text_content` 파라미터 존재). **보류 이유: CPU 환경 기준 10분 영상 → +4~5분 대기 발생. GPU 서버 도입 또는 앞 5분 제한 방식으로 대기 2~3분 억제 후 구현 검토** |
+| F-2 | Remotion 씬별 비주얼 애니메이션 수동 강제 추가 | ⬜ | **보류 이유: Gemini accent 감지 로직 개편 및 실사용 테스트 완료 후 구현 검토**. 설계 확정(2026-03-30): ① `PATCH /browser/scene-accent/{scene_idx}` 신규 엔드포인트 (manual_accents 별도 저장 → needs_recompute 시 Gemini 결과 덮어씌우지 않음) ② SceneRow 인라인 수동 편집 패널 UI (타입 드롭다운 + 타입별 필드 + 시작시간 슬라이더 + 저장/초기화 버튼) ③ 변경 규모: browser.py +30줄 / page.tsx +150줄 |
 
 ---
 
@@ -90,7 +91,6 @@
 | LF-5 | Step 3 직접입력 모드에서 "스타일" 빈 배지 | ⬜ | style null일 때 처리 |
 | LF-6 | 동의 모달 네트워크 실패 시 Supabase 기록 누락 | ⬜ | 법적 증빙 구멍 |
 | LF-12 | 외부 TTS MP3 + Whisper 타이밍 | ⬜ | 현재 edge-tts 품질 부족 → 외부 TTS(ElevenLabs 등) MP3 + faster-whisper 로컬 타이밍 추출. A방식 확정. 추후 수정 |
-| LF-13 | 캐릭터별 성우 지정 | ⬜ | 캐릭터 JSON에 voice_id 필드 추가. 캐릭터 선택 시 성우 자동 연동. characterimage.json + 프로그램 UI |
 | LF-7 | ★ Remotion 영상 렌더링 전환 | ✅ | 3씬 테스트 완료. 시나리오→Gemini 비주얼타입→TTS→Remotion→MP4 (60초, 2.8MB). `/api/render-remotion` 엔드포인트 |
 | LF-8 | Remotion 비주얼타입 컴포넌트 개발 | ✅ | 10개 타입: StatCard, QuoteHero, ComparisonTable, KeyPoint, Timeline, SplitScreen, IconGrid, RankingList, Flowchart, FullVisual |
 | LF-9 | Remotion 화풍 CSS 테마 시스템 | ✅ | 9개 테마: ghibli-real, hollywood-sf, anime-sf, neo-noir, pop-art, ink-wash, pixar-3d, reality, sticker-cutout |
@@ -134,6 +134,10 @@
 
 | # | 항목 | 상태 | 비고 |
 |---|------|------|------|
+| ARCH-1 | 세션 데이터 Supabase 단일화 | ⬜ | **다중 사용자 오픈 전 필수**. 현재 데이터가 IndexedDB(브라우저) + browser_session.json(서버 tmp) 두 군데에 분산 저장됨. 문제: ①다른 브라우저/기기에서 접근 불가 ②서버 재시작 시 tmp 데이터 소멸 ③동시 사용자 간 session 파일 충돌. 해결: Supabase `sessions` 테이블로 통합 — session_key(UUID)로 조회, 브라우저/기기 무관, 사용자별 격리 |
+
+| # | 항목 | 상태 | 비고 |
+|---|------|------|------|
 | M-1 | executeStep 바디 캡처 | ⬜ | `opal_test/capture_execute_step.py` |
 | M-2 | 로컬 Agent 웹소켓 통신 구조 설계 | ⬜ | 현재 HTTP 폴링 |
 | M-3 | 9:16 영상 변환 파이프라인 (1차→2차) | ⬜ | FFmpeg crop+pad+자막 |
@@ -169,3 +173,6 @@
 | D-14 | apps/desktop Electron 앱 전체 삭제 | 2026-03-24 | U-3 웹 전용 전환 결정에 따라 폐기 |
 | D-15 | keyframe_style.json 화풍 22종 + nicheCompat | 2026-03-24 | 사용자 직접 편집 가능 외부 JSON. 인물 중심 → 환경/주제 키워드 전환 완료 |
 | D-16 | MP4 프롬프트 생성기 1차 구현 (MP-1~8) | 2026-03-28 | 3컬럼 레이아웃, 모드분리, 후크강도, AI분석첨가, 검정배경 출력. 문서: 122번 |
+| D-17 | Remotion accent 감지 로직 전면 개편 | 2026-03-30 | 2-Phase Chain-of-Thought 프롬프트 (씬 역할 분류 → 허용 타입 선택). 신규 타입 key_point / contrast_statement 추가. visual_detector.py 우선순위 역전(서사 구조 > 수치). browser_session.json scenes_hash 초기화로 즉시 재계산 트리거 |
+| D-18 | Remotion 자막 시스템 구축 | 2026-03-30 | 서버사이드 22자 청킹(_build_subtitle_chunks). gap-aware 자막 표시(구간 사이 공백 = 자막 숨김). 검정 배경 제거 → accent 색 텍스트 테두리+그림자. WordBoundary 없을 때 글자 비율 폴백. _attach_word_spaces 한국어 공백 복원 |
+| D-19 | Remotion KenBurns + 제목 2줄 컬러 | 2026-03-30 | LOOP_SEC=20 코사인 루프 배경 애니메이션(이음새 없음). 제목 1줄=흰색/2줄+=accent 색. 35자 제한. SubtitleChunk 타입 export |

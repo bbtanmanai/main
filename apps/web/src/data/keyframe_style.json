@@ -6,7 +6,7 @@
       "label": "지브리 실사풍",
       "desc": "따뜻한 황금빛 목가적 풍경",
       "bgImage": "/img/content/longform/ghibli-real.webp",
-      "customPrompt": "Studio Ghibli art style, hand-painted watercolor brushstrokes, soft warm lighting, cinematic depth of field, golden hour glow, delicate color blending",
+      "customPrompt": "Studio Ghibli watercolor style, soft warm lighting, golden hour glow",
       "colorPalette": "warm pastels, vibrant greens, soft blues",
       "qualityId": "q_illustration",
       "negativeIds": [
@@ -22,7 +22,7 @@
       "label": "지브리 야경",
       "desc": "별빛 마을 감성 야경",
       "bgImage": "/img/content/longform/ghibli-night.webp",
-      "customPrompt": "Studio Ghibli night art style, hand-painted watercolor, magical glowing atmosphere, starry sky tones, firefly-lit ambiance, soft moonlit color grading",
+      "customPrompt": "Studio Ghibli night watercolor style, starry sky lighting, soft moonlit glow",
       "colorPalette": "deep indigo, teal, silver moonlight",
       "qualityId": "q_illustration",
       "negativeIds": [
@@ -38,7 +38,7 @@
       "label": "실사 다큐풍",
       "desc": "BBC 다큐 시네마틱 연출",
       "bgImage": "/img/content/longform/reality.webp",
-      "customPrompt": "RAW documentary photography style, 35mm wide-angle lens, natural sunlight, candid composition, detailed textures, desaturated cinematic grading",
+      "customPrompt": "RAW documentary photography, 35mm wide-angle lens, natural sunlight, desaturated grading",
       "colorPalette": "true-to-life colors, desaturated midtones",
       "qualityId": "q_raw",
       "negativeIds": [
@@ -54,7 +54,7 @@
       "label": "애니메이션 SF",
       "desc": "도시 야경 미래 도시",
       "bgImage": "/img/content/longform/anime-sf.webp",
-      "customPrompt": "Japanese anime sci-fi art style, neon-lit vibrant rendering, futuristic atmosphere, detailed linework, pastel color palette, dramatic perspective",
+      "customPrompt": "Japanese anime sci-fi style, neon-lit vibrant rendering, detailed linework",
       "colorPalette": "electric blue, neon purple, metallic silver",
       "qualityId": "q_unreal",
       "negativeIds": [
@@ -69,7 +69,7 @@
       "label": "픽사 3D",
       "desc": "따뜻한 3D 렌더링",
       "bgImage": "/img/content/longform/pixar-3d.webp",
-      "customPrompt": "Pixar-style 3D rendering, volumetric light rays, warm subsurface scattering, smooth rounded forms, vibrant saturated colors, cozy atmosphere",
+      "customPrompt": "Pixar-style 3D rendering, volumetric light rays, warm subsurface scattering",
       "colorPalette": "vibrant saturated colors, warm highlights",
       "qualityId": "q_unreal",
       "negativeIds": [
@@ -86,7 +86,7 @@
       "label": "시니어건강 따뜻한치유",
       "desc": "치유·힐링 황금빛 새벽",
       "bgImage": "/img/content/longform/health-senior-1.webp",
-      "customPrompt": "warm healing atmosphere, golden morning light, soft bokeh rendering, serene tranquil mood, gentle color grading, wellness aesthetic",
+      "customPrompt": "golden morning light photography, soft bokeh rendering, wellness aesthetic",
       "colorPalette": "warm earth tones, soft greens, gentle beige",
       "qualityId": "q_master",
       "negativeIds": [
@@ -101,7 +101,7 @@
       "label": "시니어건강 자연치유",
       "desc": "숲속 빛내림 치유 공간",
       "bgImage": "/img/content/longform/health-senior-2.webp",
-      "customPrompt": "nature therapy aesthetic, dappled sunlight filtering, peaceful woodland atmosphere, organic texture detail, soft green color grading, meditative mood",
+      "customPrompt": "nature photography, dappled sunlight filtering, organic texture detail",
       "colorPalette": "fresh greens, sky blue, warm white",
       "qualityId": "q_master",
       "negativeIds": [
@@ -116,7 +116,7 @@
       "label": "기술트렌드 사이버미래",
       "desc": "데이터 스트림 사이버 공간",
       "bgImage": "/img/content/longform/tech-trend-1.webp",
-      "customPrompt": "futuristic cyberspace aesthetic, glowing neon circuit patterns, holographic rendering, data stream visual effects, deep blue-black color grading",
+      "customPrompt": "glowing neon circuit patterns, holographic rendering, data stream visual effects",
       "colorPalette": "electric blue, white, metallic grey",
       "qualityId": "q_unreal",
       "negativeIds": [
@@ -132,7 +132,7 @@
       "label": "기술트렌드 혁신연구소",
       "desc": "빛의 폭발 아이디어 공간",
       "bgImage": "/img/content/longform/tech-trend-2.webp",
-      "customPrompt": "innovation lab aesthetic, violet energy burst lighting, geometric abstract rendering, blueprint grid overlay, particle system effects, tech-forward atmosphere",
+      "customPrompt": "violet energy burst lighting, geometric abstract rendering, blueprint grid overlay",
       "colorPalette": "cyan, magenta, dark navy background",
       "qualityId": "q_unreal",
       "negativeIds": [
@@ -148,7 +148,7 @@
       "label": "주식재테크 상승강세",
       "desc": "골드 파티클 강세장 에너지",
       "bgImage": "/img/content/longform/stock-news-1.webp",
-      "customPrompt": "bull market energy aesthetic, golden particle effects, rising momentum visual, dark dramatic backdrop, wealth atmosphere, financial visualization style",
+      "customPrompt": "golden particle effects, dark dramatic backdrop, financial visualization style",
       "colorPalette": "gold, deep blue, financial red and green accents",
       "qualityId": "q_8k",
       "negativeIds": [
@@ -164,7 +164,7 @@
       "label": "주식재테크 데이터분석",
       "desc": "앰버 데이터 그리드 분석",
       "bgImage": "/img/content/longform/stock-news-2.webp",
-      "customPrompt": "financial data aesthetic, amber grid overlay rendering, warm bokeh data points, dashboard-inspired composition, analytical mood, navy-gold color grading",
+      "customPrompt": "amber grid overlay rendering, warm bokeh data points, dashboard-inspired composition",
       "colorPalette": "navy blue, white, gold highlights",
       "qualityId": "q_8k",
       "negativeIds": [
@@ -180,7 +180,7 @@
       "label": "시사뉴스 방송스튜디오",
       "desc": "딥네이비 방송 권위 무게감",
       "bgImage": "/img/content/longform/news-anchor.webp",
-      "customPrompt": "professional broadcast aesthetic, authoritative deep navy lighting, horizontal light bar accents, studio monitor glow, crisp clean rendering, news authority atmosphere",
+      "customPrompt": "professional broadcast studio, deep navy lighting, horizontal light bar accents, studio monitor glow",
       "colorPalette": "neutral tones, authoritative blue, crisp white",
       "qualityId": "q_8k",
       "negativeIds": [
@@ -197,7 +197,7 @@
       "label": "글로벌경제 세계데이터",
       "desc": "세계지도 무역 데이터 흐름",
       "bgImage": "/img/content/longform/economy-global.webp",
-      "customPrompt": "global economy aesthetic, illuminated network visualization, gold data stream effects, interconnected node rendering, steel blue-charcoal color grading, macro-scale perspective",
+      "customPrompt": "illuminated network visualization, gold data stream effects, interconnected node rendering",
       "colorPalette": "steel blue, gold, dark charcoal",
       "qualityId": "q_8k",
       "negativeIds": [
@@ -213,7 +213,7 @@
       "label": "명언지혜 선명상",
       "desc": "수묵 산수 안개 명상 공간",
       "bgImage": "/img/content/longform/wisdom-quotes-1.webp",
-      "customPrompt": "Zen ink wash painting style, misty layered depth, water ripple reflections, falling petal effects, contemplative serene mood, golden amber tones",
+      "customPrompt": "Zen ink wash painting style, misty layered depth, water ripple reflections",
       "colorPalette": "golden amber, soft cream, warm brown",
       "qualityId": "q_illustration",
       "negativeIds": [
@@ -229,7 +229,7 @@
       "label": "명언지혜 우주성찰",
       "desc": "별빛 은하 우주적 성찰",
       "bgImage": "/img/content/longform/wisdom-quotes-2.webp",
-      "customPrompt": "cosmic deep space aesthetic, star field rendering, aurora nebula wisps, vast galactic perspective, purple twilight-gold color grading, contemplative scale",
+      "customPrompt": "cosmic deep space photography, star field rendering, aurora nebula wisps",
       "colorPalette": "warm orange, purple twilight, soft gold",
       "qualityId": "q_master",
       "negativeIds": [
@@ -244,7 +244,7 @@
       "label": "라이프스타일 아늑한일상",
       "desc": "따뜻한 오후 보케 감성",
       "bgImage": "/img/content/longform/lifestyle-1.webp",
-      "customPrompt": "cozy lifestyle aesthetic, warm amber light bloom, pastel bokeh rendering, comfortable soft textures, gentle depth of field, inviting atmosphere",
+      "customPrompt": "warm amber light bloom, pastel bokeh rendering, comfortable soft textures",
       "colorPalette": "warm pastels, vibrant fresh tones, light and breezy",
       "qualityId": "q_vibrant",
       "negativeIds": [
@@ -259,7 +259,7 @@
       "label": "라이프스타일 자연활력",
       "desc": "맑은 아침 테일 자연 에너지",
       "bgImage": "/img/content/longform/lifestyle-2.webp",
-      "customPrompt": "active nature aesthetic, fresh morning teal tones, light ray effects, water shimmer rendering, breeze particle effects, energetic outdoor atmosphere",
+      "customPrompt": "fresh morning teal lighting, light ray effects, water shimmer rendering",
       "colorPalette": "fresh teal, sky blue, light aqua, energetic green",
       "qualityId": "q_vibrant",
       "negativeIds": [
@@ -274,7 +274,7 @@
       "label": "경제 데이터 인포그래픽",
       "desc": "플랫 차트·그래프 시각화",
       "bgImage": "/img/content/longform/stock-news-2.webp",
-      "customPrompt": "flat design infographic illustration style, clean minimal rendering, data visualization aesthetic, geometric shapes, vibrant flat colors, white background composition",
+      "customPrompt": "flat design infographic style, clean minimal rendering, geometric shapes, vibrant flat colors",
       "colorPalette": "vibrant coral, teal, purple, clean white background",
       "qualityId": "q_master",
       "negativeIds": [
@@ -291,7 +291,7 @@
       "label": "경제 다큐 와이드샷",
       "desc": "BBC 와이드 환경 시네마틱",
       "bgImage": "/img/content/longform/reality.webp",
-      "customPrompt": "BBC documentary cinematography style, wide environmental shot composition, natural lighting, real-world texture detail, desaturated earth tone grading",
+      "customPrompt": "BBC documentary cinematography, wide environmental shot, natural lighting, real-world texture detail",
       "colorPalette": "natural desaturated tones, blue-grey, warm earth",
       "qualityId": "q_raw",
       "negativeIds": [
@@ -308,7 +308,7 @@
       "label": "경제 추상 개념화",
       "desc": "자금흐름·네트워크 추상 아트",
       "bgImage": "/img/content/longform/economy-global.webp",
-      "customPrompt": "abstract conceptual digital art style, flowing energy stream effects, network node rendering, geometric shapes, glowing wave visual, deep blue-gold gradients",
+      "customPrompt": "abstract digital art style, flowing energy stream effects, network node rendering, glowing wave visual",
       "colorPalette": "deep blue, gold, luminous white, subtle gradients",
       "qualityId": "q_unreal",
       "negativeIds": [
@@ -324,7 +324,7 @@
       "label": "경제 다크 드라마",
       "desc": "어둡고 묵직한 현실 연출",
       "bgImage": "/img/content/longform/news-anchor.webp",
-      "customPrompt": "gritty dramatic cinematography, moody chiaroscuro shadow play, dark tension atmosphere, cinematic wide composition, muted rust-grey color grading",
+      "customPrompt": "gritty dramatic cinematography, moody chiaroscuro shadow play, cinematic wide composition",
       "colorPalette": "dark grey, muted rust, shadowed black, cold blue",
       "qualityId": "q_master",
       "negativeIds": [
@@ -341,7 +341,7 @@
       "label": "경제 코퍼레이트 클린",
       "desc": "유리빌딩·오피스 미니멀",
       "bgImage": "/img/content/longform/tech-trend-2.webp",
-      "customPrompt": "modern corporate photography style, minimalist clean lines, architectural composition, professional atmosphere, white-steel-blue color grading",
+      "customPrompt": "modern corporate photography, minimalist clean lines, architectural composition",
       "colorPalette": "clean white, steel grey, accent blue, minimal contrast",
       "qualityId": "q_8k",
       "negativeIds": [

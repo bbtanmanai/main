@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faTimes, faChevronRight, faLightbulb, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import tipsData from '@/data/longform_tips.json';
+import tipsData from '@/data/keyframe-tips.json';
 
 interface TipSection {
   heading: string;

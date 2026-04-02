@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -11,6 +11,7 @@ import {
   faPalette, faCheckCircle, faCode, faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
 import Aurora from '@/components/Aurora';
+import { supabase } from '@/lib/supabase';
 import styleConfig from '@/data/content_styleimage.json';
 import keyframeStyleData from '@/data/keyframe_style.json';
 import keyframeToolsData from '@/data/keyframe_tools.json';
@@ -44,11 +45,34 @@ const NEGATIVE_MAP  = Object.fromEntries(styleConfig.negative.map(n => [n.id, n.
 
 // ── 구조화 프롬프트 타입 ──────────────────────────────────────────────────────
 interface StructuredPrompt {
-  style: string;
+  character: string;
   background_and_location: string;
+  style: string;
   color_palette: string;
   quality_boosters: string;
   negative_prompt: string;
+}
+
+// ── 캐릭터 (Supabase) ─────────────────────────────────────────────────────────
+interface CharAsset { id: string; name: string; imageDataUrl: string; promptEn: string; faceGridUrl?: string; bodyGridUrl?: string; registeredAt: string; registeredBy?: string; }
+
+async function loadCharAssets(): Promise<CharAsset[]> {
+  const { data, error } = await supabase
+    .from('characters')
+    .select('id, name, image_data_url, prompt_compact, face_grid_url, body_grid_url, registered_at, registered_by')
+    .order('registered_by', { ascending: false })
+    .order('registered_at', { ascending: false });
+  if (error || !data) return [];
+  return data.map((row: any) => ({
+    id:           row.id,
+    name:         row.name,
+    imageDataUrl: row.image_data_url,
+    promptEn:     row.prompt_compact ?? '',
+    faceGridUrl:  row.face_grid_url  ?? undefined,
+    bodyGridUrl:  row.body_grid_url  ?? undefined,
+    registeredAt: row.registered_at,
+    registeredBy: row.registered_by,
+  }));
 }
 
 // ── IndexedDB 통합 저장소 (이미지 + 화풍/대본/번역 데이터) ──────────────────
@@ -73,8 +97,13 @@ function openIDB(): Promise<IDBDatabase> {
 // 상태 저장/로드 (화풍, 대본, 번역, 프롬프트 등)
 async function saveStateIDB(key: string, value: any) {
   const db = await openIDB();
-  const tx = db.transaction(IDB_STATE, 'readwrite');
-  tx.objectStore(IDB_STATE).put(value, key);
+  return new Promise<void>((res, rej) => {
+    const tx  = db.transaction(IDB_STATE, 'readwrite');
+    const req = tx.objectStore(IDB_STATE).put(value, key);
+    tx.oncomplete = () => res();
+    tx.onerror    = () => rej(tx.error);
+    req.onerror   = () => rej(req.error);
+  });
 }
 
 async function loadStateIDB(key: string): Promise<any> {
@@ -97,24 +126,53 @@ function getSessionId(): string {
 
 async function saveImageIDB(sessionId: string, idx: number, blob: Blob) {
   const db = await openIDB();
-  const tx = db.transaction(IDB_IMAGES, 'readwrite');
-  tx.objectStore(IDB_IMAGES).put(blob, `${sessionId}_${idx}`);
-}
-
-async function saveMp4IDB(sessionId: string, blob: Blob) {
-  const db = await openIDB();
-  const tx = db.transaction(IDB_IMAGES, 'readwrite');
-  tx.objectStore(IDB_IMAGES).put(blob, `${sessionId}_mp4_0`);
-}
-
-async function loadMp4IDB(sessionId: string): Promise<string | null> {
-  const db = await openIDB();
-  return new Promise(res => {
-    const tx  = db.transaction(IDB_IMAGES, 'readonly');
-    const req = tx.objectStore(IDB_IMAGES).get(`${sessionId}_mp4_0`);
-    req.onsuccess = () => res(req.result instanceof Blob ? URL.createObjectURL(req.result) : null);
-    req.onerror   = () => res(null);
+  return new Promise<void>((res, rej) => {
+    const tx  = db.transaction(IDB_IMAGES, 'readwrite');
+    const req = tx.objectStore(IDB_IMAGES).put(blob, `${sessionId}_${idx}`);
+    tx.oncomplete = () => res();
+    tx.onerror    = () => rej(tx.error);
+    req.onerror   = () => rej(req.error);
   });
+}
+
+/** 익스텐션 썸네일 동기화 — IDB 저장과 동시에 서버에도 업로드 (fire-and-forget) */
+function syncImageToServer(idx: number, blob: Blob) {
+  const form = new FormData();
+  form.append('scene_idx', String(idx));
+  form.append('file', blob, `scene_${idx}.png`);
+  fetch(`${API}/browser/upload-image`, { method: 'POST', body: form }).catch(() => {});
+}
+
+
+async function saveMp4IDB(sessionId: string, idx: number, blob: Blob) {
+  const db = await openIDB();
+  return new Promise<void>((res, rej) => {
+    const tx  = db.transaction(IDB_IMAGES, 'readwrite');
+    const req = tx.objectStore(IDB_IMAGES).put(blob, `${sessionId}_mp4_${idx}`);
+    tx.oncomplete = () => res();
+    tx.onerror    = () => rej(tx.error);
+    req.onerror   = () => rej(req.error);
+  });
+}
+
+async function loadAllMp4sIDB(sessionId: string, count: number): Promise<Record<number, string>> {
+  const db     = await openIDB();
+  const result: Record<number, string> = {};
+  const tx     = db.transaction(IDB_IMAGES, 'readonly');
+  const store  = tx.objectStore(IDB_IMAGES);
+  await Promise.all(
+    Array.from({ length: count }, (_, i) =>
+      new Promise<void>(res => {
+        const req = store.get(`${sessionId}_mp4_${i}`);
+        req.onsuccess = () => {
+          if (req.result instanceof Blob) result[i] = URL.createObjectURL(req.result);
+          res();
+        };
+        req.onerror = () => res();
+      })
+    )
+  );
+  return result;
 }
 
 async function loadImagesIDB(sessionId: string, count: number): Promise<Record<number, string>> {
@@ -164,12 +222,12 @@ function getAutoOptions(styleId: string) {
   return { qualityVal, negativeVal, qualityLabel, negativeLabel };
 }
 
-const API = 'http://localhost:8000/api/v1';
+const API = process.env.NEXT_PUBLIC_API_URL;
 
 // ── 백엔드 번역 API로 씬 텍스트 → 영문 비주얼 키워드 + accent 변환 ──────────
 async function translateScenesToVisual(
   scenes: string[], genreEn: string, artStyleId: string = ''
-): Promise<{ visual_prompts: string[]; accents: object[][] }> {
+): Promise<{ visual_prompts: string[]; scene_visuals: string[]; accents: object[][]; scene_roles: string[] }> {
   const apiKey = localStorage.getItem('ld_google_api_key') ?? '';
   const res = await fetch(`${API}/translate/scenes`, {
     method: 'POST',
@@ -180,18 +238,57 @@ async function translateScenesToVisual(
   const data = await res.json();
   return {
     visual_prompts: data.visual_prompts as string[],
+    scene_visuals: (data.scene_visuals ?? []) as string[],
     accents: (data.accents ?? []) as object[][],
+    scene_roles: (data.scene_roles ?? []) as string[],
   };
 }
 
 // ── 구조화 프롬프트 생성 ──────────────────────────────────────────────────────
-// 씬 역할별 시각 모디파이어 (씬 인덱스 기준)
-const SCENE_ROLE_MODIFIERS: Record<number, string> = {
-  0: 'dramatic close-up composition, high contrast tension, shock atmosphere, extreme visual impact',
-  1: 'warm eye-level shot, approachable conversational mood, trust-building atmosphere, soft lighting',
-  2: 'clear explanatory composition, data visualization aesthetic, informative wide shot, authoritative mood',
+// 씬 역할별 시각 모디파이어 (구도+카메라 앵글만, 색온도 없음 → 화풍 일관성 유지)
+const SCENE_ROLE_MODIFIERS: Record<string, string> = {
+  hook:       'extreme close-up, dynamic diagonal composition, foreground subject dominant',
+  intro:      'medium eye-level shot, centered subject, breathing room on both sides',
+  explain:    'wide establishing shot, rule-of-thirds layout, infographic negative space',
+  evidence:   'clean flat lay, symmetrical subject placement, sharp foreground detail',
+  climax:     'low angle hero shot, expansive background, peak tension framing',
+  cta:        'bold subject isolation, strong center anchor, minimal background clutter',
+  conclusion: 'wide balanced frame, subject at rest, harmonious symmetry',
 };
-const DEFAULT_SCENE_MODIFIER = 'cinematic composition, balanced lighting, engaging visual';
+
+// 씬 인덱스 + 총 씬 수 → 역할 태그 자동 추론
+function getSceneRole(idx: number, total: number): string {
+  if (idx === 0) return 'hook';
+  if (idx === 1) return 'intro';
+  if (total <= 2) return 'conclusion';
+  if (idx === total - 1) return 'conclusion';
+  if (idx === total - 2) return 'cta';
+  if (idx === total - 3) return 'climax';
+  // 중간 씬: explain / evidence 교대
+  return (idx % 2 === 0) ? 'explain' : 'evidence';
+}
+
+// scene_role → 얼굴 표정 힌트 (face_grid 등록 캐릭터 전용)
+const SCENE_ROLE_FACE: Record<string, string> = {
+  hook:       'shocked surprised wide-eyed expression',
+  intro:      'warm confident friendly smile',
+  explain:    'focused attentive thoughtful look',
+  evidence:   'serious composed professional expression',
+  climax:     'intense determined fierce expression',
+  cta:        'enthusiastic excited energetic expression',
+  conclusion: 'calm satisfied gentle smile',
+};
+
+// scene_role → 바디 앵글 힌트 (body_grid 등록 캐릭터 전용)
+const SCENE_ROLE_BODY: Record<string, string> = {
+  hook:       'front facing',
+  intro:      'slight left angle',
+  explain:    'front facing',
+  evidence:   'front facing',
+  climax:     'three-quarter dynamic angle',
+  cta:        'front facing toward camera',
+  conclusion: 'front facing relaxed posture',
+};
 
 function buildStructuredPrompt(
   sceneEn: string,
@@ -199,13 +296,29 @@ function buildStructuredPrompt(
   art: ArtStyleDef | null,
   quality: string,
   negative: string,
+  characterPrompt = '',
+  total = 0,
+  roleOverride = '',
+  hasFaceGrid = false,
+  hasBodyGrid = false,
 ): StructuredPrompt {
-  const def        = art ? STYLE_MAP[art.id] : null;
-  const styleBase  = def?.customPrompt || 'dramatic cinematic environment, ultra-detailed, 4K';
-  const roleModifier = SCENE_ROLE_MODIFIERS[idx] ?? DEFAULT_SCENE_MODIFIER;
+  const def          = art ? STYLE_MAP[art.id] : null;
+  const styleBase    = def?.customPrompt || 'dramatic cinematic environment, ultra-detailed, 4K';
+  const role         = (roleOverride && SCENE_ROLE_MODIFIERS[roleOverride]) ? roleOverride : getSceneRole(idx, total > 0 ? total : idx + 1);
+  const roleModifier = SCENE_ROLE_MODIFIERS[role];
+
+  // 그리드 등록 캐릭터: 표정 + 앵글 힌트 자동 주입
+  const faceHint = (hasFaceGrid && characterPrompt) ? SCENE_ROLE_FACE[role] ?? '' : '';
+  const bodyHint = (hasBodyGrid && characterPrompt) ? SCENE_ROLE_BODY[role] ?? '' : '';
+  const charFull = [characterPrompt, faceHint, bodyHint].filter(Boolean).join(', ');
+
   return {
+    character:               charFull,
+    background_and_location: (() => {
+      const cleaned = sceneEn ? sceneEn.replace(/\[씬\s*\d+\]/gi, '').replace(/^scene\s+\d+[,.]?\s*/i, '').replace(/^[,\s]+/, '').trim() : '';
+      return cleaned ? `${cleaned}, ${roleModifier}` : roleModifier;
+    })(),
     style:                   styleBase,
-    background_and_location: sceneEn ? `${sceneEn}, ${roleModifier}` : `scene ${idx + 1}, ${roleModifier}`,
     color_palette:           def?.colorPalette || '',
     quality_boosters:        quality,
     negative_prompt:         negative,
@@ -215,12 +328,13 @@ function buildStructuredPrompt(
 // ── 자연어 프롬프트 조합 ──────────────────────────────────────────────────────
 function toFlatPrompt(sp: StructuredPrompt): string {
   const parts = [
-    sp.background_and_location,  // 1. 씬 비주얼 키워드 (가장 중요)
-    sp.style,                     // 2. 화풍 키워드
-    sp.color_palette,             // 3. 색감
-    sp.quality_boosters,          // 4. 퀄리티 부스터
-  ].filter(Boolean);
-  const positive = parts.join(', ');
+    sp.character,                 // 1. 캐릭터 외형 (압축 버전) — 최우선
+    sp.background_and_location,  // 2. 씬 비주얼 키워드
+    sp.style,                     // 3. 화풍 키워드
+    sp.color_palette,             // 4. 색감
+    sp.quality_boosters,          // 5. 퀄리티 부스터
+  ].map(s => s.trim()).filter(Boolean);
+  const positive = parts.join(', ').replace(/^[,\s]+/, '').trim();
   return sp.negative_prompt ? `${positive} --no ${sp.negative_prompt}` : positive;
 }
 
@@ -272,7 +386,7 @@ function SceneCard({ idx, scene, selected, imageUrl, mp4Url, onSelect, onImageAd
   const fileRef  = React.useRef<HTMLInputElement>(null);
   const mp4Ref   = React.useRef<HTMLInputElement>(null);
   const preview  = scene.replace(/\[씬\s*\d+\]/gi, '').trim().slice(0, 60);
-  const hasMp4   = idx === 0 && !!mp4Url;
+  const hasMp4   = !!mp4Url;
   const showImg  = !hasMp4 && !!imageUrl;
   return (
     <div className={`w-full rounded-2xl border transition-all ${
@@ -297,11 +411,15 @@ function SceneCard({ idx, scene, selected, imageUrl, mp4Url, onSelect, onImageAd
           ) : showImg ? (
             <>
               <img src={imageUrl} alt={`씬 ${idx + 1}`} className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
+              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/img:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1">
                 <button
                   onClick={e => { e.stopPropagation(); fileRef.current?.click(); }}
-                  className="text-[10px] text-white font-black bg-white/20 px-2 py-1 rounded-lg"
-                >교체</button>
+                  className="text-[9px] text-white font-black bg-white/20 px-2 py-0.5 rounded-lg hover:bg-white/30"
+                >이미지</button>
+                <button
+                  onClick={e => { e.stopPropagation(); mp4Ref.current?.click(); }}
+                  className="text-[9px] text-sky-300 font-black bg-sky-500/25 px-2 py-0.5 rounded-lg hover:bg-sky-500/40"
+                >MP4</button>
               </div>
             </>
           ) : (
@@ -313,12 +431,10 @@ function SceneCard({ idx, scene, selected, imageUrl, mp4Url, onSelect, onImageAd
                 <span className="text-slate-500 text-base leading-none">＋</span>
                 <span className="text-[9px] text-slate-500 font-black leading-tight">이미지<br/>추가</span>
               </button>
-              {idx === 0 && (
-                <button
-                  onClick={e => { e.stopPropagation(); mp4Ref.current?.click(); }}
-                  className="text-[8px] text-sky-400 font-black hover:text-sky-300 transition-colors leading-tight"
-                >MP4</button>
-              )}
+              <button
+                onClick={e => { e.stopPropagation(); mp4Ref.current?.click(); }}
+                className="text-[8px] text-sky-400 font-black hover:text-sky-300 transition-colors leading-tight"
+              >MP4</button>
             </div>
           )}
         </div>
@@ -342,6 +458,8 @@ function SceneCard({ idx, scene, selected, imageUrl, mp4Url, onSelect, onImageAd
           {mp4PageHref && (
             <Link
               href={mp4PageHref}
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={e => e.stopPropagation()}
               className="inline-flex items-center gap-1 mt-2 px-2 py-1 rounded-lg text-[10px] font-black text-sky-300 bg-sky-500/15 border border-sky-500/30 hover:bg-sky-500/25 transition-all"
             >
@@ -356,12 +474,10 @@ function SceneCard({ idx, scene, selected, imageUrl, mp4Url, onSelect, onImageAd
         ref={fileRef} type="file" accept="image/*" className="hidden"
         onChange={e => { const f = e.target.files?.[0]; if (f) onImageAdd(f); e.target.value = ''; }}
       />
-      {idx === 0 && (
-        <input
-          ref={mp4Ref} type="file" accept="video/mp4,video/*" className="hidden"
-          onChange={e => { const f = e.target.files?.[0]; if (f && onMp4Add) onMp4Add(f); e.target.value = ''; }}
-        />
-      )}
+      <input
+        ref={mp4Ref} type="file" accept="video/mp4,video/*" className="hidden"
+        onChange={e => { const f = e.target.files?.[0]; if (f && onMp4Add) onMp4Add(f); e.target.value = ''; }}
+      />
     </div>
   );
 }
@@ -369,20 +485,25 @@ function SceneCard({ idx, scene, selected, imageUrl, mp4Url, onSelect, onImageAd
 // ── Main ──────────────────────────────────────────────────────────────────────
 function KeyframePageInner() {
   const searchParams = useSearchParams();
-  // TODO: 테스트 완료 후 아래 SCENE_LIMIT 제거 → null 로 복원
-  const SCENE_LIMIT = 3;
-  const sampleLimit = searchParams.get('sample') ? parseInt(searchParams.get('sample')!, 10) : SCENE_LIMIT;
+  const sampleLimit = searchParams.get('sample') ? parseInt(searchParams.get('sample')!, 10) : null;
 
   const [scenes, setScenes]       = React.useState<string[]>([]);
   const [analysis, setAnalysis]   = React.useState<any>(null);
   const [idea, setIdea]           = React.useState('');
+  const [charAssets, setCharAssets]         = React.useState<CharAsset[]>([]);
+  const [charAssetsReady, setCharAssetsReady] = React.useState(false);
+  const [selectedCharId, setSelectedCharId] = React.useState<string>('');
   const [selectedIdx, setSelectedIdx]           = React.useState(0);
   const [artStyle, setArtStyle]                 = React.useState<ArtStyleDef | null>(null);
   const [artStyleOpen, setArtStyleOpen]         = React.useState(false);
   const [prompts, setPrompts]                   = React.useState<StructuredPrompt[]>([]);
   const [nlEdits, setNlEdits]                   = React.useState<Record<number, string>>({});
   const [translatedScenes, setTranslatedScenes] = React.useState<string[]>([]);
+  const [sceneVisuals, setSceneVisuals]         = React.useState<string[]>([]);
+  const [sceneRoles, setSceneRoles]             = React.useState<string[]>([]);
   const [isTranslating, setIsTranslating]       = React.useState(false);
+  const [translateProgress, setTranslateProgress] = React.useState(0);
+  const translateTimerRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
   const [sceneImages, setSceneImages]           = React.useState<Record<number, string>>({});
   const [sceneMp4s, setSceneMp4s]               = React.useState<Record<number, string>>({});
   // 서버 이미지 슬롯 매핑: serverIdx → sceneIdx (씬 삽입 시 같이 시프트)
@@ -391,16 +512,43 @@ function KeyframePageInner() {
   const [editingPrompt, setEditingPrompt]       = React.useState('');
   const [copied, setCopied]                     = React.useState<{ idx: number; type: 'nl' | 'json' } | null>(null);
   const [toolCopied, setToolCopied]             = React.useState<string | null>(null);
-  const [toolOpening, setToolOpening]           = React.useState<string | null>(null);
-  const [webviewTool, setWebviewTool]           = React.useState<KeyframeTool | null>(null);
-  const [webviewWidth, setWebviewWidth]         = React.useState<number | null>(null);
-  const webviewDragging                         = React.useRef(false);
   const autoTranslated                          = React.useRef(false);
   const [isMobile, setIsMobile]                 = React.useState(false);
 
   React.useEffect(() => {
     setIsMobile(window.innerWidth < 768);
   }, []);
+
+  // objectURL 메모리 누수 방지 — 언마운트 시 전체 revoke
+  React.useEffect(() => {
+    return () => {
+      Object.values(sceneImages).forEach(url => { if (url) URL.revokeObjectURL(url); });
+      Object.values(sceneMp4s).forEach(url => { if (url) URL.revokeObjectURL(url); });
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // 캐릭터 목록 로드
+  React.useEffect(() => {
+    loadCharAssets().then(list => { setCharAssets(list); setCharAssetsReady(true); });
+  }, []);
+
+  // 캐릭터 변경 또는 로드 완료 시 프롬프트 재빌드 + sessionStorage 갱신
+  React.useEffect(() => {
+    if (translatedScenes.length === 0 || !charAssetsReady) return;
+    const charPrompt = charAssets.find(c => c.id === selectedCharId)?.promptEn ?? '';
+    rebuildPrompts(translatedScenes, artStyle, charPrompt, sceneRoles, sceneVisuals);
+    // 링크브라우저 폴백용 sessionStorage 즉시 갱신
+    const opts = artStyle ? getAutoOptions(artStyle.id) : { qualityVal: '', negativeVal: '' };
+    const selChar = charAssets.find(c => c.id === selectedCharId);
+    const hasFace = !!selChar?.faceGridUrl;
+    const hasBody = !!selChar?.bodyGridUrl;
+    const allPrompts = translatedScenes.map((en, i) =>
+      toFlatPrompt(buildStructuredPrompt(sceneVisuals[i] || en, i, artStyle, opts.qualityVal, opts.negativeVal, charPrompt, translatedScenes.length, sceneRoles[i] ?? '', hasFace, hasBody))
+    );
+    sessionStorage.setItem('ld_keyframe_prompts', JSON.stringify(allPrompts));
+    saveStateIDB('prompts', allPrompts);
+  }, [selectedCharId, charAssetsReady]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // 씬 삽입 (afterIdx 다음에 빈 씬 추가)
   const addEmptyScene = (afterIdx: number) => {
@@ -417,7 +565,8 @@ function KeyframePageInner() {
     });
     setPrompts(prev => {
       const next = [...prev];
-      next.splice(insertAt, 0, buildStructuredPrompt('', insertAt, null, '', ''));
+      const _selChar = charAssets.find(c => c.id === selectedCharId);
+      next.splice(insertAt, 0, buildStructuredPrompt('', insertAt, null, '', '', _selChar?.promptEn ?? '', next.length, '', !!_selChar?.faceGridUrl, !!_selChar?.bodyGridUrl));
       return next;
     });
     setTranslatedScenes(prev => {
@@ -459,7 +608,8 @@ function KeyframePageInner() {
   // 씬 삭제 (최소 1개 유지)
   const deleteScene = (delIdx: number) => {
     if (scenes.length <= 1) return;
-    setScenes(prev => prev.filter((_, i) => i !== delIdx));
+    const newScenes = scenes.filter((_, i) => i !== delIdx);
+    setScenes(newScenes);
     setPrompts(prev => prev.filter((_, i) => i !== delIdx));
     setTranslatedScenes(prev => prev.length ? prev.filter((_, i) => i !== delIdx) : prev);
     // 삭제 위치 이후 이미지 인덱스 -1씩 당기기
@@ -490,7 +640,7 @@ function KeyframePageInner() {
       }
       return next;
     });
-    setSelectedIdx(prev => Math.min(prev, scenes.length - 2));
+    setSelectedIdx(prev => Math.max(0, Math.min(prev, scenes.length - 2)));
     // localStorage 씬 목록 갱신
     try {
       const raw = localStorage.getItem('ld_keyframe_data');
@@ -500,6 +650,10 @@ function KeyframePageInner() {
         localStorage.setItem('ld_keyframe_data', JSON.stringify(data));
       }
     } catch (_) {}
+    // IDB keyframe_data 씬 목록 갱신 (addEmptyScene과 동일한 방식)
+    loadStateIDB('keyframe_data').then(saved => {
+      if (saved) saveStateIDB('keyframe_data', { ...saved, scenes: newScenes });
+    });
   };
 
   // 프롬프트 변경 시 IndexedDB에 저장
@@ -514,6 +668,39 @@ function KeyframePageInner() {
     sessionStorage.setItem('ld_keyframe_prompts', JSON.stringify(allPrompts));
   }, [scenes, prompts, nlEdits]);
 
+  // sceneImages 변경 시 익스텐션 썸네일 서버 동기화 (objectURL → blob → upload)
+  React.useEffect(() => {
+    Object.entries(sceneImages).forEach(([idxStr, url]) => {
+      if (!url) return;
+      const idx = Number(idxStr);
+      fetch(url)
+        .then(r => r.blob())
+        .then(blob => syncImageToServer(idx, blob))
+        .catch(() => {});
+    });
+  }, [sceneImages]);
+
+  // 씬 변경(삭제/추가) 시 익스텐션용 세션 파일 자동 갱신
+  const sessionSyncRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  React.useEffect(() => {
+    if (scenes.length === 0) return;
+    // 프롬프트가 아직 빌드 안 된 상태면 저장 스킵
+    if (prompts.length === 0) return;
+    if (sessionSyncRef.current) clearTimeout(sessionSyncRef.current);
+    sessionSyncRef.current = setTimeout(async () => {
+      const allPrompts = scenes.map((_, i) => {
+        const sp = prompts[i];
+        return nlEdits[i] !== undefined ? nlEdits[i] : (sp ? toFlatPrompt(sp) : '');
+      });
+      const savedAccents = await loadStateIDB('scene_accents') ?? [];
+      fetch(`${API}/browser/session-save`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ scenes, prompts: allPrompts, accents: savedAccents, tool_id: '', scene: 0, script_id: localStorage.getItem('ld_script_id') ?? '' }),
+      }).catch(() => {});
+    }, 800); // 연속 변경 디바운스
+  }, [scenes, prompts, nlEdits]);
+
   // 링크브라우저에서 postMessage로 이미지 수신 (팝업 폴백용)
   React.useEffect(() => {
     const handler = (e: MessageEvent) => {
@@ -521,7 +708,7 @@ function KeyframePageInner() {
       if (e.data?.type !== 'ld_image') return;
       const { sceneIdx, dataUrl } = e.data;
       setSceneImages(prev => ({ ...prev, [sceneIdx]: dataUrl }));
-      fetch(dataUrl).then(r => r.blob()).then(blob => saveImageIDB(getSessionId(), sceneIdx, blob));
+      fetch(dataUrl).then(r => r.blob()).then(blob => { saveImageIDB(getSessionId(), sceneIdx, blob); syncImageToServer(sceneIdx, blob); });
     };
     window.addEventListener('message', handler);
     return () => window.removeEventListener('message', handler);
@@ -535,25 +722,42 @@ function KeyframePageInner() {
       const res = await fetch(`${API}/browser/submit-images`, { method: 'POST' });
       const data = await res.json();
       if (data.success && data.count > 0) {
-        const t = Date.now();
+        const sessionId = getSessionId();
         const newImages: Record<number, string> = {};
-        for (let i = 0; i < data.count; i++) {
-          // 슬롯 매핑 우선: 씬 삽입 후에도 올바른 sceneIdx에 할당
-          const sceneIdx = serverImageSlots[i] ?? i;
-          newImages[sceneIdx] = `${API}/browser/images/${i}?t=${t}`;
+        await Promise.all(
+          Array.from({ length: data.count }, async (_, i) => {
+            const sceneIdx = serverImageSlots[i] ?? i;
+            try {
+              const imgRes = await fetch(`${API}/browser/images/${i}?t=${Date.now()}`);
+              if (!imgRes.ok) return;
+              const blob = await imgRes.blob();
+              await saveImageIDB(sessionId, sceneIdx, blob);
+              newImages[sceneIdx] = URL.createObjectURL(blob);
+            } catch (_) {}
+          })
+        );
+        if (Object.keys(newImages).length > 0) {
+          setSceneImages(prev => ({ ...prev, ...newImages }));
         }
-        setSceneImages(prev => ({ ...prev, ...newImages }));
       }
     } catch (_) {}
   }, [scenes, serverImageSlots]);
 
-  // 윈도우 포커스 시에만 확인 (링크브라우저에서 돌아올 때)
-  // 초기 자동 호출 제거 — IDB 복원이 담당, 서버 이미지 자동 로드 차단
+  // 윈도우 포커스 시 확인 (링크브라우저에서 돌아올 때)
   React.useEffect(() => {
     const onFocus = () => loadBrowserImages();
     window.addEventListener('focus', onFocus);
     return () => window.removeEventListener('focus', onFocus);
   }, [loadBrowserImages]);
+
+  // 초기 1회 서버 이미지 로드 — scenes가 처음 채워진 직후 실행
+  const _initialServerLoadDone = React.useRef(false);
+  React.useEffect(() => {
+    if (scenes.length > 0 && !_initialServerLoadDone.current) {
+      _initialServerLoadDone.current = true;
+      loadBrowserImages();
+    }
+  }, [scenes.length, loadBrowserImages]);
 
   React.useEffect(() => {
     (async () => {
@@ -594,7 +798,7 @@ function KeyframePageInner() {
       setServerImageSlots(initSlots);
       setAnalysis(data.analysis || null);
       setIdea(data.idea || '');
-      setPrompts(sceneList.map((_, i) => buildStructuredPrompt('', i, null, '', '')));
+      setPrompts(sceneList.map((_, i) => buildStructuredPrompt('', i, null, '', '', '', sceneList.length)));
 
       // 4. 화풍 복원: 저장된 화풍 → niche 자동 선택 → ghibli-real 폴백
       let selectedArt: ArtStyleDef | null = null;
@@ -623,9 +827,9 @@ function KeyframePageInner() {
       const imgs = await loadImagesIDB(sid, sceneList.length);
       if (Object.keys(imgs).length > 0) setSceneImages(imgs);
 
-      // 7. IDB MP4 복원 (씬1 전용)
-      const mp4Url = await loadMp4IDB(sid);
-      if (mp4Url) setSceneMp4s({ 0: mp4Url });
+      // 7. IDB MP4 복원 (전체 씬)
+      const mp4s = await loadAllMp4sIDB(sid, sceneList.length);
+      if (Object.keys(mp4s).length > 0) setSceneMp4s(mp4s);
     })();
   }, []);
 
@@ -638,21 +842,35 @@ function KeyframePageInner() {
       // IndexedDB 캐시 확인
       const cached = await loadStateIDB('translated_scenes');
       const cachedStyleId = await loadStateIDB('translated_style_id');
+      const cachedRoles   = await loadStateIDB('scene_roles') ?? [];
+      const cachedVisuals = await loadStateIDB('scene_visuals') ?? [];
       if (cached && Array.isArray(cached) && cached.length === scenes.length && cachedStyleId === artStyle.id) {
         setTranslatedScenes(cached);
-        rebuildPrompts(cached, artStyle);
+        setSceneRoles(cachedRoles);
+        setSceneVisuals(cachedVisuals);
+        rebuildPrompts(cached, artStyle, charAssets.find(c => c.id === selectedCharId)?.promptEn ?? '', cachedRoles, cachedVisuals);
         return;
       }
 
       // 캐시 없거나 화풍 변경 → API 호출 (1회)
-      setIsTranslating(true);
+      startTranslating();
       try {
-        const { visual_prompts: en, accents } = await translateScenesToVisual(scenes, nicheToGenreEn(analysis?.niche || ''), artStyle?.id || '');
+        const { visual_prompts: en, scene_visuals: visuals, accents, scene_roles: roles } = await translateScenesToVisual(scenes, nicheToGenreEn(analysis?.niche || ''), artStyle?.id || '');
         setTranslatedScenes(en);
-        rebuildPrompts(en, artStyle);
+        setSceneVisuals(visuals);
+        setSceneRoles(roles);
+        rebuildPrompts(en, artStyle, charAssets.find(c => c.id === selectedCharId)?.promptEn ?? '', roles, visuals);
         await saveStateIDB('translated_scenes', en);
         await saveStateIDB('translated_style_id', artStyle.id);
         await saveStateIDB('scene_accents', accents);
+        await saveStateIDB('scene_roles', roles);
+        await saveStateIDB('scene_visuals', visuals);
+        // translate 결과 accent를 SESSION_FILE에 즉시 반영 — Remotion 페이지 이중 Gemini 호출 방지
+        fetch(`${API}/browser/session-accents`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ accents: accents ?? [] }),
+        }).catch(() => {});
       } catch (_) {
         const fb = scenes.map((__, i) => `scene ${i + 1}`);
         setTranslatedScenes(fb);
@@ -660,17 +878,34 @@ function KeyframePageInner() {
         await saveStateIDB('translated_scenes', fb);
         await saveStateIDB('translated_style_id', artStyle.id);
       } finally {
-        setIsTranslating(false);
+        stopTranslating();
       }
-    })()
-      .finally(() => setIsTranslating(false));
+    })();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scenes, artStyle]);
 
-  const rebuildPrompts = (enScenes: string[], art: ArtStyleDef | null) => {
+  const startTranslating = () => {
+    setTranslateProgress(0);
+    setIsTranslating(true);
+    if (translateTimerRef.current) clearInterval(translateTimerRef.current);
+    translateTimerRef.current = setInterval(() => {
+      setTranslateProgress(p => p < 88 ? p + (Math.random() * 6 + 2) : p);
+    }, 400);
+  };
+
+  const stopTranslating = () => {
+    if (translateTimerRef.current) clearInterval(translateTimerRef.current);
+    setTranslateProgress(100);
+    setTimeout(() => { setIsTranslating(false); setTranslateProgress(0); }, 500);
+  };
+
+  const rebuildPrompts = (enScenes: string[], art: ArtStyleDef | null, charPrompt = '', roles: string[] = [], visuals: string[] = [], clearEdits: boolean = false) => {
     const { qualityVal, negativeVal } = art ? getAutoOptions(art.id) : { qualityVal: '', negativeVal: '' };
-    setPrompts(enScenes.map((en, i) => buildStructuredPrompt(en, i, art, qualityVal, negativeVal)));
-    setNlEdits({});
+    const selChar = charAssets.find(c => c.id === selectedCharId);
+    const hasFace = !!selChar?.faceGridUrl;
+    const hasBody = !!selChar?.bodyGridUrl;
+    setPrompts(enScenes.map((en, i) => buildStructuredPrompt(visuals[i] || en, i, art, qualityVal, negativeVal, charPrompt, enScenes.length, roles[i] ?? '', hasFace, hasBody)));
+    if (clearEdits) setNlEdits({});
   };
 
   const handleSelectArt = async (a: ArtStyleDef) => {
@@ -686,21 +921,30 @@ function KeyframePageInner() {
 
     let enScenes = translatedScenes;
     if (enScenes.length === 0) {
-      setIsTranslating(true);
+      startTranslating();
       try {
-        const { visual_prompts, accents } = await translateScenesToVisual(scenes, nicheToGenreEn(analysis?.niche || ''), next?.id || '');
+        const { visual_prompts, scene_visuals: visuals, accents, scene_roles: roles } = await translateScenesToVisual(scenes, nicheToGenreEn(analysis?.niche || ''), next?.id || '');
         enScenes = visual_prompts;
         setTranslatedScenes(enScenes);
+        setSceneVisuals(visuals);
+        setSceneRoles(roles);
         await saveStateIDB('scene_accents', accents);
+        await saveStateIDB('scene_roles', roles);
+        await saveStateIDB('scene_visuals', visuals);
+        fetch(`${API}/browser/session-accents`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ accents: accents ?? [] }),
+        }).catch(() => {});
       } catch (_) {
         enScenes = scenes.map((_, i) => `scene ${i + 1}`);
         setTranslatedScenes(enScenes);
       } finally {
-        setIsTranslating(false);
+        stopTranslating();
       }
     }
 
-    rebuildPrompts(enScenes, next);
+    rebuildPrompts(enScenes, next, charAssets.find(c => c.id === selectedCharId)?.promptEn ?? '', sceneRoles, sceneVisuals, true);
   };
 
   const compatibleStyles = React.useMemo(() => getCompatibleStyles(analysis?.niche || ''), [analysis]);
@@ -719,31 +963,16 @@ function KeyframePageInner() {
     setTimeout(() => setCopied(null), 2000);
   };
 
-  const handleWebviewResizeStart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    webviewDragging.current = true;
-    const startX = e.clientX;
-    const startW = webviewWidth ?? window.innerWidth * 0.66;
-    const onMove = (ev: MouseEvent) => {
-      if (!webviewDragging.current) return;
-      const next = Math.min(Math.max(startW + (startX - ev.clientX), window.innerWidth * 0.3), window.innerWidth * 0.92);
-      setWebviewWidth(next);
-    };
-    const onUp = () => {
-      webviewDragging.current = false;
-      window.removeEventListener('mousemove', onMove);
-      window.removeEventListener('mouseup', onUp);
-    };
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('mouseup', onUp);
-  };
-
-  const saveEdit = () => {
+  const saveEdit = async () => {
     if (editingIdx === null) return;
     const updated = { ...nlEdits, [editingIdx]: editingPrompt };
     setNlEdits(updated);
-    saveStateIDB('nl_edits', updated);
     setEditingIdx(null);
+    try {
+      await saveStateIDB('nl_edits', updated);
+    } catch (e) {
+      console.error('[saveEdit] IDB 저장 실패:', e);
+    }
   };
 
   if (scenes.length === 0) {
@@ -764,9 +993,57 @@ function KeyframePageInner() {
     );
   }
 
+  // SVG 원형 프로그레시바 상수
+  const RADIUS = 54;
+  const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+  const strokeDash = CIRCUMFERENCE - (translateProgress / 100) * CIRCUMFERENCE;
+
   return (
     <div className="relative min-h-screen bg-[#0A0A0F] text-white">
       <Aurora colorStops={['#1e1b4b', '#312e81', '#1e1b4b']} amplitude={30} blend={0.4} />
+
+      {/* ── 프롬프트 분석 중 모달 ── */}
+      {isTranslating && (
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/70 backdrop-blur-sm">
+          <div className="flex flex-col items-center gap-5">
+            <div className="relative w-36 h-36">
+              <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
+                {/* 트랙 */}
+                <circle cx="60" cy="60" r={RADIUS} fill="none" stroke="rgba(139,92,246,0.15)" strokeWidth="8" />
+                {/* 진행 */}
+                <circle
+                  cx="60" cy="60" r={RADIUS}
+                  fill="none"
+                  stroke="url(#pgGrad)"
+                  strokeWidth="8"
+                  strokeLinecap="round"
+                  strokeDasharray={CIRCUMFERENCE}
+                  strokeDashoffset={strokeDash}
+                  className="transition-all duration-300"
+                />
+                <defs>
+                  <linearGradient id="pgGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#7c3aed" />
+                    <stop offset="100%" stopColor="#e879f9" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              {/* 중앙 퍼센트 */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-2xl font-black text-white tabular-nums">
+                  {Math.min(100, Math.round(translateProgress))}%
+                </span>
+              </div>
+              {/* 외곽 글로우 */}
+              <div className="absolute inset-0 rounded-full" style={{ boxShadow: '0 0 40px rgba(168,85,247,0.35)' }} />
+            </div>
+            <div className="text-center space-y-1">
+              <p className="text-white font-black text-sm">프롬프트 분석 중</p>
+              <p className="text-slate-400 text-xs">씬 텍스트를 비주얼 키워드로 변환하고 있습니다</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── 모바일 차단 안내 (120UI 표준) ── */}
       {isMobile && (
@@ -817,6 +1094,14 @@ function KeyframePageInner() {
               <span className="text-sm font-black text-amber-300">영상 수동 제작 팁</span>
               <FontAwesomeIcon icon={faChevronRight} className="text-amber-600 text-xs ml-auto shrink-0 group-hover:text-amber-400 group-hover:translate-x-0.5 transition-all" />
             </Link>
+            <button
+              onClick={() => window.open('/keyframe-extension-guide.html', '_blank')}
+              className="inline-flex items-center gap-3 px-6 py-3 rounded-xl border border-indigo-500/30 bg-gradient-to-r from-indigo-500/10 to-violet-500/8 hover:from-indigo-500/20 hover:border-indigo-400/50 transition-all group w-[420px]"
+            >
+              <span className="text-lg shrink-0">🧩</span>
+              <span className="text-sm font-black text-indigo-300">익스텐션 설치 방법</span>
+              <FontAwesomeIcon icon={faChevronRight} className="text-indigo-600 text-xs ml-auto shrink-0 group-hover:text-indigo-400 group-hover:translate-x-0.5 transition-all" />
+            </button>
           </div>
 
           <div className="flex justify-end">
@@ -824,44 +1109,70 @@ function KeyframePageInner() {
           </div>
         </div>
 
-        {/* ── 화풍 선택 (아코디언) ── */}
+        {/* ── 캐릭터 + 화풍 1줄 ── */}
         <div className="bg-white/5 border border-white/10 rounded-2xl mb-6 overflow-hidden">
-          {/* 헤더 */}
-          <button
-            onClick={() => setArtStyleOpen(prev => !prev)}
-            className="w-full flex items-center gap-3 px-6 py-4 hover:bg-white/5 transition-all"
-          >
-            <FontAwesomeIcon icon={faPalette} className="text-fuchsia-400 shrink-0" />
-            <h2 className="text-sm font-black text-white uppercase tracking-widest">화풍 · Art Style</h2>
+          <div className="grid grid-cols-2 divide-x divide-white/10">
 
-            {/* 선택된 화풍 요약 (접혀있을 때만 표시) */}
-            {!artStyleOpen && artStyle && (
-              <div className="flex items-center gap-2 ml-1">
-                {artStyle.bgImage && (
-                  <div className="w-9 h-5 rounded overflow-hidden shrink-0" style={{ backgroundImage: `url(${artStyle.bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
-                )}
-                <span className="text-xs font-black text-fuchsia-300 bg-fuchsia-500/15 border border-fuchsia-500/30 px-2.5 py-0.5 rounded-full">
-                  {artStyle.label}
-                </span>
+            {/* 캐릭터 */}
+            <div className="px-4 py-3 flex items-center gap-3">
+              <span className="text-base shrink-0">🎭</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-black text-slate-400 mb-1">캐릭터</p>
+                <select
+                  value={selectedCharId}
+                  onChange={e => setSelectedCharId(e.target.value)}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:border-[#a78bfa]/50 transition-all"
+                >
+                  <option value="">없음</option>
+                  {charAssets.map(c => (
+                    <option key={c.id} value={c.id}>
+                      {c.registeredBy === 'admin' ? '⭐ ' : ''}{c.name}
+                    </option>
+                  ))}
+                </select>
               </div>
-            )}
-            {!artStyleOpen && !artStyle && (
-              <span className="text-[11px] text-orange-400 bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded-full font-black ml-1">미선택</span>
-            )}
-
-            <div className="ml-auto flex items-center gap-3">
-              {isTranslating && (
-                <svg className="w-3 h-3 animate-spin text-indigo-300 shrink-0" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeDasharray="40" strokeLinecap="round" className="opacity-30"/>
-                  <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-                </svg>
+              {selectedCharId && (() => {
+                const selChar = charAssets.find(c => c.id === selectedCharId);
+                return (
+                  <>
+                    <img
+                      src={selChar?.imageDataUrl}
+                      alt=""
+                      className="w-9 h-9 rounded-lg object-cover border border-white/10 shrink-0"
+                    />
+                  </>
+                );
+              })()}
+              {charAssets.length === 0 && (
+                <a href="/content/characterimage" target="_blank" className="text-[10px] text-[#a78bfa] hover:text-violet-300 font-bold whitespace-nowrap shrink-0">등록 →</a>
               )}
+            </div>
+
+            {/* 화풍 */}
+            <button
+              onClick={() => setArtStyleOpen(prev => !prev)}
+              className="px-4 py-3 flex items-center gap-3 hover:bg-white/5 transition-all text-left"
+            >
+              <FontAwesomeIcon icon={faPalette} className="text-fuchsia-400 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-black text-slate-400 mb-1">화풍 · Art Style</p>
+                {artStyle ? (
+                  <div className="flex items-center gap-1.5">
+                    {artStyle.bgImage && (
+                      <div className="w-8 h-4 rounded overflow-hidden shrink-0" style={{ backgroundImage: `url(${artStyle.bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                    )}
+                    <span className="text-xs font-black text-fuchsia-300 truncate">{artStyle.label}</span>
+                  </div>
+                ) : (
+                  <span className="text-xs text-orange-400 font-black">미선택</span>
+                )}
+              </div>
               <FontAwesomeIcon
                 icon={faChevronRight}
-                className={`text-slate-500 text-xs transition-transform duration-300 ${artStyleOpen ? 'rotate-90' : ''}`}
+                className={`text-slate-500 text-xs transition-transform duration-300 shrink-0 ${artStyleOpen ? 'rotate-90' : ''}`}
               />
-            </div>
-          </button>
+            </button>
+          </div>
 
           {/* 펼쳐진 내용 */}
           {artStyleOpen && (
@@ -880,15 +1191,6 @@ function KeyframePageInner() {
                 </div>
               )}
 
-              {isTranslating && (
-                <div className="flex items-center gap-2 mb-3 px-1 text-[11px] text-indigo-300 font-black">
-                  <svg className="w-3 h-3 animate-spin shrink-0" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeDasharray="40" strokeLinecap="round" className="opacity-30"/>
-                    <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-                  </svg>
-                  씬 텍스트를 영문 비주얼 키워드로 변환 중...
-                </div>
-              )}
 
               {compatibleStyles && !isTranslating && (
                 <p className="text-[11px] text-slate-500 mb-3 pl-1">
@@ -941,13 +1243,14 @@ function KeyframePageInner() {
                             const url = URL.createObjectURL(file);
                             setSceneImages(prev => ({ ...prev, [i]: url }));
                             saveImageIDB(getSessionId(), i, file);
+                            syncImageToServer(i, file);
                           }}
-                          onMp4Add={i === 0 ? file => {
+                          onMp4Add={file => {
                             const url = URL.createObjectURL(file);
-                            setSceneMp4s(prev => ({ ...prev, [0]: url }));
-                            saveMp4IDB(getSessionId(), file);
-                          } : undefined}
-                          mp4PageHref={i === 0 ? '/content/mp4-prompt-generator' : undefined}
+                            setSceneMp4s(prev => ({ ...prev, [i]: url }));
+                            saveMp4IDB(getSessionId(), i, file);
+                          }}
+                          mp4PageHref="/content/mp4-prompt-generator"
                         />
                         {scenes.length > 1 && (
                           <button
@@ -991,6 +1294,9 @@ function KeyframePageInner() {
               <div className="flex items-center gap-2 mb-3">
                 <span className="w-7 h-7 rounded-lg bg-indigo-500 flex items-center justify-center text-xs font-black text-white shrink-0">{selectedIdx + 1}</span>
                 <p className="text-sm font-black text-slate-300">씬 {selectedIdx + 1} 원문</p>
+                <span className="ml-auto text-[11px] text-slate-500 font-bold">
+                  {(scenes[selectedIdx] || '').replace(/\[씬\s*\d+\]/gi, '').trim().length}자
+                </span>
               </div>
               <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">
                 {(scenes[selectedIdx] || '').replace(/\[씬\s*\d+\]/gi, '').trim()}
@@ -1003,6 +1309,9 @@ function KeyframePageInner() {
                 <div className="flex items-center gap-2">
                   <FontAwesomeIcon icon={faImage} className="text-fuchsia-400 text-sm" />
                   <p className="text-sm font-black text-white">자연어 프롬프트</p>
+                  {selectedCharId && charAssets.find(c => c.id === selectedCharId)?.faceGridUrl && (
+                    <span className="text-[12px] font-black text-[#FF0000]">페이스 8종 그리드 이미지를 첨부 후 해당 프롬프트를 사용하세요</span>
+                  )}
                   {!artStyle && (
                     <span className="text-[10px] text-orange-400 bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded-full font-black">화풍 미선택</span>
                   )}
@@ -1050,7 +1359,14 @@ function KeyframePageInner() {
                 />
               ) : (
                 <p className="text-sm text-slate-200 leading-relaxed font-mono bg-black/20 rounded-xl p-4 whitespace-pre-wrap break-all">
-                  {selectedNL || <span className="text-slate-600 italic">화풍을 선택하면 프롬프트가 생성됩니다</span>}
+                  {selectedNL ? (() => {
+                    const charPrompt = selectedCharId ? (charAssets.find(c => c.id === selectedCharId)?.promptEn ?? '') : '';
+                    if (charPrompt && selectedNL.startsWith(charPrompt)) {
+                      const rest = selectedNL.slice(charPrompt.length);
+                      return <><span className="text-violet-300 bg-violet-500/10 rounded px-0.5">{charPrompt}</span>{rest}</>;
+                    }
+                    return selectedNL;
+                  })() : <span className="text-slate-600 italic">화풍을 선택하면 프롬프트가 생성됩니다</span>}
                 </p>
               )}
             </div>
@@ -1145,201 +1461,65 @@ function KeyframePageInner() {
         키프레임 제작 · LinkDrop V2
       </p>}
 
-      {/* ── 웹뷰 패널 ── */}
-      {webviewTool && (
-        <>
-          {/* 배경 딤 */}
-          <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200]"
-            onClick={() => setWebviewTool(null)}
-          />
-
-          {/* 패널 */}
-          <div
-            className="fixed top-0 right-0 h-full z-[201] flex flex-col bg-[#0a0a12] border-l border-white/10 shadow-[-24px_0_60px_rgba(0,0,0,0.7)]"
-            style={{ width: webviewWidth ? `${webviewWidth}px` : '66vw' }}
-          >
-            {/* 리사이즈 핸들 */}
-            <div
-              onMouseDown={handleWebviewResizeStart}
-              className="absolute left-0 top-0 w-2 h-full cursor-col-resize hover:bg-indigo-500/50 active:bg-indigo-500/80 transition-colors z-10"
-            />
-
-            {/* 툴바 */}
-            <div className="flex items-center gap-3 px-4 py-3 border-b border-white/10 bg-[#0d0d18] shrink-0">
-              {webviewTool.logoUrl
-                ? <img src={webviewTool.logoUrl} alt={webviewTool.name} className="w-5 h-5 rounded object-contain shrink-0" />
-                : <span className="text-base shrink-0">{webviewTool.icon}</span>
-              }
-              <span className="text-sm font-black text-white shrink-0">{webviewTool.name}</span>
-              <span className="text-xs text-slate-600 truncate flex-1 hidden md:block">{webviewTool.url}</span>
-              <button
-                onClick={() => setWebviewTool(null)}
-                className="w-8 h-8 rounded-full bg-white/5 text-slate-500 hover:bg-red-500/20 hover:text-red-400 transition-all flex items-center justify-center shrink-0"
-              >✕</button>
-            </div>
-
-            {/* 본문 */}
-            <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center gap-8 px-8 py-12">
-
-              {/* 로고 + 설명 */}
-              <div className="flex flex-col items-center gap-4 text-center">
-                {webviewTool.logoUrl
-                  ? <img src={webviewTool.logoUrl} alt={webviewTool.name} className="w-16 h-16 rounded-2xl object-contain" />
-                  : <span className="text-5xl">{webviewTool.icon}</span>
-                }
-                <div>
-                  <h2 className="text-2xl font-black text-white mb-1">{webviewTool.name}</h2>
-                  <p className="text-slate-400 text-sm leading-relaxed max-w-sm">{webviewTool.desc}</p>
-                </div>
-              </div>
-
-              {/* 프롬프트 복사 확인 */}
-              <div className="w-full max-w-md bg-indigo-500/10 border border-indigo-500/20 rounded-xl px-5 py-3 flex items-center gap-3">
-                <span className="text-indigo-400 text-lg shrink-0">✓</span>
-                <p className="text-sm text-indigo-300 font-black">프롬프트가 클립보드에 복사되었습니다. 사이트에서 Ctrl+V 로 붙여넣기 하세요.</p>
-              </div>
-
-              {/* 사이트 열기 버튼 */}
-              <button
-                onClick={() => {
-                  if (webviewTool.id === 'google-flow') {
-                    // 화면 2/3 크기 팝업 — 링크드랍은 뒤에 유지 (새 탭 아님)
-                    const pw = Math.round(window.screen.width  * 2 / 3);
-                    const ph = Math.round(window.screen.height * 2 / 3);
-                    const pl = Math.round((window.screen.width  - pw) / 2);
-                    const pt = Math.round((window.screen.height - ph) / 2);
-                    window.open(
-                      webviewTool.url,
-                      'google-flow-popup',
-                      `width=${pw},height=${ph},left=${pl},top=${pt},resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=yes`,
-                    );
-                  } else {
-                    window.open(webviewTool.url, '_blank');
-                  }
-                }}
-                className="flex items-center gap-3 px-10 py-5 rounded-2xl font-black text-lg text-white bg-gradient-to-r from-indigo-600 to-fuchsia-600 hover:brightness-110 active:scale-95 transition-all shadow-2xl shadow-indigo-500/30"
-              >
-                {webviewTool.nameKo} 열기
-                <span className="text-xl">↗</span>
-              </button>
-
-            </div>
-          </div>
-        </>
-      )}
-
-
-      {/* ── 우측 고정 이미지 도구 책갈피 ── */}
-      <div className="fixed right-0 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-1.5">
+      {/* ── 하단 고정 이미지 도구 책갈피 (가로형) ── */}
+      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 z-50 flex flex-row gap-1.5 pb-0">
         {KEYFRAME_TOOLS.map((tool, idx) => (
-          <div key={tool.id} className="group relative flex items-center justify-end">
-
-            {/* 툴팁 (마우스오버 시) */}
-            <div className="absolute right-full mr-3 w-72 bg-[#0d1528] border border-white/15 rounded-2xl p-4
-              opacity-0 invisible -translate-x-2
-              group-hover:opacity-100 group-hover:visible group-hover:translate-x-0
-              transition-all duration-200 shadow-2xl pointer-events-none">
-              <p className="text-xs font-black text-white mb-2 flex items-center gap-2">
-                {tool.logoUrl
-                  ? <img src={tool.logoUrl} alt={tool.name} className="w-4 h-4 rounded object-contain" />
-                  : <span>{tool.icon}</span>
-                }
-                {tool.name}
-                <span className={`ml-auto text-[9px] px-1.5 py-0.5 rounded-full font-black ${tool.tier === 'free' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}`}>
-                  {tool.tier === 'free' ? '무료' : '유료'}
-                </span>
-              </p>
-              <p className="text-[11px] text-slate-400 leading-relaxed whitespace-pre-line">{tool.tips}</p>
-              <p className="text-[10px] text-indigo-400 font-black mt-2">클릭 시 프롬프트 복사 + 사이트 이동 →</p>
-              {/* 우측 화살표 */}
-              <div className="absolute right-[-5px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-[#0d1528] border-r border-t border-white/15 rotate-45" />
-            </div>
-
-            {/* 책갈피 탭 버튼 */}
-            <button
-              disabled={translatedScenes.length === 0}
-              onClick={() => {
-                if (translatedScenes.length === 0) return;
-                if (selectedNL) {
-                  navigator.clipboard.writeText(selectedNL);
-                  setToolCopied(tool.id);
-                  setTimeout(() => setToolCopied(null), 2000);
-                }
-                // 즉시 로딩 상태 표시 (클릭 피드백)
-                setToolOpening(tool.id);
-                // 링크브라우저(2분할 뷰) 실행
-                // 현재 상태에서 프롬프트를 즉석 빌드 (번역 비동기 문제 방지)
-                const opts = artStyle ? getAutoOptions(artStyle.id) : { qualityVal: '', negativeVal: '' };
-                const allPrompts = scenes.map((_, i) => {
-                  if (nlEdits[i] !== undefined) return nlEdits[i];
-                  const en = translatedScenes[i] || '';
-                  if (en && artStyle) {
-                    return toFlatPrompt(buildStructuredPrompt(en, i, artStyle, opts.qualityVal, opts.negativeVal));
-                  }
-                  const sp = prompts[i];
-                  return sp ? toFlatPrompt(sp) : '';
-                });
-                (async () => {
-                  const savedAccents = await loadStateIDB('scene_accents') ?? [];
-                  fetch(`${API}/browser/open`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      tool_url: tool.url,
-                      tool_id: tool.id,
-                      scene: selectedIdx,
-                      scenes,
-                      prompts: allPrompts,
-                      accents: savedAccents,
-                    }),
-                  }).then(() => {
-                    // pywebview 실행 시작됨 — 창 뜰 때까지 잠시 후 상태 해제
-                    setTimeout(() => setToolOpening(null), 4000);
-                  }).catch(() => {
-                    setToolOpening(null);
-                    // API 실패 시 팝업 폴백 (동기 클릭이 아니므로 팝업 차단될 수 있음)
-                    const sw = window.screen.width;
-                    const sh = window.screen.height;
-                    window.open(
-                      `/image-browser?scene=${selectedIdx}&tool=${tool.id}`,
-                      'linkbrowser',
-                      `width=400,height=${sh},left=0,top=0,resizable=yes,scrollbars=yes`,
-                    );
-                    window.open(
-                      tool.url,
-                      'linkbrowser-tool',
-                      `width=${sw - 400},height=${sh},left=400,top=0,resizable=yes,scrollbars=yes`,
-                    );
-                  });
-                })();
-              }}
-              style={{
-                transition: `all 0.4s cubic-bezier(0.34,1.56,0.64,1) ${idx * 0.12}s, opacity 0.3s ease ${idx * 0.12}s`,
-                transform: translatedScenes.length > 0 ? 'translateX(0)' : 'translateX(100%)',
-                opacity: translatedScenes.length > 0 ? 1 : 0,
-                pointerEvents: translatedScenes.length > 0 ? 'auto' : 'none',
-              }}
-              className={`relative flex flex-col items-center gap-2 px-3 py-4 rounded-l-2xl border-y border-l
-                shadow-[-6px_4px_20px_rgba(0,0,0,0.5)] hover:shadow-[-8px_6px_28px_rgba(0,0,0,0.7)]
-                ${TOOL_COLORS[idx % 6]}
-                ${toolOpening === tool.id ? 'animate-pulse scale-95 brightness-125' : toolCopied === tool.id ? 'scale-95 brightness-125' : 'hover:scale-105'}`}
-            >
-              {toolOpening === tool.id
-                ? <FontAwesomeIcon icon={faSpinner} className="w-6 h-6 animate-spin text-white" />
-                : tool.logoUrl
-                  ? <img src={tool.logoUrl} alt={tool.name} className="w-6 h-6 rounded-md object-contain select-none" onError={e => { (e.currentTarget as HTMLImageElement).style.display='none'; }} />
-                  : <span className="text-xl leading-none select-none">{tool.icon}</span>
+          <button
+            key={tool.id}
+            disabled={translatedScenes.length === 0 || !charAssetsReady}
+            onClick={() => {
+              if (translatedScenes.length === 0 || !charAssetsReady) return;
+              if (selectedNL) {
+                navigator.clipboard.writeText(selectedNL);
+                setToolCopied(tool.id);
+                setTimeout(() => setToolCopied(null), 2000);
               }
-              <span
-                className="text-xs font-black text-white leading-none select-none"
-                style={{ writingMode: 'vertical-rl', letterSpacing: '0.1em' }}
-              >
-                {toolOpening === tool.id ? '열리는중' : tool.nameKo}
-              </span>
-            </button>
-
-          </div>
+              const opts = artStyle ? getAutoOptions(artStyle.id) : { qualityVal: '', negativeVal: '' };
+              const _sc = charAssets.find(c => c.id === selectedCharId);
+              const allPrompts = scenes.map((_, i) => {
+                if (nlEdits[i] !== undefined) return nlEdits[i];
+                const en = translatedScenes[i] || '';
+                if (en && artStyle) {
+                  return toFlatPrompt(buildStructuredPrompt(en, i, artStyle, opts.qualityVal, opts.negativeVal, _sc?.promptEn ?? '', scenes.length, sceneRoles[i] ?? '', !!_sc?.faceGridUrl, !!_sc?.bodyGridUrl));
+                }
+                const sp = prompts[i];
+                return sp ? toFlatPrompt(sp) : '';
+              });
+              (async () => {
+                const savedAccents = await loadStateIDB('scene_accents') ?? [];
+                fetch(`${API}/browser/session-save`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    tool_id: tool.id,
+                    scene: selectedIdx,
+                    scenes,
+                    prompts: allPrompts,
+                    accents: savedAccents,
+                  }),
+                }).catch(() => {});
+                window.open(tool.url, '_blank');
+              })();
+            }}
+            style={{
+              transition: `all 0.4s cubic-bezier(0.34,1.56,0.64,1) ${idx * 0.08}s, opacity 0.3s ease ${idx * 0.08}s`,
+              transform: translatedScenes.length > 0 ? 'translateY(0)' : 'translateY(100%)',
+              opacity: translatedScenes.length > 0 ? 1 : 0,
+              pointerEvents: translatedScenes.length > 0 ? 'auto' : 'none',
+            }}
+            className={`relative flex items-center gap-2 px-4 py-2.5 rounded-t-2xl border-x border-t
+              shadow-[0_-4px_20px_rgba(0,0,0,0.4)] hover:shadow-[0_-6px_28px_rgba(0,0,0,0.6)]
+              ${TOOL_COLORS[idx % 6]}
+              ${toolCopied === tool.id ? 'scale-95 brightness-125' : 'hover:scale-105 hover:-translate-y-1'}`}
+          >
+            {tool.logoUrl
+              ? <img src={tool.logoUrl} alt={tool.name} className="w-5 h-5 rounded-md object-contain select-none" onError={e => { (e.currentTarget as HTMLImageElement).style.display='none'; }} />
+              : <span className="text-base leading-none select-none">{tool.icon}</span>
+            }
+            <span className="text-xs font-black text-white leading-none select-none tracking-wide">
+              {tool.nameKo}
+            </span>
+          </button>
         ))}
       </div>
 

@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChartPie, faDatabase, faRobot, faBook, faGlobe, faChevronDown, faChevronRight,
-  faSignOutAlt, faLayerGroup, faFilm
+  faSignOutAlt, faLayerGroup, faFilm, faBolt
 } from '@fortawesome/free-solid-svg-icons';
 import AdminGNB from '@/components/AdminGNB';
 
@@ -23,58 +23,72 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   ];
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen" style={{ background: 'var(--neu-bg)', fontFamily: 'Inter, sans-serif' }}>
       {/* 어드민 전용 상단 바 */}
       <AdminGNB />
 
-      <div className="flex flex-1 bg-[#f4f6f8] pt-[52px]">
-        {/* Sidebar - fixed position adjusted */}
-        <aside className="w-64 bg-[#1e293b] text-white flex-shrink-0 shadow-2xl fixed top-[52px] bottom-0 left-0 z-10">
-          <nav className="mt-1 px-3 flex-1 overflow-y-auto">
+      <div className="flex flex-1 pt-[52px]">
+        {/* Sidebar — Neuromorphic */}
+        <aside
+          className="w-64 flex-shrink-0 fixed top-[52px] bottom-0 left-0 z-10 flex flex-col"
+          style={{ background: 'var(--neu-bg)', boxShadow: '8px 0 32px var(--neu-shadow-d), 2px 0 8px var(--neu-shadow-l)' }}
+        >
+          <nav className="mt-3 px-3 flex-1 overflow-y-auto">
             {/* Dashboard Item */}
             <div className="mb-2">
-              <Link 
+              <Link
                 href="/admin"
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                  pathname === '/admin' 
-                    ? 'bg-blue-600 text-white shadow-md' 
-                    : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                className={`flex items-center gap-3 px-4 py-3 transition-all text-sm font-bold ${
+                  pathname === '/admin'
+                    ? 'neu-sidebar-item-active'
+                    : 'neu-sidebar-item text-[var(--neu-text-sub)] hover:text-[var(--neu-accent)]'
                 }`}
               >
-                <FontAwesomeIcon icon={faChartPie} className="w-4" />
-                <span className="font-bold text-sm">통합 현황판</span>
+                <span
+                  className="w-8 h-8 flex items-center justify-center rounded-xl text-sm"
+                  style={pathname === '/admin' ? { background: 'var(--neu-accent-lt)', color: 'var(--neu-accent)' } : { color: 'var(--neu-text-sub)' }}
+                >
+                  <FontAwesomeIcon icon={faChartPie} />
+                </span>
+                통합 현황판
               </Link>
             </div>
 
             {/* Group: Data Management */}
-            <div className="mt-6">
-              <button 
+            <div className="mt-5">
+              <button
                 onClick={() => setIsDataMenuOpen(!isDataMenuOpen)}
-                className="w-full flex items-center justify-between px-4 py-2 text-slate-500 hover:text-slate-300 transition-colors bg-transparent border-none outline-none cursor-pointer"
+                className="w-full flex items-center justify-between px-4 py-2 bg-transparent border-none outline-none cursor-pointer"
+                style={{ color: 'var(--neu-text-sub)' }}
               >
                 <div className="flex items-center gap-2">
-                  <FontAwesomeIcon icon={faLayerGroup} className="text-[10px]" />
-                  <span className="text-[11px] font-black uppercase tracking-widest">데이터 관리</span>
+                  <FontAwesomeIcon icon={faLayerGroup} className="text-[9px]" />
+                  <span className="text-[10px] font-black uppercase tracking-widest">데이터 관리</span>
                 </div>
-                <FontAwesomeIcon icon={isDataMenuOpen ? faChevronDown : faChevronRight} className="text-[10px]" />
+                <FontAwesomeIcon icon={isDataMenuOpen ? faChevronDown : faChevronRight} className="text-[9px]" />
               </button>
 
               {isDataMenuOpen && (
-                <ul className="mt-2 space-y-1 px-2 list-none">
+                <ul className="mt-1 space-y-1 px-1 list-none">
                   {dataManagementItems.map((item) => {
                     const isActive = pathname === item.href;
                     return (
                       <li key={item.href}>
-                        <Link 
+                        <Link
                           href={item.href}
-                          className={`flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all ${
-                            isActive 
-                              ? 'bg-slate-700/50 text-blue-400 font-bold border-l-4 border-blue-500' 
-                              : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                          className={`flex items-center gap-3 px-4 py-2.5 text-sm font-semibold transition-all ${
+                            isActive
+                              ? 'neu-sidebar-item-active'
+                              : 'neu-sidebar-item text-[var(--neu-text-sub)] hover:text-[var(--neu-accent)]'
                           }`}
                         >
-                          <FontAwesomeIcon icon={item.icon} className={`w-4 ${isActive ? 'text-blue-400' : 'text-slate-500'}`} />
-                          <span className="text-sm">{item.name}</span>
+                          <span
+                            className="w-7 h-7 flex items-center justify-center rounded-lg text-xs"
+                            style={isActive ? { background: 'var(--neu-accent-lt)', color: 'var(--neu-accent)' } : { color: 'var(--neu-text-sub)' }}
+                          >
+                            <FontAwesomeIcon icon={item.icon} />
+                          </span>
+                          {item.name}
                         </Link>
                       </li>
                     );
@@ -84,8 +98,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
           </nav>
 
-          <div className="p-4 border-t border-slate-700/50 mt-auto">
-            <button className="flex items-center justify-center gap-2 text-slate-500 hover:text-red-400 transition-colors w-full px-4 py-2 text-xs font-bold bg-slate-800/50 rounded-xl border-none cursor-pointer">
+          {/* Bottom — system status */}
+          <div className="p-4">
+            <div className="neu-inset p-3 rounded-xl flex items-center gap-2 mb-3">
+              <FontAwesomeIcon icon={faBolt} className="text-[10px]" style={{ color: 'var(--neu-green)' }} />
+              <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'var(--neu-text-sub)' }}>시스템 정상</span>
+            </div>
+            <button
+              className="neu-btn w-full flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold"
+              style={{ color: 'var(--neu-text-sub)' }}
+            >
               <FontAwesomeIcon icon={faSignOutAlt} />
               시스템 종료
             </button>
@@ -93,7 +115,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 ml-64 p-8 overflow-y-auto">
+        <main
+          className="flex-1 ml-64 p-8 overflow-y-auto"
+          style={{ background: 'var(--neu-bg)', minHeight: 'calc(100vh - 52px)' }}
+        >
           {children}
         </main>
       </div>

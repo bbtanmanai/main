@@ -35,7 +35,7 @@ export default function AdminNotebookLogin() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
 
-  const API_BASE = "http://localhost:8000/api/v1/notebooklm";
+  const API_BASE = `${process.env.NEXT_PUBLIC_API_URL}/notebooklm`;
 
   // 1. 세션 상태 체크
   useEffect(() => {
@@ -132,16 +132,16 @@ export default function AdminNotebookLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f4f6f8] p-8 font-sans">
+    <div className="p-8 font-sans">
       <div className="max-w-7xl mx-auto">
         <header className="mb-8 flex justify-between items-start">
           <div>
             <h1 className="text-2xl font-bold text-gray-800">Interactive AI Workflow (Rule 105)</h1>
             <p className="text-gray-500">NotebookLM Control Node: 에이전트와 관리자의 실시간 파이프라인 관제소</p>
           </div>
-          <button 
+          <button
             onClick={syncDriveData}
-            className={`px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold rounded-xl shadow-lg transition-all transform active:scale-95 flex items-center gap-2 ${isSyncing ? 'animate-pulse ring-4 ring-blue-200' : ''}`}
+            className={`neu-btn-accent px-6 py-3 text-white font-bold rounded-xl flex items-center gap-2 ${isSyncing ? 'animate-pulse' : ''}`}
           >
             <FontAwesomeIcon icon={isSyncing ? faSyncAlt : faCloudUpload} className={isSyncing ? 'animate-spin' : ''} />
             🚀 드라이브 자동 분류 및 주입
@@ -150,7 +150,7 @@ export default function AdminNotebookLogin() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {/* Session Monitor */}
-          <div className="bg-white rounded-xl shadow-sm p-8 border-2 border-transparent transition-all">
+          <div className="neu-raised rounded-xl p-8">
             <div className={`flex flex-col items-center p-6 rounded-xl ${
               session.status === 'connected' ? 'bg-green-50 border-green-500 border-2' : 
               session.status === 'expired' ? 'bg-yellow-50 border-yellow-500 border-2' : 
@@ -167,9 +167,10 @@ export default function AdminNotebookLogin() {
                 {session.status === 'connected' ? 'Session Active' : session.status === 'expired' ? 'Expiring Soon' : 'Disconnected'}
               </h2>
               <p className="text-gray-600 text-sm mb-6">{session.account || '인증이 필요합니다.'}</p>
-              <button 
+              <button
                 onClick={triggerLogin}
-                className="w-full py-3 px-4 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-bold flex items-center justify-center gap-2 transition-colors"
+                className="neu-btn w-full py-3 px-4 font-bold flex items-center justify-center gap-2 text-sm"
+                style={{ color: 'var(--neu-text)' }}
               >
                 <FontAwesomeIcon icon={faTerminal} /> nlm_login.bat 브릿지 실행
               </button>
@@ -177,11 +178,11 @@ export default function AdminNotebookLogin() {
           </div>
 
           {/* n8n Style Pipeline Flow */}
-          <div className="lg:col-span-2 bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <div className="lg:col-span-2 neu-raised rounded-xl p-6">
             <h4 className="text-lg font-bold text-gray-700 mb-6">Data Pipeline Flow (Rule 105)</h4>
             <div className="flex items-center justify-between px-4">
               <div className="flex flex-col items-center gap-2 w-32 group">
-                <div className="w-14 h-14 bg-gray-50 border-2 border-gray-200 rounded-xl flex items-center justify-center text-2xl text-gray-600 group-hover:border-blue-500 transition-all">
+                <div className="w-14 h-14 neu-raised-sm flex items-center justify-center text-2xl transition-all">
                   <FontAwesomeIcon icon={faFolderOpen} />
                 </div>
                 <span className="font-bold text-sm">Local Knowledge</span>
@@ -191,7 +192,7 @@ export default function AdminNotebookLogin() {
               <div className={`flex-1 h-1 mx-2 rounded-full ${session.status === 'connected' ? 'bg-blue-500 animate-pulse' : 'bg-gray-100'}`}></div>
               
               <div className="flex flex-col items-center gap-2 w-32 group">
-                <div className="w-14 h-14 bg-gray-50 border-2 border-gray-200 rounded-xl flex items-center justify-center text-2xl text-gray-600 group-hover:border-blue-500 transition-all">
+                <div className="w-14 h-14 neu-raised-sm flex items-center justify-center text-2xl transition-all">
                   <FontAwesomeIcon icon={faCloudUpload} />
                 </div>
                 <span className="font-bold text-sm">Google Drive</span>
@@ -212,8 +213,8 @@ export default function AdminNotebookLogin() {
         </div>
 
         {/* Integrity Dashboard */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="p-6 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+        <div className="neu-raised rounded-xl overflow-hidden">
+          <div className="p-6 border-b border-black/5 flex justify-between items-center" style={{ background: 'rgba(255,255,255,0.4)' }}>
             <h4 className="text-lg font-bold text-gray-700">소스 무결성 검증 (Source Integrity Check)</h4>
             {(isLoading || isSyncing) && <span className="animate-spin text-blue-500 text-2xl"><FontAwesomeIcon icon={faSyncAlt} /></span>}
           </div>
@@ -247,15 +248,15 @@ export default function AdminNotebookLogin() {
 
               <div className={`md:col-span-3 transition-opacity duration-300 ${selectedNotebook ? 'opacity-100' : 'opacity-30 pointer-events-none'}`}>
                 <div className="grid grid-cols-3 gap-6 text-center mb-8">
-                  <div className="bg-blue-50 p-4 rounded-xl">
+                  <div className="p-4 rounded-xl" style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)' }}>
                     <div className="text-3xl font-bold text-blue-600">{integrity?.total_local || 0}</div>
                     <p className="text-xs font-bold text-blue-400 uppercase tracking-widest mt-1">Local Sources</p>
                   </div>
-                  <div className="bg-green-50 p-4 rounded-xl">
+                  <div className="p-4 rounded-xl" style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)' }}>
                     <div className="text-3xl font-bold text-green-600">{integrity?.synced_count || 0}</div>
                     <p className="text-xs font-bold text-green-400 uppercase tracking-widest mt-1">Synced to NLM</p>
                   </div>
-                  <div className="bg-red-50 p-4 rounded-xl">
+                  <div className="p-4 rounded-xl" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
                     <div className="text-3xl font-bold text-red-600">{integrity?.missing_count || 0}</div>
                     <p className="text-xs font-bold text-red-400 uppercase tracking-widest mt-1">Missing</p>
                   </div>

@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinkDrop 씬 패널</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── CSS 변수 (라이트 기본) ── */
+    :root {
+      --bg:         #f8fafc;
+      --bg2:        #fff;
+      --bg3:        #f8fafc;
+      --border:     #e2e8f0;
+      --border2:    #cbd5e1;
+      --text:       #1e293b;
+      --text2:      #334155;
+      --text3:      #64748b;
+      --text4:      #94a3b8;
+      --prompt-bg:  #0f172a;
+      --prompt-fg:  #e2e8f0;
+      --input-bg:   #f8fafc;
+      --section-hd: #f8fafc;
+      --footer-bg:  #f8fafc;
+    }
+    /* 다크 테마 */
+    html[data-theme="dark"] {
+      --bg:         #0f172a;
+      --bg2:        #1e293b;
+      --bg3:        #1e293b;
+      --border:     #334155;
+      --border2:    #475569;
+      --text:       #f1f5f9;
+      --text2:      #cbd5e1;
+      --text3:      #94a3b8;
+      --text4:      #64748b;
+      --prompt-bg:  #020617;
+      --prompt-fg:  #93c5fd;
+      --input-bg:   #1e293b;
+      --section-hd: #1e293b;
+      --footer-bg:  #1e293b;
+    }
+    /* 시스템 다크 */
+    @media (prefers-color-scheme: dark) {
+      html[data-theme="system"] {
+        --bg:         #0f172a;
+        --bg2:        #1e293b;
+        --bg3:        #1e293b;
+        --border:     #334155;
+        --border2:    #475569;
+        --text:       #f1f5f9;
+        --text2:      #cbd5e1;
+        --text3:      #94a3b8;
+        --text4:      #64748b;
+        --prompt-bg:  #020617;
+        --prompt-fg:  #93c5fd;
+        --input-bg:   #1e293b;
+        --section-hd: #1e293b;
+        --footer-bg:  #1e293b;
+      }
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 13px;
+      min-width: 300px;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    /* ── 헤더 ── */
+    .header {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: #fff;
+      padding: 12px 14px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .header-title {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+    }
+    .header-sub {
+      font-size: 10px;
+      opacity: 0.75;
+      margin-top: 1px;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #94a3b8;
+      flex-shrink: 0;
+      transition: background 0.3s;
+    }
+    .status-dot.connected   { background: #4ade80; box-shadow: 0 0 6px #4ade8088; }
+    .status-dot.disconnected { background: #f87171; }
+    .status-dot.no-session  { background: #fbbf24; }
+
+    /* ── 테마 토글 ── */
+    .theme-toggle {
+      display: flex;
+      gap: 3px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 8px;
+      padding: 3px;
+    }
+    .theme-btn {
+      width: 26px;
+      height: 22px;
+      border: none;
+      border-radius: 5px;
+      background: transparent;
+      color: rgba(255,255,255,0.6);
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .theme-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
+    .theme-btn.active { background: rgba(255,255,255,0.9); color: #4f46e5; }
+
+    /* ── 씬 네비게이션 ── */
+    .scene-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 14px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-btn {
+      width: 38px;
+      height: 28px;
+      border: none;
+      border-radius: 8px;
+      background: #4f46e5;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      box-shadow: 0 2px 6px rgba(79,70,229,0.4);
+    }
+    .nav-btn:hover:not(:disabled) {
+      background: #4338ca;
+      box-shadow: 0 3px 10px rgba(79,70,229,0.5);
+      transform: scale(1.06);
+    }
+    .nav-btn:disabled { opacity: 0.25; cursor: not-allowed; box-shadow: none; }
+
+    .scene-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .scene-num {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .scene-total {
+      font-size: 10px;
+      color: var(--text4);
+    }
+
+    /* ── 씬 선택 드롭다운 ── */
+    .scene-select-wrap {
+      padding: 8px 14px 0;
+    }
+    select.scene-select {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg2);
+      color: var(--text);
+      font-size: 12px;
+      cursor: pointer;
+      outline: none;
+    }
+    select.scene-select:focus {
+      border-color: #818cf8;
+      box-shadow: 0 0 0 2px rgba(99,102,241,0.1);
+    }
+
+    /* ── 섹션 공통 ── */
+    .section {
+      margin: 10px 14px 0;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .section-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 12px;
+      background: var(--section-hd);
+      border-bottom: 1px solid var(--border);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .section-body {
+      padding: 10px 12px;
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: var(--text2);
+      max-height: 120px;
+      overflow-y: auto;
+    }
+    .section-body.prompt {
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 11.5px;
+      background: var(--prompt-bg);
+      color: var(--prompt-fg);
+      word-break: break-all;
+      max-height: 200px;
+    }
+
+    /* ── 버튼 공통 ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s;
+    }
+    .btn-ghost {
+      background: transparent;
+      border-color: var(--border);
+      color: var(--text3);
+    }
+    .btn-ghost:hover { background: var(--bg3); border-color: var(--border2); color: var(--text2); }
+
+    .btn-primary {
+      background: #4f46e5;
+      color: #fff;
+      border-color: #4f46e5;
+    }
+    .btn-primary:hover { background: #4338ca; }
+    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-success {
+      background: #059669;
+      color: #fff;
+      border-color: #059669;
+    }
+
+    /* ── 업로드 섹션 ── */
+    .upload-section {
+      margin: 10px 14px 14px;
+      background: var(--bg2);
+      border: 1px dashed #c7d2fe;
+      border-radius: 10px;
+      padding: 12px;
+    }
+    .upload-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+    .upload-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .upload-file-label {
+      flex: 1;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--input-bg);
+      color: var(--text4);
+      font-size: 11px;
+      cursor: pointer;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transition: all 0.15s;
+      width: 100%;
+      display: block;
+    }
+    .upload-file-label:hover { background: #eef2ff; border-color: #818cf8; color: #4f46e5; }
+    .upload-file-label.has-file { color: var(--text2); background: #f0fdf4; border-color: #86efac; }
+    #fileInput { display: none; }
+
+    .upload-status {
+      margin-top: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      text-align: center;
+      padding: 5px 8px;
+      border-radius: 6px;
+      display: none;
+    }
+    .upload-status.success { display: block; background: #f0fdf4; color: #059669; }
+    .upload-status.error   { display: block; background: #fef2f2; color: #dc2626; }
+    .upload-status.loading { display: block; background: #f0f9ff; color: #0284c7; }
+
+    /* ── 씬 썸네일 그리드 ── */
+    .thumb-grid-wrap {
+      padding: 10px 14px 0;
+    }
+    .thumb-grid-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .thumb-grid-count {
+      font-weight: 600;
+      color: #059669;
+    }
+    .thumb-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+      gap: 4px;
+      max-height: 90px;
+      overflow-y: auto;
+    }
+    .thumb-slot {
+      aspect-ratio: 1 / 1;
+      border-radius: 8px;
+      border: 2px solid var(--border);
+      background: var(--bg3);
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .thumb-slot:hover { border-color: #818cf8; transform: scale(1.04); }
+    .thumb-slot.has-image  { border-color: #4ade80; }
+    .thumb-slot.active     { border-color: #4f46e5; box-shadow: 0 0 0 2px rgba(79,70,229,0.25); }
+    .thumb-slot.active.has-image { border-color: #4f46e5; }
+    .thumb-slot img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .thumb-slot-num {
+      position: absolute;
+      bottom: 1px;
+      right: 2px;
+      font-size: 8px;
+      font-weight: 800;
+      color: #fff;
+      background: rgba(0,0,0,0.55);
+      border-radius: 2px;
+      padding: 0 2px;
+      line-height: 1.4;
+    }
+    .thumb-slot-empty {
+      font-size: 13px;
+      color: #cbd5e1;
+      line-height: 1;
+    }
+
+    /* ── 빈 상태 ── */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      color: #94a3b8;
+      text-align: center;
+      gap: 8px;
+    }
+    .empty-state .icon { font-size: 32px; }
+    .empty-state .title { font-size: 13px; font-weight: 700; color: #64748b; }
+    .empty-state .desc  { font-size: 11px; line-height: 1.5; }
+
+    /* ── 새로고침 버튼 ── */
+    .footer {
+      padding: 8px 14px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+      background: var(--footer-bg);
+    }
+    .footer-status { font-size: 10px; color: var(--text4); }
+
+    /* ── 빈 상태 텍스트 ── */
+    .empty-state .title { font-size: 13px; font-weight: 700; color: var(--text3); }
+    .empty-state .desc  { font-size: 11px; line-height: 1.5; color: var(--text4); }
+
+    /* ── 스크롤바 ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+    /* ── 탭 바 (Neuromorphic) ── */
+    .tab-bar {
+      display: flex;
+      gap: 6px;
+      padding: 8px 10px 6px;
+      background: #e6e9ef;
+      border-bottom: 1px solid #b8bcc2;
+    }
+    .tab-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 7px 8px;
+      border: none;
+      border-radius: 10px;
+      background: #e6e9ef;
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 3px 3px 6px #b8bcc2, -3px -3px 6px #ffffff;
+      transition: all 0.18s;
+    }
+    .tab-btn:hover {
+      color: #374151;
+    }
+    .tab-btn.active {
+      box-shadow: inset 3px 3px 6px #b8bcc2, inset -3px -3px 6px #ffffff;
+      color: #4f46e5;
+      font-weight: 800;
+    }
+    /* 다크 모드 탭 */
+    html[data-theme="dark"] .tab-bar {
+      background: #1e293b;
+      border-color: #334155;
+    }
+    html[data-theme="dark"] .tab-btn {
+      background: #1e293b;
+      box-shadow: 3px 3px 6px #141c2b, -3px -3px 6px #283549;
+      color: #94a3b8;
+    }
+    html[data-theme="dark"] .tab-btn.active {
+      box-shadow: inset 3px 3px 6px #141c2b, inset -3px -3px 6px #283549;
+      color: #818cf8;
+    }
+    @media (prefers-color-scheme: dark) {
+      html[data-theme="system"] .tab-bar {
+        background: #1e293b;
+        border-color: #334155;
+      }
+      html[data-theme="system"] .tab-btn {
+        background: #1e293b;
+        box-shadow: 3px 3px 6px #141c2b, -3px -3px 6px #283549;
+        color: #94a3b8;
+      }
+      html[data-theme="system"] .tab-btn.active {
+        box-shadow: inset 3px 3px 6px #141c2b, inset -3px -3px 6px #283549;
+        color: #818cf8;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 헤더 -->
+<div class="header">
+  <div>
+    <div class="header-title">LinkDrop 씬 패널</div>
+    <div class="header-sub" id="statusText">연결 확인 중...</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div class="theme-toggle" id="themeToggle">
+      <button class="theme-btn" data-theme="system" title="시스템 기본값">◑</button>
+      <button class="theme-btn" data-theme="light"  title="화이트">☀</button>
+      <button class="theme-btn" data-theme="dark"   title="다크">☾</button>
+    </div>
+    <div class="status-dot" id="statusDot"></div>
+  </div>
+</div>
+
+<!-- 탭 바 -->
+<div class="tab-bar" id="tabBar">
+  <button class="tab-btn active" data-tab="keyframe">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/>
+    </svg>
+    키프레임
+  </button>
+  <button class="tab-btn" data-tab="mp4">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <polygon points="5 3 19 12 5 21 5 3"/>
+    </svg>
+    MP4 제작
+  </button>
+</div>
+
+<!-- 키프레임 탭 콘텐츠 -->
+<div id="tabContentKeyframe" class="tab-content">
+  <!-- 씬 없을 때 빈 상태 -->
+  <div class="empty-state" id="emptyState">
+    <div class="icon">🎬</div>
+    <div class="title">씬 데이터 없음</div>
+    <div class="desc">키프레임 페이지에서<br>링크브라우저를 실행하면<br>씬 데이터가 여기 표시됩니다</div>
+  </div>
+
+  <!-- 씬 데이터 있을 때 -->
+  <div id="sceneContent" style="display:none">
+
+    <!-- 씬 썸네일 그리드 -->
+    <div class="thumb-grid-wrap">
+      <div class="thumb-grid-label">
+        <span>씬 현황</span>
+        <span class="thumb-grid-count" id="thumbGridCount"></span>
+      </div>
+      <div class="thumb-grid" id="thumbGrid"></div>
+    </div>
+
+    <!-- 씬 네비게이션 -->
+    <div class="scene-nav">
+      <button class="nav-btn" id="btnPrev" title="이전 씬">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+      <div class="scene-indicator">
+        <div class="scene-num" id="sceneNum">씬 1</div>
+        <div class="scene-total" id="sceneTotal">/ 0</div>
+      </div>
+      <button class="nav-btn" id="btnNext" title="다음 씬">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- 씬 선택 드롭다운 -->
+    <div class="scene-select-wrap">
+      <select class="scene-select" id="sceneSelect"></select>
+    </div>
+
+    <!-- 씬 텍스트 (한국어) -->
+    <div class="section">
+      <div class="section-label">
+        <span>씬 대본 (한국어)</span>
+      </div>
+      <div class="section-body" id="sceneText"></div>
+    </div>
+
+    <!-- 프롬프트 (영문) -->
+    <div class="section">
+      <div class="section-label">
+        <span>프롬프트 (영문)</span>
+        <button class="btn btn-primary" id="btnCopyPrompt">복사</button>
+      </div>
+      <div class="section-body prompt" id="promptText"></div>
+    </div>
+
+    <!-- 이미지 업로드 -->
+    <div class="upload-section">
+      <div class="upload-label">씬 이미지 업로드</div>
+      <div class="upload-row">
+        <label class="upload-file-label" id="fileLabel" for="fileInput">
+          파일 선택 — 씬 <span id="uploadSceneNum">1</span>에 즉시 업로드
+        </label>
+        <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp">
+      </div>
+      <div class="upload-status" id="uploadStatus"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MP4 탭 콘텐츠 -->
+<div id="tabContentMp4" class="tab-content" style="display:none">
+  <!-- 빈 상태 -->
+  <div class="empty-state" id="mp4EmptyState">
+    <div class="icon">🎬</div>
+    <div class="title">씬 데이터 없음</div>
+    <div class="desc">키프레임 페이지에서<br>씬을 생성하면<br>여기 표시됩니다</div>
+  </div>
+
+  <!-- 씬 데이터 있을 때 -->
+  <div id="mp4Content" style="display:none">
+
+    <!-- 영상 썸네일 그리드 -->
+    <div class="thumb-grid-wrap">
+      <div class="thumb-grid-label">
+        <span>영상 현황</span>
+        <span class="thumb-grid-count" id="mp4ThumbGridCount"></span>
+      </div>
+      <div class="thumb-grid" id="mp4ThumbGrid"></div>
+    </div>
+
+    <!-- 씬 네비게이션 -->
+    <div class="scene-nav">
+      <button class="nav-btn" id="mp4BtnPrev" title="이전 씬">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+      <div class="scene-indicator">
+        <div class="scene-num" id="mp4SceneNum">씬 1</div>
+        <div class="scene-total" id="mp4SceneTotal">/ 0</div>
+      </div>
+      <button class="nav-btn" id="mp4BtnNext" title="다음 씬">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- 씬 선택 드롭다운 -->
+    <div class="scene-select-wrap">
+      <select class="scene-select" id="mp4SceneSelect"></select>
+    </div>
+
+    <!-- 씬 텍스트 (한국어) -->
+    <div class="section">
+      <div class="section-label">
+        <span>씬 대본 (한국어)</span>
+      </div>
+      <div class="section-body" id="mp4SceneText"></div>
+    </div>
+
+    <!-- 영상 프롬프트 (영문) -->
+    <div class="section">
+      <div class="section-label">
+        <span>영상 프롬프트 (영문)</span>
+        <button class="btn btn-primary" id="btnCopyMp4Prompt">복사</button>
+      </div>
+      <div class="section-body prompt" id="mp4PromptText"></div>
+    </div>
+
+    <!-- 영상(MP4) 업로드 -->
+    <div class="upload-section" style="border-color: #a5b4fc;">
+      <div class="upload-label">씬 영상(MP4) 업로드</div>
+      <div class="upload-row">
+        <label class="upload-file-label" id="mp4FileLabel" for="mp4FileInput">
+          파일 선택 — 씬 <span id="mp4UploadSceneNum">1</span>에 즉시 업로드
+        </label>
+        <input type="file" id="mp4FileInput" accept="video/mp4,video/*">
+      </div>
+      <div class="upload-status" id="mp4UploadStatus"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 푸터 -->
+<div class="footer">
+  <span class="footer-status" id="lastUpdated">—</span>
+  <button class="btn btn-ghost" id="btnRefresh">
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="23 4 23 10 17 10"/>
+      <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+    </svg>
+    새로고침
+  </button>
+</div>
+
+<script src="panel.js"></script>
+</body>
+</html>

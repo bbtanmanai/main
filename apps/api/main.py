@@ -1,3 +1,7 @@
+import sys, io
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
+
 from fastapi import FastAPI, HTTPException, BackgroundTasks, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_mcp import FastApiMCP
@@ -98,9 +102,9 @@ async def trigger_notebook_login():
 @app.get("/api/v1/contents/tags", tags=["Contents"])
 async def get_real_tags():
     """지식 서랍장에서 실제 테마(태그) 목록 추출"""
-    gold_dir = Path("C:/LinkDropV2/packages/data/02_지식_서랍장")
+    gold_dir = Path(__file__).resolve().parents[2] / "packages" / "data" / "02_지식_서랍장"
     if not gold_dir.exists(): return []
-    
+
     themes = set()
     for file in gold_dir.rglob("GOLD_*.json"):
         try:
@@ -113,7 +117,7 @@ async def get_real_tags():
 @app.get("/api/v1/contents/script-by-tag/{tag}", tags=["Contents"])
 async def get_script_by_tag(tag: str):
     """특정 태그에 해당하는 가장 최신 대본 가져오기"""
-    gold_dir = Path("C:/LinkDropV2/packages/data/02_지식_서랍장")
+    gold_dir = Path(__file__).resolve().parents[2] / "packages" / "data" / "02_지식_서랍장"
     target_script = None
     latest_time = 0
     
@@ -140,7 +144,7 @@ async def get_script_by_tag(tag: str):
 async def list_installed_skills():
     """packages/tools/ 디렉토리의 모든 독립 스킬 정보를 스캔하여 반환"""
     try:
-        project_root = Path(__file__).parent.parent.parent  # C:/LinkDropV2
+        project_root = Path(__file__).resolve().parents[2]
         tools_dir = project_root / "packages" / "tools"
 
         if not tools_dir.exists():
@@ -194,12 +198,14 @@ from routers.nlm_video import router as nlm_video_router
 from routers.translate import router as translate_router
 from routers.browser import router as browser_router
 from routers.video import router as video_router
+from routers.image import router as image_router
 app.include_router(opal_router)
 app.include_router(youtube_router)
 app.include_router(nlm_video_router)
 app.include_router(translate_router)
 app.include_router(browser_router)
 app.include_router(video_router)
+app.include_router(image_router)
 
 # Mount MCP
 mcp.mount_sse()

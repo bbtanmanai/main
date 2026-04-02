@@ -1,5 +1,41 @@
 {
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx --yes block-no-verify@1.1.2",
+            "timeout": 30
+          }
+        ],
+        "description": "--no-verify 플래그 차단 (CLAUDE.md 규칙 강제)"
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/pre-commit-quality.js",
+            "timeout": 30
+          }
+        ],
+        "description": "git commit 전 secrets/console.log/커밋 메시지 검사"
+      },
+      {
+        "matcher": "Bash|Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/suggest-compact.js",
+            "async": true,
+            "timeout": 5
+          }
+        ],
+        "description": "도구 호출 횟수 카운팅 — 임계값 도달 시 /compact 제안"
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Write|Edit",

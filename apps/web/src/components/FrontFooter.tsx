@@ -9,7 +9,7 @@ export default function FrontFooter() {
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
         <div className="space-y-4">
           <Link href="/front" className="text-xl font-black text-white tracking-tighter">
-            Link<span className="text-[#6366f1]">Drop</span>
+            Link<span className="text-[#9333ea]">Drop</span>
           </Link>
           <p className="text-sm leading-relaxed">
             실무에 바로 쓰는 AI 활용 가이드 플랫폼. <br />

@@ -1,0 +1,146 @@
+[
+  {
+    "title": "AI SaaS 플랫폼 (Threadraft)",
+    "category": "Web / AI SaaS",
+    "desc": "맞춤 AI 글 생성 서비스 및 풀스택 개발 솔루션",
+    "tags": ["Next.js", "React", "Tailwind CSS", "AI API"],
+    "color": "#5ee7df",
+    "icon": "Zap",
+    "image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800"
+  },
+  {
+    "title": "단일 랜딩 페이지 (Lapin)",
+    "category": "Web / Landing",
+    "desc": "개인 서비스 소개 및 포트폴리오 전용 고성능 사이트",
+    "tags": ["HTML5", "CSS3", "JavaScript", "Next.js"],
+    "color": "#b490f5",
+    "icon": "Palette",
+    "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800"
+  },
+  {
+    "title": "AI 웹앱 (Rememo)",
+    "category": "Web / AI App",
+    "desc": "AI 기반 자동 메모 정리 및 생산성 향상 웹 애플리케이션",
+    "tags": ["Next.js", "React", "Gemini AI", "PWA"],
+    "color": "#ffd27f",
+    "icon": "Cpu",
+    "image": "https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&q=80&w=800"
+  },
+  {
+    "title": "AI 견적 자동생성 프로그램",
+    "category": "Efficiency / AI",
+    "desc": "ERP 데이터 파싱 및 여행사 견적서 자동 생성 시스템",
+    "tags": ["Python", "Streamlit", "OpenAI", "Claude"],
+    "color": "#f7a8c4",
+    "icon": "BarChart3",
+    "image": "https://images.unsplash.com/photo-1551288049-bbda4833effb?auto=format&fit=crop&q=80&w=800"
+  },
+  {
+    "title": "인플루언서 DM 생성 자동화",
+    "category": "Marketing / AI",
+    "desc": "상품 매칭 및 맞춤형 인플루언서 DM 발송 자동화",
+    "tags": ["Next.js 15", "Supabase", "Redis", "AI"],
+    "color": "#a8f08a",
+    "icon": "Rocket",
+    "image": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=800"
+  },
+  {
+    "title": "제약사 수수료 정산 자동화",
+    "category": "Efficiency / Excel",
+    "desc": "Excel 기반 제약 영업 수수료 정산 및 데이터 처리 자동화",
+    "tags": ["Python", "Pandas", "OpenPyXL", "NumPy"],
+    "color": "#5ee7df",
+    "icon": "Cpu",
+    "image": "https://images.unsplash.com/photo-1543286386-713bdd548da4?auto=format&fit=crop&q=80&w=800"
+  },
+  {
+    "title": "Telegram 대화 분석기",
+    "category": "Content / Analysis",
+    "desc": "텔레그램 대화 추출 및 AI 기반 인사이트 보고서 생성",
+    "tags": ["Python", "Telegram API", "Pandas"],
+    "color": "#b490f5",
+    "icon": "BarChart3",
+    "image": "https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&q=80&w=800"
+  },
+  {
+    "title": "카카오톡 대화 정리기",
+    "category": "Content / Summary",
+    "desc": "카카오톡 대화 내용 데이터 분석 및 자동 요약 도구",
+    "tags": ["Python", "Pandas", "NLP"],
+    "color": "#ffd27f",
+    "icon": "Zap",
+    "image": "https://images.unsplash.com/photo-1516259762381-22954d7d3ad2?auto=format&fit=crop&q=80&w=800"
+  },
+  {
+    "title": "11st 리뷰영상 수집기",
+    "category": "Content / Scraper",
+    "desc": "11번가 리뷰 동영상 데이터 자동 다운로드 및 관리",
+    "tags": ["Python", "Selenium", "Requests"],
+    "color": "#f7a8c4",
+    "icon": "Rocket",
+    "image": "https://images.unsplash.com/photo-1512428559083-a4979b2091a0?auto=format&fit=crop&q=80&w=800"
+  },
+  {
+    "title": "메모장 분할 도구",
+    "category": "Efficiency / Utils",
+    "desc": "대용량 텍스트 파일을 키워드 기준으로 자동 분할",
+    "tags": ["Python", "OS", "FileSystem"],
+    "color": "#a8f08a",
+    "icon": "Palette",
+    "image": "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&q=80&w=800"
+  },
+  {
+    "title": "유튜브 토픽 파인더",
+    "category": "YouTube / Research",
+    "desc": "조회수 및 키워드 기반 유튜브 콘텐츠 성과 예측",
+    "tags": ["Python", "Google API", "Pandas"],
+    "color": "#5ee7df",
+    "icon": "BarChart3",
+    "image": "https://images.unsplash.com/photo-1492724441997-5dc865305da7?auto=format&fit=crop&q=80&w=800"
+  },
+  {
+    "title": "유튜브 채널 분석기",
+    "category": "YouTube / Analysis",
+    "desc": "채널 통계 및 자막 분석을 통한 트렌드 파악 도구",
+    "tags": ["Python", "yt-dlp", "Pandas"],
+    "color": "#b490f5",
+    "icon": "Cpu",
+    "image": "https://images.unsplash.com/photo-1522071823945-86f78864b971?auto=format&fit=crop&q=80&w=800"
+  },
+  {
+    "title": "영상 콘텐츠 분석기",
+    "category": "Content / AI",
+    "desc": "Gemini AI 기반 동영상/이미지 상세 분석 보고서",
+    "tags": ["Python", "Generative AI", "OpenCV"],
+    "color": "#ffd27f",
+    "icon": "Zap",
+    "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800"
+  },
+  {
+    "title": "동영상 다운로더",
+    "category": "Content / Tool",
+    "desc": "다양한 플랫폼 영상 MP4/MP3 고속 다운로드 솔루션",
+    "tags": ["Python", "yt-dlp", "FFmpeg"],
+    "color": "#f7a8c4",
+    "icon": "Rocket",
+    "image": "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=800"
+  },
+  {
+    "title": "RSI 다이버전스 감지 지표",
+    "category": "Trading / Pine",
+    "desc": "트레이딩뷰 기반 RSI 다이버전스 시각화 및 알림",
+    "tags": ["Pine Script v5", "RSI", "TradingView"],
+    "color": "#a8f08a",
+    "icon": "BarChart3",
+    "image": "https://images.unsplash.com/photo-1611974714658-946761ed8a71?auto=format&fit=crop&q=80&w=800"
+  },
+  {
+    "title": "멀티 타임프레임 트렌드",
+    "category": "Trading / Trend",
+    "desc": "다중 시간대 트렌드 통합 시각화 기술 지표",
+    "tags": ["Pine Script v5", "EMA", "Analysis"],
+    "color": "#5ee7df",
+    "icon": "Zap",
+    "image": "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&q=80&w=800"
+  }
+]

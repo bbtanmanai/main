@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -76,7 +76,7 @@ export default function AdminAgentControl() {
   const [activeCategory, setActiveCategory] = useState<number | null>(null);
   const [lastCycleTime, setLastCycleTime] = useState<string | null>(null);
 
-  const API_BASE = 'http://localhost:8000/api/v1';
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     setIsMounted(true);
@@ -164,25 +164,28 @@ export default function AdminAgentControl() {
   const errorCount     = sortedAgents.filter(a => a.status === 'error').length;
   const workingAgent   = sortedAgents.find(a => a.status === 'working');
 
-  if (!isMounted) return <div className="bg-[#f4f6f8] min-h-screen" />;
+  if (!isMounted) return <div className="min-h-screen" />;
 
   return (
-    <div className="max-w-full p-2 bg-[#f4f6f8] min-h-screen space-y-3">
+    <div className="max-w-full p-2 space-y-3">
 
       {/* ── 헤더 ── */}
-      <div className="bg-white p-5 rounded-xl shadow-lg border-b-4 border-green-600">
+      <div className="neu-raised p-5">
         <div className="flex justify-between items-start">
           <div className="flex gap-4">
-            <div className="w-14 h-14 bg-green-600 rounded-2xl flex items-center justify-center text-white shadow-inner flex-shrink-0">
-              <FontAwesomeIcon icon={faIndustry} size="lg" />
+            <div
+              className="w-12 h-12 rounded-2xl flex items-center justify-center text-xl text-white flex-shrink-0"
+              style={{ background: 'linear-gradient(145deg, #059669, #047857)', boxShadow: '4px 4px 10px rgba(5,150,105,0.35), -2px -2px 6px rgba(255,255,255,0.7)' }}
+            >
+              <FontAwesomeIcon icon={faIndustry} />
             </div>
             <div>
-              <h1 className="text-xl font-black text-gray-900 tracking-tighter">LinkDrop V2 통합 관제실</h1>
-              <p className="text-gray-500 font-bold flex items-center gap-2 text-xs mt-0.5">
+              <h1 className="text-lg font-black tracking-tighter" style={{ color: 'var(--neu-text)' }}>LinkDrop V2 통합 관제실</h1>
+              <p className="font-bold flex items-center gap-2 text-xs mt-0.5" style={{ color: 'var(--neu-text-sub)' }}>
                 <span className="inline-block w-2 h-2 bg-green-500 rounded-full animate-ping" />
                 SYSTEM ONLINE &nbsp;|&nbsp; {agents.length} SKILLS
                 {lastCycleTime && (
-                  <span className="text-gray-400 font-normal ml-2">
+                  <span className="font-normal ml-2" style={{ color: 'var(--neu-text-sub)' }}>
                     마지막 실행: {new Date(lastCycleTime).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 )}
@@ -193,9 +196,7 @@ export default function AdminAgentControl() {
             <button
               onClick={runAllPipeline}
               disabled={isLoading}
-              className={`px-6 py-2.5 rounded-xl font-black text-sm shadow-xl transition-all active:scale-95 flex items-center gap-2 ${
-                isLoading ? 'bg-gray-400 cursor-not-allowed text-white' : 'bg-green-600 hover:bg-green-700 text-white'
-              }`}
+              className={`neu-btn-accent px-6 py-2.5 font-black text-sm flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               {isLoading
                 ? <FontAwesomeIcon icon={faSpinner} className="animate-spin" />
@@ -203,8 +204,8 @@ export default function AdminAgentControl() {
               전 공정 자동 가동
             </button>
             {currentProgress && (
-              <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">
-                CURRENT: {currentProgress}
+              <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'var(--neu-accent)' }}>
+                {currentProgress}
               </span>
             )}
           </div>
@@ -212,20 +213,23 @@ export default function AdminAgentControl() {
 
         {/* 전체 진행 바 */}
         <div className="mt-4">
-          <div className="flex justify-between text-[9px] font-black text-gray-300 mb-1 px-0.5">
+          <div className="flex justify-between text-[9px] font-black mb-1 px-0.5" style={{ color: 'var(--neu-text-sub)' }}>
             <span>START</span><span>INGESTION</span><span>VAULT</span><span>ASSEMBLY</span><span>DELIVERY</span><span>FINISH</span>
           </div>
-          <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden border border-gray-200">
+          <div
+            className="w-full h-2 rounded-full overflow-hidden"
+            style={{ boxShadow: 'inset 3px 3px 6px #b8bcc2, inset -3px -3px 6px #ffffff' }}
+          >
             <div
-              className="h-full bg-gradient-to-r from-green-400 to-green-600 transition-all duration-1000 ease-out"
-              style={{ width: `${progressPercent}%` }}
+              className="h-full transition-all duration-1000 ease-out"
+              style={{ width: `${progressPercent}%`, background: 'linear-gradient(90deg, #8b5cf6, #6d28d9)' }}
             />
           </div>
         </div>
       </div>
 
       {/* ── 실시간 데이터 위치 현황 ── */}
-      <div className="bg-white rounded-xl shadow-md border border-gray-200 p-4">
+      <div className="neu-raised rounded-xl p-4">
         <div className="flex items-center gap-2 mb-3">
           <FontAwesomeIcon icon={faDatabase} className="text-gray-400 text-xs" />
           <h2 className="text-[11px] font-black text-gray-700 uppercase tracking-widest">실시간 데이터 위치 현황</h2>
@@ -241,44 +245,55 @@ export default function AdminAgentControl() {
             const isActive = activeCategory === stage.skillCategory;
             return (
               <React.Fragment key={stage.key}>
-                <div className={`flex-1 min-w-[88px] rounded-lg border-2 p-2.5 transition-all duration-500 ${
-                  isActive ? 'border-green-500 bg-green-50 shadow-md scale-105' : 'border-gray-200 bg-gray-50'
-                }`}>
+                <div
+                  className="flex-1 min-w-[88px] p-2.5 transition-all duration-500"
+                  style={{
+                    background: 'var(--neu-bg)',
+                    borderRadius: '0.75rem',
+                    boxShadow: isActive
+                      ? 'inset 4px 4px 8px #b8bcc2, inset -4px -4px 8px #ffffff'
+                      : '4px 4px 8px #b8bcc2, -4px -4px 8px #ffffff',
+                    transform: isActive ? 'scale(1.04)' : 'scale(1)',
+                  }}
+                >
                   <div className="flex items-center gap-1 mb-1">
-                    <div className={`w-4 h-4 rounded ${stage.color} flex items-center justify-center flex-shrink-0`}>
+                    <div
+                      className="w-4 h-4 rounded flex items-center justify-center flex-shrink-0"
+                      style={{ background: isActive ? '#6d28d9' : '#9ca3af' }}
+                    >
                       <FontAwesomeIcon icon={stage.icon} className="text-white text-[7px]" />
                     </div>
-                    <span className="text-[8px] font-black text-gray-500 uppercase truncate">{stage.label}</span>
+                    <span className="text-[8px] font-black uppercase truncate" style={{ color: 'var(--neu-text-sub)' }}>{stage.label}</span>
                     {isActive && <span className="ml-auto w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse flex-shrink-0" />}
                   </div>
-                  <div className={`text-xl font-black leading-none ${isActive ? 'text-green-600' : stage.textColor}`}>
+                  <div className="text-xl font-black leading-none" style={{ color: isActive ? 'var(--neu-accent)' : 'var(--neu-text)' }}>
                     {count.toLocaleString()}
                   </div>
-                  <div className="text-[7px] text-gray-400 font-bold mt-0.5">{isActive ? '처리중' : '건'}</div>
+                  <div className="text-[7px] font-bold mt-0.5" style={{ color: 'var(--neu-text-sub)' }}>{isActive ? '처리중' : '건'}</div>
                 </div>
                 {idx < PIPELINE_STAGES.length - 1 && (
-                  <FontAwesomeIcon icon={faArrowRight} className="text-gray-300 text-xs flex-shrink-0" />
+                  <FontAwesomeIcon icon={faArrowRight} className="text-xs flex-shrink-0" style={{ color: 'var(--neu-shadow-d)' }} />
                 )}
               </React.Fragment>
             );
           })}
-          <div className="ml-2 pl-2 border-l border-dashed border-gray-300">
-            <div className="min-w-[72px] rounded-lg border-2 border-red-100 bg-red-50 p-2.5">
+          <div className="ml-2 pl-2" style={{ borderLeft: '1px dashed var(--neu-shadow-d)' }}>
+            <div className="min-w-[72px] p-2.5" style={{ background: 'var(--neu-bg)', borderRadius: '0.75rem', boxShadow: '4px 4px 8px #b8bcc2, -4px -4px 8px #ffffff' }}>
               <div className="flex items-center gap-1 mb-1">
-                <div className="w-4 h-4 rounded bg-red-400 flex items-center justify-center flex-shrink-0">
+                <div className="w-4 h-4 rounded flex items-center justify-center flex-shrink-0" style={{ background: '#ef4444' }}>
                   <FontAwesomeIcon icon={faExclamationTriangle} className="text-white text-[7px]" />
                 </div>
-                <span className="text-[8px] font-black text-red-400 uppercase">폐기</span>
+                <span className="text-[8px] font-black uppercase" style={{ color: 'var(--neu-red)' }}>폐기</span>
               </div>
-              <div className="text-xl font-black text-red-400 leading-none">{flowCount('discarded').toLocaleString()}</div>
-              <div className="text-[7px] text-red-300 font-bold mt-0.5">건</div>
+              <div className="text-xl font-black leading-none" style={{ color: 'var(--neu-red)' }}>{flowCount('discarded').toLocaleString()}</div>
+              <div className="text-[7px] font-bold mt-0.5" style={{ color: 'var(--neu-text-sub)' }}>건</div>
             </div>
           </div>
         </div>
       </div>
 
       {/* ── 파이프라인 실행 현황 ── */}
-      <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+      <div className="neu-raised rounded-xl overflow-hidden">
 
         {/* 섹션 헤더 + 요약 배너 */}
         <div className="px-4 py-3 border-b border-gray-100 flex items-center gap-3">
