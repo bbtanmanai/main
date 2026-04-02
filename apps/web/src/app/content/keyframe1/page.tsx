@@ -1456,7 +1456,7 @@ function KeyframePageInner() {
         if (!controller.signal.aborted) stopTranslating();
       }
     })();
-    return () => { controller.abort(); };
+    return () => { controller.abort(); autoTranslated.current = false; };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scenes, artStyle]);
 
