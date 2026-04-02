@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react';
 import { Composition } from 'remotion';
 import { AccentComposition, type AccentCompositionProps } from '../components/remotion-preview/AccentComposition';
 import { StatCard, type StatCardProps } from '../components/remotion-preview/StatCard';
@@ -26,34 +27,34 @@ export const RemotionRoot = () => {
       {/* 16:9 가로 영상 */}
       <Composition
         id="AccentScene-16x9"
-        component={AccentComposition}
+        component={AccentComposition as ComponentType<any>}
         durationInFrames={150}
         fps={30}
         width={1920}
         height={1080}
         defaultProps={DEFAULT_PROPS}
-        calculateMetadata={({ props }) => ({
-          durationInFrames: Math.max(30, Math.ceil((props.tts_duration ?? 5) * 30) + 30),
+        calculateMetadata={(opts: any) => ({
+          durationInFrames: Math.max(30, Math.ceil(((opts.props as AccentCompositionProps).tts_duration ?? 5) * 30) + 30),
         })}
       />
       {/* 9:16 세로 영상 */}
       <Composition
         id="AccentScene-9x16"
-        component={AccentComposition}
+        component={AccentComposition as ComponentType<any>}
         durationInFrames={150}
         fps={30}
         width={1080}
         height={1920}
         defaultProps={DEFAULT_PROPS}
-        calculateMetadata={({ props }) => ({
-          durationInFrames: Math.max(30, Math.ceil((props.tts_duration ?? 5) * 30) + 30),
+        calculateMetadata={(opts: any) => ({
+          durationInFrames: Math.max(30, Math.ceil(((opts.props as AccentCompositionProps).tts_duration ?? 5) * 30) + 30),
         })}
       />
 
       {/* StatCard 독립 미리보기 */}
       <Composition
         id="StatCard-16x9"
-        component={StatCard}
+        component={StatCard as ComponentType<any>}
         durationInFrames={150}
         fps={30}
         width={1920}
@@ -71,7 +72,7 @@ export const RemotionRoot = () => {
       {/* QuoteHero 독립 미리보기 */}
       <Composition
         id="QuoteHero-16x9"
-        component={QuoteHero}
+        component={QuoteHero as ComponentType<any>}
         durationInFrames={180}
         fps={30}
         width={1920}
@@ -86,7 +87,7 @@ export const RemotionRoot = () => {
       {/* ComparisonTable 독립 미리보기 */}
       <Composition
         id="ComparisonTable-16x9"
-        component={ComparisonTable}
+        component={ComparisonTable as ComponentType<any>}
         durationInFrames={180}
         fps={30}
         width={1920}
@@ -106,7 +107,7 @@ export const RemotionRoot = () => {
       {/* Timeline 독립 미리보기 */}
       <Composition
         id="Timeline-16x9"
-        component={Timeline}
+        component={Timeline as ComponentType<any>}
         durationInFrames={180}
         fps={30}
         width={1920}
@@ -124,7 +125,7 @@ export const RemotionRoot = () => {
       {/* RankingList 독립 미리보기 */}
       <Composition
         id="RankingList-16x9"
-        component={RankingList}
+        component={RankingList as ComponentType<any>}
         durationInFrames={180}
         fps={30}
         width={1920}
@@ -145,7 +146,7 @@ export const RemotionRoot = () => {
       {/* SplitScreen 독립 미리보기 */}
       <Composition
         id="SplitScreen-16x9"
-        component={SplitScreen}
+        component={SplitScreen as ComponentType<any>}
         durationInFrames={180}
         fps={30}
         width={1920}
@@ -170,7 +171,7 @@ export const RemotionRoot = () => {
       {/* IconGrid 독립 미리보기 */}
       <Composition
         id="IconGrid-16x9"
-        component={IconGrid}
+        component={IconGrid as ComponentType<any>}
         durationInFrames={180}
         fps={30}
         width={1920}
@@ -191,7 +192,7 @@ export const RemotionRoot = () => {
       {/* Flowchart 독립 미리보기 */}
       <Composition
         id="Flowchart-16x9"
-        component={Flowchart}
+        component={Flowchart as ComponentType<any>}
         durationInFrames={180}
         fps={30}
         width={1920}
@@ -211,7 +212,7 @@ export const RemotionRoot = () => {
       {/* FullImage 독립 미리보기 */}
       <Composition
         id="FullImage-16x9"
-        component={FullImage}
+        component={FullImage as ComponentType<any>}
         durationInFrames={180}
         fps={30}
         width={1920}
