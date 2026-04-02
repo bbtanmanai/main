@@ -4,6 +4,7 @@ import asyncio
 import re
 import os
 from dotenv import load_dotenv
+from ._accent_types import ACCENT_TYPES_PROMPT
 
 load_dotenv()
 
@@ -18,13 +19,23 @@ class SceneTranslateRequest(BaseModel):
 
 class SceneTranslateResponse(BaseModel):
     success: bool
-    visual_prompts: list[str]
+    visual_prompts: list[str]       # scene_en: 영문 나레이션 (하위 호환)
+    scene_visuals: list[str] = []   # 이미지 생성용 시각 묘사 문장
     accents: list[list] = []
+    scene_roles: list[str] = []
+    scene_hints_en: list[str] = []  # [장면힌트] 영문 번역 (보장된 주입용)
 
 
 def _clean_scene(text: str, max_len: int = 2000) -> str:
     text = re.sub(r'\[씬\s*\d+\]', '', text)
+    text = re.sub(r'\[장면힌트:[^\]]*\]', '', text)
     return text.strip()[:max_len]
+
+
+def _extract_scene_hint(text: str) -> str:
+    """씬 텍스트에서 [장면힌트: ...] 태그 추출"""
+    m = re.search(r'\[장면힌트:\s*([^\]]+)\]', text)
+    return m.group(1).strip() if m else ""
 
 
 ART_STYLE_RULES = {
@@ -66,60 +77,102 @@ def _inject_visual_hints(cleaned: str) -> str:
     return ""
 
 
-def _extract_visual_keywords_gemini(scenes: list[str], genre_en: str, art_style: str = "", api_key: str = "") -> tuple[list[str], list[list]]:
-    """Gemini Flash로 씬 텍스트 → 이미지 비주얼 키워드 + 강조 accent 배열 동시 추출"""
+VALID_SCENE_ROLES = {"hook", "intro", "explain", "evidence", "climax", "cta", "conclusion"}
+
+async def _extract_visual_keywords_gemini(scenes: list[str], genre_en: str, art_style: str = "", api_key: str = "") -> tuple[list[str], list[str], list[list], list[str], list[str]]:
+    """Gemini Flash로 씬 텍스트 → scene_en + scene_visual + accent + scene_role + hint_en 동시 추출 (병렬)"""
     import json as _json
     from google import genai
 
     client = genai.Client(api_key=api_key)
     style_rule = ART_STYLE_RULES.get(art_style, "")
 
-    visual_results: list[str] = []
-    accent_results: list[list] = []
-
-    for i, scene in enumerate(scenes):
+    async def _process_one(scene: str) -> tuple[str, str, list, str, str]:
+        scene_hint = _extract_scene_hint(scene)
         cleaned = _clean_scene(scene)
         if not cleaned:
-            visual_results.append("")
-            accent_results.append([])
-            continue
+            return "", "", [], "", ""
 
-        # 씬 간 연속성: 이전 씬 비주얼 키워드 컨텍스트로 전달
-        prev_visual = visual_results[i - 1] if i > 0 and visual_results else ""
-        continuity_hint = f"\nPrevious scene visual (maintain continuity): {prev_visual}" if prev_visual else ""
-
-        # 경제 개념 시각 은유 힌트
         metaphor_hint = _inject_visual_hints(cleaned)
-        metaphor_block = f"\n{metaphor_hint}" if metaphor_hint else ""
+        hint_parts = [h for h in [scene_hint, metaphor_hint] if h]
+        if hint_parts:
+            if scene_hint:
+                metaphor_block = (
+                    f"\nREQUIRED VISUAL SCENARIO: Your scene_visual MUST directly describe this exact physical setting: \"{scene_hint}\""
+                )
+                if metaphor_hint:
+                    metaphor_block += f"\nAdditional visual context: {metaphor_hint}"
+            else:
+                metaphor_block = f"\nVisual context: {metaphor_hint}"
+        else:
+            metaphor_block = ""
+
+        hint_en_rule = (
+            f'- Translate this hint: "{scene_hint}"' if scene_hint
+            else '- No hint present — return ""'
+        )
+        style_rule_line = f"- {style_rule}" if style_rule else ""
+        scene_hint_mandatory = (
+            f'- MANDATORY: Your scene_visual MUST physically describe this exact setting: "{scene_hint}". Do NOT replace it with a generic scene.'
+            if scene_hint else ""
+        )
 
         prompt = f"""You are an image prompt and visual accent extractor for Korean video scenes.
 
 Given a Korean scene description, output ONLY a single JSON object with these fields:
 
 {{
-  "visual_prompt": "<5-8 comma-separated English visual keywords for AI image generation>",
+  "scene_en": "<full English narration translation of the Korean scene>",
+  "scene_visual": "<2 complete English sentences describing the visual scene for AI image generation>",
+  "hint_en": "<English translation of the [장면힌트] tag content, or empty string if no hint>",
+  "scene_role": "<one of: hook | intro | explain | evidence | climax | cta | conclusion>",
   "accents": [<accent objects>]
 }}
 
-visual_prompt rules:
-- Comma-separated English keywords only, no sentences
-- Focus on: subject, environment, lighting, mood, composition, camera angle
-- Be specific (e.g. "golden hour sunlight" not "light")
-- Must match art style — do NOT include conflicting style keywords
-{f'- {style_rule}' if style_rule else ''}{continuity_hint}{metaphor_block}
+scene_en rules:
+- Full fluent English translation of the Korean narration
+- Complete sentences, natural reading flow
+
+hint_en rules:
+- MANDATORY FIELD when [장면힌트] tag is present in the scene
+- Translate the [장면힌트] content into fluent, visual English (1 sentence, max 20 words)
+- Describe the exact physical setting/action the author intended as a vivid image caption
+- Example: [장면힌트: 텅 빈 신축 아파트 단지 위로 경매 딱지가 눈비처럼 쏟아지는 모습]
+  → "Auction notice papers raining down like snow over a ghost-town new apartment complex"
+- If NO [장면힌트] tag exists in the scene, return EXACTLY: ""
+{hint_en_rule}
+
+scene_visual rules:
+- Write EXACTLY 2 complete English sentences describing the visual scene for AI image generation
+- SENTENCE 1: Describe the main subject (WHO), location (WHERE), and physical action/pose
+- SENTENCE 2: Describe lighting, atmosphere, color tone, and emotional mood
+- Minimum 30 words REQUIRED — if your output is under 30 words, rewrite with more detail
+- Be cinematically specific: include spatial relationships, textures, camera angle impression
+- Good: "A weary middle-aged Korean man sits hunched at a cluttered kitchen table, stacks of unpaid bills surrounding him, a dim lamp casting harsh shadows on his tired face. The room feels oppressively small, with peeling wallpaper and a grey overcast sky visible through a foggy window behind him."
+- Bad: "man at table with bills" (too sparse — no scene structure)
+- NEVER write: "The scene shows..." or "This image depicts..." — start directly with the subject
+{style_rule_line}
+{metaphor_block if metaphor_block else ''}
+{scene_hint_mandatory}
+
+scene_role rules:
+- Choose exactly ONE role that best describes the narrative function of this scene:
+  hook: First scene or dramatic attention-grabber that shocks/surprises the viewer
+  intro: Introduces the topic, speaker, or context in a welcoming tone
+  explain: Explains a concept, process, or data in an informative way
+  evidence: Presents proof, statistics, case studies, or real-world examples
+  climax: Emotional or narrative peak — the most impactful moment
+  cta: Call to action — urges the viewer to subscribe, act, or decide
+  conclusion: Final wrap-up, summary, or satisfying resolution
 
 accents rules:
-- Extract ALL impactful statistics worth visualizing (up to 5 items), as a JSON array
-- [] if no clear statistics
-- IGNORE years (2024, 2023 etc)
-- PREFER: 만/억/조 unit counts, percentages, head-to-head comparisons, ordered lists
+- Extract ALL impactful structures worth visualizing (up to 5 items), as a JSON array
+- [] if nothing clearly applies
+- IGNORE years (2024, 2023 etc) for "num" type
 - Each item at a DIFFERENT point in the text
-- Each item MUST include "hint": exact short phrase (5-15 chars) from the text near that statistic
-- Types:
-  - "num":  {{"type":"num",  "value":"49만개",  "label":"사업장 폐업",             "hint":"49만 개의 사업장"}}
-  - "bar":  {{"type":"bar",  "left":{{"label":"이삭","value":"39.8%"}},"right":{{"label":"파리크라상","value":"50%이상"}}, "hint":"39.8퍼센트야"}}
-  - "flow": {{"type":"flow", "steps":["1단계","2단계"],                            "hint":"먼저 스트레칭"}}
-  - "list": {{"type":"list", "items":["항목1","항목2"],                            "hint":"첫째 아침"}}
+- Each item MUST include "hint": exact short phrase (5-15 chars) from the text
+- Types (choose the most fitting per structure):
+{ACCENT_TYPES_PROMPT}
 
 Genre: {genre_en or 'general'}
 
@@ -129,24 +182,79 @@ Scene:
 JSON:"""
 
         try:
-            response = client.models.generate_content(
-                model="gemini-2.5-flash",
+            response = await asyncio.to_thread(
+                client.models.generate_content,
+                model="gemini-3-flash-preview",
                 contents=prompt,
             )
             raw = response.text.strip()
+            # 코드블록 제거
             raw = re.sub(r'^```(?:json)?\s*', '', raw, flags=re.MULTILINE)
             raw = re.sub(r'\s*```$', '', raw, flags=re.MULTILINE)
-            parsed = _json.loads(raw)
-            visual_results.append(parsed.get("visual_prompt", "").strip())
+            # 중괄호 추출 (텍스트가 앞뒤에 붙어도 대응)
+            json_match = re.search(r'\{[\s\S]*\}', raw)
+            if not json_match:
+                raise ValueError("No JSON object found in response")
+            parsed = _json.loads(json_match.group())
+            scene_en     = parsed.get("scene_en", "").strip()
+            scene_visual = parsed.get("scene_visual", "").strip()
+            scene_role   = parsed.get("scene_role", "").strip().lower()
+            if scene_role not in VALID_SCENE_ROLES:
+                scene_role = ""
             raw_accents = parsed.get("accents") or parsed.get("accent") or []
             if isinstance(raw_accents, dict):
                 raw_accents = [raw_accents]
-            accent_results.append(raw_accents if isinstance(raw_accents, list) else [])
+            accents = raw_accents if isinstance(raw_accents, list) else []
+            # scene_en 폴백: translate 실패 시 Korean 원문까지 3단계 fallback
+            if not scene_en:
+                fb = _translate_fallback(cleaned)
+                scene_en = fb if fb else cleaned
+            # scene_visual 품질 보장: 30단어 미만이면 재요청 (1회)
+            if len(scene_visual.split()) < 30:
+                retry_prompt = (
+                    f"You are a visual scene descriptor for AI image generation.\n\n"
+                    f"Expand the following into a complete cinematic image prompt (30-50 words).\n"
+                    f"Describe: WHO is present and their appearance/pose, WHERE they are (environment), "
+                    f"HOW the light falls, WHAT atmosphere/mood is present.\n"
+                    f"Write only 1-2 English sentences. No JSON, no labels.\n\n"
+                    f"Scene (English): {scene_en}\n"
+                    + (f"Required visual scenario: {scene_hint}\n" if scene_hint else "")
+                    + f"\nOutput:"
+                )
+                try:
+                    r2 = await asyncio.to_thread(
+                        client.models.generate_content,
+                        model="gemini-3-flash-preview",
+                        contents=retry_prompt,
+                    )
+                    expanded = r2.text.strip().replace('"', '').replace('\n', ' ')
+                    if len(expanded.split()) >= 25:
+                        scene_visual = expanded
+                except Exception:
+                    pass  # 재요청 실패 시 원래 scene_visual 사용
+            # hint_en 추출 — Gemini가 번역한 장면힌트 영문 (없으면 "")
+            hint_en = parsed.get("hint_en", "").strip()
+            # Gemini가 hint_en을 무시했을 때 폴백: _translate_fallback으로 직접 번역
+            if scene_hint and not hint_en:
+                hint_en = await asyncio.to_thread(_translate_fallback, scene_hint)
+                # 번역 실패(한글 그대로 반환)이면 버림
+                if any('\uAC00' <= c <= '\uD7A3' for c in hint_en):
+                    hint_en = ""
+            # scene_visual이 여전히 빈 값이면 hint_en으로 폴백
+            if not scene_visual and hint_en:
+                scene_visual = hint_en
+            return scene_en, scene_visual, accents, scene_role, hint_en
         except Exception:
-            visual_results.append(_translate_fallback(cleaned))
-            accent_results.append([])
+            fb = _translate_fallback(cleaned)
+            return (fb if fb else cleaned), "", [], "", ""
 
-    return visual_results, accent_results
+    results = await asyncio.gather(*[_process_one(s) for s in scenes])
+    en_results     = [r[0] for r in results]
+    visual_results = [r[1] for r in results]
+    accent_results = [r[2] for r in results]
+    role_results   = [r[3] for r in results]
+    hint_results   = [r[4] for r in results]
+    return en_results, visual_results, accent_results, role_results, hint_results
 
 
 def _translate_fallback(text: str) -> str:
@@ -169,14 +277,24 @@ async def translate_scenes(req: SceneTranslateRequest):
 
     try:
         if effective_key:
-            visual_prompts, accents = await asyncio.to_thread(
-                _extract_visual_keywords_gemini, req.scenes, req.genre_en, req.art_style, effective_key
+            visual_prompts, scene_visuals, accents, scene_roles, scene_hints_en = await _extract_visual_keywords_gemini(
+                req.scenes, req.genre_en, req.art_style, effective_key
             )
         else:
             visual_prompts = await asyncio.to_thread(
                 lambda: [_translate_fallback(_clean_scene(s)) for s in req.scenes],
             )
-            accents = [None] * len(req.scenes)
-        return SceneTranslateResponse(success=True, visual_prompts=visual_prompts, accents=accents)
+            scene_visuals  = [""] * len(req.scenes)
+            accents        = [[] for _ in req.scenes]
+            scene_roles    = [""] * len(req.scenes)
+            scene_hints_en = [""] * len(req.scenes)
+        return SceneTranslateResponse(
+            success=True,
+            visual_prompts=visual_prompts,
+            scene_visuals=scene_visuals,
+            accents=accents,
+            scene_roles=scene_roles,
+            scene_hints_en=scene_hints_en,
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"번역 실패: {str(e)}")

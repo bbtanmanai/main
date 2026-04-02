@@ -175,7 +175,7 @@ export default function MidjourneyImgPage() {
     
     setIsGenerating(true);
     try {
-      const response = await fetch('http://localhost:8000/api/v1/contents/midjourney/generate', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contents/midjourney/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: mjOutput })

@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "LinkDrop 씬 패널",
+  "version": "1.0.0",
+  "description": "AI 이미지 생성 도구에서 LinkDrop 씬 컨텍스트를 표시합니다",
+
+  "permissions": ["sidePanel", "storage", "activeTab", "clipboardWrite"],
+  "host_permissions": ["http://localhost/*"],
+
+  "side_panel": {
+    "default_path": "panel/panel.html"
+  },
+
+  "action": {
+    "default_title": "LinkDrop 씬 패널",
+    "default_popup": ""
+  },
+
+  "background": {
+    "service_worker": "background.js"
+  }
+}

@@ -6,6 +6,7 @@ import asyncio
 import json
 import re
 import time
+import os
 from pathlib import Path
 
 from notebooklm_tools import NotebookLMClient
@@ -15,6 +16,16 @@ router = APIRouter(prefix="/api/v1/nlm-video", tags=["NLM Video"])
 
 # In-memory job store (local dev)
 _jobs: Dict[str, Dict[str, Any]] = {}
+
+# ── 노트앱 라우팅 맵 ──────────────────────────────────────────────────────────
+NICHE_NOTEBOOK_MAP: Dict[str, Dict[str, str]] = {
+    "경제·재테크":  {"id": "85362656-b5a6-4672-a874-619b99fc55e5", "name": "[LD] 경제·재테크"},
+    "부동산·투자":  {"id": "a8891e02-4fc9-4593-8fc7-fb13333ea6a7", "name": "[LD] 부동산·투자"},
+    "건강·의학":    {"id": "9d3c21fe-e9e5-41a8-8c67-eed5090f799a", "name": "[LD] 건강·의학"},
+    "자기계발·심리": {"id": "6a6dee66-1811-4939-80cc-4ab57f50810b", "name": "[LD] 자기계발·심리"},
+    "웹소설":       {"id": "a879a2d9-8cb2-4182-b14a-b04dcc49d448", "name": "[LD] 웹소설"},
+}
+NICHE_DEFAULT = "경제·재테크"  # 분류 불가 시 폴백
 
 VIDEO_STYLE_MAP = {
     "AUTO_SELECT": NotebookLMClient.VIDEO_STYLE_AUTO_SELECT,
@@ -80,6 +91,11 @@ class GenerateScriptRequest(BaseModel):
 class InjectPromptRequest(BaseModel):
     notebook_id: str
     prompt: str
+
+class ClassifySourceRequest(BaseModel):
+    title: str = ""
+    text_snippet: str = ""   # SRT 앞 300자 또는 영상 설명
+    api_key: str = ""
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -159,18 +175,7 @@ def _sync_init_notebook(
         if existing_notebook_id:
             notebook_id = existing_notebook_id
             notebook_url = f"https://notebooklm.google.com/notebook/{notebook_id}"
-            print(f">>> [NLM] Reusing existing notebook: {notebook_id}")
-
-            # 기존 소스 자동 제거 (혼선 방지)
-            try:
-                sources = client.get_notebook_sources_with_types(notebook_id) or []
-                source_ids = [s["id"] for s in sources if s.get("id")]
-                if source_ids:
-                    print(f">>> [NLM] Auto-clearing {len(source_ids)} old sources before inject")
-                    client.delete_sources(source_ids)
-                    print(f">>> [NLM] Old sources cleared OK")
-            except Exception as e:
-                print(f">>> [NLM] Warning: failed to clear old sources: {e}")
+            print(f">>> [NLM] Reusing existing notebook: {notebook_id} (sources accumulate)")
         else:
             nb = client.create_notebook(title=notebook_name)
             notebook_id = nb.id
@@ -271,7 +276,7 @@ async def _bg_create_video(notebook_id: str, topic: str, style_code: int, format
             break  # 완료
 
         # 3. 다운로드
-        output_dir = Path("C:/LinkDropV2/tmp/nlm_videos")
+        output_dir = Path(__file__).resolve().parents[3] / "tmp" / "nlm_videos"
         output_dir.mkdir(parents=True, exist_ok=True)
         output_path = str(output_dir / f"{notebook_id[:12]}.mp4")
 
@@ -290,7 +295,79 @@ async def _bg_create_video(notebook_id: str, topic: str, style_code: int, format
         job["error"] = str(e)
 
 
+async def _classify_niche_gemini(title: str, text_snippet: str, api_key: str) -> str:
+    """Gemini Flash로 소스 텍스트 → 노트앱 카테고리 분류"""
+    from google import genai
+
+    categories = " / ".join(NICHE_NOTEBOOK_MAP.keys()) + " / 기타"
+    prompt = f"""아래 텍스트가 어떤 주제인지 판단해서 카테고리 1개만 골라라.
+
+선택지: {categories}
+
+규칙:
+- 반드시 선택지 중 하나만 정확히 그대로 출력
+- 확신이 없거나 여러 카테고리에 걸치면 "기타" 선택
+- 웹소설/로맨스/판타지/소설 추천 관련이면 "웹소설"
+- 주식/ETF/절약/월급/경제 관련이면 "경제·재테크"
+- 아파트/청약/임대/토지 관련이면 "부동산·투자"
+- 다이어트/운동/질병/의학/건강 관련이면 "건강·의학"
+- 습관/독서/생산성/심리/자기계발 관련이면 "자기계발·심리"
+
+JSON만 출력: {{"niche": "선택값"}}
+
+제목: {title}
+내용: {text_snippet[:300]}"""
+
+    try:
+        client = genai.Client(api_key=api_key)
+        response = await asyncio.to_thread(
+            client.models.generate_content,
+            model="gemini-2.0-flash",
+            contents=prompt,
+        )
+        raw = response.text.strip()
+        raw = re.sub(r'^```(?:json)?\s*', '', raw, flags=re.MULTILINE)
+        raw = re.sub(r'\s*```$', '', raw, flags=re.MULTILINE)
+        parsed = json.loads(raw)
+        niche = parsed.get("niche", "").strip()
+        if niche not in NICHE_NOTEBOOK_MAP:
+            return NICHE_DEFAULT
+        return niche
+    except Exception as e:
+        print(f">>> [Classify] Gemini 분류 실패: {e}")
+        return NICHE_DEFAULT
+
+
 # ── Endpoints ─────────────────────────────────────────────────────────────────
+
+@router.post("/classify-source")
+async def classify_source(req: ClassifySourceRequest):
+    """소스 제목+내용 → 카테고리 분류 + 주입할 노트앱 ID 반환"""
+    effective_key = req.api_key.strip() or os.environ.get("GOOGLE_API_KEY", "")
+    if not effective_key:
+        # API 키 없으면 기본값 반환
+        info = NICHE_NOTEBOOK_MAP[NICHE_DEFAULT]
+        return {"success": True, "niche": NICHE_DEFAULT, "notebook_id": info["id"], "notebook_name": info["name"]}
+    try:
+        niche = await _classify_niche_gemini(req.title, req.text_snippet, effective_key)
+        info = NICHE_NOTEBOOK_MAP[niche]
+        return {"success": True, "niche": niche, "notebook_id": info["id"], "notebook_name": info["name"]}
+    except Exception as e:
+        info = NICHE_NOTEBOOK_MAP[NICHE_DEFAULT]
+        return {"success": True, "niche": NICHE_DEFAULT, "notebook_id": info["id"], "notebook_name": info["name"]}
+
+
+@router.get("/notebooks")
+async def list_notebooks():
+    """등록된 노트앱 목록 반환"""
+    return {
+        "success": True,
+        "notebooks": [
+            {"niche": niche, "notebook_id": v["id"], "notebook_name": v["name"]}
+            for niche, v in NICHE_NOTEBOOK_MAP.items()
+        ]
+    }
+
 
 @router.post("/init-notebook")
 async def init_notebook(req: InitRequest):

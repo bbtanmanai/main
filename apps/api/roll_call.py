@@ -5,7 +5,7 @@ from pathlib import Path
 def test_agent_imports():
     print("🕵️ [Kim Director] Final Agent Roll Call (17 Units)...")
     
-    agent_dir = Path("C:/LinkDropV2/apps/api/services/agents")
+    agent_dir = Path(__file__).resolve().parent / "services" / "agents"
     sys.path.append(str(agent_dir.parent.parent)) # apps/api 추가
     
     agents = [

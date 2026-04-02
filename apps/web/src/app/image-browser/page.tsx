@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -73,7 +73,7 @@ function ImageBrowserInner() {
 
   React.useEffect(() => {
     // API에서 씬 데이터 로드 + IndexedDB에서 이미지 복원
-    fetch('http://localhost:8000/api/v1/browser/session')
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/browser/session`)
       .then(r => r.json())
       .then(async data => {
         const sceneList = data.scenes || [];
@@ -120,7 +120,7 @@ function ImageBrowserInner() {
     formData.append('file', file, `scene_${idx}.png`);
 
     try {
-      const res = await fetch('http://localhost:8000/api/v1/browser/upload-image', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/browser/upload-image`, {
         method: 'POST', body: formData,
       });
       if (res.ok) {
@@ -151,7 +151,7 @@ function ImageBrowserInner() {
           const formData = new FormData();
           formData.append('scene_idx', idx);
           formData.append('file', blob, `scene_${idx}.png`);
-          const res = await fetch('http://localhost:8000/api/v1/browser/upload-image', {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/browser/upload-image`, {
             method: 'POST', body: formData,
           });
           if (!res.ok) throw new Error(`씬 ${Number(idx) + 1} 업로드 실패`);
@@ -159,7 +159,7 @@ function ImageBrowserInner() {
       }
 
       // 완료 신호 + 검증
-      const res = await fetch('http://localhost:8000/api/v1/browser/submit-images', { method: 'POST' });
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/browser/submit-images`, { method: 'POST' });
       const data = await res.json();
 
       if (!data.success || data.count < scenes.length) {

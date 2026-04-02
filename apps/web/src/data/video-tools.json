@@ -1,0 +1,100 @@
+{
+  "tools": [
+    {
+      "name": "Kling AI",
+      "url": "https://klingai.com/invite?code=7BZ6FN2AS59Y",
+      "badge": "매일 무료",
+      "badgeColor": "emerald",
+      "color": "bg-emerald-500",
+      "free": "매일 크레딧 리셋",
+      "resolution": "1080p",
+      "fps": "24fps",
+      "watermark": true,
+      "note": "이미지→영상 품질 최상위권"
+    },
+    {
+      "name": "PixVerse",
+      "url": "https://pixverse.ai",
+      "badge": "매일 무료",
+      "badgeColor": "teal",
+      "color": "bg-teal-500",
+      "free": "매일 30크레딧 리셋",
+      "resolution": "1080p",
+      "fps": "24fps",
+      "watermark": true,
+      "note": "안정적인 무료 티어"
+    },
+    {
+      "name": "Pika",
+      "url": "https://pika.art",
+      "badge": "월 무료",
+      "badgeColor": "sky",
+      "color": "bg-sky-500",
+      "free": "월 150크레딧",
+      "resolution": "1080p",
+      "fps": "24fps",
+      "watermark": true,
+      "note": "직관적인 UI"
+    },
+    {
+      "name": "Luma Dream Machine",
+      "url": "https://lumalabs.ai/dream-machine",
+      "badge": "월 무료",
+      "badgeColor": "indigo",
+      "color": "bg-indigo-500",
+      "free": "월 30회",
+      "resolution": "1080p",
+      "fps": "24fps",
+      "watermark": true,
+      "note": "고품질 영상 생성"
+    },
+    {
+      "name": "Hailuo AI",
+      "url": "https://hailuoai.video",
+      "badge": "무료",
+      "badgeColor": "amber",
+      "color": "bg-amber-500",
+      "free": "가입 크레딧 제공",
+      "resolution": "1080p",
+      "fps": "24fps",
+      "watermark": true,
+      "note": "Minimax 기반 고품질"
+    },
+    {
+      "name": "Runway",
+      "url": "https://runwayml.com",
+      "badge": "125크레딧",
+      "badgeColor": "violet",
+      "color": "bg-violet-500",
+      "free": "가입 125크레딧 (1회)",
+      "resolution": "720p (무료)",
+      "fps": "24fps",
+      "watermark": true,
+      "note": "Gen-3 Alpha · 업계 표준"
+    },
+    {
+      "name": "Vidu",
+      "url": "https://vidu.studio",
+      "badge": "월 무료",
+      "badgeColor": "pink",
+      "color": "bg-pink-500",
+      "free": "월 80크레딧",
+      "resolution": "1080p",
+      "fps": "24fps",
+      "watermark": true,
+      "note": "캐릭터 일관성 우수"
+    },
+    {
+      "name": "Morph Studio",
+      "url": "https://morphstudio.xyz",
+      "badge": "무료",
+      "badgeColor": "orange",
+      "color": "bg-orange-500",
+      "free": "가입 크레딧 제공",
+      "resolution": "1080p",
+      "fps": "24fps",
+      "watermark": true,
+      "note": "심플한 인터페이스"
+    }
+  ]
+}

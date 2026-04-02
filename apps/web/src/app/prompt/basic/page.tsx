@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -17,7 +17,7 @@ interface Guide {
 
 export default function FrontPromptBasicPage() {
   const [isMounted, setIsMounted] = useState(false);
-  const API_BASE = "http://localhost:8000/api/v1";
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     setIsMounted(true);

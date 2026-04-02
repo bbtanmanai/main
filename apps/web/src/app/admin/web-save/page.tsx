@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -28,7 +28,7 @@ export default function AdminWebSave() {
   const [isDirectLoading, setIsDirectLoading] = useState(false);
   const [result, setResult] = useState<SaveResult | null>(null);
 
-  const API_BASE = "http://localhost:8000/api/v1";
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
   // 1. URL 고정밀 스캔 투하
   const handleWebSave = async () => {
@@ -78,10 +78,10 @@ export default function AdminWebSave() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-4 bg-[#f4f6f8] min-h-screen font-sans">
+    <div className="max-w-5xl mx-auto p-4 font-sans">
       
       {/* SECTION 1: URL High-Fidelity Capture */}
-      <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-6">
+      <div className="neu-raised rounded-2xl p-8 mb-6">
         <div className="flex items-center gap-4 mb-6">
           <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white text-2xl shadow-lg">
             <FontAwesomeIcon icon={faGlobe} />
@@ -92,18 +92,18 @@ export default function AdminWebSave() {
           </div>
         </div>
 
-        <div className="flex items-stretch gap-3 bg-gray-50 p-2 rounded-2xl border-2 border-dashed border-gray-300 focus-within:border-blue-500 focus-within:bg-white transition-all">
-          <input 
-            type="text" 
+        <div className="flex items-stretch gap-3">
+          <input
+            type="text"
             placeholder="캡처할 웹페이지 주소 (https://...)"
-            className="flex-1 bg-transparent px-4 py-3 text-sm outline-none font-medium text-gray-800"
+            className="neu-input flex-1 px-4 py-3 text-sm font-medium"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
           />
-          <button 
+          <button
             onClick={handleWebSave}
             disabled={isLoading}
-            className={`px-8 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl text-sm flex items-center gap-2 transition-all shadow-lg ${isLoading ? 'opacity-50 cursor-wait' : 'active:scale-95'}`}
+            className={`neu-btn-accent px-8 py-3 text-sm font-black flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-wait' : ''}`}
           >
             <FontAwesomeIcon icon={isLoading ? faSpinner : faPaperPlane} className={isLoading ? 'animate-spin' : ''} />
             {isLoading ? '스캔 중...' : 'URL 투하'}
@@ -112,7 +112,7 @@ export default function AdminWebSave() {
       </div>
 
       {/* SECTION 2: Direct Text Injection (NEW) */}
-      <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 mb-6 border-t-4 border-t-amber-500">
+      <div className="neu-raised rounded-2xl p-8 mb-6" style={{ borderTop: '4px solid rgba(245,158,11,0.7)' }}>
         <div className="flex items-center gap-4 mb-6">
           <div className="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center text-white text-2xl shadow-lg font-black">
             <FontAwesomeIcon icon={faAlignLeft} />
@@ -124,17 +124,17 @@ export default function AdminWebSave() {
         </div>
 
         <div className="space-y-4">
-          <textarea 
+          <textarea
             placeholder="여기에 본문 내용을 붙여넣으세요. 에이전트가 즉시 정제 및 콘텐츠 제작을 시작합니다."
-            className="w-full h-40 bg-gray-50 px-5 py-4 text-xs outline-none font-medium text-gray-800 border border-gray-200 rounded-2xl focus:border-amber-500 focus:bg-white transition-all resize-none leading-relaxed"
+            className="neu-input w-full h-40 px-5 py-4 text-xs font-medium resize-none leading-relaxed"
             value={directText}
             onChange={(e) => setDirectText(e.target.value)}
           />
           <div className="flex justify-end">
-            <button 
+            <button
               onClick={handleDirectInject}
               disabled={isDirectLoading}
-              className={`px-10 py-4 bg-amber-500 hover:bg-amber-600 text-white font-black rounded-xl text-sm flex items-center gap-3 transition-all shadow-lg shadow-amber-100 ${isDirectLoading ? 'opacity-50 cursor-wait' : 'active:scale-95'}`}
+              className={`neu-btn-accent px-10 py-4 text-sm font-black flex items-center gap-3 ${isDirectLoading ? 'opacity-50 cursor-wait' : ''}`}
             >
               <FontAwesomeIcon icon={isDirectLoading ? faSpinner : faMagic} className={isDirectLoading ? 'animate-spin' : ''} />
               {isDirectLoading ? '데이터 처리 중...' : '본문 즉시 주입 (Inject)'}
@@ -145,7 +145,7 @@ export default function AdminWebSave() {
 
       {/* Result Panel (Shared) */}
       {result && (
-        <div className="bg-white rounded-2xl shadow-xl border border-blue-100 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 mb-10">
+        <div className="neu-raised rounded-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 mb-10">
           <div className={`${result.title.includes("직접") ? 'bg-amber-500' : 'bg-blue-600'} p-6 text-white flex justify-between items-center`}>
             <div className="flex items-center gap-3">
               <FontAwesomeIcon icon={faCheckCircle} className="text-2xl opacity-80" />

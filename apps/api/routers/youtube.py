@@ -5,6 +5,7 @@ import asyncio
 import subprocess
 import tempfile
 import os
+import logging
 from pathlib import Path
 from googleapiclient.discovery import build
 from core.config import settings
@@ -36,15 +37,15 @@ def _resolve_channel_id(youtube, url: str) -> str | None:
             items = res.get('items', [])
             if items:
                 return items[0]['id']
-        except Exception:
-            pass
+        except Exception as e:
+            logging.warning("[YouTube] handle→channelId 실패 (forHandle): %s", e)
         try:
             res = youtube.search().list(q=handle, type='channel', part='id', maxResults=1).execute()
             items = res.get('items', [])
             if items:
                 return items[0]['id']['channelId']
-        except Exception:
-            pass
+        except Exception as e:
+            logging.warning("[YouTube] handle→channelId 실패 (search): %s", e)
         return None
 
     # /c/name or /user/name
@@ -55,8 +56,8 @@ def _resolve_channel_id(youtube, url: str) -> str | None:
             items = res.get('items', [])
             if items:
                 return items[0]['id']['channelId']
-        except Exception:
-            pass
+        except Exception as e:
+            logging.warning("[YouTube] /c|/user→channelId 실패: %s", e)
         return None
 
     # 단일 영상 URL → 채널 ID 추출
@@ -67,8 +68,8 @@ def _resolve_channel_id(youtube, url: str) -> str | None:
             items = res.get('items', [])
             if items:
                 return items[0]['snippet']['channelId']
-        except Exception:
-            pass
+        except Exception as e:
+            logging.warning("[YouTube] video→channelId 실패: %s", e)
 
     return None
 
@@ -205,7 +206,7 @@ def _do_extract_audio(url: str, output_dir: str) -> str:
 @router.post("/extract-audio")
 async def extract_audio(req: ExtractAudioRequest):
     """유튜브 영상 URL → 오디오 MP3 추출"""
-    output_dir = Path("C:/LinkDropV2/tmp/audio")
+    output_dir = Path(__file__).resolve().parents[3] / "tmp" / "audio"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     try:

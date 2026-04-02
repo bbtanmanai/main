@@ -18,7 +18,7 @@ class NotebookLMAdminService:
     def __init__(self):
         # 윈도우 환경 최적화된 절대 경로
         self.profile_path = Path(r"C:\Users\User\.notebooklm-mcp-cli\profiles\default\metadata.json")
-        self.project_root = Path("C:/LinkDropV2")
+        self.project_root = Path(__file__).resolve().parents[3]
         self.data_refined_dir = self.project_root / "packages" / "data" / "refined"
 
     def get_session_status(self) -> Dict[str, Any]:
