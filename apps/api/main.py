@@ -199,6 +199,9 @@ from routers.translate import router as translate_router
 from routers.browser import router as browser_router
 from routers.video import router as video_router
 from routers.image import router as image_router
+from routers.trends import router as trends_router
+from routers.series_generate import router as series_generate_router
+from routers.wiki import router as wiki_router
 app.include_router(opal_router)
 app.include_router(youtube_router)
 app.include_router(nlm_video_router)
@@ -206,6 +209,9 @@ app.include_router(translate_router)
 app.include_router(browser_router)
 app.include_router(video_router)
 app.include_router(image_router)
+app.include_router(trends_router)
+app.include_router(series_generate_router)
+app.include_router(wiki_router)
 
 # Mount MCP
 mcp.mount_sse()

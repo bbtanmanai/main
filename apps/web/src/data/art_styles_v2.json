@@ -1,0 +1,35 @@
+{
+  "_note": "화풍별 글로벌 기본값. 캐릭터별 {id}_{style}.json의 style_prompt/negative_prompt가 이를 오버라이드함.",
+
+  "masako": {
+    "label": "마사코 스타일",
+    "fal_route": "fal-ai/flux-lora",
+    "fal_params": {
+      "num_inference_steps": 28,
+      "guidance_scale": 3.5,
+      "image_size": "landscape_16_9",
+      "num_images": 1
+    },
+    "ip_adapter_weight": 0.72,
+    "base_style_prompt": "masako style illustration, clean manga ink lines, soft screen tone shading, muted color palette, cinematic Korean drama composition, expressive emotional restraint, webtoon panel aesthetic",
+    "negative_prompt": "photorealistic, 3d render, ugly, deformed, extra limbs, western comic, bright saturated colors, childish, chibi",
+    "scene_prompt_template": "{character_appearance}, {scene_description}, {style_prompt}",
+    "bg_only_prompt_template": "{scene_description}, empty scene no people, {style_prompt}"
+  },
+
+  "real": {
+    "label": "실사풍",
+    "fal_route": "fal-ai/flux-pulid",
+    "fal_params": {
+      "num_inference_steps": 20,
+      "guidance_scale": 7.0,
+      "image_size": "landscape_16_9",
+      "num_images": 1
+    },
+    "pulid_weight": 0.85,
+    "base_style_prompt": "photorealistic, Korean drama cinematography, 50mm lens shallow depth of field, natural cinematic lighting, realistic skin texture, cinematic restraint, Korean drama still cut",
+    "negative_prompt": "illustration, anime, cartoon, painting, drawing, cgi, 3d render, ugly, deformed, extra fingers, extra limbs, NSFW",
+    "scene_prompt_template": "{character_appearance}, {scene_description}, {style_prompt}",
+    "bg_only_prompt_template": "{scene_description}, no people, empty scene, {style_prompt}"
+  }
+}

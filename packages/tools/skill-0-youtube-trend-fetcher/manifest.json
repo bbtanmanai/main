@@ -1,0 +1,11 @@
+{
+  "id": "skill-0-youtube-trend-fetcher",
+  "name": "01e_트랜드_수집_에이전트",
+  "category": 0,
+  "label_number": "01e",
+  "description": "YouTube 인기영상 + Naver DataLab에서 한국 트랜드 키워드 상위 5개를 수집합니다.",
+  "icon": "faChartLine",
+  "entry_point": "collect_trends.py",
+  "version": "1.0.0",
+  "author": "LinkDropV2"
+}
