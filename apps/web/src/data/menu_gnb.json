@@ -62,19 +62,42 @@
     ]
   },
   {
-    "name": "영상자동화2",
-    "items": [
+    "name": "시리즈 제작",
+    "type": "complex",
+    "subgroups": [
       {
-        "name": "트랜드 찾기",
-        "href": "/series/trend"
+        "title": "기획",
+        "items": [
+          {
+            "name": "트랜드 · 시놉시스",
+            "href": "/series/trend"
+          },
+          {
+            "name": "세계관",
+            "href": "/series/world"
+          },
+          {
+            "name": "캐릭터",
+            "href": "/series/characters"
+          },
+          {
+            "name": "캐릭터 감정선",
+            "href": "/series/characters-emoline"
+          }
+        ]
       },
       {
-        "name": "세계관",
-        "href": "/series/world"
-      },
-      {
-        "name": "대본 만들기",
-        "href": "/series/script"
+        "title": "제작",
+        "items": [
+          {
+            "name": "대본 만들기",
+            "href": "/series/script"
+          },
+          {
+            "name": "시리즈 위키",
+            "href": "/series/wiki"
+          }
+        ]
       }
     ]
   },

@@ -10,6 +10,20 @@
 
 body {
   background: #f8fafc;
+  scrollbar-width: none; /* Firefox */
+}
+
+body::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* 스크롤바 숨김 (스크롤은 유지) */
+.no-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
 }
 
 /* Custom Scrollbar for Sidebar */
@@ -611,4 +625,7 @@ body {
 .neu-primary-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
