@@ -15,7 +15,15 @@ export const metadata: Metadata = {
   description:
     "링크드롭 플랫폼 — 크리에이터를 위한 콘텐츠 수익화, 파트너 생태계, AI 자동화 파이프라인",
   keywords: ["링크드롭", "LinkDrop", "크리에이터", "콘텐츠 수익화", "AI 자동화"],
-  // OG(Open Graph) 태그 — 카카오/페이스북/트위터 등 SNS 공유 시 표시되는 미리보기
+  icons: {
+    icon: [
+      { url: "/img/favicons/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/img/favicons/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: { url: "/img/favicons/apple-touch-icon.png", sizes: "180x180" },
+    shortcut: "/img/favicons/favicon.ico",
+  },
+  manifest: "/img/favicons/manifest.json",
   openGraph: {
     title: "LINKDROP — 크리에이터 수익화 플랫폼",
     description: "당신의 이야기가 비즈니스가 됩니다",
