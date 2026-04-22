@@ -1,0 +1,87 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p *)",
+      "Bash(cp *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(grep *)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
+      "Bash(cd apps/web && npm run*)",
+      "Bash(cd apps/web && npx tsc*)",
+      "Bash(cd apps/web && npx next*)",
+      "Bash(node .claude/hooks/*)",
+      "Bash(npx --yes block-no-verify@1.1.2)",
+      "WebFetch(domain:localhost)"
+    ],
+    "additionalDirectories": [
+      "C:/tmp"
+    ]
+  },
+  "model": "claude-sonnet-4-6",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx --yes block-no-verify@1.1.2",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/pre-commit-quality.js",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/suggest-compact.js",
+            "timeout": 5,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/enforce-crlf.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "smallModel": "claude-haiku-4-5-20251001",
+  "modelAliases": {
+    "haiku": {
+      "role": "수집/검색/카운팅/간단한 파일 탐색 및 테스트 실행",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    "sonnet": {
+      "role": "분석/비교/요약/코드 리뷰/수정 등 하이 퀄리티 구현",
+      "model": "claude-sonnet-4-6"
+    },
+    "opus": {
+      "role": "아키텍처/설계/전략/창의적 판단 및 큰 구조 의사결정",
+      "model": "claude-opus-4-6"
+    }
+  }
+}
