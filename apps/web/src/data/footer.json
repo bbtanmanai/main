@@ -1,0 +1,16 @@
+{
+  "company": {
+    "name": "링크드롭",
+    "ceo": "대표자 홍길동",
+    "bizNumber": "000-00-00000",
+    "address": "서울특별시 강남구 테헤란로 00길 00, 0층",
+    "phone": "1600-0000",
+    "email": "hello@linkdrop.kr"
+  },
+  "links": [
+    { "label": "서비스 이용약관", "href": "/terms" },
+    { "label": "개인정보처리방침", "href": "/privacy" },
+    { "label": "환불정책", "href": "/refund" }
+  ],
+  "copyright": "© 2026 LinkDrop. All rights reserved."
+}

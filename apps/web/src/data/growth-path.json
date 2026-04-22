@@ -1,0 +1,6 @@
+[
+  { "step": 1, "label": "학습", "desc": "플랫폼 기초 + 첫 콘텐츠", "duration": "1개월", "color": "#6366f1" },
+  { "step": 2, "label": "실습", "desc": "꾸준한 업로드 + 첫 수익", "duration": "2~3개월", "color": "#3b82f6" },
+  { "step": 3, "label": "리셀러", "desc": "파트너 모집 + 수당 수익", "duration": "4~6개월", "color": "#10b981" },
+  { "step": 4, "label": "강사", "desc": "강의 개설 + 강사 수입", "duration": "7개월+", "color": "#f59e0b" }
+]

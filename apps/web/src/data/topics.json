@@ -1,0 +1,11 @@
+[
+  { "slug": "webnovel-writer",     "title": "웹소설 작가로\n월 수익 만들기",       "icon": "PenLine",      "badge": "인기",   "desc": "AI가 도와주는 웹소설 창작으로 안정적인 수익을" },
+  { "slug": "my-life-bestseller",  "title": "내 인생 이야기가\n베스트셀러가 된다", "icon": "BookOpen",     "badge": "신규",   "desc": "살아온 이야기를 책으로, 전자책으로 수익화" },
+  { "slug": "shorts-ad",           "title": "유튜브 쇼츠로\n매달 광고비 받기",     "icon": "Video",        "badge": "추천",   "desc": "짧은 영상 하나로 광고 수익과 팬을 동시에" },
+  { "slug": "expert-video",        "title": "내 전문 지식을\n영상 강의로 팔기",     "icon": "GraduationCap","badge": "인기",   "desc": "30년 경험을 강의로, 수강생이 수익으로" },
+  { "slug": "blog-ad",             "title": "블로그 글 하나로\n매달 광고 수익",     "icon": "FileText",     "badge": null,     "desc": "꾸준한 블로그로 광고 수익과 브랜드를 동시에" },
+  { "slug": "fintech-channel",     "title": "재테크 정보 채널로\n부수입 만들기",    "icon": "TrendingUp",   "badge": "추천",   "desc": "재테크 노하우를 콘텐츠로, 팬덤으로, 수익으로" },
+  { "slug": "health-content",      "title": "건강·다이어트 정보로\n돈 버는 법",     "icon": "Heart",        "badge": null,     "desc": "건강 정보 콘텐츠로 신뢰받는 인플루언서가 되다" },
+  { "slug": "solo-biz-automation", "title": "1인 기업 마케팅·CS\n자동화",          "icon": "Zap",          "badge": "신규",   "desc": "혼자서도 대기업처럼, AI 자동화로 시간을 되찾아" },
+  { "slug": "grandkid-parenting",  "title": "손주·육아 꿀팁으로\n인플루언서",      "icon": "Baby",         "badge": null,     "desc": "손주 키우며 쌓은 경험으로 팬과 수익을 함께" }
+]

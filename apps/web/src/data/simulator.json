@@ -1,0 +1,8 @@
+{
+  "defaults": { "contentPerMonth": 8, "pricePerContent": 9900 },
+  "min": { "contentPerMonth": 1, "pricePerContent": 4900 },
+  "max": { "contentPerMonth": 30, "pricePerContent": 49000 },
+  "platformFeeRate": 0.2,
+  "partnerBonusRate": 0.1,
+  "formula": "monthly = contentPerMonth * pricePerContent * (1 - platformFeeRate)"
+}

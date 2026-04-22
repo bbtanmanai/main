@@ -1,0 +1,8 @@
+{
+  "kakao": "https://pf.kakao.com/linkdrop",
+  "phone": "tel:16000000",
+  "email": "mailto:hello@linkdrop.kr",
+  "fallbackPhone": "1600-0000",
+  "instagramUrl": "https://instagram.com/linkdrop",
+  "youtubeUrl": "https://youtube.com/@linkdrop"
+}

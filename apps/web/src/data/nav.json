@@ -1,0 +1,11 @@
+{
+  "logo": "LINKDROP",
+  "items": [
+    { "label": "홈", "href": "/" },
+    { "label": "서비스", "href": "#", "hasMega": true },
+    { "label": "파트너", "href": "/landing/webnovel-writer" },
+    { "label": "강사 과정", "href": "/landing/expert-video" },
+    { "label": "문의", "href": "#contact" }
+  ],
+  "cta": { "label": "지금 시작하기", "href": "/landing/webnovel-writer" }
+}

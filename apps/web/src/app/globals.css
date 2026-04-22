@@ -1,0 +1,565 @@
+/* ============================================================
+   LinkDrop V2 — 전역 CSS
+   Tailwind v4: @import로 기본 유틸리티 로드
+   ============================================================ */
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("/fonts/Montserrat-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "NanumKalguksu";
+  src: url("/fonts/NanumKalguksu.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "SeoulAlrimHeavy";
+  src: url("/fonts/SeoulAlrimTTF-Heavy.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── 로컬 폰트: Anton / Condiment / Pretendard Variable ────── */
+/* CDN 의존 제거 — 아래 3개는 /public/fonts/ 에 직접 저장된 파일 */
+@font-face {
+  font-family: "Anton";
+  src: url("/fonts/Anton-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Condiment";
+  src: url("/fonts/Condiment-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pretendard Variable";
+  src: url("/fonts/PretendardVariable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── Tailwind v4: 커스텀 폰트 테마 등록 ────────────────────── */
+@theme {
+  /* 폰트 패밀리 등록 */
+  --font-family-anton: "Anton", sans-serif;
+  --font-family-condiment: "Condiment", cursive;
+  --font-family-montserrat: "Montserrat", sans-serif;
+  --font-family-pretendard: "Pretendard Variable", "Pretendard", sans-serif;
+  /* 기본 sans: 기능 페이지 표준 (Pretendard) — 디자인 페이지는 인라인 스타일로 개별 지정 */
+  --font-family-sans: "Pretendard Variable", "Pretendard", sans-serif;
+
+  /* 브랜드 색상 토큰 — Tailwind 유틸리티로 사용 가능 */
+  --color-neon: #6fff00;
+  --color-neon-dim: rgba(111, 255, 0, 0.15);
+  --color-deep-navy: #010828;
+  --color-surface-dark: #0a1540;
+  --color-cream: #eff4ff;
+  --color-cream-dim: #8899cc;
+}
+
+/* ── 다크 테마 CSS 변수 (기본) ──────────────────────────────── */
+:root[data-theme="dark"],
+:root:not([data-theme]) {
+  --bg-base: #010828;
+  --bg-surface: #0a1540;
+  --text-primary: #eff4ff;
+  --text-secondary: #8899cc;
+  --accent-neon: #6fff00;
+  --accent-neon-dim: rgba(111, 255, 0, 0.15);
+  --glass-blur: 4px;
+  --glass-saturate: 100%;
+  --texture-opacity: 0.6;
+  --texture-blend: lighten;
+  color-scheme: dark;
+  /* Liquid Glass GNB — dark */
+  --lnav-glass-bg: rgba(30, 30, 35, 0.45);
+  --lnav-glass-border: rgba(255, 255, 255, 0.15);
+  --lnav-glass-shadow: rgba(0, 0, 0, 0.8);
+  --lnav-glass-highlight: rgba(255, 255, 255, 0.25);
+  --lnav-glass-caustic: rgba(255, 255, 255, 0.05);
+  --lnav-reflection-start: rgba(255, 255, 255, 0.15);
+  --lnav-glare-color: rgba(255, 255, 255, 0.15);
+  --lnav-pill-bg: rgba(60, 60, 65, 0.85);
+  --lnav-pill-shadow: 0 4px 12px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.2), inset 0 1px 1px rgba(255,255,255,0.2);
+  --lnav-icon-color: rgba(255, 255, 255, 0.5);
+  --lnav-icon-active: #ffffff;
+  --lnav-divider: rgba(255, 255, 255, 0.15);
+}
+
+/* ── 라이트 테마 CSS 변수 ───────────────────────────────────── */
+:root[data-theme="light"] {
+  --bg-base: #f8faff;
+  --bg-surface: #eef2ff;
+  --text-primary: #0b1b3b;
+  --text-secondary: #4a5a80;
+  --accent-neon: #3aa800;
+  --accent-neon-dim: rgba(58, 168, 0, 0.12);
+  --glass-blur: 10px;
+  --glass-saturate: 140%;
+  --texture-opacity: 0.18;
+  --texture-blend: multiply;
+  color-scheme: light;
+  /* Liquid Glass GNB — light */
+  --lnav-glass-bg: rgba(255, 255, 255, 0.15);
+  --lnav-glass-border: rgba(255, 255, 255, 0.4);
+  --lnav-glass-shadow: rgba(0, 0, 0, 0.1);
+  --lnav-glass-highlight: rgba(255, 255, 255, 0.8);
+  --lnav-glass-caustic: rgba(255, 255, 255, 0.4);
+  --lnav-reflection-start: rgba(255, 255, 255, 0.6);
+  --lnav-glare-color: rgba(255, 255, 255, 0.5);
+  --lnav-pill-bg: rgba(255, 255, 255, 0.7);
+  --lnav-pill-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05), inset 0 1px 1px rgba(255,255,255,0.8);
+  --lnav-icon-color: rgba(0, 0, 0, 0.5);
+  --lnav-icon-active: rgba(0, 0, 0, 0.95);
+  --lnav-divider: rgba(0, 0, 0, 0.15);
+}
+
+/* ── 기본 리셋 ──────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* 부드러운 스크롤 — 섹션 간 이동 시 부드럽게 */
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  /* 기본 폰트: Pretendard — 기능 페이지 표준. 디자인 페이지는 인라인 스타일 개별 적용 */
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   Liquid-Glass 효과 — JS 분기 없이 단일 클래스로 사용
+   모든 글래스 UI 요소에 .ld-glass 클래스 적용
+   ============================================================ */
+.ld-glass {
+  background: rgba(255, 255, 255, 0.01);
+  background-blend-mode: luminosity;
+  backdrop-filter: blur(var(--glass-blur, 4px))
+    saturate(var(--glass-saturate, 100%));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 4px))
+    saturate(var(--glass-saturate, 100%));
+  border: none;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 글래스 테두리 광택 효과 — ::before 슈도 엘리먼트 */
+.ld-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.4px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0.15) 20%,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, 0) 60%,
+    rgba(255, 255, 255, 0.15) 80%,
+    rgba(255, 255, 255, 0.45) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ============================================================
+   텍스처 오버레이 — 화면 전체 고정, 포인터 이벤트 없음
+   /public/texture.png 파일 없어도 레이아웃이 깨지지 않음
+   ============================================================ */
+.ld-texture {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  background-image: url("/texture.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  mix-blend-mode: var(--texture-blend, lighten);
+  opacity: var(--texture-opacity, 0.6);
+}
+
+/* ============================================================
+   CountUp 숫자 애니메이션 — 섹션2 진입 시 숫자가 올라감
+   ============================================================ */
+@keyframes countup-fade {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.countup-visible {
+  animation: countup-fade 0.6s ease forwards;
+}
+
+/* ============================================================
+   스크롤 인디케이터 bounce 애니메이션
+   ============================================================ */
+@keyframes scroll-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+.scroll-bounce {
+  animation: scroll-bounce 1.8s ease-in-out infinite;
+}
+
+/* ============================================================
+   Condiment 텍스트 fade-in 애니메이션
+   ============================================================ */
+@keyframes condiment-fadein {
+  from {
+    opacity: 0;
+    letter-spacing: 0.3em;
+  }
+  to {
+    opacity: 1;
+    letter-spacing: normal;
+  }
+}
+
+.condiment-fade {
+  animation: condiment-fadein 1.2s ease forwards;
+}
+
+/* ============================================================
+   섹션 진입 애니메이션 (Intersection Observer 트리거)
+   ============================================================ */
+.section-hidden {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.section-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================================
+   비디오 배경 parallax 컨테이너
+   ============================================================ */
+.video-parallax {
+  will-change: transform;
+  transition: transform 0.1s linear;
+}
+
+/* ============================================================
+   유틸리티 클래스
+   ============================================================ */
+
+/* Anton 폰트 — 영문 헤딩 전용. 한글에 절대 사용 금지 */
+.font-anton {
+  font-family: "Anton", sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* Condiment 폰트 — 커시브 액센트 */
+.font-condiment {
+  font-family: "Condiment", cursive;
+  font-weight: 400;
+}
+
+/* Pretendard 폰트 — 한글 전체 + 본문 */
+.font-pretendard {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+}
+
+/* neon green 액센트 색상 */
+.text-neon {
+  color: var(--accent-neon);
+}
+
+/* neon green 배경 (버튼 등) */
+.bg-neon {
+  background-color: var(--accent-neon);
+}
+
+/* ============================================================
+   카드 hover 효과 — scale + glass 강화
+   ============================================================ */
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease,
+    backdrop-filter 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: scale(1.02) translateY(-4px);
+  box-shadow: 0 20px 60px rgba(111, 255, 0, 0.08),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15);
+}
+
+/* ============================================================
+   LdStatusStepper — pulse 애니메이션 + 모바일 세로 전환
+   ============================================================ */
+@keyframes ld-stepper-pulse {
+  from { opacity: 0.3; transform: scale(0.8); }
+  to   { opacity: 1;   transform: scale(1.2); }
+}
+
+@media (max-width: 640px) {
+  .ld-stepper-container {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  .ld-stepper-item {
+    flex-direction: row !important;
+    align-items: center !important;
+    flex: none !important;
+  }
+}
+
+/* ============================================================
+   공통 스피너 애니메이션 (login / signup)
+   ============================================================ */
+@keyframes ld-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   레이아웃 반응형 — 사이드바 / 탭바 전환
+   ============================================================ */
+@media (min-width: 768px) {
+  .admin-sidebar      { display: block !important; }
+  .admin-tabbar       { display: none  !important; }
+  .member-sidebar     { display: block !important; }
+  .member-tabbar      { display: none  !important; }
+  .partner-sidebar    { display: block !important; }
+  .partner-tabbar     { display: none  !important; }
+  .instructor-sidebar { display: block !important; }
+  .instructor-tabbar  { display: none  !important; }
+}
+@media (max-width: 767px) {
+  .admin-sidebar      { display: none  !important; }
+  .admin-tabbar       { display: flex  !important; }
+  .member-sidebar     { display: none  !important; }
+  .member-tabbar      { display: flex  !important; }
+  .partner-sidebar    { display: none  !important; }
+  .partner-tabbar     { display: flex  !important; }
+  .instructor-sidebar { display: none  !important; }
+  .instructor-tabbar  { display: flex  !important; }
+}
+
+/* ============================================================
+   Liquid Glass GNB — Apple-style pill nav with glare
+   CSS 변수 기반 — data-theme 속성만으로 다크/라이트 전환
+   ============================================================ */
+.liquid-nav {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 99px;
+  background: var(--lnav-glass-bg);
+  backdrop-filter: blur(50px) saturate(200%);
+  -webkit-backdrop-filter: blur(50px) saturate(200%);
+  box-shadow:
+    0 40px 80px -20px var(--lnav-glass-shadow),
+    0 10px 30px -10px var(--lnav-glass-shadow),
+    inset 0 2px 3px -1px var(--lnav-glass-highlight),
+    inset 0 -2px 4px -1px var(--lnav-glass-caustic),
+    inset 0 0 0 1px var(--lnav-glass-border);
+  transition: background 0.5s ease, box-shadow 0.5s ease;
+  z-index: 10;
+}
+
+.liquid-nav::before {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  right: 1px;
+  height: 46%;
+  border-radius: 99px 99px 24px 24px / 99px 99px 12px 12px;
+  background: linear-gradient(180deg, var(--lnav-reflection-start) 0%, rgba(255,255,255,0) 100%);
+  pointer-events: none;
+  z-index: 6;
+  transition: background 0.5s ease;
+}
+
+.liquid-glare-container {
+  position: absolute;
+  inset: 0;
+  border-radius: 99px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.liquid-glare {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(
+    circle 90px at var(--glare-x, 50%) var(--glare-y, 50%),
+    var(--lnav-glare-color) 0%,
+    transparent 100%
+  );
+  mix-blend-mode: overlay;
+}
+
+.liquid-nav:hover .liquid-glare {
+  opacity: 1;
+}
+
+.liquid-nav-items {
+  position: relative;
+  display: flex;
+  gap: 4px;
+  z-index: 3;
+}
+
+.liquid-active-pill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 44px;
+  background: var(--lnav-pill-bg);
+  border-radius: 99px;
+  box-shadow: var(--lnav-pill-shadow);
+  pointer-events: none;
+  z-index: 1;
+  transition:
+    transform 0.5s cubic-bezier(0.34, 1.2, 0.64, 1),
+    width 0.5s cubic-bezier(0.34, 1.2, 0.64, 1),
+    background 0.5s ease,
+    box-shadow 0.5s ease;
+}
+
+.liquid-nav-btn {
+  position: relative;
+  background: transparent;
+  border: none;
+  padding: 0 20px;
+  height: 44px;
+  border-radius: 99px;
+  cursor: pointer;
+  color: var(--lnav-icon-color);
+  transition: color 0.3s ease;
+  z-index: 2;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+.liquid-nav-btn.active {
+  color: var(--lnav-icon-active);
+}
+
+.liquid-btn-content {
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.liquid-nav-btn:active .liquid-btn-content {
+  transform: scale(0.92);
+}
+
+.liquid-nav-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--lnav-divider);
+  margin: 0 4px;
+  z-index: 3;
+  flex-shrink: 0;
+  transition: background 0.5s ease;
+}
+
+.liquid-theme-btn {
+  position: relative;
+  background: transparent;
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: var(--lnav-icon-color);
+  cursor: pointer;
+  z-index: 3;
+  outline: none;
+  margin-left: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
+}
+
+.liquid-theme-btn:hover,
+.liquid-theme-btn:active {
+  color: var(--lnav-icon-active);
+}
+
+.liquid-theme-btn:active .liquid-theme-icon {
+  transform: scale(0.8);
+}
+
+.liquid-theme-icon {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+  transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.liquid-sun,
+.liquid-moon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: transform 0.5s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.4s ease;
+}
+
+/* 기본(다크): 달 표시, 태양 숨김 */
+.liquid-sun  { opacity: 0; transform: rotate(90deg) scale(0); }
+.liquid-moon { opacity: 1; transform: rotate(0deg) scale(1); }
+
+/* 라이트 모드: 태양 표시, 달 숨김 */
+:root[data-theme="light"] .liquid-sun  { opacity: 1; transform: rotate(0deg) scale(1); }
+:root[data-theme="light"] .liquid-moon { opacity: 0; transform: rotate(-90deg) scale(0); }

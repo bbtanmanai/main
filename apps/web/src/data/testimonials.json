@@ -1,0 +1,8 @@
+[
+  { "name": "김미숙", "age": 58, "region": "경기 수원", "topic": "webnovel-writer", "income": "월 94만원", "content": "퇴직 후 무료했는데 웹소설로 새로운 삶을 찾았어요. AI가 초안을 잡아주니 저는 이야기만 생각하면 됩니다.", "months": 3 },
+  { "name": "박성호", "age": 62, "region": "서울 노원", "topic": "expert-video", "income": "월 142만원", "content": "33년 요리 경력을 강의로 만들었어요. 수강생들이 감사 인사를 보낼 때 보람을 느낍니다.", "months": 5 },
+  { "name": "이정희", "age": 55, "region": "부산 해운대", "topic": "shorts-ad", "income": "월 67만원", "content": "손녀한테 쇼츠 찍는 법 배워서 시작했어요. 이제 제가 손녀보다 구독자가 많아요!", "months": 4 },
+  { "name": "최순자", "age": 64, "region": "대전 유성", "topic": "health-content", "income": "월 53만원", "content": "당뇨 관리 경험을 나눴더니 비슷한 처지의 분들이 많이 공감해 주셨어요.", "months": 6 },
+  { "name": "정재원", "age": 59, "region": "인천 남동", "topic": "fintech-channel", "income": "월 118만원", "content": "주식 투자 20년 경험을 유튜브로 풀었어요. 생각보다 빨리 수익이 나서 놀랐습니다.", "months": 3 },
+  { "name": "윤순희", "age": 61, "region": "광주 서구", "topic": "my-life-bestseller", "income": "전자책 344권 판매", "content": "내 인생이 책이 될 줄 몰랐어요. 자녀들이 가장 좋아하는 선물이 됐답니다.", "months": 2 }
+]

@@ -1,0 +1,15 @@
+{
+  "brand": "LinkDrop",
+  "tagline": "크리에이터를 위한 콘텐츠 수익화 플랫폼",
+  "description": "당신의 이야기가 비즈니스가 됩니다",
+  "stats": [
+    { "label": "활성 파트너", "value": 1240, "suffix": "명+" },
+    { "label": "누적 매출", "value": 48, "suffix": "억+" },
+    { "label": "콘텐츠 수", "value": 32000, "suffix": "편+" }
+  ],
+  "contact": {
+    "kakao": "https://pf.kakao.com/linkdrop",
+    "phone": "1600-0000",
+    "email": "hello@linkdrop.kr"
+  }
+}
