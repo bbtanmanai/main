@@ -1,11 +1,5 @@
 "use client";
 
-// ============================================================
-// (admin) 라우트 그룹 레이아웃 — CRM 관리자 패널
-// role=admin 체크 (실제 Supabase 연결 후 redirect 활성화)
-// 사이드바: 회원 목록 / 주문 목록 / 파트너 관리
-// ============================================================
-
 import { usePathname } from "next/navigation";
 
 const MENU_ITEMS = [
@@ -23,7 +17,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <header
         style={{
           height: 60,
-          backgroundColor: "#0f172a", // 관리자 전용 진한 네이비
+          backgroundColor: "#0f172a",
           borderBottom: "1px solid rgba(239,68,68,0.2)",
           display: "flex",
           alignItems: "center",
@@ -124,7 +118,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           );
         })}
       </nav>
-
     </div>
   );
 }
