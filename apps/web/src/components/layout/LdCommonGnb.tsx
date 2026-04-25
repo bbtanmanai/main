@@ -12,9 +12,9 @@ import { useSession } from "@/hooks/useSession";
 // 중앙 내비게이션 메뉴 항목
 const NAV_ITEMS = [
   { label: "서비스소개", href: "/about" },
-  { label: "온라인부업", href: "/landing/senior-online-business" },
-  { label: "웹소설", href: "/landing/webnovel-writer" },
-  { label: "영상자동화", href: "/landing/expert-video" },
+  { label: "웹소설",     href: "/landing/landing1" },
+  { label: "AI클래스",   href: "/landing/landing4" },
+  { label: "영상제작",   href: "/landing/landing5" },
 ];
 
 export default function LdCommonGnb({
