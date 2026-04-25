@@ -25,7 +25,7 @@ export default function PartnersPage() {
   const totalPending = partners.filter((p) => p.settlementStatus === "pending").reduce((s, p) => s + p.totalReward, 0);
 
   return (
-    <div style={{ maxWidth: 900 }}>
+    <div style={{ maxWidth: 1400 }}>
       <h1 style={{ fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif", fontWeight: 800, fontSize: 26, color: "var(--text-primary)", marginBottom: 8 }}>
         파트너 관리
       </h1>

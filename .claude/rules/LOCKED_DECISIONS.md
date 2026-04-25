@@ -31,17 +31,7 @@
 
 ---
 
-### LD-002 — (checkout) 라이트 강제
-- **잠금 날짜**: 2026-04-22
-- **관련 문서**: archives/01번 §결제 플로우
-- **결정 내용**: `(checkout)` 라우트 그룹 전체는 테마 토글과 무관하게 항상 라이트 모드 강제.
-  결제 과정에서 다크 테마는 "신뢰감 저하 + 텍스트 오독" 위험.
-- **이유**: 결제 금액·카드번호·약관 등 중요 정보가 다크 배경에서 대비 부족으로 오독될 수 있다.
-  공정위 전자상거래 가이드라인 준수 — 결제 페이지 가독성 보장 의무.
-- **코드 위치**: `apps/web/src/app/(checkout)/layout.tsx` → `data-theme="light"` 강제 또는
-  CSS `color-scheme: light` 강제
-- **절대 하지 말 것**: checkout 레이아웃에서 ThemeProvider 토글 상태 그대로 상속,
-  다크 테마 checkout 레이아웃 허용
+### ~~LD-002~~ — SUPERSEDED → LD-008 참조
 
 ---
 
@@ -119,6 +109,30 @@
 
 ---
 
+### LD-009 — 이메일+비밀번호 로그인 영구 폐기 (소셜 로그인 전용)
+- **잠금 날짜**: 2026-04-24
+- **결정 내용**: 인증 수단은 Google OAuth·Kakao OAuth만 허용. 이메일+비밀번호 입력 필드, 비밀번호 찾기, 이메일 인증 코드 전송 기능 전면 제거. `(auth)/signup/page.tsx` 삭제. `(auth)/login/page.tsx`는 `/?auth=1` 리다이렉트 stub으로만 유지.
+- **이유**: 시니어 대상 서비스에서 비밀번호 관리 마찰이 이탈의 주원인. 소셜 로그인은 2-탭으로 완료되므로 전환율 극대화. 비밀번호 DB 저장·해시·재설정 로직 없이 보안 면책.
+- **코드 위치**: `apps/web/src/app/(auth)/`, `apps/web/src/components/auth/`
+- **절대 하지 말 것**: 이메일+비밀번호 `signInWithPassword()` 호출 복구, 비밀번호 필드가 있는 폼 컴포넌트 추가, `/signup` 라우트 부활
+
+---
+
+### LD-011 — users.role 4단계 체계 및 명칭 (LD-010 대체)
+- **잠금 날짜**: 2026-04-25 (2026-04-25 명칭 확정)
+- **결정 내용**:
+  - `guest` → **일반회원** — 소셜 로그인 직후 자동 부여. 콘텐츠 없음.
+  - `partner` → **파트너회원** — 1회성 결제(₩59,000) 완료 시 자동 승격. `/member/*` + `/partner/*` 접근.
+  - `gold_partner` → **골드파트너회원** — 월결제(₩29,000/월) 완료 시 자동 승격. `/member/*` + `/partner/*` 접근.
+  - `instructor` → **강사회원** — 관리자 수동 부여. 전체 접근.
+  - `admin` → **관리자** — 수동 부여. 전체 관리.
+- **이유**: 구매자는 곧 파트너 — 즉시 수당 추적·추천 링크 사용 가능. 월결제 골드 등급으로 차별화.
+- **코드 위치**: `apps/web/src/hooks/useSession.ts`, `apps/web/src/middleware.ts`, Supabase `users.role` 컬럼
+- **isBuyer 판정**: `role === 'partner' || role === 'gold_partner' || role === 'instructor' || role === 'admin'`
+- **절대 하지 말 것**: guest에게 콘텐츠 열람 허용, `role='buyer'` 사용, 무료 구독 티어 추가
+
+---
+
 ## ⚠️ 번복 처리 절차
 
 잠금된 결정을 번복해야 하는 경우:
@@ -134,4 +148,21 @@
 
 ## SUPERSEDED (번복된 결정)
 
-(아직 없음)
+### LD-010 (SUPERSEDED by LD-011) — users.role 이원화: guest vs buyer
+- **번복 날짜**: 2026-04-25
+- **원래 결정**: 결제 완료 → `role='buyer'`. `partner`는 수동 부여.
+- **번복 사유**: 구매자는 즉시 파트너가 되어야 전환 마찰이 없음. 수동 승격 단계 제거.
+
+### LD-002 (SUPERSEDED by LD-008) — (checkout) 라이트 강제 → 해제
+- **번복 날짜**: 2026-04-24
+- **원래 결정**: checkout 전체 data-theme="light" 강제
+- **번복 사유**: 새 Liquid Glass 디자인 시스템(dark/light 완전 토큰 체계)이 다크에서도 WCAG AA 대비 충족.
+  사용자가 명시적으로 선택한 테마를 결제 페이지에서 강제 변경하는 것은 UX 일관성 위반.
+- **대체**: LD-008 — checkout은 사용자 선택 테마를 그대로 상속
+
+### LD-008 — (checkout) 테마 상속 (LD-002 대체)
+- **잠금 날짜**: 2026-04-24
+- **결정 내용**: `(checkout)` 라우트 그룹은 전역 ThemeProvider 테마를 그대로 상속한다.
+  `data-theme="light"` 강제 제거. LgThemeToggle 헤더에 추가.
+- **이유**: Liquid Glass 다크 시스템이 WCAG AA를 충족하며, 사용자 테마 선택권 존중.
+- **코드 위치**: `apps/web/src/app/(checkout)/layout.tsx`

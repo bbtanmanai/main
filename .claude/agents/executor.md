@@ -27,8 +27,8 @@ model: sonnet
 - 하드코딩 색상·간격·폰트 금지 → `var(--ld-*)` 또는 Tailwind 토큰만
 
 ### 테마 규칙
-- `defaultTheme="light"`, `enableSystem=false` — LD-001
-- checkout 라우트는 항상 라이트 강제 — LD-002
+- `defaultTheme="dark"`, `enableSystem=false` — LD-001
+- checkout 라우트는 전역 ThemeProvider 테마 그대로 상속 — LD-008 (LD-002 대체)
 - `prefers-reduced-motion` 감지 시 모든 모션 즉시 정지
 
 ### 파일 작성 원칙

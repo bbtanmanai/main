@@ -30,6 +30,7 @@
     "proof": { "value": "구독자 1,000명", "desc": "수익화까지 평균 달성 기간 2.8개월" }
   },
   "expert-video": {
+    "variant": "cinematic",
     "hero": {
       "eyebrow": "전문가 영상 강의",
       "heading": "30년 경험을\n강의로 만들어\n수익을 내세요",
@@ -37,7 +38,58 @@
       "cta": "강의 기획 상담받기"
     },
     "pain": ["무엇을 가르쳐야 할지 모르겠어요", "촬영·편집 기술이 없어요", "플랫폼 등록이 복잡해요"],
-    "proof": { "value": "월 평균 156만원", "desc": "전문 강사 수강료 수익 중간값" }
+    "proof": { "value": "월 평균 156만원", "desc": "전문 강사 수강료 수익 중간값" },
+    "videoSections": [
+      {
+        "id": "hero",
+        "playbackId": "B5zafx01GNBGBrB5M2AsFURPyMqkuRgHGCSA36asEIdQ",
+        "heading": "30년 경험을\n강의로 만들어\n수익을 내세요",
+        "subheading": "촬영 장비도 필요 없습니다. 노하우만 있으면 됩니다.",
+        "primaryCta": { "label": "강의 기획 상담받기", "href": "#final", "kind": "internal" }
+      },
+      {
+        "id": "pain-topic",
+        "playbackId": "MBwdIMmz2tTxH02HXvLQXhav4vs802gKOZUJ6xoe800r48",
+        "eyebrow": "주제 선정",
+        "heading": "무엇을 가르쳐야\n할지 막막하신가요?",
+        "subheading": "평생 쌓은 경험이 바로 강의 주제입니다. AI가 당신의 지식을 체계적인 커리큘럼으로 정리해드립니다.",
+        "primaryCta": { "label": "주제 찾기 상담", "href": "#final", "kind": "internal" },
+        "secondaryCta": { "label": "성공 사례 보기", "href": "#proof", "kind": "internal" }
+      },
+      {
+        "id": "pain-production",
+        "playbackId": "ZNqtDxFRsRx2OzbiNHW00LVjMjz7Y01qKbH4AOdaR3rlA",
+        "eyebrow": "제작 걱정 없이",
+        "heading": "촬영·편집 기술\n없어도 됩니다",
+        "subheading": "AI 영상 도구가 촬영·편집을 대신합니다. 플랫폼 등록까지 전담 매니저가 함께합니다.",
+        "primaryCta": { "label": "제작 방식 알아보기", "href": "#final", "kind": "internal" },
+        "secondaryCta": { "label": "전체 과정 보기", "href": "#proof", "kind": "internal" }
+      },
+      {
+        "id": "platform",
+        "playbackId": "qMV2bGzaF6lkzPr7xxgvBbrd2OWWh5vJxP5EDeCgbr4",
+        "eyebrow": "플랫폼 론칭",
+        "heading": "플랫폼 등록부터\n첫 수익까지\n함께합니다",
+        "subheading": "유튜브·클래스101·탈잉 등 주요 플랫폼 등록을 전담 매니저가 대신합니다. 첫 수강생 모집까지 완벽 지원해 드립니다.",
+        "primaryCta": { "label": "수익화 시작하기", "href": "#final", "kind": "internal" },
+        "secondaryCta": { "label": "플랫폼 알아보기", "href": "#proof", "kind": "internal" }
+      },
+      {
+        "id": "proof",
+        "playbackId": "MMzLrjAiGSE2L86BwnzOX802iXdDFka1OC8bvRX3B59A",
+        "eyebrow": "실제 강사 이야기",
+        "heading": "33년 요리 경력이\n월 142만원 강의가\n됐습니다",
+        "subheading": "\"수강생들이 감사 인사를 보낼 때 보람을 느낍니다\" — 박성호 (62세, 서울 노원)",
+        "primaryCta": { "label": "나도 시작하기", "href": "#final", "kind": "internal" }
+      },
+      {
+        "id": "final",
+        "playbackId": "o6OwfjPw372zfR1k02ubDFNPfdNszEYGo6AS00Ga00Oygs",
+        "heading": "당신의 지식을\n강의로 만들어\n드립니다",
+        "subheading": "지금 바로 무료 상담을 신청하세요. 전담 강의 기획자가 커리큘럼부터 수익화까지 도와드립니다.",
+        "primaryCta": { "label": "무료 상담 신청", "href": "https://open.kakao.com/o/linkdrop", "kind": "external" }
+      }
+    ]
   },
   "blog-ad": {
     "hero": {
@@ -88,5 +140,19 @@
     },
     "pain": ["스마트폰으로 콘텐츠를 만드는 게 어려워요", "젊은 세대가 공감할지 모르겠어요", "팔로워를 어떻게 늘려야 할지 몰라요"],
     "proof": { "value": "월 평균 38만원", "desc": "육아 콘텐츠 파트너 수익 중간값" }
+  },
+  "senior-online-business": {
+    "hero": {
+      "eyebrow": "시니어 온라인 부업",
+      "heading": "스마트폰 하나로\n매달 부수입이\n생깁니다",
+      "subheading": "특별한 기술 없어도 됩니다. 살아온 경험이 콘텐츠가 됩니다.",
+      "cta": "무료로 시작하기"
+    },
+    "pain": [
+      "온라인 부업을 해보고 싶은데 어디서 시작해야 할지 모르겠어요",
+      "스마트폰은 쓸 줄 아는데 돈 버는 방법은 모르겠어요",
+      "나이가 많아서 따라갈 수 있을지 걱정돼요"
+    ],
+    "proof": { "value": "월 평균 72만원", "desc": "40·50·60대 파트너 수익 중간값" }
   }
 }

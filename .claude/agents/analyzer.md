@@ -78,7 +78,7 @@ model: sonnet
 - 에러 핸들링 누락
 - iframe 사용
 - `enableSystem=true` 설정 (LD-001 위반)
-- checkout 라우트 다크 테마 허용 (LD-002 위반)
+- checkout 라우트에 `data-theme="light"` 강제 삽입 (LD-008 위반 — 테마 상속이 올바른 동작)
 - 하드코딩 색상값 (토큰 미사용)
 
 ### MEDIUM (참고)

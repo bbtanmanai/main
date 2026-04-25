@@ -161,7 +161,7 @@ export default function AdminPage() {
 
       {/* 헤더 */}
       <div style={{ background: 'rgba(9,9,11,0.75)', backdropFilter: 'blur(12px)', borderBottom: '1px solid #27272a', position: 'sticky', top: 0, zIndex: 10 }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '14px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ maxWidth: 1400, margin: '0 auto', padding: '14px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <span style={{ fontSize: 18, fontWeight: 800, letterSpacing: '-0.03em' }}>⚙️ Claude 워크스페이스</span>
             <span style={{ fontSize: 11, fontWeight: 700, color: '#f59e0b', background: '#f59e0b22', border: '1px solid #f59e0b44', borderRadius: 4, padding: '2px 7px', letterSpacing: '0.05em' }}>V2</span>
@@ -179,7 +179,7 @@ export default function AdminPage() {
 
       {/* 탭 */}
       <div style={{ background: 'rgba(9,9,11,0.6)', backdropFilter: 'blur(12px)', borderBottom: '1px solid #27272a' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px', display: 'flex', gap: 0 }}>
+        <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 24px', display: 'flex', gap: 0 }}>
           {tabs.map(t => (
             <button
               key={t.key}
@@ -197,7 +197,7 @@ export default function AdminPage() {
       </div>
 
       {/* 콘텐츠 */}
-      <div style={{ padding: '20px 24px', maxWidth: 1200, margin: '0 auto' }}>
+      <div style={{ padding: '20px 24px', maxWidth: 1400, margin: '0 auto' }}>
 
         {/* ── 브리핑 탭 ── */}
         {activeTab === 'overview' && (

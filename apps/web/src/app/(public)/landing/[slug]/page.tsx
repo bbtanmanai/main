@@ -9,7 +9,6 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import topicsData from "@/data/topics.json";
 import landingsData from "@/data/landings.json";
-import LdNavHeader from "@/components/layout/LdNavHeader";
 import LdFooter from "@/components/layout/LdFooter";
 import LdHeroSection from "@/components/landing/LdHeroSection";
 import LdProblemEmpathySection from "@/components/landing/LdProblemEmpathySection";
@@ -21,6 +20,8 @@ import LdPricingSection from "@/components/landing/LdPricingSection";
 import LdFAQSection from "@/components/landing/LdFAQSection";
 import LdFinalCTASection from "@/components/landing/LdFinalCTASection";
 import LdStickyBottomCTA from "@/components/landing/LdStickyBottomCTA";
+import LdCinematicLanding from "@/components/landing/cinematic/LdCinematicLanding";
+import type { VideoSection } from "@/types/landing";
 
 // ── SSG: 빌드 타임에 9개 슬러그 페이지 전부 생성 ──────────
 export async function generateStaticParams() {
@@ -60,11 +61,20 @@ export default async function LandingPage({
     notFound();
   }
 
+  // 시네마틱 분기 — expert-video 등 variant: "cinematic" 페이지
+  if ((landing as Record<string, unknown>).variant === "cinematic") {
+    const videoSections: VideoSection[] = (landing as Record<string, unknown>).videoSections as VideoSection[];
+    return (
+      <>
+        <LdCinematicLanding sections={videoSections} />
+        <LdFooter />
+        <LdStickyBottomCTA />
+      </>
+    );
+  }
+
   return (
     <>
-      {/* 랜딩 전용 헤더 — (public)/layout.tsx와 충돌 없음 */}
-      <LdNavHeader />
-
       <main>
         {/* 섹션 1: 히어로 */}
         <LdHeroSection data={landing.hero} />

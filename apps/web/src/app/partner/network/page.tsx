@@ -118,7 +118,7 @@ export default function NetworkPage() {
           파트너가 수익을 올릴 때마다 후원 수당이 발생합니다
         </p>
         <a
-          href="/member/referral"
+          href="/partner/mylanding"
           style={{
             display: "inline-block",
             height: 48,

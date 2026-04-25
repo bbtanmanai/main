@@ -37,7 +37,7 @@ export default function OrdersPage() {
   const totalAmount = mockOrders.filter((o) => o.status === "complete").reduce((sum, o) => sum + o.amount, 0);
 
   return (
-    <div style={{ maxWidth: 900 }}>
+    <div style={{ maxWidth: 1400 }}>
       <div style={{ marginBottom: 20 }}>
         <h1 style={{ fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif", fontWeight: 800, fontSize: 26, color: "var(--text-primary)", marginBottom: 6 }}>
           주문 목록

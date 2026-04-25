@@ -7,8 +7,16 @@
 // ============================================================
 
 import type { Metadata } from "next";
-import { ThemeProvider } from "next-themes";
+import LdThemeProvider from "@/components/layout/LdThemeProvider";
+import LdGnbConditional from "@/components/layout/LdGnbConditional";
+import LdAuthModal from "@/components/auth/LdAuthModal";
+import LdAuthBottomSheet from "@/components/auth/LdAuthBottomSheet";
 import "./globals.css";
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
   title: "LINKDROP — Empowering Creators Beyond the Content Horizon",
@@ -42,19 +50,17 @@ export default function RootLayout({
   return (
     // suppressHydrationWarning: next-themes가 서버/클라이언트 간 data-theme 불일치 경고 방지용
     <html lang="ko" suppressHydrationWarning>
-      <head />
       <body suppressHydrationWarning>
         {/* ── next-themes ThemeProvider 설정 ──
             defaultTheme="dark" : 처음 방문 시 다크 테마
             enableSystem=false  : 시스템 설정 무시 (디자인 의도 우선)
             attribute="data-theme" : CSS 토큰이 [data-theme] 선택자로 동작 */}
-        <ThemeProvider
-          attribute="data-theme"
-          defaultTheme="dark"
-          enableSystem={false}
-        >
+        <LdThemeProvider>
+          <LdGnbConditional />
           {children}
-        </ThemeProvider>
+          <LdAuthModal />
+          <LdAuthBottomSheet />
+        </LdThemeProvider>
       </body>
     </html>
   );

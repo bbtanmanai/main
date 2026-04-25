@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-type Role = "all" | "member" | "partner" | "instructor";
+type Role = "all" | "guest" | "partner" | "gold_partner" | "instructor";
 
 const mockUsers = [
   { id: "u1", name: "김미숙",  email: "misouk@example.com",    joinDate: "2026-04-01", role: "member",     status: "active" },
@@ -15,10 +15,11 @@ const mockUsers = [
 ];
 
 const ROLE_LABELS: Record<string, string> = {
-  member: "회원",
-  partner: "파트너",
-  instructor: "강사",
-  admin: "관리자",
+  guest:        "일반회원",
+  partner:      "파트너회원",
+  gold_partner: "골드파트너회원",
+  instructor:   "강사회원",
+  admin:        "관리자",
 };
 
 export default function UsersPage() {
@@ -32,7 +33,7 @@ export default function UsersPage() {
   });
 
   return (
-    <div style={{ maxWidth: 900 }}>
+    <div style={{ maxWidth: 1400 }}>
       <h1
         style={{
           fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
@@ -63,8 +64,8 @@ export default function UsersPage() {
           }}
         />
         <div style={{ display: "flex", gap: 6 }}>
-          {(["all", "member", "partner", "instructor"] as Role[]).map((r) => {
-            const labels: Record<Role, string> = { all: "전체", member: "회원", partner: "파트너", instructor: "강사" };
+          {(["all", "guest", "partner", "gold_partner", "instructor"] as Role[]).map((r) => {
+            const labels: Record<Role, string> = { all: "전체", guest: "일반회원", partner: "파트너회원", gold_partner: "골드파트너회원", instructor: "강사회원" };
             return (
               <button
                 key={r}
@@ -108,8 +109,8 @@ export default function UsersPage() {
                     <span style={{
                       padding: "3px 10px", borderRadius: 20, fontSize: 13, fontWeight: 600,
                       fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-                      backgroundColor: user.role === "instructor" ? "rgba(99,102,241,0.12)" : user.role === "partner" ? "rgba(255,136,0,0.12)" : "rgba(255,255,255,0.06)",
-                      color: user.role === "instructor" ? "#6366f1" : user.role === "partner" ? "#FF8800" : "var(--text-secondary)",
+                      backgroundColor: user.role === "instructor" ? "rgba(99,102,241,0.12)" : user.role === "gold_partner" ? "rgba(234,179,8,0.15)" : user.role === "partner" ? "rgba(255,136,0,0.12)" : "rgba(255,255,255,0.06)",
+                      color: user.role === "instructor" ? "#6366f1" : user.role === "gold_partner" ? "#eab308" : user.role === "partner" ? "#FF8800" : "var(--text-secondary)",
                     }}>
                       {ROLE_LABELS[user.role] ?? user.role}
                     </span>

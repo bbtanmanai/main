@@ -6,9 +6,8 @@
 // 다크 테마 기본, liquid-glass UI, 시네마틱 디자인
 // ============================================================
 
-import { useEffect, useRef, useState, useCallback, memo } from "react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState, useCallback, memo, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   ChevronDown,
   ArrowRight,
@@ -17,16 +16,6 @@ import {
   Globe,
   MessageCircle,
 } from "lucide-react";
-
-// ── 내비게이션 메뉴 항목 ─────────────────────────────────────
-// type: "scroll" = 동일 페이지 앵커 / "route" = Next.js 라우트 / "external" = 새 탭
-const NAV_ITEMS = [
-  { label: "HOME",    href: "#hero",                         type: "scroll"   },
-  { label: "서비스",  href: "#featured",                     type: "scroll"   },
-  { label: "파트너십", href: "/landing/shorts-ad",           type: "route"    },
-  { label: "강사",    href: "/landing/expert-video",         type: "route"    },
-  { label: "문의",    href: "https://open.kakao.com/o/linkdrop", type: "external" },
-] as const;
 
 // ── 소셜 아이콘 목록 ───────────────────────────────────────
 const SOCIAL_LINKS = [
@@ -293,27 +282,21 @@ function FeaturedCard({
   );
 }
 
+// ?auth=1 감지 → 소셜 모달 오픈 (useSearchParams는 Suspense 필수)
+function AuthModalTrigger() {
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    if (searchParams.get("auth") === "1") {
+      window.dispatchEvent(new CustomEvent("ld-auth-open"));
+    }
+  }, [searchParams]);
+  return null;
+}
+
 // ============================================================
 // 메인 페이지 컴포넌트
 // ============================================================
 export default function IndexPage() {
-  const router = useRouter();
-
-  // GNB 클릭 핸들러
-  const handleNav = useCallback((href: string, type: string) => {
-    if (type === "scroll") {
-      if (href === "#hero") {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      } else {
-        document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
-      }
-    } else if (type === "route") {
-      router.push(href);
-    } else if (type === "external") {
-      window.open(href, "_blank", "noopener,noreferrer");
-    }
-  }, [router]);
-
   // 섹션2 진입 감지 (CountUp + 섹션 애니메이션)
   const { ref: aboutRef, visible: aboutVisible } =
     useIntersection(0.2) as { ref: React.RefObject<HTMLElement>; visible: boolean };
@@ -334,67 +317,9 @@ export default function IndexPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  // Liquid Glass GNB — pill slider + glare
-  const pillRef = useRef<HTMLDivElement>(null);
-  const navBtnRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const glareRef = useRef<HTMLDivElement>(null);
-  const [activeNavIdx, setActiveNavIdx] = useState(0);
-  const isFirstNavRender = useRef(true);
-
-  // 활성 pill의 위치와 너비를 선택된 버튼 기준으로 업데이트
-  const updatePill = useCallback((idx: number, smooth = true) => {
-    const btn = navBtnRefs.current[idx];
-    const pill = pillRef.current;
-    if (!btn || !pill) return;
-    pill.style.transition = smooth
-      ? "transform 0.5s cubic-bezier(0.34, 1.2, 0.64, 1), width 0.5s cubic-bezier(0.34, 1.2, 0.64, 1)"
-      : "none";
-    pill.style.width = `${btn.offsetWidth}px`;
-    pill.style.transform = `translateX(${btn.offsetLeft}px)`;
-  }, []);
-
-  // 초기 렌더 후 첫 번째 pill 위치를 애니메이션 없이 설정
-  useEffect(() => {
-    const t = setTimeout(() => updatePill(0, false), 50);
-    return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // activeNavIdx 변경 시 pill 슬라이드 애니메이션
-  useEffect(() => {
-    if (isFirstNavRender.current) { isFirstNavRender.current = false; return; }
-    updatePill(activeNavIdx, true);
-  }, [activeNavIdx, updatePill]);
-
-  // 브라우저 리사이즈 시 pill 위치 재계산 (애니메이션 없이)
-  useEffect(() => {
-    const onResize = () => updatePill(activeNavIdx, false);
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, [activeNavIdx, updatePill]);
-
-  // 마우스 이동에 따라 glare 광원 위치 CSS 변수 업데이트
-  const handleNavMouseMove = useCallback((e: React.MouseEvent<HTMLElement>) => {
-    const g = glareRef.current;
-    if (!g) return;
-    const r = e.currentTarget.getBoundingClientRect();
-    g.style.setProperty("--glare-x", `${e.clientX - r.left}px`);
-    g.style.setProperty("--glare-y", `${e.clientY - r.top}px`);
-  }, []);
-
-  // 다크 / 라이트 테마 토글
-  const [isDark, setIsDark] = useState(true);
-  const toggleTheme = useCallback(() => {
-    setIsDark((prev) => {
-      const next = !prev;
-      document.documentElement.setAttribute("data-theme", next ? "dark" : "light");
-      setTimeout(() => updatePill(activeNavIdx, false), 100);
-      return next;
-    });
-  }, [activeNavIdx, updatePill]);
-
-  // 부드러운 앵커 스크롤
   return (
+    <>
+    <Suspense fallback={null}><AuthModalTrigger /></Suspense>
     <main style={{ background: "var(--bg-base)", color: "var(--text-primary)" }}>
       {/* ================================================================
           섹션 1: HERO — 풀뷰포트 비디오 배경
@@ -440,108 +365,8 @@ export default function IndexPage() {
           }}
         />
 
-        {/* ── 상단 네브바 ── */}
-        <header className="relative z-10 w-full px-6 md:px-12 pt-6 flex items-center justify-between max-w-screen-xl mx-auto">
-          {/* 좌측 로고 */}
-          <div>
-            <Image
-              src="/img/logo.png"
-              alt="LinkDrop"
-              width={300}
-              height={80}
-              style={{ objectFit: "contain" }}
-              priority
-            />
-          </div>
-
-          {/* 중앙 네브 — Liquid Glass Pill Nav */}
-          <nav
-            className="hidden md:flex liquid-nav"
-            onMouseMove={handleNavMouseMove}
-          >
-            {/* glare 컨테이너 — 마우스 위치 기반 광원 효과 */}
-            <div className="liquid-glare-container">
-              <div ref={glareRef} className="liquid-glare" />
-            </div>
-            <div className="liquid-nav-items">
-              {/* 슬라이딩 pill 배경 — 활성 버튼 위로 이동 */}
-              <div ref={pillRef} className="liquid-active-pill" />
-              {NAV_ITEMS.map((item, i) => (
-                <button
-                  key={item.label}
-                  ref={(el) => { navBtnRefs.current[i] = el; }}
-                  onClick={() => { setActiveNavIdx(i); handleNav(item.href, item.type); }}
-                  className={`liquid-nav-btn${activeNavIdx === i ? " active" : ""}`}
-                  style={{ fontFamily: '"Pretendard Variable", "Pretendard", sans-serif', fontSize: "15px" }}
-                >
-                  <div className="liquid-btn-content">{item.label}</div>
-                </button>
-              ))}
-            </div>
-
-            {/* 구분선 */}
-            <div className="liquid-nav-divider" />
-
-            {/* 테마 토글 — 다크/라이트 */}
-            <button
-              className="liquid-theme-btn"
-              onClick={toggleTheme}
-              aria-label="테마 전환"
-            >
-              <div className="liquid-theme-icon">
-                <svg
-                  className="liquid-sun"
-                  width="20" height="20" viewBox="0 0 24 24"
-                  fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2"
-                >
-                  <circle cx="12" cy="12" r="5" />
-                  <line x1="12" y1="1" x2="12" y2="3" />
-                  <line x1="12" y1="21" x2="12" y2="23" />
-                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                  <line x1="1" y1="12" x2="3" y2="12" />
-                  <line x1="21" y1="12" x2="23" y2="12" />
-                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-                </svg>
-                <svg
-                  className="liquid-moon"
-                  width="20" height="20" viewBox="0 0 24 24"
-                  fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2"
-                >
-                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                </svg>
-              </div>
-            </button>
-          </nav>
-
-          {/* 우측 — 로그인 / 시작하기 */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => router.push("/login")}
-              className="hidden md:block px-4 py-1.5 rounded-full text-sm transition-all duration-200 hover:text-neon"
-              style={{
-                color: "var(--text-secondary)",
-                border: "1px solid rgba(255,255,255,0.15)",
-              }}
-            >
-              로그인
-            </button>
-            <button
-              onClick={() => router.push("/signup")}
-              className="px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 hover:opacity-90"
-              style={{
-                background: "var(--accent-neon)",
-                color: "#010828",
-              }}
-            >
-              시작하기
-            </button>
-          </div>
-        </header>
-
         {/* ── 히어로 메인 텍스트 블록 ── */}
-        <div className="relative z-10 flex flex-col items-start justify-end h-full px-6 md:px-12 pb-24 md:pb-32 pt-32 max-w-screen-xl mx-auto"
+        <div className="relative z-10 flex flex-col items-start justify-end h-full px-6 md:px-12 pb-24 md:pb-32 pt-32 max-w-[1400px] mx-auto"
           style={{ minHeight: "calc(100svh - 80px)" }}
         >
           {/* Condiment 커시브 액센트 — neon green */}
@@ -628,7 +453,7 @@ export default function IndexPage() {
 
         {/* 콘텐츠 */}
         <div
-          className={`relative z-10 flex flex-col h-full px-6 md:px-12 py-20 max-w-screen-xl mx-auto section-hidden ${aboutVisible ? "section-visible" : ""}`}
+          className={`relative z-10 flex flex-col h-full px-6 md:px-12 py-20 max-w-[1400px] mx-auto section-hidden ${aboutVisible ? "section-visible" : ""}`}
           style={{ minHeight: "100svh" }}
         >
           {/* 상단 — 좌: 헤딩, 우: 요약문 */}
@@ -723,7 +548,7 @@ export default function IndexPage() {
         className="w-full px-6 md:px-12 py-24"
         style={{ background: "var(--bg-base)" }}
       >
-        <div className="max-w-screen-xl mx-auto">
+        <div className="max-w-[1400px] mx-auto">
           {/* 헤더 */}
           <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12 gap-6">
             {/* 좌측 헤딩 */}
@@ -908,5 +733,6 @@ export default function IndexPage() {
         </div>
       </section>
     </main>
+    </>
   );
 }

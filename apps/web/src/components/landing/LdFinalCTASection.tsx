@@ -13,8 +13,7 @@ export default function LdFinalCTASection() {
   return (
     <section
       style={{
-        // 풀블리드 deep navy 배경
-        background: "#010828",
+        background: "#1e1e1e",
         padding: "100px 24px",
         textAlign: "center",
         fontFamily: "Pretendard Variable, Pretendard, sans-serif",

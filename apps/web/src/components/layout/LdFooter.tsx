@@ -14,7 +14,7 @@ export default function LdFooter() {
   return (
     <footer
       style={{
-        background: "#010828", // deep navy — 브랜드 최하단 배경
+        background: "#1e1e1e",
         borderTop: "1px solid rgba(255,255,255,0.06)",
         padding: "48px 24px 32px",
         fontFamily: "Pretendard Variable, Pretendard, sans-serif",
@@ -23,7 +23,7 @@ export default function LdFooter() {
       {/* 최대 너비 컨테이너 */}
       <div
         style={{
-          maxWidth: "1100px",
+          maxWidth: "1400px",
           margin: "0 auto",
         }}
       >
