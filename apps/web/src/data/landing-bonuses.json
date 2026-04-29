@@ -1,0 +1,130 @@
+{
+  "landing1": {
+    "icon": "📝",
+    "tag": "실전 문서집",
+    "title": "웹소설·블로그 수익화 실전 가이드",
+    "desc": "웹소설·블로그 창작으로 수익을 내는 실전 문서집. 글감 고갈 없이 콘텐츠를 뽑아내는 시스템.",
+    "image": "/img/bonus/landing1-bonus.jpg",
+    "includes": [
+      { "icon": "📄", "title": "블로그 글감 카테고리 리스트 (무한 활용)" },
+      { "icon": "🌐", "title": "홈페이지형 블로그(고급형) 만들기 튜토리얼" }
+    ],
+    "value": 78000
+  },
+  "landing2": {
+    "icon": "📚",
+    "tag": "실전 문서집",
+    "title": "전자책 출판·제작 완전 가이드",
+    "desc": "ePub 전자책을 직접 만들고 유통하는 전 과정 실전 문서집. Sigil 실습 파일 포함.",
+    "image": "/img/bonus/landing2-bonus.jpg",
+    "includes": [
+      { "icon": "📄", "title": "전자책(ePub) 2.0 표준 가이드" },
+      { "icon": "🌐", "title": "Sigil로 무료 전자책 만들기 (HTML 실습)" },
+      { "icon": "📦", "title": "ePub 예제 파일 4종 (즉시 편집 가능)" }
+    ],
+    "value": 98000
+  },
+  "landing3": {
+    "icon": "🎨",
+    "tag": "실전 문서집",
+    "title": "동화책 제작·출판 실전 가이드",
+    "desc": "AI를 활용한 동화책 기획부터 전자책 출판까지의 전 과정 실전 문서집.",
+    "image": "/img/bonus/landing3-bonus.jpg",
+    "includes": [
+      { "icon": "📄", "title": "동화책 전자책 목차 설계 가이드" }
+    ],
+    "value": 58000
+  },
+  "landing4": {
+    "icon": "🎬",
+    "tag": "실전 문서집",
+    "title": "AI 강의 제작·수익화 실전 로드맵",
+    "desc": "AI 활용 온라인 강의를 기획·제작·판매하는 전체 사업 로드맵 문서.",
+    "image": "/img/bonus/landing4-bonus.jpg",
+    "includes": [
+      { "icon": "📄", "title": "AI 강의 제작 사업 로드맵 전체 설계도" }
+    ],
+    "value": 68000
+  },
+  "landing5": {
+    "icon": "📱",
+    "tag": "실전 문서집",
+    "title": "쇼츠·SNS 채널 수익화 실전 가이드",
+    "desc": "유튜브 쇼츠·인스타그램으로 수익을 만드는 실전 문서집. 채널 개설부터 바이럴까지.",
+    "image": "/img/bonus/landing5-bonus.jpg",
+    "includes": [
+      { "icon": "📄", "title": "유튜브 무작정 따라하기 — 채널생성편 전자책" },
+      { "icon": "📄", "title": "배경 영상 소스 50여종 활용 가이드" },
+      { "icon": "📄", "title": "Claude 인스타 후킹 분석 30분 세팅 가이드" },
+      { "icon": "📄", "title": "영화 연출 기법 요약 자료 (영상 퀄리티 향상)" }
+    ],
+    "value": 128000
+  },
+  "landing6": {
+    "icon": "💻",
+    "tag": "실전 문서집",
+    "title": "바이브코딩·Claude 실전 활용 문서집",
+    "desc": "Claude·ChatGPT로 실제 돈 버는 프롬프트와 자동화 시스템 HTML·MD 문서 전체.",
+    "image": "/img/bonus/landing6-bonus.jpg",
+    "includes": [
+      { "icon": "🌐", "title": "생성형 AI 기초 및 비즈니스 활용 (HTML)" },
+      { "icon": "📄", "title": "클로드 프롬프트 60개 실전 모음" },
+      { "icon": "📄", "title": "2026년 돈복사 클로드 프롬프트" },
+      { "icon": "📄", "title": "사업가용 Claude 프롬프트 8개 (매출 2배 전략)" },
+      { "icon": "📄", "title": "클로드코드 자동화 시스템 5가지 스킬" },
+      { "icon": "📄", "title": "Obsidian × Claude Code 5가지 세팅 가이드" },
+      { "icon": "🌐", "title": "챗GPT 2.0 이미지 브랜드 킷 프롬프트" }
+    ],
+    "value": 198000
+  },
+  "landing7": {
+    "icon": "📖",
+    "tag": "실전 문서집",
+    "title": "디지털 구술 생애사 기록 사업 가이드",
+    "desc": "부모님·어르신의 생애를 책과 영상으로 기록하는 사업 전체 로드맵 문서.",
+    "image": "/img/bonus/landing7-bonus.jpg",
+    "includes": [
+      { "icon": "📄", "title": "구술 생애사 기록 사업 로드맵 전체 설계도" }
+    ],
+    "value": 58000
+  },
+  "landing8": {
+    "icon": "💼",
+    "tag": "실전 문서집",
+    "title": "1인 기업·마케팅 실전 문서집",
+    "desc": "온라인 비즈니스 세계 최고 교재 요약본부터 AI 마케팅 자동화까지 실전 문서 전체.",
+    "image": "/img/bonus/landing8-bonus.jpg",
+    "includes": [
+      { "icon": "📄", "title": "DotCom Secrets 요약 해석본" },
+      { "icon": "📄", "title": "Expert Secrets 요약 해석본" },
+      { "icon": "📄", "title": "프롬프트 엔지니어링 완벽 가이드" },
+      { "icon": "📄", "title": "실패없이 온라인 사업 주제 찾고 수익화하는 법" },
+      { "icon": "📄", "title": "노트북LM 활용 영상 제작 교재" },
+      { "icon": "🌐", "title": "Google Veo 3 JSON 프롬프트 가이드" },
+      { "icon": "📄", "title": "경험·지식 공유로 3개월 만에 3천만원 벌었던 노하우" }
+    ],
+    "value": 248000
+  },
+  "landing9": {
+    "icon": "📈",
+    "tag": "실전 문서집",
+    "title": "트레이딩 커뮤니티 사업 로드맵",
+    "desc": "주식·암호화폐 지식을 기반으로 트레이딩 커뮤니티를 구축하는 전체 사업 설계 문서.",
+    "image": "/img/bonus/landing9-bonus.jpg",
+    "includes": [
+      { "icon": "📄", "title": "트레이딩 커뮤니티 사업 로드맵 전체 설계도" }
+    ],
+    "value": 68000
+  },
+  "landing10": {
+    "icon": "🗺️",
+    "tag": "실전 문서집",
+    "title": "온라인 부업 주제 선정 실전 가이드",
+    "desc": "자신에게 맞는 온라인 부업 주제를 찾고 수익화 방향을 잡는 실전 전자책 가이드.",
+    "image": "/img/bonus/landing10-bonus.jpg",
+    "includes": [
+      { "icon": "📄", "title": "온라인 부업 주제 정하기 전자책 전체 가이드" }
+    ],
+    "value": 48000
+  }
+}

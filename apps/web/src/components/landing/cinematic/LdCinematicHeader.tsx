@@ -73,7 +73,15 @@ export default function LdCinematicHeader() {
   }, [activeIdx, updatePill]);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 30);
+    const rafPending = { current: false };
+    const onScroll = () => {
+      if (rafPending.current) return;
+      rafPending.current = true;
+      requestAnimationFrame(() => {
+        setScrolled(window.scrollY > 30);
+        rafPending.current = false;
+      });
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -122,8 +130,9 @@ export default function LdCinematicHeader() {
             alt="LinkDrop"
             width={128}
             height={40}
-            style={{ objectFit: "contain", objectPosition: "left center" }}
+            style={{ objectFit: "contain", objectPosition: "left center", filter: "drop-shadow(0 0 8px rgba(255,255,255,0.95)) drop-shadow(0 0 16px rgba(255,255,255,0.6))" }}
             priority
+            unoptimized
           />
         </a>
 

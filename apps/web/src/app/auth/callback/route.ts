@@ -1,6 +1,7 @@
 // ============================================================
 // auth/callback/route.ts — OAuth 콜백 Route Handler
 // PKCE code → session 교환 후 세션 쿠키를 redirect response에 직접 주입
+// 신규 사용자 첫 로그인 시 profiles(role='guest') 레코드 자동 생성
 // next/headers cookies()는 redirect response에 쿠키를 전달하지 않으므로
 // createServerClient를 redirect response 객체에 직접 바인딩
 // ============================================================
@@ -12,7 +13,13 @@ import type { NextRequest } from "next/server";
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/member/dashboard";
+
+  // open redirect 방지 — next는 반드시 상대 경로여야 함
+  const rawNext = searchParams.get("next") ?? "/member/dashboard";
+  const next =
+    rawNext.startsWith("/") && !rawNext.startsWith("//")
+      ? rawNext
+      : "/member/dashboard";
 
   if (code) {
     const redirectUrl = `${origin}${next}`;
@@ -31,7 +38,6 @@ export async function GET(request: NextRequest) {
             cookiesToSet.forEach(({ name, value, options }) => {
               redirectResponse.cookies.set(name, value, {
                 ...options,
-                // localhost(HTTP)에서 작동하도록 secure 해제, 브라우저 클라이언트 접근 허용
                 httpOnly: false,
                 secure: process.env.NODE_ENV === "production",
                 sameSite: "lax",
@@ -43,7 +49,22 @@ export async function GET(request: NextRequest) {
     );
 
     const { error } = await supabase.auth.exchangeCodeForSession(code);
+
     if (!error) {
+      // 신규 사용자 프로필 생성 — 기존 role이 있으면 유지 (ignoreDuplicates)
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        await supabase
+          .from("profiles")
+          .upsert(
+            { id: user.id, role: "guest" },
+            { onConflict: "id", ignoreDuplicates: true }
+          );
+      }
+
       return redirectResponse;
     }
   }

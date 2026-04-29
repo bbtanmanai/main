@@ -6,8 +6,16 @@
       "subheading": "블로그·브런치 연재로 팬을 만들고, AI가 초안을 잡아드립니다.",
       "cta": "무료로 시작하기"
     },
-    "pain": ["글을 써보고 싶은데 어디서 시작할지 모르겠어요", "매일 쓰는 게 너무 힘들어요", "쓴다고 돈이 될지 모르겠어요"],
-    "proof": { "value": "월 평균 87만원", "desc": "웹소설·블로그 파트너 수익 중간값" }
+    "pain": [
+      "글을 써보고 싶은데 어디서 시작할지 모르겠어요",
+      "매일 쓰는 게 너무 힘들어요",
+      "쓴다고 돈이 될지 모르겠어요"
+    ],
+    "proof": {
+      "value": "월 평균 87만원",
+      "desc": "웹소설·블로그 파트너 수익 중간값"
+    },
+    "variant": "webnovel-guide"
   },
   "landing2": {
     "hero": {
@@ -16,18 +24,32 @@
       "subheading": "ChatGPT가 목차와 초안을 잡아드립니다. 당신은 경험만 더하세요.",
       "cta": "전자책 시작하기"
     },
-    "pain": ["무슨 내용을 써야 할지 막막해요", "글 쓰는 능력이 부족한 것 같아요", "전자책 출판·판매가 복잡할 것 같아요"],
-    "proof": { "value": "평균 3주", "desc": "첫 전자책 완성까지 걸리는 시간" }
+    "pain": [
+      "무슨 내용을 써야 할지 막막해요",
+      "글 쓰는 능력이 부족한 것 같아요",
+      "전자책 출판·판매가 복잡할 것 같아요"
+    ],
+    "proof": {
+      "value": "평균 3주",
+      "desc": "첫 전자책 완성까지 걸리는 시간"
+    }
   },
   "landing3": {
     "hero": {
-      "eyebrow": "인생 이야기 출판",
-      "heading": "살아온 이야기가\n베스트셀러가\n될 수 있습니다",
-      "subheading": "구술만 하세요. AI와 편집팀이 책으로 만들어드립니다.",
-      "cta": "내 이야기 시작하기"
+      "eyebrow": "AI 동화책 제작·출판",
+      "heading": "내 이야기로\n동화책을 만들고\n출판하세요",
+      "subheading": "구술만 하세요. AI 삽화와 편집팀이 동화책으로 완성해드립니다.",
+      "cta": "동화책 만들기"
     },
-    "pain": ["글 쓰는 게 어렵고 자신이 없어요", "내 이야기가 가치 있을지 모르겠어요", "출판 과정이 복잡할 것 같아요"],
-    "proof": { "value": "평균 2.3개월", "desc": "원고 완성까지 걸리는 시간" }
+    "pain": [
+      "그림을 못 그리는데 동화책을 만들 수 있을까요",
+      "어떤 이야기를 써야 할지 막막해요",
+      "출판까지 과정이 너무 복잡할 것 같아요"
+    ],
+    "proof": {
+      "value": "평균 6주",
+      "desc": "기획부터 동화책 완성까지 걸리는 시간"
+    }
   },
   "landing4": {
     "variant": "cinematic",
@@ -37,15 +59,26 @@
       "subheading": "강의 스크립트·PPT 초안을 AI가 자동 생성합니다. 당신은 가르치기만 하세요.",
       "cta": "강의 기획 상담받기"
     },
-    "pain": ["AI를 어떻게 가르쳐야 할지 모르겠어요", "강의 자료 만드는 게 막막해요", "수강생을 어디서 모집해야 할지 모르겠어요"],
-    "proof": { "value": "월 평균 156만원", "desc": "AI 클래스 강사 수강료 수익 중간값" },
+    "pain": [
+      "AI를 어떻게 가르쳐야 할지 모르겠어요",
+      "강의 자료 만드는 게 막막해요",
+      "수강생을 어디서 모집해야 할지 모르겠어요"
+    ],
+    "proof": {
+      "value": "월 평균 156만원",
+      "desc": "AI 클래스 강사 수강료 수익 중간값"
+    },
     "videoSections": [
       {
         "id": "hero",
         "playbackId": "B5zafx01GNBGBrB5M2AsFURPyMqkuRgHGCSA36asEIdQ",
         "heading": "AI 강의로\n매달 수강료가\n들어옵니다",
         "subheading": "강의 스크립트·PPT 초안을 AI가 자동 생성합니다. 당신은 가르치기만 하세요.",
-        "primaryCta": { "label": "강의 기획 상담받기", "href": "#final", "kind": "internal" }
+        "primaryCta": {
+          "label": "강의 기획 상담받기",
+          "href": "#final",
+          "kind": "internal"
+        }
       },
       {
         "id": "pain-topic",
@@ -53,8 +86,16 @@
         "eyebrow": "커리큘럼 설계",
         "heading": "AI 수업을\n어떻게 구성해야\n할지 막막하신가요?",
         "subheading": "AI가 커리큘럼 초안과 강의 스크립트를 자동으로 만들어드립니다. 당신은 내용만 검토하세요.",
-        "primaryCta": { "label": "커리큘럼 상담", "href": "#final", "kind": "internal" },
-        "secondaryCta": { "label": "성공 사례 보기", "href": "#proof", "kind": "internal" }
+        "primaryCta": {
+          "label": "커리큘럼 상담",
+          "href": "#final",
+          "kind": "internal"
+        },
+        "secondaryCta": {
+          "label": "성공 사례 보기",
+          "href": "#proof",
+          "kind": "internal"
+        }
       },
       {
         "id": "pain-production",
@@ -62,8 +103,16 @@
         "eyebrow": "자료 자동 생성",
         "heading": "PPT·자료집을\nAI가 만들어\n드립니다",
         "subheading": "강의 스크립트 입력 한 번으로 PPT·PDF 자료집이 완성됩니다. 제작 시간을 80% 줄이세요.",
-        "primaryCta": { "label": "자동화 방식 알아보기", "href": "#final", "kind": "internal" },
-        "secondaryCta": { "label": "전체 과정 보기", "href": "#proof", "kind": "internal" }
+        "primaryCta": {
+          "label": "자동화 방식 알아보기",
+          "href": "#final",
+          "kind": "internal"
+        },
+        "secondaryCta": {
+          "label": "전체 과정 보기",
+          "href": "#proof",
+          "kind": "internal"
+        }
       },
       {
         "id": "platform",
@@ -71,8 +120,16 @@
         "eyebrow": "수강생 모집",
         "heading": "첫 수강생부터\n지속 모집까지\n함께합니다",
         "subheading": "카카오·네이버 카페·오프라인 커뮤니티 등 다양한 채널로 수강생 모집을 전담 지원합니다.",
-        "primaryCta": { "label": "수익화 시작하기", "href": "#final", "kind": "internal" },
-        "secondaryCta": { "label": "수강생 모집 알아보기", "href": "#proof", "kind": "internal" }
+        "primaryCta": {
+          "label": "수익화 시작하기",
+          "href": "#final",
+          "kind": "internal"
+        },
+        "secondaryCta": {
+          "label": "수강생 모집 알아보기",
+          "href": "#proof",
+          "kind": "internal"
+        }
       },
       {
         "id": "proof",
@@ -80,14 +137,22 @@
         "eyebrow": "실제 강사 이야기",
         "heading": "AI 왕초보였던\n제가 월 130만원\n클래스를 운영합니다",
         "subheading": "\"스크립트 작성을 AI가 해주니 강의 준비가 훨씬 쉬워졌어요\" — 이순희 (58세, 경기 분당)",
-        "primaryCta": { "label": "나도 시작하기", "href": "#final", "kind": "internal" }
+        "primaryCta": {
+          "label": "나도 시작하기",
+          "href": "#final",
+          "kind": "internal"
+        }
       },
       {
         "id": "final",
         "playbackId": "o6OwfjPw372zfR1k02ubDFNPfdNszEYGo6AS00Ga00Oygs",
         "heading": "AI 강의를\n지금 바로\n시작하세요",
         "subheading": "무료 상담에서 커리큘럼 설계·자료 제작·수강생 모집까지 전 과정을 함께 해드립니다.",
-        "primaryCta": { "label": "무료 상담 신청", "href": "https://open.kakao.com/o/linkdrop", "kind": "external" }
+        "primaryCta": {
+          "label": "무료 상담 신청",
+          "href": "https://open.kakao.com/o/linkdrop",
+          "kind": "external"
+        }
       }
     ]
   },
@@ -98,28 +163,50 @@
       "subheading": "자막·썸네일·스크립트를 AI가 자동 생성합니다.",
       "cta": "첫 영상 만들기"
     },
-    "pain": ["카메라 앞에 서는 게 부끄러워요", "편집이 너무 어렵고 시간이 걸려요", "구독자가 없어서 시작이 두려워요"],
-    "proof": { "value": "구독자 1,000명", "desc": "수익화까지 평균 달성 기간 2.8개월" }
+    "pain": [
+      "카메라 앞에 서는 게 부끄러워요",
+      "편집이 너무 어렵고 시간이 걸려요",
+      "구독자가 없어서 시작이 두려워요"
+    ],
+    "proof": {
+      "value": "구독자 1,000명",
+      "desc": "수익화까지 평균 달성 기간 2.8개월"
+    }
   },
   "landing6": {
     "hero": {
-      "eyebrow": "건강 가이드·PDF 판매",
-      "heading": "건강 정보 가이드로\nPDF를 팔고\n수익을 만드세요",
-      "subheading": "연령별 맞춤 건강 자료를 AI가 초안 작성, 당신의 경험으로 완성하세요.",
-      "cta": "내 콘텐츠 시작"
+      "eyebrow": "바이브코딩 웹사이트·웹앱",
+      "heading": "코딩 몰라도\nAI로 웹사이트를\n직접 만드세요",
+      "subheading": "바이브코딩 도구로 아이디어를 웹앱으로. 프리랜서·창업까지 연결.",
+      "cta": "웹앱 만들기 시작"
     },
-    "pain": ["의학 지식이 부족한데 자료를 만들 수 있을까요", "잘못된 정보로 비판받을까 걱정돼요", "PDF를 어디서 팔아야 할지 모르겠어요"],
-    "proof": { "value": "월 평균 71만원", "desc": "건강 콘텐츠 파트너 수익 중간값" }
+    "pain": [
+      "코딩을 배운 적이 없어서 시작이 막막해요",
+      "개발자 비용이 너무 부담돼요",
+      "내 아이디어를 실제로 구현할 방법을 모르겠어요"
+    ],
+    "proof": {
+      "value": "평균 3주",
+      "desc": "첫 웹사이트·웹앱 완성까지 걸리는 시간"
+    }
   },
   "landing7": {
+    "variant": "oral-history",
     "hero": {
-      "eyebrow": "재테크 정보 채널",
-      "heading": "재테크 노하우로\n팬덤과 수익을\n동시에",
-      "subheading": "아는 것을 나누면 팬이 생기고, 팬이 수익이 됩니다.",
-      "cta": "채널 시작하기"
+      "eyebrow": "디지털 구술 생애사 기록",
+      "heading": "부모님의 인생을\n한 권의 책과\n영상으로 남기세요",
+      "subheading": "AI 녹취·편집으로 가족의 소중한 이야기를 프리미엄 생애사로 제작합니다.",
+      "cta": "생애사 기록 시작하기"
     },
-    "pain": ["전문가가 아닌데 가르쳐도 될까요", "신뢰를 얻기까지 시간이 너무 걸려요", "어느 플랫폼에서 시작해야 할지 모르겠어요"],
-    "proof": { "value": "팔로워 5,000명", "desc": "수익화 임계점까지 평균 4개월" }
+    "pain": [
+      "인터뷰를 어떻게 진행해야 할지 막막해요",
+      "수십 시간 녹취를 편집할 엄두가 안 나요",
+      "의미 있는 효도 선물을 드리고 싶은데 방법을 모르겠어요"
+    ],
+    "proof": {
+      "value": "건당 평균 200만원",
+      "desc": "베이직(50만)~프리미엄(500만+) 패키지 수익"
+    }
   },
   "landing8": {
     "hero": {
@@ -128,8 +215,15 @@
       "subheading": "마케팅·CS·콘텐츠를 AI가 자동화합니다. 1인 기업도 대기업처럼.",
       "cta": "자동화 상담받기"
     },
-    "pain": ["혼자 다 하기에 시간이 너무 부족해요", "마케팅 비용이 너무 많이 들어요", "고객 관리가 버거워요"],
-    "proof": { "value": "업무 시간 68%", "desc": "파트너사 평균 업무 절감율" }
+    "pain": [
+      "혼자 다 하기에 시간이 너무 부족해요",
+      "마케팅 비용이 너무 많이 들어요",
+      "고객 관리가 버거워요"
+    ],
+    "proof": {
+      "value": "업무 시간 68%",
+      "desc": "파트너사 평균 업무 절감율"
+    }
   },
   "landing9": {
     "hero": {
@@ -138,7 +232,24 @@
       "subheading": "주식·암호화폐 자동매매 솔루션과 함께 유료 커뮤니티로 안정 수익을.",
       "cta": "커뮤니티 시작하기"
     },
-    "pain": ["내 매매 전략을 어떻게 체계화해야 할지 모르겠어요", "커뮤니티 운영·관리가 복잡할 것 같아요", "유료 멤버십을 어디서 어떻게 모집해야 할지 모르겠어요"],
-    "proof": { "value": "월 평균 94만원", "desc": "트레이딩 커뮤니티 운영 파트너 수익 중간값" }
+    "pain": [
+      "내 매매 전략을 어떻게 체계화해야 할지 모르겠어요",
+      "커뮤니티 운영·관리가 복잡할 것 같아요",
+      "유료 멤버십을 어디서 어떻게 모집해야 할지 모르겠어요"
+    ],
+    "proof": {
+      "value": "월 평균 94만원",
+      "desc": "트레이딩 커뮤니티 운영 파트너 수익 중간값"
+    }
+  },
+  "landing10": {
+    "variant": "topic-guide",
+    "hero": {
+      "eyebrow": "온라인 부업 주제 찾기",
+      "heading": "나만의 온라인\n부업 주제정하기",
+      "subheading": "내 경험·관심사를 온라인 수익으로 연결하는 첫 단계",
+      "cta": "시작하기"
+    },
+    "pain": []
   }
 }

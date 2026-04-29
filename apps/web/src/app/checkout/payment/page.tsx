@@ -2,7 +2,7 @@
 
 // ============================================================
 // 결제 페이지 — 결제 플로우 2단계
-// 라이트 테마 강제 (checkout layout 적용)
+// 테마 상속 (LD-008: checkout은 전역 테마 그대로 상속)
 // 토스페이먼츠 위젯 영역 (placeholder — 실제 SDK 키 필요)
 // ============================================================
 
@@ -21,15 +21,14 @@ export default function PaymentPage() {
 
   const handlePaymentComplete = () => {
     // 실제 구현 시: 토스페이먼츠 SDK 결제 완료 콜백에서 호출
-    router.push("/complete");
+    router.push("/checkout/complete");
   };
 
   return (
     <div
       style={{
         minHeight: "100vh",
-        backgroundColor: "#ffffff",
-        color: "#111827",
+        color: "var(--text-primary)",
         padding: "24px 16px 60px",
       }}
     >

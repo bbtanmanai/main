@@ -49,13 +49,18 @@ export function useSession() {
     userId: string,
     supabase: ReturnType<typeof createClient>
   ) {
-    const { data } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", userId)
-      .single();
-    setRole((data?.role as UserRole) ?? "guest");
-    setLoading(false);
+    try {
+      const { data } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", userId)
+        .single();
+      setRole((data?.role as UserRole) ?? "guest");
+    } catch {
+      setRole("guest");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return { user, role, loading };

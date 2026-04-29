@@ -7,6 +7,8 @@
 // ============================================================
 
 import { useEffect, useRef, useState, useCallback, memo, Suspense } from "react";
+import LdPromptPreview from "@/components/landing/LdPromptPreview";
+import LdBonusSection from "@/components/landing/LdBonusSection";
 import { useSearchParams } from "next/navigation";
 import {
   ChevronDown,
@@ -320,7 +322,7 @@ export default function IndexPage() {
   return (
     <>
     <Suspense fallback={null}><AuthModalTrigger /></Suspense>
-    <main style={{ background: "var(--bg-base)", color: "var(--text-primary)" }}>
+    <main style={{ color: "var(--text-primary)" }}>
       {/* ================================================================
           섹션 1: HERO — 풀뷰포트 비디오 배경
           ================================================================ */}
@@ -546,7 +548,6 @@ export default function IndexPage() {
         id="featured"
         ref={featuredRef as React.RefObject<HTMLDivElement>}
         className="w-full px-6 md:px-12 py-24"
-        style={{ background: "var(--bg-base)" }}
       >
         <div className="max-w-[1400px] mx-auto">
           {/* 헤더 */}
@@ -607,6 +608,58 @@ export default function IndexPage() {
           </div>
         </div>
       </section>
+
+      {/* ================================================================
+          섹션 3-B: AI 프롬프트 미리보기
+          ================================================================ */}
+      <section
+        id="prompt-preview"
+        className="w-full px-6 md:px-12 py-20"
+      >
+        <div style={{ maxWidth: 960, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 40 }}>
+            <h2
+              style={{
+                fontFamily: "Pretendard Variable, Pretendard, sans-serif",
+                fontSize: "clamp(1.6rem, 3vw, 2.4rem)",
+                fontWeight: 700,
+                lineHeight: 1.8, margin: "0 0 14px",
+              }}
+            >
+              <span style={{
+                display: "inline",
+                color: "rgba(255,255,255,0.92)",
+                background: "rgba(0,0,0,0.82)",
+                padding: "2px 10px",
+                boxDecorationBreak: "clone",
+                WebkitBoxDecorationBreak: "clone",
+              }}>
+                프롬프트 라이브러리
+              </span>
+            </h2>
+            <p style={{ margin: 0, fontSize: "0.88rem",
+              fontFamily: "Pretendard Variable, Pretendard, sans-serif", lineHeight: 2,
+            }}>
+              <span style={{
+                display: "inline",
+                color: "rgba(255,255,255,0.55)",
+                background: "rgba(0,0,0,0.82)",
+                padding: "2px 10px",
+                boxDecorationBreak: "clone",
+                WebkitBoxDecorationBreak: "clone",
+              }}>
+                200개+ 프롬프트 중 랜덤 샘플 — 전체는 멤버십 가입 후 이용 가능합니다
+              </span>
+            </p>
+          </div>
+          <LdPromptPreview />
+        </div>
+      </section>
+
+      {/* ================================================================
+          섹션 3-C: 독점 보너스 혜택
+          ================================================================ */}
+      <LdBonusSection />
 
       {/* ================================================================
           섹션 4: CTA / CONTACT — 풀스크린 비디오 배경

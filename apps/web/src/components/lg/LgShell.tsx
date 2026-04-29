@@ -38,7 +38,6 @@ export default function LgShell({
     <div
       style={{
         minHeight: "100dvh",
-        backgroundColor: "var(--bg-base)",
         display: "flex",
         flexDirection: "column",
         position: "relative",

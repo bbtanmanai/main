@@ -10,18 +10,17 @@
 
 SSG(정적 생성) / 비로그인 접근 가능 / 다크·라이트 테마 선택
 
-| URL | 파일 | 설명 |
-|-----|------|------|
-| `/` | `src/app/(public)/page.tsx` | 메인 인덱스 — 시네마틱 4섹션 (HERO / ABOUT / FEATURED / CTA), 비디오 배경 + liquid-glass |
-| `/landing/webnovel-writer` | `src/app/(public)/landing/[slug]/page.tsx` | 랜딩 ① — 웹소설 작가로 월 수익 만들기 |
-| `/landing/my-life-bestseller` | `src/app/(public)/landing/[slug]/page.tsx` | 랜딩 ② — 내 인생 이야기가 베스트셀러가 된다 |
-| `/landing/shorts-ad` | `src/app/(public)/landing/[slug]/page.tsx` | 랜딩 ③ — 유튜브 쇼츠로 매달 광고비 받기 |
-| `/landing/expert-video` | `src/app/(public)/landing/[slug]/page.tsx` | 랜딩 ④ — 내 전문 지식을 영상 강의로 팔기 |
-| `/landing/blog-ad` | `src/app/(public)/landing/[slug]/page.tsx` | 랜딩 ⑤ — 블로그 글 하나로 매달 광고 수익 |
-| `/landing/fintech-channel` | `src/app/(public)/landing/[slug]/page.tsx` | 랜딩 ⑥ — 재테크 정보 채널로 부수입 만들기 |
-| `/landing/health-content` | `src/app/(public)/landing/[slug]/page.tsx` | 랜딩 ⑦ — 건강·다이어트 정보로 돈 버는 법 |
-| `/landing/solo-biz-automation` | `src/app/(public)/landing/[slug]/page.tsx` | 랜딩 ⑧ — 1인 기업 마케팅·CS 자동화 |
-| `/landing/grandkid-parenting` | `src/app/(public)/landing/[slug]/page.tsx` | 랜딩 ⑨ — 손주·육아 꿀팁으로 인플루언서 |
+
+│         landing1          ① 웹소설 작가로 월 수익 만들기, 블로그·브런치 연재
+│         landing2          ② 나만의 경험치, 노하우로 전자책 출간, 목차·초안 작성, 내 경험으로 살 붙이기
+│         landing3          ③ 동화책 제작
+│         landing4          ④ AI 기초 활용 클래스 운영, 강의 스크립트·PPT 초안 자동 생성
+│         landing5          ⑤ 유튜브 쇼츠 제작, 자막·썸네일·스크립트 자동 생성, 경험담 영상화          
+│         landing6          ⑥ 바이브코딩으로 웹사이트,웹앱 만들기
+│         landing7          ⑦ 디지털 구술 생애사 기록가 (Oral History Archivist)
+│         landing8          ⑧ 지역 소상공인 SNS 관리 대행, 1인기업 마케팅·CS 자동화
+│         landing9          ⑨ 나만의 트레이딩 노하우를 담은 주식, 암호화폐 자동매매 솔루션 커뮤니티 운영
+│         landing10        ⑩ 나만의 온라인 부업 주제정하기
 
 ### 랜딩 페이지 공통 섹션 구조 (9섹션)
 

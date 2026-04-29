@@ -5,13 +5,13 @@ import { useState } from "react";
 type Role = "all" | "guest" | "partner" | "gold_partner" | "instructor";
 
 const mockUsers = [
-  { id: "u1", name: "김미숙",  email: "misouk@example.com",    joinDate: "2026-04-01", role: "member",     status: "active" },
+  { id: "u1", name: "김미숙",  email: "misouk@example.com",    joinDate: "2026-04-01", role: "guest",     status: "active" },
   { id: "u2", name: "박지영",  email: "jiyoung@example.com",   joinDate: "2026-04-05", role: "partner",    status: "active" },
   { id: "u3", name: "이철수",  email: "chulsu@example.com",    joinDate: "2026-04-08", role: "partner",    status: "active" },
   { id: "u4", name: "최강의",  email: "kangui@example.com",    joinDate: "2026-04-10", role: "instructor", status: "active" },
-  { id: "u5", name: "장민서",  email: "minseo@example.com",    joinDate: "2026-04-15", role: "member",     status: "inactive" },
-  { id: "u6", name: "한소희",  email: "sohee@example.com",     joinDate: "2026-04-18", role: "member",     status: "active" },
-  { id: "u7", name: "윤성진",  email: "sungjin@example.com",   joinDate: "2026-04-20", role: "member",     status: "active" },
+  { id: "u5", name: "장민서",  email: "minseo@example.com",    joinDate: "2026-04-15", role: "guest",     status: "inactive" },
+  { id: "u6", name: "한소희",  email: "sohee@example.com",     joinDate: "2026-04-18", role: "guest",     status: "active" },
+  { id: "u7", name: "윤성진",  email: "sungjin@example.com",   joinDate: "2026-04-20", role: "guest",     status: "active" },
 ];
 
 const ROLE_LABELS: Record<string, string> = {

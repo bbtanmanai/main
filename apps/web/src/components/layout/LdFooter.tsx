@@ -107,6 +107,45 @@ export default function LdFooter() {
                 </li>
               ))}
             </ul>
+
+            {/* DEV ONLY: Skills 가이드 버튼 — 환불정책 바로 아래 */}
+            {process.env.NODE_ENV !== "production" && (
+              <a
+                href="/dev/skills"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "7px",
+                  marginTop: "16px",
+                  fontSize: "13px",
+                  fontWeight: 700,
+                  color: "#0a0a0f",
+                  backgroundColor: "#6fff00",
+                  borderRadius: "8px",
+                  padding: "9px 16px",
+                  textDecoration: "none",
+                }}
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+                </svg>
+                Claude Skills 가이드
+                <span
+                  style={{
+                    fontSize: "10px",
+                    fontWeight: 800,
+                    color: "rgba(0,0,0,0.4)",
+                    background: "rgba(0,0,0,0.1)",
+                    borderRadius: "3px",
+                    padding: "1px 5px",
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  DEV
+                </span>
+              </a>
+            )}
           </div>
 
           {/* 우: 연락처 정보 */}
@@ -187,6 +226,8 @@ export default function LdFooter() {
         >
           {footerData.copyright}
         </div>
+
+
       </div>
     </footer>
   );

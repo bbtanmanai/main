@@ -1,17 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import LgThemeToggle from "@/components/lg/LgThemeToggle";
 import { useSession } from "@/hooks/useSession";
-
-const MARKETING_NAV = [
-  { label: "서비스소개", href: "/about" },
-  { label: "웹소설",     href: "/landing/landing1" },
-  { label: "AI클래스",   href: "/landing/landing4" },
-  { label: "영상제작",   href: "/landing/landing5" },
-];
+import { NAV_ITEMS, findActiveNavIdx } from "./navItems";
 
 const MEMBER_GUEST = [
   { label: "대시보드",    href: "/member/dashboard", icon: "🏠" },
@@ -56,6 +50,17 @@ export default function LdMobileDrawer({
   const { role } = useSession();
 
   const isBuyer = role === "partner" || role === "gold_partner" || role === "instructor" || role === "admin";
+
+  // accordion 열린 인덱스 관리 — 현재 pathname이 children에 있는 항목 초기 자동 펼침
+  const [openAccordion, setOpenAccordion] = useState<Set<number>>(() => {
+    const initialOpen = new Set<number>();
+    NAV_ITEMS.forEach((item, i) => {
+      if (item.children?.some((c) => pathname === c.href || pathname.startsWith(c.href + "/"))) {
+        initialOpen.add(i);
+      }
+    });
+    return initialOpen;
+  });
 
   // 라우트 이동 시 자동 닫힘
   useEffect(() => {
@@ -111,8 +116,9 @@ export default function LdMobileDrawer({
               alt="LinkDrop"
               width={120}
               height={33}
-              style={{ objectFit: "contain" }}
+              style={{ objectFit: "contain", filter: "drop-shadow(0 0 8px rgba(255,255,255,0.95)) drop-shadow(0 0 16px rgba(255,255,255,0.6))" }}
               priority
+              unoptimized
             />
           </a>
           <button
@@ -129,10 +135,56 @@ export default function LdMobileDrawer({
           </button>
         </div>
 
-        {/* 메뉴 본문 */}
+        {/* 메뉴 본문 — 마케팅 모드: accordion */}
         {variant === "marketing" && (
           <>
-            {MARKETING_NAV.map((item) => {
+            {NAV_ITEMS.map((item, i) => {
+              const isParentActive = findActiveNavIdx(NAV_ITEMS, pathname) === i;
+              if (item.children) {
+                const isOpen = openAccordion.has(i);
+                return (
+                  <div key={item.href}>
+                    <button
+                      className={`ld-drawer-accordion-toggle${isParentActive ? " active" : ""}${isOpen ? " open" : ""}`}
+                      onClick={() => {
+                        setOpenAccordion((prev) => {
+                          const next = new Set(prev);
+                          next.has(i) ? next.delete(i) : next.add(i);
+                          return next;
+                        });
+                      }}
+                    >
+                      {item.label}
+                      <svg
+                        className="ld-drawer-chevron"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </button>
+                    <div className={`ld-drawer-sub-list${isOpen ? " open" : ""}`}>
+                      {item.children.map((sub) => {
+                        const isSubActive = pathname === sub.href || pathname.startsWith(sub.href + "/");
+                        return (
+                          <button
+                            key={sub.href}
+                            className={`ld-drawer-sub-item${isSubActive ? " active" : ""}`}
+                            onClick={() => navigate(sub.href)}
+                          >
+                            {sub.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              }
+              // 서브 없는 항목
               const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
               return (
                 <button
@@ -183,36 +235,49 @@ export default function LdMobileDrawer({
           {variant === "marketing" && (
             <>
               <button
-                className="ld-drawer-item ld-cta-target"
+                className="ld-cta-target"
                 style={{
-                  border: "1px solid rgba(255,255,255,0.18)",
-                  borderRadius: 999,
+                  border: "1px solid rgba(255,255,255,0.2)",
+                  borderRadius: 2,
                   justifyContent: "center",
-                  color: "rgba(255,255,255,0.7)",
+                  display: "flex",
+                  alignItems: "center",
+                  color: "rgba(255,255,255,0.55)",
                   padding: "0 20px",
+                  height: 52,
                   width: "100%",
+                  background: "transparent",
+                  fontFamily: "'Pretendard Variable', Pretendard, sans-serif",
+                  fontSize: 16,
+                  fontWeight: 500,
+                  letterSpacing: "0.04em",
+                  cursor: "pointer",
+                  transition: "color 0.18s ease, border-color 0.18s ease",
                 }}
-                onClick={() => navigate("/login")}
+                onClick={() => window.dispatchEvent(new CustomEvent("ld-auth-open"))}
               >
                 로그인
               </button>
               <button
                 className="ld-cta-target"
                 style={{
-                  borderRadius: 999,
+                  borderRadius: 2,
                   fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: 700,
-                  background: "var(--accent-neon)",
+                  letterSpacing: "0.04em",
+                  background: "#6fff00",
                   color: "#010828",
                   border: "none",
                   cursor: "pointer",
                   width: "100%",
+                  height: 52,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  transition: "background 0.18s ease",
                 }}
-                onClick={() => navigate("/signup")}
+                onClick={() => window.dispatchEvent(new CustomEvent("ld-auth-open"))}
               >
                 시작하기
               </button>

@@ -1,0 +1,110 @@
+[
+  {
+    "id": 1,
+    "icon": "📦",
+    "tag": "올인원 패키지",
+    "title": "크리에이터 리소스 올인원 패키지",
+    "desc": "콘텐츠 제작에 필요한 모든 리소스",
+    "image": "https://pub-3004911807a7429c89c576d1aa468160.r2.dev/V2/components/bonus/bonus-01.webp",
+    "includes": [
+      { "icon": "🎓", "title": "컴맹탈출 VOD 40강" },
+      { "icon": "🎵", "title": "BGM(저작권X) 97종" },
+      { "icon": "🎨", "title": "LUTs 53종" },
+      { "icon": "🎬", "title": "로고 인트로 영상 템플릿" },
+      { "icon": "✨", "title": "모션 로고 템플릿 패키지" },
+      { "icon": "🌐", "title": "반응형홈페이지 소스" },
+      { "icon": "📱", "title": "쇼츠+카드뉴스배경소스 64종" },
+      { "icon": "🎞️", "title": "애니메이션 31종" },
+      { "icon": "📊", "title": "엑셀서식 50종" },
+      { "icon": "🖼️", "title": "오버레이 23종" },
+      { "icon": "🎥", "title": "비주얼 동영상 템플릿 패키지" },
+      { "icon": "😊", "title": "움직이는이모지 150종" },
+      { "icon": "📝", "title": "워드서식 36종" },
+      { "icon": "📈", "title": "증권투자권유대행" },
+      { "icon": "📊", "title": "증권펀드투자상담사" },
+      { "icon": "🎬", "title": "트렌지션 80종" },
+      { "icon": "📋", "title": "파워포인트(템플릿)" },
+      { "icon": "📊", "title": "파워포인트서식 704종" },
+      { "icon": "📋", "title": "파워포인트자료(사업계획서)" },
+      { "icon": "🖼️", "title": "포토샵 기술 326종(image)" },
+      { "icon": "🔤", "title": "폰트(저작권없음) 374종" },
+      { "icon": "📄", "title": "한글서식 36종" },
+      { "icon": "🌟", "title": "형광아이콘 32종" },
+      { "icon": "🔊", "title": "효과음(저작권X) 228종" }
+    ],
+    "value": 475000,
+    "priceless": false,
+    "bundle": true
+  },
+  {
+    "id": 2,
+    "icon": "🤖",
+    "tag": "AI 도구",
+    "title": "AI 프롬프트 라이브러리 200개+",
+    "desc": "ChatGPT·Claude·Gemini에 바로 복사해서 사용. 콘텐츠 창작부터 마케팅·자동화까지 실무에서 바로 쓰는 검증된 프롬프트 모음.",
+    "image": "https://pub-3004911807a7429c89c576d1aa468160.r2.dev/V2/components/bonus/bonus-02.webp",
+    "includes": [
+      { "icon": "✍️", "title": "콘텐츠 창작 프롬프트 (블로그·유튜브·SNS)" },
+      { "icon": "📢", "title": "마케팅·카피라이팅 프롬프트" },
+      { "icon": "💡", "title": "아이디어 기획·브레인스토밍 프롬프트" },
+
+
+      { "icon": "📱", "title": "쇼츠·릴스 스크립트 프롬프트" },
+      { "icon": "💼", "title": "비즈니스 제안서·기획서 작성 프롬프트" },
+      { "icon": "📚", "title": "전자책·블로그 글쓰기 프롬프트" },
+      { "icon": "🌐", "title": "SEO 최적화 콘텐츠 프롬프트" },
+      { "icon": "🎯", "title": "판매 페이지·랜딩페이지 카피 프롬프트" },
+      { "icon": "🔍", "title": "시장조사·경쟁사 분석 프롬프트" },
+      { "icon": "🤖", "title": "Claude Code 자동화 프롬프트" }
+    ],
+    "value": 140000,
+    "priceless": false,
+    "bundle": false
+  },
+  {
+    "id": 3,
+    "icon": "🌐",
+    "tag": "홈페이지 템플릿",
+    "title": "반응형 홈페이지 소스 200여종",
+    "desc": "쇼핑몰·포트폴리오·랜딩페이지·기업사이트 등 HTML/CSS/JS 완성 소스. 수정 없이 바로 올려도 되는 프로 수준의 반응형 디자인 200여 종.",
+    "image": "https://pub-3004911807a7429c89c576d1aa468160.r2.dev/V2/components/bonus/bonus-03.webp",
+    "includes": [
+      { "icon": "🛒", "title": "쇼핑몰 템플릿 (상품·장바구니 UI 포함)" },
+      { "icon": "👤", "title": "포트폴리오·개인 브랜딩 사이트" },
+      { "icon": "🏢", "title": "기업 홈페이지 (서비스 소개·팀 소개)" },
+      { "icon": "🚀", "title": "SaaS·앱 랜딩페이지 템플릿" },
+      { "icon": "📰", "title": "블로그·매거진 레이아웃" },
+
+      { "icon": "🎓", "title": "강의·교육 플랫폼 페이지" },
+      { "icon": "🍽️", "title": "음식점·카페 홈페이지" },
+      { "icon": "💆", "title": "뷰티·헬스케어 서비스 페이지" },
+      { "icon": "🏠", "title": "부동산·인테리어 소개 페이지" },
+      { "icon": "📸", "title": "사진작가·크리에이터 갤러리 사이트" }
+    ],
+    "value": 245000,
+    "priceless": false,
+    "bundle": false
+  },
+  {
+    "id": 4,
+    "icon": "📚",
+    "tag": "실전 문서집 패키지",
+    "title": "9가지 온라인 수익화 실전 문서집 전체",
+    "image": "https://pub-3004911807a7429c89c576d1aa468160.r2.dev/V2/components/bonus/bonus-04.webp",
+    "desc": "블로그·전자책·동화책·AI강의·쇼츠·바이브코딩·생애사기록·1인기업·트레이딩까지. 9가지 온라인 수익화 주제의 실전 문서집을 멤버십 가입 즉시 전부 제공합니다.",
+    "includes": [
+      { "icon": "📝", "title": "웹소설·블로그 수익화 실전 가이드" },
+      { "icon": "📚", "title": "전자책 출판·제작 완전 가이드" },
+      { "icon": "🎨", "title": "동화책 제작·출판 실전 가이드" },
+      { "icon": "🎬", "title": "AI 강의 제작·수익화 실전 로드맵" },
+      { "icon": "📱", "title": "쇼츠·SNS 채널 수익화 실전 가이드" },
+      { "icon": "💻", "title": "바이브코딩·Claude 실전 활용 문서집" },
+      { "icon": "📖", "title": "디지털 구술 생애사 기록 사업 가이드" },
+      { "icon": "💼", "title": "1인 기업·마케팅 실전 문서집" },
+      { "icon": "📈", "title": "트레이딩 커뮤니티 사업 로드맵" }
+    ],
+    "value": 700000,
+    "priceless": false,
+    "bundle": true
+  }
+]

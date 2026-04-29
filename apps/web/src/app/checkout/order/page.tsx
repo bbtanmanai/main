@@ -2,7 +2,7 @@
 
 // ============================================================
 // 주문 확인 페이지 — 결제 플로우 1단계
-// 라이트 테마 강제 (checkout layout에서 적용됨)
+// 테마 상속 (LD-008: checkout은 전역 테마 그대로 상속)
 // 상품 정보 + 구매자 정보 입력 후 결제 페이지로 이동
 // ============================================================
 
@@ -42,15 +42,14 @@ export default function OrderPage() {
     setIsLoading(true);
     // 구매자 정보를 sessionStorage에 임시 저장 후 결제 페이지로 이동
     sessionStorage.setItem("orderInfo", JSON.stringify({ name, email, phone }));
-    router.push("/payment");
+    router.push("/checkout/payment");
   };
 
   return (
     <div
       style={{
         minHeight: "100vh",
-        backgroundColor: "#ffffff",
-        color: "#111827",
+        color: "var(--text-primary)",
         padding: "24px 16px 60px",
       }}
     >
@@ -86,11 +85,11 @@ export default function OrderPage() {
         {/* 상품 정보 카드 */}
         <div
           style={{
-            backgroundColor: "#f8faff",
+            backgroundColor: "var(--glass-bg)",
             borderRadius: 16,
             padding: 24,
             marginBottom: 24,
-            border: "1px solid #e5e7eb",
+            border: "1px solid var(--glass-border)",
           }}
         >
           <h2
@@ -216,10 +215,10 @@ export default function OrderPage() {
         {/* 구매자 정보 입력 폼 */}
         <div
           style={{
-            backgroundColor: "#f8faff",
+            backgroundColor: "var(--glass-bg)",
             borderRadius: 16,
             padding: 24,
-            border: "1px solid #e5e7eb",
+            border: "1px solid var(--glass-border)",
           }}
         >
           <h2

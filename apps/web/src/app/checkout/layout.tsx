@@ -7,7 +7,6 @@ export default function CheckoutLayout({ children }: { children: React.ReactNode
     <div
       style={{
         minHeight: "100dvh",
-        backgroundColor: "var(--bg-base)",
         position: "relative",
       }}
     >

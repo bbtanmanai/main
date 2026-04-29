@@ -6,21 +6,24 @@
 // 좌: 카카오 상담 링크 / 우: 전화번호 직접 연결
 // ============================================================
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import externalLinks from "@/data/external-links.json";
 
 export default function LdStickyBottomCTA() {
-  // 고정 바 표시 여부 상태 (300px 이상 스크롤 시 true)
   const [visible, setVisible] = useState(false);
+  const rafPending = useRef(false);
 
   useEffect(() => {
-    // 스크롤 위치 감지 — 300px 초과 시 노출
     const handleScroll = () => {
-      setVisible(window.scrollY > 300);
+      if (rafPending.current) return;
+      rafPending.current = true;
+      requestAnimationFrame(() => {
+        setVisible(window.scrollY > 300);
+        rafPending.current = false;
+      });
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    // 컴포넌트 언마운트 시 이벤트 리스너 정리
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 

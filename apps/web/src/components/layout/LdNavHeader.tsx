@@ -19,6 +19,8 @@ export default function LdNavHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const pathname = usePathname();
+  const isDarkHero = pathname === "/landing/landing1";
+  const heroNav = isDarkHero && !scrolled;
 
   useEffect(() => {
     function handleScroll() { setScrolled(window.scrollY > 20); }
@@ -78,15 +80,40 @@ export default function LdNavHeader() {
 
           {/* 데스크톱 nav pill — md 이상에서 표시 */}
           <nav
-            className="glass glass-nav hidden md:flex"
+            className={heroNav ? "hidden md:flex" : "glass glass-nav hidden md:flex"}
             aria-label="메인 내비게이션"
-            style={{ flex: 1, justifyContent: "center" }}
+            style={heroNav ? {
+              flex: 1,
+              justifyContent: "center",
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
+              background: "rgba(255,255,255,0.10)",
+              border: "1px solid rgba(255,255,255,0.20)",
+              backdropFilter: "blur(14px)",
+              WebkitBackdropFilter: "blur(14px)",
+              borderRadius: "9999px",
+              padding: "4px",
+            } : { flex: 1, justifyContent: "center" }}
           >
             {navData.items.map((item) => (
               <a
                 key={item.href}
                 href={item.href}
-                className={`glass-nav__item${isActive(item.href) ? " glass-nav__item--active" : ""}`}
+                className={heroNav ? "" : `glass-nav__item${isActive(item.href) ? " glass-nav__item--active" : ""}`}
+                style={heroNav ? {
+                  display: "inline-flex",
+                  alignItems: "center",
+                  padding: "9px 22px",
+                  borderRadius: "9999px",
+                  fontSize: "0.875rem",
+                  fontWeight: isActive(item.href) ? 700 : 400,
+                  textDecoration: "none",
+                  color: isActive(item.href) ? "#fff" : "rgba(255,255,255,0.75)",
+                  background: isActive(item.href) ? "rgba(255,255,255,0.20)" : "transparent",
+                  border: isActive(item.href) ? "1px solid rgba(255,255,255,0.28)" : "1px solid transparent",
+                  transition: "all 180ms ease",
+                } : undefined}
               >
                 {item.label}
               </a>
@@ -129,11 +156,11 @@ export default function LdNavHeader() {
               className="flex md:hidden"
               style={{
                 background: "transparent",
-                border: "1px solid rgba(255,255,255,0.15)",
+                border: heroNav ? "1px solid rgba(255,255,255,0.35)" : "1px solid rgba(255,255,255,0.15)",
                 borderRadius: "8px",
                 padding: "8px",
                 cursor: "pointer",
-                color: "var(--text-primary)",
+                color: heroNav ? "#fff" : "var(--text-primary)",
                 minWidth: "40px",
                 minHeight: "40px",
                 alignItems: "center",

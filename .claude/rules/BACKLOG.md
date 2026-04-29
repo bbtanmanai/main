@@ -1,18 +1,15 @@
 # LinkDrop V2 — 개발 백로그
 
-> 최종 업데이트: 2026-04-24
+> 최종 업데이트: 2026-04-27
 > 규칙: 새 항목 발견 시 즉시 추가. 완료 시 아래 완료 요약에 날짜와 함께 한 줄로만 기록.
 
 ---
 
-## ⬜ 미완료 항목 (4개)
+## ⬜ 미완료 항목 (1개)
 
 | # | 항목 | 비고 |
 |---|------|------|
 | TOSS | 토스페이먼츠 SDK 실제 키 연동 | payment/page.tsx placeholder 교체 |
-| AUTH-GUARD | middleware.ts 추가 — /member /partner /instructor /admin 미로그인 redirect | AUTH-SOCIAL Phase D |
-| AUTH-SOCIAL-B | 소셜 로그인 UI — LdAuthModal, LdAuthBottomSheet, LdSocialButton(Kakao/Google), useAuthModal | Phase B 구현 대기 |
-| AUTH-SOCIAL-C | OAuth 플로우 — /auth/callback/route.ts, useSession, users.role 승격 로직 | 사용자: Google/Kakao Developers 등록 후 진행 |
 
 ---
 
@@ -30,3 +27,7 @@
 | Phase 7 (P7-1~3) | (admin) 회원·주문·파트너 관리 | 2026-04-22 |
 | P1-15 + 모바일 GNB | prefers-reduced-motion globals.css + 햄버거 드로어 LdMobileDrawer + viewport export | 2026-04-24 |
 | SUPABASE | .env.local — NEXT_PUBLIC_SUPABASE_URL + ANON_KEY 실제 값 연결 | 2026-04-24 |
+| AUTH-SOCIAL-B | 소셜 로그인 UI — LdAuthModal, LdAuthBottomSheet, LdSocialButton(Kakao/Google), useAuthModal, LdAuthPanel | 2026-04-26 |
+| AUTH-SOCIAL-C | OAuth 플로우 — /auth/callback/route.ts, useSession, profiles upsert(role=guest), open redirect 보안 | 2026-04-26 |
+| AUTH-GUARD | middleware.ts — /member /partner /instructor /admin 미로그인 → /?auth=1 redirect, getUser() 서버 검증 | 2026-04-26 |
+| LANDING7-ORAL-HISTORY | landing7 variant="oral-history" + LdOralHistoryLanding.tsx 전용 컴포넌트 신규 구현 | 2026-04-27 |

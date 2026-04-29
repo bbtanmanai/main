@@ -15,6 +15,6 @@ export default async function ReferralRedirectPage({ params }: Props) {
     .eq("id", id)
     .single();
 
-  const slug = data?.selected_landing || "senior-online-business";
+  const slug = data?.selected_landing || "landing1";
   redirect(`/landing/${slug}?ref=${id}`);
 }

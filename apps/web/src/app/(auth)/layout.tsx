@@ -7,7 +7,6 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
     <div
       style={{
         minHeight: "100dvh",
-        backgroundColor: "var(--bg-base)",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",

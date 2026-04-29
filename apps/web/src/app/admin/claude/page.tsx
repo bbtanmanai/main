@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import Galaxy from './Galaxy';
 
-const API = 'http://localhost:8001/api/admin';
+const API = process.env.NEXT_PUBLIC_ADMIN_API_URL ?? 'http://localhost:8001/api/admin';
 
 // ── 타입 ──────────────────────────────────────────────────────────────────────
 

@@ -1,16 +1,13 @@
 # LinkDrop V2 — Claude 프로젝트 지침
 
-## ★★★★★ 대화 시작 즉시 우선 확인 (순서대로)
-
-핵심 규칙 4개만 `.claude/rules/`에 자동 로드됨 (LOCKED_DECISIONS / BACKLOG / debugging / windows).
-설계 문서는 `.claude/archives/`로 이동됨 — 필요 시 직접 열 것. 아래 2개를 가장 먼저 숙지할 것.
+## ★★★★★ 대화 시작 즉시 — SESSION_START.md 하나만 읽을 것
 
 ```
-1. .claude/rules/LOCKED_DECISIONS.md   ← 잠금된 결정 — 코드 수정 전 반드시 확인
-2. .claude/rules/BACKLOG.md            ← 현재 미완료 항목
+.claude/SESSION_START.md   ← 현재 작업 + 잠금 결정 요약 + 추가 읽기 안내 (전부 포함)
 ```
 
-**위 2개를 숙지하기 전까지 코드 수정 제안을 하지 말 것.**
+**이 파일을 읽기 전까지 코드 수정 제안을 하지 말 것.**
+추가 정보가 필요한 경우는 SESSION_START.md의 "추가 읽기" 표를 참조할 것.
 
 ---
 
@@ -66,6 +63,7 @@ LinkDrop V2는 **소비자 접점 앱**이다. V3가 콘텐츠를 생산하면 V
 | `.claude/rules/BACKLOG.md` | V2 개발 백로그 (Phase 0~7) |
 | `.claude/rules/debugging.md` | 디버깅 체크리스트 |
 | `.claude/rules/windows.md` | Windows bat/cmd 작성 규칙 |
+| `.claude/rules/gnb.md` | GNB 설계 규칙 — Glass 배경·테마별 색상·라우터별 props·top padding |
 
 ## 설계 아카이브 문서 (.claude/archives/)
 
@@ -74,6 +72,8 @@ LinkDrop V2는 **소비자 접점 앱**이다. V3가 콘텐츠를 생산하면 V
 | `.claude/archives/01_V2_프론트_설계_확정.md` | 라우트 구조·컴포넌트·데이터·테마 토큰 전체 확정 |
 | `.claude/archives/02_라우트그룹_404_원인분석.md` | Route Group `(member)` 등이 URL을 생성하지 않아 발생한 404 원인·수정 기록 |
 | `.claude/archives/03_V2_회원구분 및 역할.md` | role 체계 (guest/partner/instructor/admin), 진입 조건, 수당 구조, Supabase 스펙 |
+| `.claude/archives/04_마스코트_캐릭터_배치_설계.md` | 우주인 마스코트 2회 배치 설계 — LdMascotFloat 컴포넌트·위치·애니메이션 스펙 |
+| `.claude/archives/05_랜딩페이지_작성원칙.md` | 랜딩페이지 6대 작성 원칙 — 콤보 색상 10종·구조·동영상·용어 해설·챕터·마스코트 기준 |
 
 ---
 
@@ -125,3 +125,10 @@ When the user's request matches an available skill, invoke it via Skill tool FIR
 - Code review → invoke review
 - Architecture review → invoke plan-eng-review
 - Save progress / checkpoint → invoke checkpoint
+- UI 컴포넌트 신규 제작, 스타일링, "더 예쁘게", "디자인 개선", 레이아웃·폼·대시보드 작업 → invoke refactoring-ui
+- 디자인 시스템 생성, 산업별 UI 스타일 추천, 랜딩페이지 디자인 방향 결정 → invoke ui-ux-pro-max
+- 랜딩페이지·캠페인 페이지 대담한 크리에이티브 UX, 개성있는 디자인 방향 → invoke bencium-innovative-ux-designer
+- 기업·결제·회원 페이지 체계적 UX, WCAG 2.1 AA 접근성 준수 설계 → invoke bencium-controlled-ux-designer
+- 제네릭 AI 미학 회피, 프로덕션급 프론트엔드 인터페이스 제작 → invoke bencium-impact-designer
+- 기존 UI/UX 감사, 단계별 개선 계획 수립 ("이 화면 어때?", "UI 검토해줘") → invoke design-audit
+- Next.js/React/TypeScript/Supabase 코드 컨벤션 점검, 코드 스타일 가이드 적용 → invoke bencium-code-conventions
