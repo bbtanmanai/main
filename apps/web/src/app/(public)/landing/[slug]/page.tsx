@@ -21,14 +21,14 @@ import LdPricingSection from "@/components/landing/LdPricingSection";
 import LdFAQSection from "@/components/landing/LdFAQSection";
 import LdFinalCTASection from "@/components/landing/LdFinalCTASection";
 import LdStickyBottomCTA from "@/components/landing/LdStickyBottomCTA";
-const LdCinematicLanding = dynamic(() => import("@/components/landing/cinematic/LdCinematicLanding"));
-const LdWebnovelGuide = dynamic(() => import("@/components/landing/LdWebnovelGuide"));
-const LdEbookGuide = dynamic(() => import("@/components/landing/LdEbookGuide"));
-const LdPictureBookGuide = dynamic(() => import("@/components/landing/LdPictureBookGuide"));
-const LdAffiliateGuide = dynamic(() => import("@/components/landing/LdAffiliateGuide"));
-const LdVibecodingGuide = dynamic(() => import("@/components/landing/LdVibecodingGuide"));
-const LdTopicGuide = dynamic(() => import("@/components/landing/LdTopicGuide"));
-const LdOralHistoryLanding = dynamic(() => import("@/components/landing/LdOralHistoryLanding"));
+const LdLanding4 = dynamic(() => import("@/components/landing/cinematic/LdLanding4"));
+const LdLanding1 = dynamic(() => import("@/components/landing/LdLanding1"));
+const LdLanding2 = dynamic(() => import("@/components/landing/LdLanding2"));
+const LdLanding3 = dynamic(() => import("@/components/landing/LdLanding3"));
+const LdLanding5 = dynamic(() => import("@/components/landing/LdLanding5"));
+const LdLanding6 = dynamic(() => import("@/components/landing/LdLanding6"));
+const LdLanding10 = dynamic(() => import("@/components/landing/LdLanding10"));
+const LdLanding7 = dynamic(() => import("@/components/landing/LdLanding7"));
 import LdTopicFinderBanner from "@/components/landing/LdTopicFinderBanner";
 import LdMascotFloat from "@/components/landing/LdMascotFloat";
 import LdPromptPreview from "@/components/landing/LdPromptPreview";
@@ -120,7 +120,7 @@ export default async function LandingPage({
   if ((landing as Record<string, unknown>).variant === "topic-guide") {
     return (
       <>
-        <LdTopicGuide />
+        <LdLanding10 />
         {PromptSection}
         {BonusSection}
         <LdFooter />
@@ -132,7 +132,7 @@ export default async function LandingPage({
   if ((landing as Record<string, unknown>).variant === "oral-history") {
     return (
       <>
-        <LdOralHistoryLanding />
+        <LdLanding7 />
         {PromptSection}
         {BonusSection}
         <LdFooter />
@@ -145,7 +145,7 @@ export default async function LandingPage({
   if ((landing as Record<string, unknown>).variant === "webnovel-guide") {
     return (
       <>
-        <LdWebnovelGuide />
+        <LdLanding1 />
         {PromptSection}
         {BonusSection}
         <LdFooter />
@@ -158,7 +158,7 @@ export default async function LandingPage({
   if ((landing as Record<string, unknown>).variant === "ebook-guide") {
     return (
       <>
-        <LdEbookGuide />
+        <LdLanding2 />
         {PromptSection}
         {BonusSection}
         <LdFooter />
@@ -171,7 +171,7 @@ export default async function LandingPage({
   if ((landing as Record<string, unknown>).variant === "picture-book-guide") {
     return (
       <>
-        <LdPictureBookGuide />
+        <LdLanding3 />
         {PromptSection}
         {BonusSection}
         <LdFooter />
@@ -184,7 +184,7 @@ export default async function LandingPage({
   if ((landing as Record<string, unknown>).variant === "affiliate-guide") {
     return (
       <>
-        <LdAffiliateGuide />
+        <LdLanding5 />
         {PromptSection}
         {BonusSection}
         <LdFooter />
@@ -197,7 +197,7 @@ export default async function LandingPage({
   if ((landing as Record<string, unknown>).variant === "vibecoding-guide") {
     return (
       <>
-        <LdVibecodingGuide />
+        <LdLanding6 />
         {PromptSection}
         {BonusSection}
         <LdFooter />
@@ -211,7 +211,7 @@ export default async function LandingPage({
     const videoSections: VideoSection[] = (landing as Record<string, unknown>).videoSections as VideoSection[];
     return (
       <>
-        <LdCinematicLanding sections={videoSections} />
+        <LdLanding4 sections={videoSections} />
         {PromptSection}
         {BonusSection}
         <LdFooter />
