@@ -1,0 +1,114 @@
+/* ============================================================
+   LinkDrop V2 — 정보성 페이지 통합 스타일
+   대상: terms / refund / privacy / recruit-teacher / certificate-teacher
+   접두사: .info- (공통) | .terms- | .refund- | .privacy- | .recruit- | .cert-
+   ============================================================ */
+
+/* ── 공통 wrapper ── */
+.info-page-wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 80px 24px 120px;
+  font-family: 'Pretendard Variable', Pretendard, sans-serif;
+}
+
+/* ── 공통 H1 제목 ── */
+.info-page-title {
+  font-weight: 800;
+  font-size: 28px;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+  font-family: 'Pretendard Variable', Pretendard, sans-serif;
+}
+
+/* ── 공통 날짜/부제 ── */
+.info-page-date {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 40px;
+  font-family: 'Pretendard Variable', Pretendard, sans-serif;
+}
+
+/* ── 공통 섹션 ── */
+.info-page-section {
+  margin-bottom: 32px;
+}
+
+/* ── 공통 H2 ── */
+.info-page-h2 {
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+  font-family: 'Pretendard Variable', Pretendard, sans-serif;
+}
+
+/* ── 공통 본문 단락 ── */
+.info-page-body {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  margin: 0;
+  font-family: 'Pretendard Variable', Pretendard, sans-serif;
+}
+
+/* ── 줄바꿈 보존 (refund, privacy 등 bullet 포함 텍스트) ── */
+.info-page-body--pre {
+  white-space: pre-line;
+}
+
+/* ============================================================
+   recruit-teacher / certificate-teacher — 중앙 정렬 레이아웃
+   ============================================================ */
+
+/* main element */
+.info-center-main {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  font-family: 'Pretendard Variable', Pretendard, sans-serif;
+  text-align: center;
+}
+
+/* 히어로 타이틀 */
+.info-center-title {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900;
+  margin-bottom: 1.2rem;
+  color: var(--text-primary);
+  font-family: 'Pretendard Variable', Pretendard, sans-serif;
+}
+
+/* 부제 */
+.info-center-desc {
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  max-width: 52ch;
+  margin-bottom: 2.4rem;
+  font-family: 'Pretendard Variable', Pretendard, sans-serif;
+}
+
+/* CTA 버튼 */
+.info-center-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  padding: 0 2rem;
+  border-radius: 9999px;
+  background: var(--accent-neon, #6fff00);
+  color: #010828;
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  font-family: 'Pretendard Variable', Pretendard, sans-serif;
+  transition: opacity 0.18s, transform 0.18s;
+}
+.info-center-cta:hover {
+  opacity: 0.88;
+  transform: translateY(-2px);
+}

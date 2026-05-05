@@ -12,7 +12,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const PROTECTED = ["/member", "/partner", "/instructor", "/admin", "/checkout"];
+const PROTECTED = ["/member", "/partner", "/instructor", "/admin", "/checkout", "/webnovel"];
 
 export async function proxy(request: NextRequest) {
   // Supabase 미연결 환경에서는 통과

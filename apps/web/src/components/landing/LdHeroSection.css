@@ -1,0 +1,143 @@
+/* ============================================================
+   LdHeroSection — 전용 CSS (컴포넌트 동거)
+   design-principles.md §3-A: 정적 인라인 style={{ }} 이동
+   ============================================================ */
+
+.ld-hero-section {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px 60px;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+}
+
+.ld-hero-container {
+  max-width: 720px;
+  text-align: center;
+}
+
+/* eyebrow — neon green 소형 레이블 */
+.ld-hero-eyebrow {
+  display: inline-block;
+  color: var(--accent-neon);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  padding: 6px 14px;
+  border: 1px solid var(--accent-neon);
+  border-radius: 100px;
+}
+
+/* 메인 헤딩 — Pretendard 800, 한글이므로 Anton 금지 (LD-007) */
+.ld-hero-title {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-weight: 800;
+  font-size: clamp(36px, 6vw, 60px);
+  line-height: 1.2;
+  color: var(--text-primary);
+  margin: 0 0 24px;
+  letter-spacing: -0.02em;
+}
+
+/* 부제목 — 최소 18px 시니어 가독성 */
+.ld-hero-desc {
+  font-size: 20px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin: 0 0 40px;
+  font-weight: 400;
+}
+
+/* CTA 버튼 */
+.ld-hero-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-neon);
+  color: var(--bg-base);
+  border-radius: 14px;
+  padding: 20px 40px;
+  font-weight: 800;
+  font-size: 18px;
+  text-decoration: none;
+  min-height: 60px;
+  transition: opacity 200ms ease, transform 200ms ease;
+  box-shadow: 0 0 32px rgba(111, 255, 0, 0.25);
+}
+
+/* 보조 안내 텍스트 */
+.ld-hero-hint {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* ── 비디오 배경 지원 ────────────────────────────────── */
+.ld-hero-section--video {
+  position: relative;
+  overflow: hidden;
+  min-height: 100svh;
+}
+
+.ld-hero-video-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.ld-hero-video-bg video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ld-hero-video-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.72) 100%);
+  z-index: 1;
+}
+
+.ld-hero-section--video .ld-hero-container {
+  position: relative;
+  z-index: 2;
+}
+
+/* 비디오 커버 전용 — 서브헤딩 자막 처리 */
+.ld-hero-section--video .ld-hero-desc {
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  width: fit-content;
+  margin: 0 auto 40px;
+  padding: 6px 14px;
+  border-radius: 2px;
+}
+
+/* 비디오 커버 전용 — CTA 버튼 줄바꿈 */
+.ld-hero-section--video .ld-hero-cta {
+  white-space: pre-line;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* 비디오 커버 전용 — 헤딩 그라디언트 */
+.ld-hero-section--video .ld-hero-title {
+  background: linear-gradient(135deg, #6fff00 0%, #22d3ee 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* prefers-reduced-motion: 모든 전환 즉시 정지 */
+@media (prefers-reduced-motion: reduce) {
+  .ld-hero-container {
+    transition: none !important;
+  }
+  .ld-hero-cta {
+    transition: none !important;
+  }
+}

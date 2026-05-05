@@ -1,0 +1,523 @@
+/* about-project.css — /project 전용 */
+.aprj-root { position: relative; min-height: 100vh; }
+.aprj-main { position: relative; z-index: 1; padding-top: 80px; padding-bottom: 80px; }
+.aprj-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.aprj-container-sm { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+.aprj-section { padding: 64px 0; }
+
+/* ─── 섹션 레이블 ─── */
+.aprj-section-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent-aqua);
+}
+
+.aprj-grid-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.aprj-grid-header-count {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.aprj-grid-header-count strong {
+  color: var(--accent-aqua);
+  font-weight: 700;
+}
+
+/* ─── Project Grid 3×4 ─── */
+.aprj-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 960px) {
+  .aprj-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .aprj-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── Card — Apple Liquid Glass ─── */
+.aprj-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 28px;
+  border-radius: 20px;
+  min-height: 270px;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+
+  /* Liquid Glass 배경: 상단 반사 그라디언트 + 기본 glass base */
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 44%),
+    rgba(255, 255, 255, 0.09);
+
+  /* 깊은 블러 + 채도 높임 — 뒤 blob이 강하게 굴절됨 */
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+
+  /* 3겹 inset shadow: 상단 하이라이트 · 하단 빛굴절 · 외곽 테두리 */
+  box-shadow:
+    0 24px 64px -12px rgba(0, 0, 0, 0.48),
+    0 8px 24px -8px rgba(0, 0, 0, 0.28),
+    inset 0 2px 3px -1px rgba(255, 255, 255, 0.30),
+    inset 0 -2px 4px -1px rgba(255, 255, 255, 0.06),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+
+  transition:
+    transform 0.30s cubic-bezier(0.34, 1.2, 0.64, 1),
+    box-shadow 0.30s ease,
+    background 0.24s ease;
+}
+
+/* 호버 — 반사 강화 + 아쿠아 glow */
+.aprj-card:hover {
+  transform: translateY(-8px) scale(1.018);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 46%),
+    rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 32px 80px -12px rgba(0, 0, 0, 0.52),
+    0 8px 24px rgba(34, 211, 238, 0.12),
+    inset 0 2px 3px -1px rgba(255, 255, 255, 0.38),
+    inset 0 -2px 4px -1px rgba(255, 255, 255, 0.08),
+    inset 0 0 0 1px rgba(34, 211, 238, 0.28);
+}
+
+/* 라이트 테마 카드 */
+[data-theme="light"] .aprj-card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.70) 0%, rgba(255, 255, 255, 0) 44%),
+    rgba(255, 255, 255, 0.35);
+  box-shadow:
+    0 16px 48px -8px rgba(0, 0, 0, 0.12),
+    0 4px 16px -4px rgba(0, 0, 0, 0.08),
+    inset 0 2px 3px -1px rgba(255, 255, 255, 0.90),
+    inset 0 -2px 4px -1px rgba(255, 255, 255, 0.50),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.70);
+}
+
+[data-theme="light"] .aprj-card:hover {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0) 46%),
+    rgba(255, 255, 255, 0.55);
+  box-shadow:
+    0 20px 60px -8px rgba(0, 0, 0, 0.16),
+    0 4px 16px rgba(8, 145, 178, 0.12),
+    inset 0 2px 3px -1px rgba(255, 255, 255, 1.00),
+    inset 0 -2px 4px -1px rgba(255, 255, 255, 0.60),
+    inset 0 0 0 1px rgba(8, 145, 178, 0.28);
+}
+
+/* 준비 중 카드 */
+.aprj-card--soon { opacity: 0.72; }
+.aprj-card--soon:hover { opacity: 1; }
+
+/* ─── Glare 레이어 — mousemove 빛 원형 ─── */
+.aprj-card-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(
+    circle 130px at var(--glare-x, 50%) var(--glare-y, 50%),
+    rgba(255, 255, 255, 0.20) 0%,
+    transparent 100%
+  );
+  mix-blend-mode: overlay;
+  transition: opacity 0.28s ease;
+}
+
+.aprj-card:hover .aprj-card-glare {
+  opacity: 1;
+}
+
+/* ─── 배경 번호 ─── */
+.aprj-card-bg-num {
+  position: absolute;
+  top: -6px;
+  right: 14px;
+  font-size: 88px;
+  font-weight: 900;
+  color: var(--accent-aqua);
+  opacity: 0.07;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  transition: opacity 0.24s ease;
+}
+
+.aprj-card:hover .aprj-card-bg-num { opacity: 0.13; }
+
+/* ─── 아이콘 래퍼 ─── */
+.aprj-card-icon-wrap {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(34, 211, 238, 0.08);
+  border: 1px solid rgba(34, 211, 238, 0.20);
+  margin-bottom: 18px;
+  flex-shrink: 0;
+  transition: background 0.24s ease, border-color 0.24s ease;
+}
+
+.aprj-card:hover .aprj-card-icon-wrap {
+  background: rgba(34, 211, 238, 0.16);
+  border-color: rgba(34, 211, 238, 0.34);
+}
+
+.aprj-card-icon { font-size: 26px; line-height: 1; }
+
+/* ─── 카드 텍스트 ─── */
+.aprj-card-title {
+  position: relative;
+  z-index: 2;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 5px;
+  line-height: 1.3;
+}
+
+.aprj-card-sub {
+  position: relative;
+  z-index: 2;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--accent-aqua);
+  margin-bottom: 12px;
+  opacity: 0.85;
+}
+
+.aprj-card-desc {
+  position: relative;
+  z-index: 2;
+  font-size: 14px;
+  line-height: 1.70;
+  color: var(--text-secondary);
+  flex: 1;
+}
+
+/* ─── 카드 하단 ─── */
+.aprj-card-footer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+[data-theme="light"] .aprj-card-footer {
+  border-top-color: rgba(15, 23, 42, 0.08);
+}
+
+.aprj-card-link {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent-aqua);
+  opacity: 0.55;
+  transition: opacity 0.20s ease, letter-spacing 0.20s ease;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.aprj-card:hover .aprj-card-link {
+  opacity: 1;
+  letter-spacing: 0.04em;
+}
+
+/* ─── Status badge ─── */
+.aprj-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.aprj-status--active {
+  background: rgba(34, 211, 238, 0.10);
+  color: var(--accent-aqua);
+}
+
+.aprj-status--soon {
+  background: rgba(251, 191, 36, 0.10);
+  color: var(--accent-amber);
+}
+
+.aprj-status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.aprj-status--active .aprj-status-dot {
+  animation: pulse-badge 2s ease-in-out infinite;
+}
+
+/* ─── CTA ─── */
+.aprj-cta { text-align: center; padding: 48px 0; }
+
+.aprj-cta-title {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.aprj-cta-desc {
+  font-size: 18px;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+
+.aprj-cta-btn {
+  display: inline-block;
+  padding: 16px 40px;
+  border-radius: 9999px;
+  background: var(--accent-aqua);
+  color: #010828;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: opacity 0.18s;
+}
+
+.aprj-cta-btn:hover { opacity: 0.88; }
+
+/* ─── 모션 감소 ─── */
+@media (prefers-reduced-motion: reduce) {
+  .aprj-card { transition: none; }
+  .aprj-card-glare { transition: none; }
+  .aprj-cta-btn { transition: none; }
+  .aprj-card-link { transition: none; }
+  .aprj-card-icon-wrap { transition: none; }
+  .aprj-status--active .aprj-status-dot { animation: none; }
+}
+
+/* ─── 모바일 최적화 ─── */
+@media (max-width: 768px) {
+  .aprj-main { padding-bottom: 48px; }
+  .aprj-section { padding: 40px 0; }
+  .aprj-container { padding: 0 16px; }
+  .aprj-card { padding: 20px; min-height: 240px; }
+  .aprj-card-title { font-size: 17px; }
+  .aprj-card-icon-wrap { width: 46px; height: 46px; border-radius: 12px; }
+  .aprj-card-icon { font-size: 22px; }
+  .aprj-card-bg-num { font-size: 72px; }
+  .aprj-cta-desc { font-size: 16px; }
+  .aprj-cta-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 16px 24px;
+    box-sizing: border-box;
+  }
+  .aprj-grid-header { flex-direction: column; gap: 6px; margin-bottom: 20px; }
+}
+
+@media (max-width: 480px) {
+  .aprj-section { padding: 24px 0; }
+  .aprj-container { padding: 0 12px; }
+  .aprj-card { padding: 16px; min-height: 220px; }
+  .aprj-card-title { font-size: 16px; }
+  .aprj-card-desc { font-size: 13px; }
+  .aprj-card-bg-num { font-size: 60px; }
+  .aprj-section-label { font-size: 11px; }
+  .aprj-card-footer { margin-top: 14px; padding-top: 12px; }
+}
+
+/* ─────────────────────────────────────────────────
+   Rain Hero Section
+───────────────────────────────────────────────── */
+.aprj-hero { text-align: center; padding: 64px 24px 48px; }
+
+.aprj-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--accent-aqua);
+  margin-bottom: 24px;
+}
+
+.aprj-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-aqua);
+  box-shadow: 0 0 8px var(--accent-aqua);
+}
+
+.aprj-hero-title {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+.aprj-hero-title-accent { color: var(--accent-aqua); }
+
+.aprj-hero-desc {
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  max-width: 640px;
+  margin: 0 auto 40px;
+}
+
+.aprj-rain-hero {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  min-height: 600px;
+  margin-top: -80px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+
+.aprj-rain-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%) scale(1.05);
+  object-fit: cover;
+  z-index: 0;
+  opacity: 1;
+  filter: blur(5px) brightness(0.45);
+  pointer-events: none;
+}
+
+.aprj-rain-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.aprj-rain-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.10) 0%,
+    rgba(0, 0, 0, 0.45) 60%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+  pointer-events: none;
+}
+
+.aprj-rain-content {
+  position: relative;
+  z-index: 4;
+  text-align: center;
+  padding: 0 24px;
+  max-width: 760px;
+}
+
+.aprj-rain-hero .aprj-hero-title {
+  color: #ffffff;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.5);
+}
+
+.aprj-rain-hero .aprj-hero-desc { color: rgba(255, 255, 255, 0.80); }
+.aprj-rain-hero .aprj-badge { color: var(--accent-aqua); margin-bottom: 24px; }
+
+.aprj-rain-cta-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 40px;
+}
+
+.aprj-rain-scroll {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 28px;
+  border-radius: 9999px;
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.80);
+  text-decoration: none;
+  transition: color 0.18s;
+}
+
+.aprj-rain-scroll:hover { color: #ffffff; }
+
+@media (prefers-reduced-motion: reduce) {
+  .aprj-rain-canvas { display: none; }
+  .aprj-rain-scroll { transition: none; }
+}
+
+@media (max-width: 768px) {
+  .aprj-rain-hero { min-height: 520px; }
+  .aprj-rain-content { padding: 0 20px; }
+  .aprj-rain-cta-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-top: 28px;
+  }
+  .aprj-rain-cta-row .aprj-cta-btn {
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+  }
+  .aprj-rain-scroll {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .aprj-rain-hero { min-height: 460px; }
+  .aprj-rain-content { padding: 0 16px; }
+}

@@ -1,0 +1,1505 @@
+/* ============================================================
+   LinkDrop V2 — 재사용 UI 컴포넌트
+   Glass 카드, 버튼, 뱃지, 태그, 소셜 로그인, 마스코트 등
+   ============================================================ */
+
+/* ============================================================
+   Liquid-Glass 효과 — JS 분기 없이 단일 클래스로 사용
+   모든 글래스 UI 요소에 .ld-glass 클래스 적용
+   ============================================================ */
+.ld-glass {
+  background: rgba(255, 255, 255, 0.01);
+  background-blend-mode: luminosity;
+  backdrop-filter: blur(var(--glass-blur, 4px))
+    saturate(var(--glass-saturate, 100%));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 4px))
+    saturate(var(--glass-saturate, 100%));
+  border: none;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 글래스 테두리 광택 효과 — ::before 슈도 엘리먼트 */
+.ld-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.4px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0.15) 20%,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, 0) 60%,
+    rgba(255, 255, 255, 0.15) 80%,
+    rgba(255, 255, 255, 0.45) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ============================================================
+   Guide 카드 패턴 — 불투명 glass 카드 (Guide 컴포넌트 전용)
+   .ld-glass-card   : --glass-white 기반 (기본)
+   .ld-glass-card-md: --glass-white-md 기반 (더 불투명)
+   ============================================================ */
+.ld-glass-card {
+  background: var(--glass-white);
+  backdrop-filter: var(--blur-sm) saturate(var(--glass-saturate, 100%));
+  -webkit-backdrop-filter: var(--blur-sm) saturate(var(--glass-saturate, 100%));
+  border: 1.5px solid var(--glass-border);
+  box-shadow: var(--shadow-glass);
+  position: relative;
+  overflow: hidden;
+}
+
+.ld-glass-card-md {
+  background: var(--glass-white-md);
+}
+
+/* ============================================================
+   텍스처 오버레이 — 화면 전체 고정, 포인터 이벤트 없음
+   /public/texture.png 파일 없어도 레이아웃이 깨지지 않음
+   ============================================================ */
+.ld-texture {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  background-image: url("/texture.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  mix-blend-mode: var(--texture-blend, lighten);
+  opacity: var(--texture-opacity, 0.6);
+}
+
+/* ============================================================
+   유틸리티 클래스
+   ============================================================ */
+
+/* Anton 폰트 — 영문 헤딩 전용. 한글에 절대 사용 금지 */
+.font-anton {
+  font-family: "Anton", sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* Condiment 폰트 — 커시브 액센트 */
+.font-condiment {
+  font-family: "Condiment", cursive;
+  font-weight: 400;
+}
+
+/* Pretendard 폰트 — 한글 전체 + 본문 */
+.font-pretendard {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+}
+
+/* neon green 액센트 색상 */
+.text-neon {
+  color: var(--accent-neon);
+}
+
+/* neon green 배경 (버튼 등) */
+.bg-neon {
+  background-color: var(--accent-neon);
+}
+
+/* ============================================================
+   카드 hover 효과 — scale + glass 강화
+   ============================================================ */
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease,
+    backdrop-filter 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: scale(1.02) translateY(-4px);
+  box-shadow: 0 20px 60px rgba(111, 255, 0, 0.08),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15);
+}
+
+/* ============================================================
+   LdStatusStepper — 모바일 세로 전환
+   ============================================================ */
+@media (max-width: 640px) {
+  .ld-stepper-container {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  .ld-stepper-item {
+    flex-direction: row !important;
+    align-items: center !important;
+    flex: none !important;
+  }
+}
+
+/* ============================================================
+   ld-accordion-* — LdAccordion FAQ 아코디언
+   ============================================================ */
+.ld-accordion-item {
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.ld-accordion-trigger {
+  min-height: 56px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-primary);
+}
+
+.ld-accordion-question {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.5;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+}
+
+.ld-accordion-chevron {
+  flex-shrink: 0;
+  color: var(--accent-neon);
+  transition: transform 250ms ease;
+}
+
+.ld-accordion-body {
+  overflow: hidden;
+  transition: max-height 250ms ease, opacity 150ms ease;
+}
+
+.ld-accordion-answer {
+  padding: 0 24px 20px 24px;
+  color: var(--text-secondary);
+  font-size: 17px;
+  line-height: 1.7;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+}
+
+/* ============================================================
+   ld-sticky-* — LdStickyBottomCTA 하단 고정 CTA 바
+   ============================================================ */
+.ld-sticky-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  height: 64px;
+  padding-bottom: env(safe-area-inset-bottom);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  gap: 12px;
+}
+
+/* ld-glass::before 비활성화 + 그림자 제거 */
+.ld-sticky-bar::before {
+  display: none;
+}
+
+.ld-sticky-bar {
+  box-shadow: none;
+}
+
+/* 주 CTA 버튼 */
+.ld-sticky-primary {
+  flex: 2;
+  height: 48px;
+  background-color: var(--accent-neon);
+  color: #010828;
+  border-radius: 10px;
+  border: none;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* 보조 CTA 버튼 */
+.ld-sticky-secondary {
+  flex: 1;
+  height: 48px;
+  background-color: #2d2d2d;
+  color: #FEE500;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+/* 부유 애니메이션 */
+@keyframes ld-sticky-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.ld-sticky-float {
+  animation: ld-sticky-float 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ld-sticky-float { animation: none; }
+}
+
+/* Glass 카드 */
+.lg-card {
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+  /* 다크 기본 */
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.lg-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 50%);
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 1;
+}
+[data-theme="light"] .lg-card {
+  background: rgba(255, 255, 255, 0.62);
+  border-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+[data-theme="light"] .lg-card::before {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0) 50%);
+}
+
+/* 대시보드/패널 카드 — 다크: glass / 라이트: solid surface */
+.ld-surface-card {
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  position: relative;
+  overflow: hidden;
+  /* 다크 기본 */
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.ld-surface-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 50%);
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 1;
+}
+[data-theme="light"] .ld-surface-card {
+  background: var(--bg-surface);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+[data-theme="light"] .ld-surface-card::before {
+  display: none;
+}
+
+/* ── .glass — 기본 유리 서페이스 ── */
+.glass {
+  backdrop-filter: var(--blur-md);
+  -webkit-backdrop-filter: var(--blur-md);
+  background: var(--glass-white);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-glass);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--reflection-top);
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 1;
+}
+
+/* ── .glass-card — 카드 컴포넌트 ── */
+.glass-card {
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  transition: box-shadow var(--dur-mid), background var(--dur-mid);
+}
+
+/* ── .glass-content — 카드 내 콘텐츠 (::before 위) ── */
+.glass-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* ── .glass-input — 폼 입력 필드 ── */
+.glass-input {
+  width: 100%;
+  padding: 0 16px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border-subtle);
+  background: var(--glass-white);
+  backdrop-filter: var(--blur-sm);
+  -webkit-backdrop-filter: var(--blur-sm);
+  color: var(--color-text);
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 18px;
+  outline: none;
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast),
+    background var(--dur-fast);
+  box-sizing: border-box;
+}
+
+.glass-input::placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.7;
+}
+
+.glass-input:focus {
+  border-color: rgba(94, 231, 223, 0.6);
+  background: var(--glass-white-md);
+  box-shadow: 0 0 0 3px rgba(94, 231, 223, 0.15), var(--shadow-glass);
+}
+
+[data-theme="light"] .glass-input:focus {
+  border-color: rgba(8, 145, 178, 0.5);
+  box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.12), var(--shadow-glass);
+}
+
+/* ── .glass-btn — 버튼 기본 ── */
+.glass-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: var(--radius-full);
+  border: none;
+  cursor: pointer;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--dur-fast) var(--ease-liquid),
+    box-shadow var(--dur-fast), background var(--dur-fast);
+}
+
+.glass-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--reflection-top);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glass-btn > * {
+  position: relative;
+  z-index: 1;
+}
+
+.glass-btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.glass-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── .glass-btn--primary — 주요 CTA 버튼 (청록 → 파랑 그라디언트) ── */
+.glass-btn--primary {
+  background: linear-gradient(
+    135deg,
+    rgba(94, 231, 223, 0.5) 0%,
+    rgba(59, 130, 246, 0.5) 100%
+  );
+  border: 1px solid rgba(94, 231, 223, 0.45);
+  box-shadow: 0 4px 24px rgba(94, 231, 223, 0.3), var(--reflection-inner);
+}
+
+.glass-btn--primary:hover:not(:disabled) {
+  background: linear-gradient(
+    135deg,
+    rgba(94, 231, 223, 0.7) 0%,
+    rgba(59, 130, 246, 0.7) 100%
+  );
+  box-shadow: 0 8px 36px rgba(94, 231, 223, 0.5), var(--reflection-inner);
+  transform: translateY(-2px);
+}
+
+[data-theme="light"] .glass-btn--primary {
+  background: linear-gradient(
+    135deg,
+    rgba(8, 145, 178, 0.3) 0%,
+    rgba(37, 99, 235, 0.3) 100%
+  );
+  border-color: rgba(8, 145, 178, 0.4);
+  box-shadow: 0 4px 24px rgba(8, 145, 178, 0.2), var(--reflection-inner);
+}
+
+[data-theme="light"] .glass-btn--primary:hover:not(:disabled) {
+  box-shadow: 0 8px 36px rgba(8, 145, 178, 0.35), var(--reflection-inner);
+}
+
+/* ── .glass-btn--ghost — 보조 버튼 ── */
+.glass-btn--ghost {
+  background: var(--glass-white);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-glass);
+}
+
+.glass-btn--ghost:hover:not(:disabled) {
+  background: var(--glass-white-md);
+  transform: translateY(-2px);
+}
+
+/* ── .glass-check-label / .glass-check-box — 커스텀 체크박스 ── */
+.glass-check-label {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+  color: var(--color-text);
+}
+
+.glass-check-label input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.glass-check-box {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--glass-border);
+  background: var(--glass-white);
+  backdrop-filter: var(--blur-sm);
+  -webkit-backdrop-filter: var(--blur-sm);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: background var(--dur-fast), border-color var(--dur-fast),
+    box-shadow var(--dur-fast), transform var(--dur-fast) var(--ease-liquid);
+}
+
+.glass-check-box::after {
+  content: "✓";
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent-aqua);
+  opacity: 0;
+  transform: scale(0.4);
+  transition: opacity var(--dur-fast),
+    transform var(--dur-fast) var(--ease-liquid);
+}
+
+.glass-check-label input[type="checkbox"]:checked + .glass-check-box {
+  background: rgba(94, 231, 223, 0.25);
+  border-color: rgba(94, 231, 223, 0.65);
+  box-shadow: 0 0 14px rgba(94, 231, 223, 0.22), var(--reflection-inner);
+}
+
+.glass-check-label input[type="checkbox"]:checked + .glass-check-box::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+[data-theme="light"] .glass-check-label input[type="checkbox"]:checked + .glass-check-box {
+  background: rgba(8, 145, 178, 0.15);
+  border-color: rgba(8, 145, 178, 0.5);
+  box-shadow: 0 0 14px rgba(8, 145, 178, 0.18), var(--reflection-inner);
+}
+
+.glass-check-label:hover .glass-check-box {
+  transform: scale(1.08);
+}
+
+/* ── .glass-field-error — 폼 에러 ── */
+.glass-field-error {
+  color: #f87171;
+  font-size: 14px;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  padding: 8px 12px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-sm);
+  margin: 0;
+}
+
+/* backdrop-filter 미지원 폴백 */
+@supports not (backdrop-filter: blur(1px)) {
+  .glass {
+    background: rgba(20, 25, 45, 0.88) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+  }
+  [data-theme="light"] .glass {
+    background: rgba(255, 255, 255, 0.92) !important;
+    border-color: rgba(15, 23, 42, 0.18) !important;
+  }
+  .glass-input {
+    background: rgba(20, 25, 45, 0.75);
+  }
+  [data-theme="light"] .glass-input {
+    background: rgba(255, 255, 255, 0.85);
+  }
+}
+
+/* ============================================================
+   .glass-badge — 상태/카테고리 뱃지 컴포넌트
+   ============================================================ */
+.glass-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+}
+.glass-badge--aqua {
+  background: rgba(94, 231, 223, 0.15);
+  border: 1px solid rgba(94, 231, 223, 0.4);
+  color: var(--accent-aqua);
+}
+.glass-badge--violet {
+  background: rgba(180, 144, 245, 0.15);
+  border: 1px solid rgba(180, 144, 245, 0.4);
+  color: var(--accent-violet);
+}
+.glass-badge--rose {
+  background: rgba(247, 168, 196, 0.15);
+  border: 1px solid rgba(247, 168, 196, 0.4);
+  color: var(--accent-rose);
+}
+.glass-badge--amber {
+  background: rgba(255, 210, 127, 0.15);
+  border: 1px solid rgba(255, 210, 127, 0.4);
+  color: var(--accent-amber);
+}
+.glass-badge--lime {
+  background: rgba(168, 240, 138, 0.15);
+  border: 1px solid rgba(168, 240, 138, 0.4);
+  color: var(--accent-lime);
+}
+[data-theme="light"] .glass-badge--aqua  { color: #0891b2; background: rgba(8,145,178,0.1);   border-color: rgba(8,145,178,0.28); }
+[data-theme="light"] .glass-badge--violet { color: #6d28d9; background: rgba(109,40,217,0.1);  border-color: rgba(109,40,217,0.25); }
+[data-theme="light"] .glass-badge--amber  { color: #b45309; background: rgba(180,83,9,0.1);    border-color: rgba(180,83,9,0.25); }
+[data-theme="light"] .glass-badge--lime   { color: #15803d; background: rgba(21,128,61,0.1);   border-color: rgba(21,128,61,0.25); }
+[data-theme="light"] .glass-badge--rose   { color: #be185d; background: rgba(190,24,93,0.1);   border-color: rgba(190,24,93,0.25); }
+
+.glass-badge__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+  animation: pulse-badge 2s ease infinite;
+}
+
+/* ============================================================
+   .glass-tag — 인라인 태그
+   ============================================================ */
+.glass-tag {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: var(--glass-white);
+  border: 1px solid var(--glass-border-subtle);
+  backdrop-filter: var(--blur-sm);
+  -webkit-backdrop-filter: var(--blur-sm);
+  color: var(--color-text-muted);
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+}
+
+/* ── 소셜 로그인 버튼 ──────────────────────────────────────── */
+.ld-social-btn {
+  width: 100%;
+  height: 56px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  transition: opacity 160ms ease, transform 100ms ease;
+}
+.ld-social-btn:hover { opacity: 0.88; }
+.ld-social-btn:active { transform: scale(0.97); }
+.ld-social-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.ld-social-btn--kakao {
+  background: #FEE500;
+  color: #3C1E1E;
+}
+.ld-social-btn--google {
+  background: #ffffff;
+  color: #1a1a1a;
+  border: 1.5px solid rgba(0, 0, 0, 0.12);
+}
+[data-theme="dark"] .ld-social-btn--google {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+/* ── 인증 모달 / 바텀시트 ──────────────────────────────────── */
+.ld-auth-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: ld-fade-in 180ms ease;
+}
+.ld-auth-modal-card {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 24px;
+  padding: 36px 32px 28px;
+  position: relative;
+  animation: ld-slide-up 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.ld-auth-bs-wrap {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  animation: ld-slide-up 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.ld-auth-bs-card {
+  border-radius: 24px 24px 0 0;
+  padding: 12px 24px 32px;
+}
+.ld-auth-bs-handle {
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(128, 128, 128, 0.4);
+  margin: 0 auto 20px;
+}
+.ld-auth-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(128, 128, 128, 0.15);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* ── 모달/바텀시트 디바이스별 표시 제어 (Tailwind 캐스케이드 우회) ── */
+@media (max-width: 767px) {
+  .ld-auth-modal-overlay { display: none !important; }
+}
+@media (min-width: 768px) {
+  .ld-auth-bs-overlay { display: none !important; }
+}
+
+/* ── 마스코트 캐릭터 클래스 (LdMascotFloat) ─────────────────── */
+.ld-mascot-wrap {
+  opacity: 0;
+  will-change: transform;
+}
+
+.ld-mascot-side-right.ld-mascot-visible {
+  animation:
+    ld-mascot-enter-right 0.6s ease-out forwards,
+    ld-mascot-float 3.2s ease-in-out 0.6s infinite;
+}
+.ld-mascot-side-left.ld-mascot-visible {
+  animation:
+    ld-mascot-enter-left 0.6s ease-out forwards,
+    ld-mascot-float 3.2s ease-in-out 0.6s infinite;
+}
+
+.ld-mascot-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,0.18));
+}
+
+/* ============================================================
+   ld-section-common — 랜딩 공유 섹션 기본 스타일
+   ============================================================ */
+.ld-section-common {
+  padding: 80px 24px;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+}
+
+.ld-section-inner-md {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.ld-section-inner-lg {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.ld-section-inner-sm {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.ld-section-inner-xl {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.ld-section-heading {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-weight: 800;
+  font-size: clamp(28px, 4vw, 40px);
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.ld-section-subtext {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 17px;
+  margin-bottom: 48px;
+}
+
+.ld-section-subtext--lg {
+  margin-bottom: 56px;
+}
+
+/* ============================================================
+   ld-gp-* — LdGrowthPathSection
+   ============================================================ */
+.ld-gp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  position: relative;
+}
+
+.ld-gp-card {
+  border-radius: 20px;
+  padding: 28px 20px;
+  height: 100%;
+}
+
+.ld-gp-step-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.ld-gp-step-num {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.ld-gp-step-badge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 100px;
+}
+
+.ld-gp-step-label {
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.ld-gp-step-desc {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* ============================================================
+   ld-faq-* — LdFAQSection
+   ============================================================ */
+.ld-faq-section {
+  padding: 80px 24px;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+}
+
+.ld-faq-subtext {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 17px;
+  margin-bottom: 48px;
+}
+
+/* ============================================================
+   ld-price-* — LdPricingSection
+   ============================================================ */
+.ld-price-section {
+  padding: 80px 24px;
+  background: rgba(10, 21, 64, 0.3);
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+}
+
+.ld-price-heading {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-weight: 800;
+  font-size: clamp(28px, 4vw, 40px);
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.ld-price-card {
+  border-radius: 24px;
+  padding: 40px 36px;
+  border: 1px solid rgba(111, 255, 0, 0.2);
+}
+
+.ld-price-launch-badge {
+  display: inline-block;
+  background: var(--accent-neon);
+  color: var(--bg-base);
+  font-size: 13px;
+  font-weight: 800;
+  padding: 5px 12px;
+  border-radius: 100px;
+  margin-bottom: 20px;
+  letter-spacing: 0.05em;
+}
+
+.ld-price-original {
+  font-size: 20px;
+  color: var(--text-secondary);
+  text-decoration: line-through;
+  margin-right: 12px;
+}
+
+.ld-price-savings {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* 가격 표시 행 — 정가 + 절약액 */
+.ld-price-display-row {
+  margin-bottom: 8px;
+}
+
+.ld-price-main {
+  font-weight: 800;
+  font-size: clamp(48px, 8vw, 64px);
+  color: var(--accent-neon);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.ld-price-unit {
+  font-size: 24px;
+  margin-left: 4px;
+}
+
+.ld-price-valid {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+
+.ld-price-benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 32px;
+}
+
+.ld-price-benefit-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+  font-size: 16px;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.ld-price-benefit-icon {
+  color: var(--accent-neon);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.ld-price-guarantee {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: rgba(111, 255, 0, 0.05);
+  border: 1px solid rgba(111, 255, 0, 0.15);
+  margin-bottom: 28px;
+}
+
+.ld-price-guarantee-icon {
+  color: var(--accent-neon);
+  flex-shrink: 0;
+}
+
+.ld-price-guarantee-text {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.ld-price-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-neon);
+  color: var(--bg-base);
+  border-radius: 14px;
+  padding: 20px 32px;
+  font-weight: 800;
+  font-size: 18px;
+  text-decoration: none;
+  min-height: 60px;
+  transition: opacity 200ms ease;
+}
+
+.ld-price-cta:hover {
+  opacity: 0.85;
+}
+
+/* ============================================================
+   ld-proof-* — LdProofSection
+   ============================================================ */
+.ld-proof-section {
+  padding: 80px 24px;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+}
+
+.ld-proof-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.ld-proof-card {
+  border-radius: 20px;
+  padding: 28px 24px;
+}
+
+.ld-proof-income-badge {
+  display: inline-block;
+  background: var(--accent-neon-dim);
+  color: var(--accent-neon);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 100px;
+  margin-bottom: 16px;
+}
+
+.ld-proof-quote {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--text-primary);
+  margin: 0 0 20px;
+  font-style: italic;
+}
+
+.ld-proof-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ld-proof-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(111, 255, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--accent-neon);
+  flex-shrink: 0;
+}
+
+.ld-proof-author-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.ld-proof-author-meta {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* ============================================================
+   ld-prob-* — LdProblemEmpathySection
+   ============================================================ */
+.ld-prob-section {
+  padding: 80px 24px;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+}
+
+.ld-prob-heading {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-weight: 800;
+  font-size: clamp(28px, 4vw, 40px);
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 48px;
+  line-height: 1.3;
+}
+
+.ld-prob-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ld-prob-card {
+  border-radius: 16px;
+  padding: 24px 28px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.ld-prob-icon-wrap {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--accent-neon-dim);
+  color: var(--accent-neon);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ld-prob-text {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.ld-prob-closing {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 18px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ============================================================
+   ld-sim-* — LdSimulatorSection
+   ============================================================ */
+.ld-sim-section {
+  padding: 80px 24px;
+  background: rgba(10, 21, 64, 0.3);
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+}
+
+.ld-sim-card {
+  border-radius: 24px;
+  padding: 40px 36px;
+}
+
+.ld-sim-divider {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 32px 0;
+}
+
+.ld-sim-result {
+  text-align: center;
+}
+
+.ld-sim-result-label {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.ld-sim-result-amount {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-weight: 800;
+  font-size: clamp(40px, 8vw, 64px);
+  color: var(--accent-neon);
+  line-height: 1;
+}
+
+.ld-sim-result-note {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 8px;
+}
+
+.ld-sim-slider-row {
+  margin-bottom: 28px;
+}
+
+.ld-sim-slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.ld-sim-slider-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.ld-sim-slider-value {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--accent-neon);
+}
+
+.ld-sim-slider-minmax {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+
+.ld-sim-slider-minmax span {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.ld-sim-range {
+  width: 100%;
+  height: 8px;
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 4px;
+  cursor: pointer;
+  outline: none;
+  border: none;
+}
+
+/* ============================================================
+   ld-pipe-* — LdV3PipelineSection
+   ============================================================ */
+.ld-pipe-section {
+  padding: 80px 24px;
+  background: rgba(10, 21, 64, 0.3);
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+}
+
+.ld-pipe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0;
+  align-items: start;
+}
+
+.ld-pipe-step-wrapper {
+  display: flex;
+  align-items: start;
+}
+
+.ld-pipe-card {
+  flex: 1;
+  border-radius: 20px;
+  padding: 32px 24px;
+  text-align: center;
+}
+
+.ld-pipe-step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent-neon);
+  color: var(--bg-base);
+  font-weight: 800;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.ld-pipe-icon-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+  color: var(--accent-neon);
+}
+
+.ld-pipe-title {
+  font-weight: 700;
+  font-size: 19px;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.ld-pipe-desc {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.ld-pipe-arrow {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  padding-top: 60px;
+  transition: opacity 600ms ease;
+}
+
+.ld-pipe-arrow-path {
+  stroke-dasharray: 40;
+  transition: stroke-dashoffset 1.2s ease;
+}
+
+/* ============================================================
+   ld-topic-* — LdTopicFinderBanner
+   ============================================================ */
+.ld-topic-section {
+  width: 100%;
+  padding: 64px 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.ld-topic-card {
+  width: 100%;
+  max-width: 720px;
+  border-radius: 24px;
+  padding: 52px 40px;
+  background: linear-gradient(
+    135deg,
+    rgba(124, 58, 237, 0.12) 0%,
+    rgba(79, 70, 229, 0.08) 100%
+  );
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  backdrop-filter: var(--blur-sm);
+  text-align: center;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+}
+
+.ld-topic-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(124, 58, 237, 0.12);
+  border: 1px solid rgba(124, 58, 237, 0.25);
+  border-radius: 30px;
+  padding: 5px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #a78bfa;
+  letter-spacing: 0.4px;
+  margin-bottom: 20px;
+}
+
+.ld-topic-heading {
+  font-size: clamp(22px, 4vw, 32px);
+  font-weight: 800;
+  line-height: 1.3;
+  margin-bottom: 14px;
+  color: var(--text-primary);
+}
+
+.ld-topic-accent {
+  color: #7c3aed;
+}
+
+.ld-topic-desc {
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  margin-bottom: 36px;
+}
+
+.ld-topic-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 800;
+  padding: 18px 48px;
+  border-radius: 14px;
+  text-decoration: none;
+  box-shadow: 0 8px 32px rgba(124, 58, 237, 0.4);
+  transition: transform 0.15s, box-shadow 0.15s;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+}
+
+.ld-topic-cta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(124, 58, 237, 0.55);
+}
+
+.ld-topic-arrow {
+  font-size: 20px;
+}
+
+.ld-topic-footer {
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* ============================================================
+   ld-stepper-* — LdStatusStepper (추가 스타일)
+   ============================================================ */
+.ld-stepper-container {
+  display: flex;
+  gap: 0;
+  width: 100%;
+}
+
+.ld-stepper-item {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.ld-stepper-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  gap: 3px;
+}
+
+/* 진행중(active) 아이콘 내부 점 */
+.ld-stepper-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+}
+
+/* 단계 사이 연결선 */
+.ld-stepper-connector {
+  position: absolute;
+  opacity: 0.4;
+}
+
+.ld-stepper-label {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   SuperFlowCover — 커버 슬라이더 컨테이너 / 이미지
+   ============================================================ */
+
+/* 컨테이너 wrapper */
+.sfc-root {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* 이미지 (슬롯 내부 img) */
+.sfc-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* ============================================================
+   LdCinematicHeader — 로고 이미지 드롭섀도우
+   ============================================================ */
+
+/* 로고 이미지 (글로우 드롭섀도우) */
+.ld-cine-logo-img {
+  object-fit: contain;
+  object-position: left center;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 16px rgba(255, 255, 255, 0.6));
+}
+
+/* ============================================================
+   LgThemeToggle — 마운트 전 플레이스홀더
+   ============================================================ */
+
+/* 마운트 전 레이아웃 시프트 방지 */
+.lg-theme-toggle-placeholder {
+  width: 40px;
+  height: 40px;
+}

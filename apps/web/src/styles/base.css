@@ -1,0 +1,98 @@
+/* ============================================================
+   LinkDrop V2 — 기반 스타일
+   Tailwind v4 import + @font-face + @theme + CSS 리셋
+   ============================================================ */
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("/fonts/Montserrat-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "NanumKalguksu";
+  src: url("/fonts/NanumKalguksu.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "SeoulAlrimHeavy";
+  src: url("/fonts/SeoulAlrimTTF-Heavy.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── 로컬 폰트: Anton / Condiment / Pretendard Variable ────── */
+/* CDN 의존 제거 — 아래 3개는 /public/fonts/ 에 직접 저장된 파일 */
+@font-face {
+  font-family: "Anton";
+  src: url("/fonts/Anton-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Condiment";
+  src: url("/fonts/Condiment-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pretendard Variable";
+  src: url("/fonts/PretendardVariable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── Tailwind v4: 커스텀 폰트 테마 등록 ────────────────────── */
+@theme {
+  /* 폰트 패밀리 등록 */
+  --font-family-anton: "Anton", sans-serif;
+  --font-family-condiment: "Condiment", cursive;
+  --font-family-montserrat: "Montserrat", sans-serif;
+  --font-family-pretendard: "Pretendard Variable", "Pretendard", sans-serif;
+  /* 기본 sans: 기능 페이지 표준 (Pretendard) — 디자인 페이지는 인라인 스타일로 개별 지정 */
+  --font-family-sans: "Pretendard Variable", "Pretendard", sans-serif;
+
+  /* 브랜드 색상 토큰 — Tailwind 유틸리티로 사용 가능 */
+  --color-neon: #6fff00;
+  --color-neon-dim: rgba(111, 255, 0, 0.15);
+  --color-deep-navy: #010828;
+  --color-surface-dark: #0a1540;
+  --color-cream: #eff4ff;
+  --color-cream-dim: #8899cc;
+}
+
+/* ── 기본 리셋 ──────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* 부드러운 스크롤 — 섹션 간 이동 시 부드럽게 */
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  /* 기본 폰트: Pretendard — 기능 페이지 표준. 디자인 페이지는 인라인 스타일 개별 적용 */
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

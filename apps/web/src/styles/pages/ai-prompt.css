@@ -1,0 +1,1263 @@
+/* ============================================================
+   ai-prompt.css — /ai-prompt 라우트 전용 스타일
+   접두사: aip- (신규 클래스) | ai- (기존 클래스 인계)
+   ============================================================ */
+
+/* ── 루트 wrapper ── */
+.aip-root {
+  min-height: 100vh;
+  padding-top: 60px;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── 탭바 ── */
+.aip-tabbar {
+  position: sticky;
+  top: 60px;
+  z-index: 70;
+  border-bottom: 1px solid #999999;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.aip-tabbar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 24px 0;
+}
+
+/* ── 탭 버튼 ── */
+.aip-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 18px;
+  border-radius: 10px 10px 0 0;
+  border: 1px solid #999999;
+  cursor: pointer;
+  margin-bottom: -1px;
+  font-size: 0.85rem;
+  font-weight: 400;
+  background: transparent;
+  border-bottom: 1px solid #999999;
+  transition: all 0.18s;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.aip-tab-btn.active {
+  font-weight: 600;
+  background: rgba(94, 231, 223, 0.12);
+  border-bottom: 2px solid #5ee7df;
+  color: #5ee7df;
+}
+
+.aip-tab-btn-icon {
+  font-size: 1rem;
+}
+
+/* ── 모바일 오버레이 ── */
+.aip-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+/* ── FAB 버튼 (모바일) ── */
+.aip-fab {
+  display: none;
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 50;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #5ee7df, #b490f5);
+  color: #fff;
+  font-size: 1.4rem;
+  box-shadow: 0 4px 20px rgba(94, 231, 223, 0.35);
+  align-items: center;
+  justify-content: center;
+}
+
+.aip-fab-hidden {
+  display: none !important;
+}
+
+/* ── 이미지 탭 래퍼 ── */
+.aip-image-tab-wrap {
+  flex: 1;
+}
+
+/* ── 본문 영역 (사이드바+메인 컨테이너) ── */
+.aip-content-wrap {
+  flex: 1;
+  width: 100%;
+}
+
+.aip-content-inner {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: calc(100vh - 120px);
+  position: relative;
+}
+
+/* ── 사이드바 ── */
+.aip-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  position: sticky;
+  top: 108px;
+  height: calc(100vh - 108px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.aip-sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── 사이드바 카테고리 레이블 ── */
+.aip-sidebar-cat-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 12px;
+  padding-left: 12px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* ── 사이드바 nav ── */
+.aip-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ── 사이드바 아이템 버튼 (정적 기본값) ── */
+.aip-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  width: 100%;
+  text-align: left;
+  border: 1px solid #999999;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  cursor: pointer;
+  transition: transform 360ms cubic-bezier(0.22, 0.68, 0, 1.2),
+              box-shadow 360ms, background 360ms, border-color 360ms;
+}
+
+.aip-nav-item-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.aip-nav-item-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.aip-nav-item-name {
+  font-size: 0.82rem;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.1px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.aip-nav-item-name.active {
+  color: #5ee7df;
+  font-weight: 600;
+}
+
+.aip-nav-item-count {
+  font-size: 0.68rem;
+  margin-top: 2px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.aip-nav-item-count.active {
+  color: rgba(94, 231, 223, 0.55);
+}
+
+/* ── 사이드바 활성 dot ── */
+.aip-nav-item-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: #5ee7df;
+  box-shadow: 0 0 8px rgba(94, 231, 223, 0.8);
+}
+
+/* ── 사이드바 힌트 박스 ── */
+.aip-hint-box {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+
+.aip-hint-text {
+  font-size: 0.72rem;
+  margin: 0;
+  line-height: 1.7;
+  white-space: pre-line;
+}
+
+/* ── 메인 콘텐츠 영역 ── */
+.aip-main {
+  flex: 1;
+  min-width: 0;
+  padding: 36px 40px 80px;
+  background:
+    radial-gradient(ellipse 90% 70% at 10% 65%, rgba(180, 144, 245, 0.45) 0%, transparent 58%),
+    radial-gradient(ellipse 80% 65% at 92% 12%, rgba(94, 231, 223, 0.35) 0%, transparent 52%),
+    radial-gradient(ellipse 55% 45% at 52% 98%, rgba(247, 168, 196, 0.22) 0%, transparent 48%),
+    #f0f4ff;
+}
+
+/* ── 메인 헤더 ── */
+.aip-main-header {
+  margin-bottom: 28px;
+}
+
+.aip-main-header-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.aip-main-header-icon {
+  font-size: 1.4rem;
+}
+
+.aip-main-heading {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+.aip-main-count-badge {
+  font-size: 0.72rem;
+  color: rgba(15, 23, 42, 0.5);
+  background: rgba(15, 23, 42, 0.07);
+  padding: 2px 8px;
+  border-radius: 99px;
+  margin-left: 4px;
+}
+
+.aip-brand-badge {
+  font-size: 0.68rem;
+  color: rgba(180, 120, 0, 0.75);
+  background: rgba(248, 184, 77, 0.14);
+  border: 1px solid rgba(248, 184, 77, 0.35);
+  padding: 2px 8px;
+  border-radius: 99px;
+  margin-left: 2px;
+}
+
+.aip-main-divider {
+  height: 1px;
+  background: rgba(15, 23, 42, 0.09);
+  margin-top: 16px;
+}
+
+/* ── 카드 목록 ── */
+.aip-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── 카드 (page.tsx 인라인 카드) ── */
+.aip-prompt-card {
+  background: rgba(255, 255, 255, 0.48);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+/* ── 카드 헤더 클릭 영역 ── */
+.aip-prompt-card-header {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+/* ── 카드 코드 배지 ── */
+.aip-prompt-card-code {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #0891b2;
+  background: rgba(8, 145, 178, 0.12);
+  border: 1px solid rgba(8, 145, 178, 0.25);
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+/* ── 카드 텍스트 영역 ── */
+.aip-prompt-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.aip-prompt-card-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 2px;
+}
+
+.aip-prompt-card-desc {
+  font-size: 0.75rem;
+  color: rgba(15, 23, 42, 0.55);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── 잠금 아이콘 ── */
+.aip-prompt-card-lock {
+  font-size: 0.75rem;
+  color: rgba(255, 180, 0, 0.7);
+  flex-shrink: 0;
+}
+
+/* ── 펼침 화살표 ── */
+.aip-prompt-card-arrow {
+  color: rgba(15, 23, 42, 0.3);
+  font-size: 0.75rem;
+  display: inline-block;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+/* ── 카드 본문 (구매회원) ── */
+.aip-prompt-card-content {
+  border-top: 1px solid rgba(15, 23, 42, 0.09);
+  padding: 16px 20px;
+  background: rgba(15, 23, 42, 0.03);
+}
+
+.aip-prompt-card-pre {
+  margin: 0;
+  font-family: "Pretendard", "Apple SD Gothic Neo", sans-serif;
+  font-size: 0.84rem;
+  line-height: 1.75;
+  color: rgba(15, 23, 42, 0.75);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.aip-prompt-card-copy-row {
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ── 복사 버튼 (정적 기본값) ── */
+.aip-copy-btn {
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: 1px solid rgba(15, 23, 42, 0.18);
+  cursor: pointer;
+  background: rgba(15, 23, 42, 0.06);
+  color: rgba(15, 23, 42, 0.65);
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+
+/* ── 잠금 패널 ── */
+.aip-locked-panel {
+  border-top: 1px solid rgba(255, 180, 0, 0.2);
+  padding: 18px 20px;
+  background: rgba(255, 180, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.aip-locked-title {
+  margin: 0;
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.aip-locked-desc {
+  margin: 4px 0 0;
+  font-size: 0.74rem;
+  color: rgba(15, 23, 42, 0.55);
+}
+
+.aip-locked-cta {
+  flex-shrink: 0;
+  padding: 8px 18px;
+  border-radius: 8px;
+  background: rgba(255, 180, 0, 0.15);
+  border: 1px solid rgba(255, 180, 0, 0.5);
+  color: rgb(255, 180, 0);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* ── 로딩 텍스트 ── */
+.aip-loading-text {
+  color: rgba(15, 23, 42, 0.4);
+  font-size: 0.9rem;
+  padding-top: 40px;
+  text-align: center;
+}
+
+.aip-loading-text-muted {
+  padding: 60px;
+  text-align: center;
+  color: rgba(15, 23, 42, 0.35);
+  font-size: 0.9rem;
+}
+
+/* ============================================================
+   ImagePromptCard (.aip-card-*)
+   ============================================================ */
+
+.aip-card {
+  background: rgba(255, 255, 255, 0.48);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.18s, box-shadow 0.18s, background 0.18s, border-color 0.18s;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.aip-card-thumb {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.aip-card-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px 10px 0 0;
+  display: block;
+}
+
+.aip-card-thumb-empty {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(94, 231, 223, 0.08);
+  border-radius: 10px 10px 0 0;
+  font-size: 2rem;
+}
+
+.aip-card-featured-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(248, 184, 77, 0.92);
+  backdrop-filter: blur(8px);
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #78350f;
+}
+
+.aip-card-heart-wrap {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+  border-radius: 8px;
+  padding: 3px 6px;
+}
+
+.aip-card-body {
+  padding: 12px 14px 14px;
+}
+
+.aip-card-meta-row {
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.aip-card-no-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #0891b2;
+  background: rgba(8, 145, 178, 0.12);
+  padding: 2px 7px;
+  border-radius: 5px;
+  letter-spacing: 0.04em;
+  border: 1px solid rgba(8, 145, 178, 0.25);
+  flex-shrink: 0;
+}
+
+.aip-card-cat-tag {
+  font-size: 0.62rem;
+  color: rgba(15, 23, 42, 0.55);
+  background: rgba(15, 23, 42, 0.06);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  white-space: nowrap;
+}
+
+.aip-card-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.4;
+  margin-bottom: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.aip-card-desc {
+  font-size: 0.73rem;
+  color: rgba(15, 23, 42, 0.50);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ============================================================
+   ImagePromptModal (.aip-modal-*)
+   ============================================================ */
+
+.aip-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow-y: auto;
+}
+
+.aip-modal-panel {
+  width: 100%;
+  max-width: 900px;
+  background: #f8faff;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  position: relative;
+}
+
+.aip-modal-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px solid rgba(220, 38, 38, 0.35);
+  background: rgba(220, 38, 38, 0.10);
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: rgba(220, 38, 38, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+/* ── 모달 썸네일/메타 사이드 (데스크탑) ── */
+.aip-modal-side {
+  width: 300px;
+  flex-shrink: 0;
+  background: rgba(15, 23, 42, 0.04);
+  border-right: 1px solid rgba(15, 23, 42, 0.10);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.aip-modal-side-img-wrap {
+  padding-top: 20px;
+}
+
+.aip-modal-side-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.aip-modal-side-empty-img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: rgba(94, 231, 223, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+}
+
+.aip-modal-side-meta {
+  padding: 16px 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── 모달 썸네일/메타 (모바일) ── */
+.aip-modal-top-mobile {
+  display: flex;
+  flex-direction: column;
+  background: rgba(15, 23, 42, 0.04);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.10);
+  flex-shrink: 0;
+}
+
+.aip-modal-top-mobile-img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+.aip-modal-top-mobile-empty-img {
+  width: 100%;
+  height: 140px;
+  background: rgba(94, 231, 223, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+}
+
+.aip-modal-top-mobile-tags {
+  padding: 10px 14px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.aip-modal-top-mobile-title {
+  padding: 6px 14px 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.4;
+}
+
+/* ── 모달 공통 배지 ── */
+.aip-modal-no-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #0891b2;
+  background: rgba(8, 145, 178, 0.12);
+  padding: 3px 8px;
+  border-radius: 5px;
+  border: 1px solid rgba(8, 145, 178, 0.25);
+  letter-spacing: 0.04em;
+}
+
+.aip-modal-featured-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: rgba(248, 184, 77, 0.18);
+  color: #92400e;
+  padding: 2px 7px;
+  border-radius: 5px;
+  border: 1px solid rgba(248, 184, 77, 0.40);
+}
+
+.aip-modal-cat-tag {
+  font-size: 0.65rem;
+  color: rgba(15, 23, 42, 0.6);
+  background: rgba(15, 23, 42, 0.07);
+  padding: 2px 7px;
+  border-radius: 5px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+}
+
+.aip-modal-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.45;
+}
+
+.aip-modal-desc {
+  font-size: 0.75rem;
+  color: rgba(15, 23, 42, 0.55);
+  line-height: 1.6;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── 모달 우측 패널 ── */
+.aip-modal-right {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+/* ── 모달 로딩 ── */
+.aip-modal-loading {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(15, 23, 42, 0.4);
+  font-size: 0.88rem;
+}
+
+/* ── 모달 에러 ── */
+.aip-modal-error {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(220, 38, 38, 0.06);
+  border: 1px solid rgba(220, 38, 38, 0.20);
+  font-size: 0.80rem;
+  color: rgba(185, 28, 28, 0.85);
+  margin-bottom: 16px;
+}
+
+/* ── notice 박스 ── */
+.aip-modal-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  border-radius: 10px;
+  background: rgba(234, 179, 8, 0.08);
+  border: 1px solid rgba(234, 179, 8, 0.35);
+}
+
+.aip-modal-notice-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.aip-modal-notice-text {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: rgba(133, 77, 14, 0.9);
+  line-height: 1.5;
+}
+
+/* ── 변수 입력 섹션 ── */
+.aip-modal-args-wrap {
+  margin-bottom: 16px;
+}
+
+.aip-modal-args-header {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.aip-modal-args-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: rgba(8, 145, 178, 0.10);
+  border: 1px solid rgba(8, 145, 178, 0.30);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #0891b2;
+  letter-spacing: 0.04em;
+}
+
+.aip-modal-args-hint {
+  font-size: 0.72rem;
+  color: rgba(15, 23, 42, 0.45);
+}
+
+/* ── 변수 테이블 ── */
+.aip-modal-args-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid rgba(15, 23, 42, 0.13);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.aip-modal-args-td-label {
+  padding: 8px 10px;
+  width: 1%;
+  min-width: 0;
+  background: rgba(15, 23, 42, 0.035);
+  font-weight: 600;
+  color: rgba(15, 23, 42, 0.65);
+  vertical-align: middle;
+  white-space: nowrap;
+  border-right: 1px solid rgba(15, 23, 42, 0.10);
+}
+
+.aip-modal-args-td-input {
+  padding: 5px 8px;
+  vertical-align: middle;
+}
+
+/* ── 입력 필드 (정적 기본값) ── */
+.aip-modal-input,
+.aip-modal-textarea {
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(15, 23, 42, 0.22);
+  background: #fff;
+  color: #0f172a;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.aip-modal-textarea {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+/* ── 미리보기 ── */
+.aip-modal-preview-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(15, 23, 42, 0.4);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.aip-modal-preview {
+  margin-bottom: 16px;
+}
+
+.aip-modal-preview-pre {
+  margin: 0;
+  padding: 12px 14px;
+  background: rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  border-radius: 10px;
+  font-family: "Pretendard", "Apple SD Gothic Neo", sans-serif;
+  font-size: 0.8rem;
+  line-height: 1.75;
+  color: rgba(15, 23, 42, 0.80);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* ── 버튼 행 ── */
+.aip-modal-btn-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── 복사 버튼 (정적 기본값) ── */
+.aip-modal-copy-btn {
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: all 0.15s;
+  border: 1px solid rgba(15, 23, 42, 0.18);
+  background: rgba(15, 23, 42, 0.06);
+  color: rgba(15, 23, 42, 0.70);
+}
+
+/* ── ChatGPT 버튼 ── */
+.aip-modal-chatgpt-btn {
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: all 0.15s;
+  border: 1px solid rgba(22, 163, 74, 0.35);
+  background: rgba(22, 163, 74, 0.08);
+  color: rgba(20, 130, 60, 0.85);
+}
+
+/* ── 다운로드 버튼 (정적 기본값) ── */
+.aip-modal-download-btn {
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: all 0.15s;
+  border: 1px solid rgba(79, 70, 229, 0.35);
+  background: rgba(79, 70, 229, 0.08);
+  color: rgba(55, 48, 163, 0.85);
+}
+
+/* ============================================================
+   PromptTabImage (.aip-tab-image-*)
+   ============================================================ */
+
+.aip-tab-image-root {
+  flex: 1;
+  min-height: calc(100vh - 140px);
+  position: relative;
+}
+
+.aip-tab-image-wrap {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ── featured 토글 버튼 (정적 기본값) ── */
+.aip-featured-btn {
+  width: 100%;
+  padding: 7px 12px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.18s;
+}
+
+.aip-sidebar-hint-image {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(94, 231, 223, 0.06);
+  border: 1px solid rgba(94, 231, 223, 0.15);
+}
+
+.aip-sidebar-hint-image p {
+  font-size: 0.72rem;
+  margin: 0;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* ── 이미지 탭 메인 ── */
+.aip-tab-image-main {
+  flex: 1;
+  min-width: 0;
+  padding: 36px 40px 80px;
+  background:
+    radial-gradient(ellipse 90% 70% at 10% 65%, rgba(180, 144, 245, 0.45) 0%, transparent 58%),
+    radial-gradient(ellipse 80% 65% at 92% 12%, rgba(94, 231, 223, 0.35) 0%, transparent 52%),
+    radial-gradient(ellipse 55% 45% at 52% 98%, rgba(247, 168, 196, 0.22) 0%, transparent 48%),
+    #f0f4ff;
+}
+
+.aip-tab-image-header {
+  margin-bottom: 24px;
+}
+
+.aip-tab-image-header-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.aip-tab-image-heading-icon {
+  font-size: 1.4rem;
+}
+
+.aip-tab-image-heading {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+.aip-tab-image-count-badge {
+  font-size: 0.72rem;
+  color: rgba(15, 23, 42, 0.5);
+  background: rgba(15, 23, 42, 0.07);
+  padding: 2px 8px;
+  border-radius: 99px;
+}
+
+.aip-tab-image-featured-badge {
+  font-size: 0.68rem;
+  color: rgba(180, 120, 0, 0.75);
+  background: rgba(248, 184, 77, 0.14);
+  border: 1px solid rgba(248, 184, 77, 0.35);
+  padding: 2px 8px;
+  border-radius: 99px;
+}
+
+.aip-tab-image-divider {
+  height: 1px;
+  background: rgba(15, 23, 42, 0.09);
+  margin-top: 16px;
+}
+
+/* ── 정렬 버튼 (정적 기본값) ── */
+.aip-sort-btn {
+  margin-left: auto;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid rgba(15, 23, 42, 0.18);
+  background: transparent;
+  color: rgba(15, 23, 42, 0.40);
+  transition: all 0.15s;
+}
+
+/* ── 이미지 그리드 ── */
+.aip-image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+/* ── 페이지네이션 ── */
+.aip-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 40px;
+}
+
+.aip-pagination-page-btn {
+  padding: 7px 16px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  border: 1px solid rgba(15, 23, 42, 0.18);
+  background: rgba(255, 255, 255, 0.7);
+  color: rgba(15, 23, 42, 0.70);
+  cursor: pointer;
+}
+
+.aip-pagination-page-btn:disabled {
+  color: rgba(15, 23, 42, 0.25);
+  cursor: default;
+}
+
+.aip-pagination-info {
+  font-size: 0.82rem;
+  color: rgba(15, 23, 42, 0.60);
+}
+
+/* ============================================================
+   라이트 테마 오버라이드
+   ============================================================ */
+[data-theme="light"] .aip-tabbar {
+  background: rgba(255, 255, 255, 0.82) !important;
+  border-bottom-color: rgba(15, 23, 42, 0.10) !important;
+}
+
+[data-theme="light"] .aip-sidebar {
+  border-right-color: rgba(15, 23, 42, 0.12) !important;
+}
+
+[data-theme="light"] .aip-tab-btn {
+  color: rgba(15, 23, 42, 0.55);
+  border-color: rgba(15, 23, 42, 0.15) !important;
+}
+
+[data-theme="light"] .aip-tab-btn.active {
+  color: #0891b2;
+  border-color: rgba(8, 145, 178, 0.35) !important;
+  border-bottom-color: #0891b2 !important;
+  background: rgba(8, 145, 178, 0.10) !important;
+}
+
+[data-theme="light"] .aip-sidebar-cat-label {
+  color: rgba(15, 23, 42, 0.45);
+}
+
+[data-theme="light"] .aip-nav-item-name {
+  color: rgba(15, 23, 42, 0.80);
+}
+
+[data-theme="light"] .aip-nav-item-name.active {
+  color: #0891b2;
+}
+
+[data-theme="light"] .aip-nav-item-count {
+  color: rgba(15, 23, 42, 0.45);
+}
+
+[data-theme="light"] .aip-nav-item-count.active {
+  color: rgba(8, 145, 178, 0.65);
+}
+
+[data-theme="light"] .aip-hint-text {
+  color: rgba(15, 23, 42, 0.55) !important;
+}
+
+[data-theme="light"] .img-prompt-fab {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid rgba(8, 145, 178, 0.35) !important;
+  color: #0891b2 !important;
+  box-shadow: 0 4px 20px rgba(8, 145, 178, 0.22) !important;
+}
+
+/* ============================================================
+   반응형
+   ============================================================ */
+@media (max-width: 768px) {
+  .aip-fab {
+    display: flex !important;
+  }
+
+  .aip-tab-image-root .aip-fab,
+  .img-prompt-fab {
+    display: flex !important;
+  }
+
+  .aip-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    width: 280px !important;
+    z-index: 50;
+    height: 100vh !important;
+    padding-top: 80px !important;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    background: rgba(10, 10, 20, 0.92) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+  }
+
+  .aip-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .aip-main {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+  .aip-tab-image-main {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .aip-image-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ============================================================
+   HeartRating — 정적 구조 CSS
+   ============================================================ */
+
+/* wrapper */
+.aip-heart-wrap {
+  display: flex;
+  gap: 1px;
+  align-items: center;
+}
+
+/* 개별 하트 버튼 — 정적 구조 (color는 JS 동적 처리) */
+.aip-heart-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 2px;
+  font-size: 1.1rem;
+  line-height: 1;
+  transition: color 0.12s, transform 0.1s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .aip-heart-btn { transition: none !important; }
+}
+
+/* ── 모달 태그 행 (ImagePromptModal 사이드 메타) ── */
+.aip-modal-tags-row {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   접근성
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .aip-sidebar {
+    transition: none !important;
+  }
+
+  .aip-tab-btn,
+  .aip-nav-item,
+  .aip-card,
+  button {
+    transition: none !important;
+  }
+}

@@ -1,0 +1,92 @@
+/* ============================================================
+   404 Not Found — 항상 라이트 배경, 테마 독립
+   ============================================================ */
+
+.nf-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 8% 68%,  rgba(180, 144, 245, 0.28) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 45% at 91% 10%,  rgba(94,  231, 223, 0.22) 0%, transparent 60%),
+    radial-gradient(ellipse 45% 40% at 50% 98%,  rgba(247, 168, 196, 0.16) 0%, transparent 55%),
+    #f0f4ff;
+}
+
+.nf-wrap {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px 48px;
+  text-align: center;
+}
+
+.nf-number {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(128px, 22vw, 260px);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  color: #0b1b3b;
+  margin-bottom: 16px;
+  user-select: none;
+}
+
+.nf-number .nf-accent {
+  color: #3aa800;
+}
+
+.nf-title {
+  font-size: clamp(20px, 2.4vw, 26px);
+  font-weight: 700;
+  color: #0b1b3b;
+  margin-bottom: 10px;
+  letter-spacing: -0.01em;
+}
+
+.nf-desc {
+  font-size: 18px;
+  color: #4a5a80;
+  margin-bottom: 44px;
+  max-width: 300px;
+  line-height: 1.6;
+}
+
+.nf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 15px 40px;
+  border-radius: 9999px;
+  background: #3aa800;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 24px rgba(58, 168, 0, 0.28);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.nf-btn:hover {
+  opacity: 0.86;
+  transform: translateY(-2px);
+}
+
+.nf-countdown {
+  margin-top: 20px;
+  font-size: 15px;
+  color: #4a5a80;
+}
+
+.nf-countdown-num {
+  font-weight: 700;
+  color: #3aa800;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nf-btn { transition: none; }
+}

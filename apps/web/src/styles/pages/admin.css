@@ -1,0 +1,294 @@
+/* ============================================================
+   Admin Panel — adm-* 전용 스타일
+   대상: admin/(panel)/users, orders, partners
+   ============================================================ */
+
+/* ── 공통 컨테이너 ── */
+.adm-container {
+  max-width: 1400px;
+}
+
+/* ── 페이지 헤딩 ── */
+.adm-page-title {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-weight: 800;
+  font-size: 26px;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+.adm-page-title-count {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-left: 12px;
+}
+
+.adm-page-header {
+  margin-bottom: 20px;
+}
+
+/* 부제목이 있을 때 타이틀 여백 축소 */
+.adm-page-header .adm-page-title {
+  margin-bottom: 6px;
+}
+
+.adm-page-subtitle {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 15px;
+  color: #10b981;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+/* ── 필터 툴바 ── */
+.adm-filter-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.adm-filter-bar-sm {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.adm-filter-group {
+  display: flex;
+  gap: 6px;
+}
+
+/* ── 검색 인풋 ── */
+.adm-search {
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 16px;
+  padding: 0 14px;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  outline: none;
+  min-width: 220px;
+  flex: 1;
+  box-sizing: border-box;
+}
+
+/* ── 필터 버튼 — 비활성 기본 스타일 ── */
+.adm-filter-btn {
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 8px;
+  background-color: var(--bg-surface);
+  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.adm-filter-btn-sm {
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 8px;
+  background-color: var(--bg-surface);
+  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  cursor: pointer;
+}
+
+/* ── 필터 버튼 — 활성 상태 (JS에서 인라인으로 overriding) ── */
+/* 활성 색상은 JS 삼항(동적)이므로 JS 인라인 유지 */
+
+/* ── 테이블 래퍼 ── */
+.adm-table-wrap {
+  background-color: var(--bg-surface);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.adm-table-scroll {
+  overflow-x: auto;
+}
+
+/* ── 테이블 ── */
+.adm-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.adm-table-users {
+  min-width: 600px;
+}
+
+.adm-table-orders {
+  min-width: 560px;
+}
+
+.adm-table-partners {
+  min-width: 620px;
+}
+
+/* ── 테이블 헤더 행 ── */
+.adm-thead-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ── 테이블 헤더 셀 ── */
+.adm-table-th {
+  padding: 12px 20px;
+  text-align: left;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* ── 테이블 바디 행 ── */
+.adm-tbody-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* ── 테이블 기본 셀 (tdStyle 공통) ── */
+.adm-table-td {
+  padding: 14px 20px;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+/* ── 셀 변형 ── */
+.adm-td-secondary {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.adm-td-sm {
+  font-size: 14px;
+}
+
+.adm-td-mono {
+  font-size: 13px;
+  font-family: monospace;
+  color: var(--text-secondary);
+}
+
+.adm-td-amount {
+  font-weight: 700;
+  color: #10b981;
+}
+
+.adm-td-right {
+  text-align: right;
+}
+
+.adm-td-center {
+  text-align: center;
+}
+
+/* ── 뱃지 공통 ── */
+.adm-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+}
+
+/* ── 주문 확장 행 ── */
+.adm-expand-row {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.adm-expand-cell {
+  padding: 16px 24px;
+}
+
+/* ── 주문 확장 토글 버튼 ── */
+.adm-btn-toggle {
+  padding: 4px 10px;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+}
+
+/* ── 빈 결과 셀 ── */
+.adm-empty-cell {
+  padding: 40px 20px;
+  text-align: center;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+
+/* ── 파트너 — 정산 경고 배너 ── */
+.adm-settle-alert {
+  background-color: rgba(234, 179, 8, 0.08);
+  border: 1px solid rgba(234, 179, 8, 0.25);
+  border-radius: 12px;
+  padding: 14px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.adm-settle-alert-icon {
+  font-size: 22px;
+}
+
+.adm-settle-alert-text {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #eab308;
+}
+
+/* ── 파트너 — 정산 처리 버튼 ── */
+.adm-btn-settle {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 8px;
+  background-color: rgba(234, 179, 8, 0.15);
+  border: 1px solid rgba(234, 179, 8, 0.4);
+  color: #eab308;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* ── 파트너 — 정산 완료 텍스트 ── */
+.adm-settle-done {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* ── 파트너 — 네트워크 규모 강조 수치 ── */
+.adm-td-partner-count {
+  font-weight: 700;
+  color: #ff8800;
+}
+
+/* ── 파트너 — 누적 수당 강조 ── */
+.adm-td-reward {
+  font-weight: 700;
+  color: #ff8800;
+}

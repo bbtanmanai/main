@@ -1,0 +1,68 @@
+/* ============================================================
+   LdAuthPanel — 인증 모달/바텀시트 내부 컨텐츠 스타일
+   ============================================================ */
+
+.ld-auth-panel-root {
+  position: relative;
+}
+
+/* 제목 */
+.ld-auth-panel-title {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--color-text);
+  margin-bottom: 6px;
+  margin-top: 0;
+  text-align: center;
+}
+
+/* 부제목 */
+.ld-auth-panel-subtitle {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 14px;
+  color: var(--color-text-muted);
+  text-align: center;
+  margin-bottom: 28px;
+  margin-top: 0;
+}
+
+/* 소셜 버튼 영역 */
+.ld-auth-panel-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 약관 안내 */
+.ld-auth-panel-terms {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 12px;
+  color: var(--color-text-subtle);
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 0;
+  line-height: 1.6;
+}
+
+/* 약관 링크 */
+.ld-auth-panel-terms a {
+  color: var(--accent-aqua);
+  text-decoration: underline;
+}
+
+/* 서킷브레이커 — 로그인 문제 시 대체 연락처 */
+.ld-auth-panel-circuit {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 12px;
+  color: var(--color-text-subtle);
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+
+/* 서킷브레이커 링크 */
+.ld-auth-panel-circuit a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+}

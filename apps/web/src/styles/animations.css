@@ -1,0 +1,223 @@
+/* ============================================================
+   LinkDrop V2 — 애니메이션
+   모든 @keyframes + 모션 유틸 + prefers-reduced-motion
+   ============================================================ */
+
+/* ============================================================
+   CountUp 숫자 애니메이션 — 섹션2 진입 시 숫자가 올라감
+   ============================================================ */
+@keyframes countup-fade {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.countup-visible {
+  animation: countup-fade 0.6s ease forwards;
+}
+
+/* ============================================================
+   스크롤 인디케이터 bounce 애니메이션
+   ============================================================ */
+@keyframes scroll-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+.scroll-bounce {
+  animation: scroll-bounce 1.8s ease-in-out infinite;
+}
+
+/* ============================================================
+   Condiment 텍스트 fade-in 애니메이션
+   ============================================================ */
+@keyframes condiment-fadein {
+  from {
+    opacity: 0;
+    letter-spacing: 0.3em;
+  }
+  to {
+    opacity: 1;
+    letter-spacing: normal;
+  }
+}
+
+.condiment-fade {
+  animation: condiment-fadein 1.2s ease forwards;
+}
+
+/* ============================================================
+   섹션 진입 애니메이션 (Intersection Observer 트리거)
+   ============================================================ */
+.section-hidden {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.section-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================================
+   비디오 배경 parallax 컨테이너
+   ============================================================ */
+.video-parallax {
+  will-change: transform;
+}
+
+/* ============================================================
+   LdStatusStepper — pulse 애니메이션
+   ============================================================ */
+@keyframes ld-stepper-pulse {
+  from { opacity: 0.3; transform: scale(0.8); }
+  to   { opacity: 1;   transform: scale(1.2); }
+}
+
+/* ============================================================
+   공통 스피너 애니메이션 (login / signup)
+   ============================================================ */
+@keyframes ld-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   Blob drift 애니메이션 (Shell 배경)
+   ============================================================ */
+@keyframes blob-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(40px, -30px) scale(1.06); }
+  66%       { transform: translate(-25px, 20px) scale(0.96); }
+}
+
+/* ============================================================
+   .glass-badge dot pulse 애니메이션
+   ============================================================ */
+@keyframes pulse-badge {
+  0%, 100% { opacity: 1;   transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.65); }
+}
+
+/* ============================================================
+   소셜 로그인 / 인증 모달 키프레임
+   ============================================================ */
+@keyframes ld-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes ld-slide-up {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ── 스켈레톤 로딩 애니메이션 ── */
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+
+/* ============================================================
+   마스코트 캐릭터 키프레임 (LdMascotFloat)
+   ============================================================ */
+@keyframes ld-mascot-float {
+  0%, 100% { transform: translateY(0px) rotate(-2deg); }
+  50%       { transform: translateY(-10px) rotate(2deg); }
+}
+
+@keyframes ld-mascot-enter-right {
+  from { opacity: 0; transform: translateX(50px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes ld-mascot-enter-left {
+  from { opacity: 0; transform: translateX(-50px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ============================================================
+   About 페이지 progress-bar 키프레임
+   ============================================================ */
+@keyframes progress-grow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* ============================================================
+   prefers-reduced-motion — BACKLOG P1-15 해소
+   모든 모션 즉시 정지
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* prefers-reduced-motion: 블롭 정지 */
+@media (prefers-reduced-motion: reduce) {
+  .lg-blob { animation: none !important; }
+}
+
+/* prefers-reduced-motion: 드로어 */
+@media (prefers-reduced-motion: reduce) {
+  .ld-drawer-panel { transition: opacity 180ms ease; transform: none !important; opacity: 0; }
+  .ld-drawer-panel.open { opacity: 1; }
+  .ld-drawer-overlay { transition: opacity 180ms ease; }
+  .ld-ham-bar { transition: none; }
+}
+
+/* prefers-reduced-motion: 인증 모달 */
+@media (prefers-reduced-motion: reduce) {
+  .ld-auth-overlay,
+  .ld-auth-modal-card,
+  .ld-auth-bs-wrap { animation: none; }
+}
+
+/* prefers-reduced-motion: 마스코트 */
+@media (prefers-reduced-motion: reduce) {
+  .ld-mascot-wrap,
+  .ld-mascot-visible {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* prefers-reduced-motion: GNB 드롭다운 */
+@media (prefers-reduced-motion: reduce) {
+  .gnb-dropdown-panel,
+  .gnb-has-submenu::after,
+  .ld-drawer-chevron,
+  .ld-drawer-sub-list {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* prefers-reduced-motion: Neo-Swiss GNB */
+@media (prefers-reduced-motion: reduce) {
+  .gnb-btn::after,
+  .gnb-drop-chevron,
+  .gnb-drop-panel,
+  .gnb-cta-primary,
+  .gnb-drop-link {
+    transition: none !important;
+    animation: none !important;
+  }
+}
