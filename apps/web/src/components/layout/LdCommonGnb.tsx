@@ -68,14 +68,29 @@ export default function LdCommonGnb({
                   <div className="gnb-drop-panel" role="menu">
                     {item.children.map((sub) => {
                       const isSubActive =
-                        pathname === sub.href ||
-                        pathname.startsWith(sub.href + "/");
+                        !sub.disabled &&
+                        (pathname === sub.href ||
+                          pathname.startsWith(sub.href + "/"));
+                      if (sub.disabled) {
+                        return (
+                          <span
+                            key={sub.label}
+                            className="gnb-drop-link gnb-drop-link--disabled"
+                            aria-disabled="true"
+                          >
+                            {sub.label}
+                          </span>
+                        );
+                      }
                       return (
                         <button
-                          key={sub.href}
+                          key={sub.label}
                           role="menuitem"
                           className={`gnb-drop-link${isSubActive ? " active" : ""}`}
-                          onClick={() => router.push(sub.href)}
+                          onClick={(e) => {
+                            (e.currentTarget as HTMLButtonElement).blur();
+                            router.push(sub.href);
+                          }}
                         >
                           {sub.label}
                         </button>

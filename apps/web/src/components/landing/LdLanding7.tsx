@@ -199,7 +199,7 @@ export default function LdLanding7() {
             커버 — cinematic.css bg:#000, 중립 오버레이
         ══════════════════════════════════════════════════════ */}
         <section id="top" className="ld-cine-section">
-          <LdCinematicVideoBg playbackId="MLuczZc01U8DdU01T5Y6Z4oX8ZcVFnJgPlhdgWb202T4MI" />
+          <LdCinematicVideoBg src="https://pub-3004911807a7429c89c576d1aa468160.r2.dev/V2/landing7/landing7_top.mp4" />
 
           {/* 중립 어둠 오버레이 — 콤보 색 금지 */}
           <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.50)", zIndex: 1 }} />

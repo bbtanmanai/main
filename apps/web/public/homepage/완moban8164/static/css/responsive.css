@@ -1,0 +1,279 @@
+@media all and (min-width: 1670px) {
+
+}
+
+@media (max-width: 1380px){
+
+}
+
+@media (max-width: 1200px){
+
+}
+
+@media all and (min-width: 992px) {
+    .navbar-nav .nav-item .dropdown-menu{ display: none; margin-top:0; }
+	.navbar-nav .nav-item:hover .dropdown-menu{ display: block; }
+}
+
+@media all and (max-width: 992px){
+    .navbar-dark .navbar-toggler{
+		color: #fff;
+		background-color: var(--theme-color-1);
+		width: 50px;
+		height: 50px;
+		border-radius: 6px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	
+	.navbar-collapse{
+		position: absolute;
+		top: 66px;
+		left: 0;
+		width: 100%;
+		background-color: #fff;
+		z-index: 999;
+		padding: 15px;
+		height: auto;
+		overflow: auto;
+	}
+
+	.navbar-dark .navbar-nav .nav-link{
+		color: var(--heading-color);
+	}
+
+	.navbar-nav .dropdown-menu{
+		box-shadow: none;
+	}
+
+	.navbar .nav-item:hover .dropdown-menu{
+		box-shadow: none;
+	}
+
+	.slick-list {
+		margin: 0 0px;
+	}
+
+    section{
+        padding: 35px 0px;
+    }
+
+    .banner-heading{
+        text-align: center;
+        font-size: 45px;
+    }
+
+    .banner-description{
+        text-align: center;
+    }
+
+    .section-heading{
+        font-size: 36px;
+    }
+
+    .content-heading{
+        font-size: 32px;
+    }
+
+    .astologer-content{
+        padding: 16px;
+    }
+
+    .horoscope.nav-pills .nav-item{
+        margin-bottom: 15px;
+    }
+
+    .footer-contact-group{
+        flex-direction: column;
+    }
+
+    .footer-contact-item.middle{
+        border: none;
+        padding: 20px 0px;
+    }
+
+    .contact-info{
+        padding: 0px;
+    }
+}
+
+@media all and (max-width: 768px){
+    .navbar-dark .navbar-toggler{
+		color: #fff;
+		background-color: var(--theme-color-1);
+		width: 50px;
+		height: 50px;
+		border-radius: 6px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	
+	.navbar-collapse{
+		position: absolute;
+		top: 66px;
+		left: 0;
+		width: 100%;
+		background-color: #fff;
+		z-index: 999;
+		padding: 15px;
+		height: auto;
+		overflow: auto;
+	}
+
+	.navbar-dark .navbar-nav .nav-link{
+		color: var(--heading-color);
+	}
+
+	.navbar-nav .dropdown-menu{
+		box-shadow: none;
+	}
+
+	.navbar .nav-item:hover .dropdown-menu{
+		box-shadow: none;
+	}
+
+	.slick-list {
+		margin: 0 0px;
+	}
+
+    section{
+        padding: 35px 0px;
+    }
+
+    .topbar-contact-wrapper{
+        text-align: center;
+    }
+
+    .topbar-social{
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .banner-heading{
+        text-align: center;
+        font-size: 45px;
+    }
+
+    .banner-description{
+        text-align: center;
+    }
+
+    .section-heading{
+        font-size: 36px;
+    }
+
+    .content-heading{
+        font-size: 32px;
+    }
+
+    .astologer-content{
+        padding: 16px;
+    }
+
+    .horoscope.nav-pills .nav-item{
+        margin-bottom: 15px;
+    }
+
+    .footer-contact-group{
+        flex-direction: column;
+    }
+
+    .footer-contact-item.middle{
+        border: none;
+        padding: 20px 0px;
+    }
+
+    .contact-info{
+        padding: 0px;
+    }
+}
+
+@media all and (max-width: 480px){
+    .navbar-dark .navbar-toggler{
+		color: #fff;
+		background-color: var(--theme-color-1);
+		width: 50px;
+		height: 50px;
+		border-radius: 6px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	
+	.navbar-collapse{
+		position: absolute;
+		top: 66px;
+		left: 0;
+		width: 100%;
+		background-color: #fff;
+		z-index: 999;
+		padding: 15px;
+		height: auto;
+		overflow: auto;
+	}
+
+	.navbar-dark .navbar-nav .nav-link{
+		color: var(--heading-color);
+	}
+
+	.navbar-nav .dropdown-menu{
+		box-shadow: none;
+	}
+
+	.navbar .nav-item:hover .dropdown-menu{
+		box-shadow: none;
+	}
+
+	.slick-list {
+		margin: 0 0px;
+	}
+
+    section{
+        padding: 35px 0px;
+    }
+
+    .topbar-contact-wrapper{
+        text-align: center;
+    }
+
+    .topbar-social{
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .banner-heading{
+        text-align: center;
+        font-size: 45px;
+    }
+
+    .banner-description{
+        text-align: center;
+    }
+
+    .section-heading{
+        font-size: 36px;
+    }
+
+    .content-heading{
+        font-size: 32px;
+    }
+
+    .astologer-content{
+        padding: 16px;
+    }
+
+    .horoscope.nav-pills .nav-item{
+        margin-bottom: 15px;
+    }
+
+    .footer-contact-group{
+        flex-direction: column;
+    }
+
+    .footer-contact-item.middle{
+        border: none;
+        padding: 20px 0px;
+    }
+}

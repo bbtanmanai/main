@@ -1,0 +1,427 @@
+
+/*============ Very large Device ===========*/
+@media (min-width:1441px) and (max-width:1919px){
+    .inner_main_nav_area >ul >li >a {
+        margin: 30px 8px 30px;
+    }
+    .inner_slider_content h2 {
+        font-size: 56px;;
+    }
+    .donate_btn_header a {
+        padding: 16px 23px;
+    }
+    .blog_area .slick-prev, .shop_slider .slick-prev, .port_area .slick-prev {
+        left: 88%;
+    }
+    .footer_title h2 {
+        font-size: 38px;
+    }
+    .inner_shop_content h3 a {
+        font-size: 22px;
+    }
+}
+/*============ Desktop Device ===========*/
+@media (min-width:1366px) and (max-width:1440px){
+    .inner_main_nav_area >ul >li >a {
+        margin: 30px 5px 30px;
+    }
+    .donate_btn_header a {
+        padding: 16px 11px;
+    }
+    .inner_slider_content h2 {
+        font-size: 50px;
+    }
+    .port_area .slick-prev, .shop_slider .slick-prev, .blog_area .slick-prev {
+        left: 88%;
+    }
+    .footer_widget h4 {
+        font-size: 22px;
+    }
+    .inner_shop_content h3 a {
+        font-size: 19px;
+    }
+    .footer_title h2 {
+        font-size: 34px;
+    }
+    .main_offer h2 {
+        font-size: 36px;
+    }
+}
+/*============ Laptop Device ===========*/
+@media (min-width:1024px) and (max-width:1365px){
+    h1,h2,h3,h4,h5,h6,h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{
+        font-size: 18px;
+        font-weight: 500;
+    }
+    .header_top {
+        margin: 0;
+    }
+    .main_menu_area {
+        padding: 0 5px;
+    }
+    .inner_main_nav_area >ul >li >a {
+        margin: 30px 8px 30px;
+        font-size: 15px;
+    }
+     /* slider area css */
+     .inner_slider_content {
+        width: 90%;
+        margin-left: 30px;
+    }
+    .inner_slider_content h2{
+        font-size: 40px;
+    }
+    .donate_btn_header a {
+        padding: 16px 15px;
+    }
+    .auto_grid {
+        width: 100%;
+        margin: 10px;
+    }
+    .inner_shop_content h3 a {
+        font-size: 16px;
+    }
+    .blog_area .slick-prev {
+        left: 86%;
+    }
+    .main_offer {
+        padding: 13px 79px 90px 21px;
+    }
+    .footer_area {
+        padding: 210px 0 50px;
+    }
+    .footer_title h2 {
+        font-size: 36px;
+    }
+    .single_order {
+        padding: 96px 137px 65px 30px;
+    }
+    .copy_right {
+        padding: 18px 0;
+    }
+    .shop_slider .slick-prev {
+        left: 86%;
+    }
+    .slick-next {
+        right: 29px;
+    }
+    #scrollUp {
+        bottom: 76px;
+        right: 15px;
+    }
+    .inner_contact_content h2 {
+        font-size: 40px;
+    }
+    .ycalender_inner {
+        padding: 20px 18px;
+    }
+    .ycalender_inner th {
+        padding: 10px 11px;
+        font-size: 14px;
+    }
+    .ycalender_inner td {
+        padding: 10px 10px;
+        font-size: 13px;
+    }
+}
+
+/*============= Tablet Large device ===============*/
+@media (min-width:992px) and (max-width:1023px){
+    h1,h2,h3,h4,h5,h6,h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{
+        font-size: 18px;
+        font-weight: 500;
+    }
+    .header_top {
+        margin: 0;
+    }
+    .main_menu_area {
+        padding: 0 5px;
+    }
+    .inner_main_nav_area >ul >li >a {
+        margin: 30px 8px 30px;
+    }
+     /* slider area css */
+     .inner_slider_content {
+        width: 90%;
+        margin-left: 30px;
+    }
+    .inner_slider_content h2{
+        font-size: 40px;
+    }
+    .donate_btn_header a {
+        padding: 16px 15px;
+    }
+    .auto_grid {
+        width: 100%;
+        margin: 10px;
+    }
+    .inner_shop_content h3 a {
+        font-size: 20px;
+    }
+    .blog_area .slick-prev {
+        left: 86%;
+    }
+    .main_offer {
+        padding: 130px 79px 90px 21px;
+    }
+    .footer_area {
+        padding: 210px 0 50px;
+    }
+    .footer_title h2 {
+        font-size: 36px;
+    }
+    .single_order {
+        padding: 192px 137px 65px 30px;
+    }
+    .copy_right {
+        padding: 18px 0;
+    }
+    #scrollUp {
+        bottom: 76px;
+        right: 15px;
+    }
+    .inner_contact_content h2 {
+        font-size: 40px;
+    }
+    .ycalender_inner {
+        padding: 20px 18px;
+    }
+    .ycalender_inner th {
+        padding: 10px 11px;
+        font-size: 14px;
+    }
+    .ycalender_inner td {
+        padding: 10px 10px;
+        font-size: 13px;
+    }
+}
+
+/*============= Tablet device ===============*/
+@media (min-width:768px) and (max-width:991px){
+    h1,h2,h3,h4,h5,h6,h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{
+        font-size: 18px;
+        font-weight: 500;
+    }
+    .header_top {
+        padding: 12px 0;
+        margin: 0;
+    }
+    .mobile_logo_area {
+        display: block !important;
+        padding: 20px 0 20px;
+    }
+     /* main nav area css */
+     .main_menu_area{
+        display: none;
+    }
+     /* slider area css */
+     .inner_slider_content {
+        width: 100%;
+        padding: 10px;
+    }
+     .inner_slider_area{
+        height: 700px;
+    }
+    .inner_slider_content h2 {
+        font-size: 33px;
+    }
+    .top_menu_left span {
+        margin-right: 0;
+    }
+    .top_menu_left {
+        margin-left: 0;
+    }
+    .service_title h2 {
+        font-size: 36px;
+    }
+    .inner_shop_content h3 a {
+        font-size: 20px;
+    }
+    .single_order {
+        padding: 115px 0 65px 30px;
+    }
+    .single_order h2 {
+        font-size: 35px;
+    }
+    .main_offer {
+        padding: 5px;
+    }
+    .main_offer h2 {
+        font-size: 32px;
+    }
+    .footer_area {
+        padding: 100px 0 50px;
+        margin-top: 0;
+    }
+    .auto_grid {
+        margin: 10px;
+        width: 100%;
+    }
+    .copy_right {
+        padding: 18px 0;
+    }
+    .offer_area {
+        background-size: inherit;
+    }
+    .inner_contact_content h2 {
+        font-size: 30px;
+    }
+    .ycalender_inner {
+        padding: 20px 14px;
+    }
+    #scrollUp {
+        bottom: 61px;
+    }
+}
+
+/*============= mobile large device ===============*/
+@media (max-width:767px){
+    h1,h2,h3,h4,h5,h6,h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{
+        font-size: 18px;
+        font-weight: 500;
+    }
+    .header_top {
+        padding: 12px 0;
+        margin: 0;
+    }
+    .main_top_right {                          
+        margin-top: -23px;  
+    }
+    .mobile_logo_area {
+        display: block !important;
+        padding: 20px 0 20px;
+    }
+     /* main nav area css */
+     .main_menu_area{
+        display: none;
+    }
+    .inner_breadcum_area h1 {
+        font-size: 29px;
+    }
+    .inner_breadcum_area ul li {
+        font-size: 14px;
+    }
+    .inner_breadcum_area {
+        padding: 100px 0;
+    }
+    /* slider area css */
+    .inner_slider_content {
+        text-align: left;
+        width: 100%;
+    }
+    .inner_slider_area {
+        height: 500px;
+    }
+    .inner_slider_content h2{
+        font-size: 35px;
+    }
+    .b_btn a {
+        padding: 12px 30px;
+        margin-bottom: 20px;
+    }
+    .feature_area {
+        margin: 0 0 60px;
+    }
+    .service_title h2, .single_order h2, .main_offer h2 {
+        font-size: 30px;
+    }
+    .single_order {
+        padding: 90px 0 65px 30px;
+    }
+    .main_offer {
+        padding: 0 10px 0 10px;
+    }
+    .footer_area {
+        text-align: center;
+    }
+    .copy_right_text p, .menu-footer-menu ul {
+        text-align: center;
+    }
+    .footer_title h2 {
+        font-size: 26px;
+    }
+    .inner_contact_content h2 {
+        font-size: 26px;
+    }
+    #scrollUp {
+        bottom: 89px;
+        right: 15px;
+    }
+}
+
+/*============= mobile device ===============*/
+@media (min-width:320px) and (max-width:480px){
+    .mobile_logo_area {
+        padding: 20px 0;
+    }
+    .main_top_right {
+        text-align: center;
+        display: block;
+        margin: 0;
+    }
+    .top_menu_left {
+        text-align: center;
+    }
+    .inner_slider_content h2{
+        font-size: 28px;
+    }
+    .inner_slider_content {
+        margin: 0;
+    }
+    .slider_img {
+        display: none;
+    }
+    .inner_slider_content {
+        text-align: center;
+    }
+    .auto_grid {
+        width: 100%;
+        padding: 10px;
+    }
+    .service_title h2, .single_order h2, .main_offer h2 {
+        font-size: 28px;
+        text-align: center;
+    }
+    .single_order {
+        padding: 200px 0 55px 0;
+    }
+    .inner_testimonial_area {
+        margin: 0;
+    }
+    .inner_testimonial_content p {
+        font-size: 15px;
+    }
+    .offer_btn a {
+        margin-bottom: 20px;
+    }
+    .inner_shop_content h3 a {
+        font-size: 20px;
+    }
+    .footer_area {
+        padding: 100px 0 50px;
+        margin-top: 0;
+    }
+    .copy_right {
+        padding: 18px 0;
+    }
+    .single_order h4 {
+        font-size: 30px;
+    }
+    .service_title img {
+        left: 0;
+        right: 0;
+        margin: auto;
+    }
+    .contact_text p {
+        width: 100%;
+    }
+    .ycalender_inner th {
+        padding: 10px 12px;
+    }
+    .ycalender_inner td {
+        padding: 10px 9px;
+    }
+    .ycalender_inner {
+        padding: 20px 18px;
+    }
+}

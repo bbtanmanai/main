@@ -2,7 +2,7 @@
 import React from "react";
 import "@/styles/pages/landing5.css";
 import SuperFlowCover from "@/components/landing/SuperFlowCover";
-import LdBonusSection from "@/components/landing/LdBonusSection";
+
 import LdFinalCTASection from "@/components/landing/LdFinalCTASection";
 
 // 🔒 LD-006: 정적 스타일 → landing5.css (ld-af-*). JS 런타임 동적 값만 style={{}} 유지.
@@ -314,7 +314,6 @@ export default function LdLanding5() {
 
       </div>
 
-      <LdBonusSection />
       <LdFinalCTASection />
     </div>
   );

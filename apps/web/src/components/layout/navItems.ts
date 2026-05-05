@@ -1,6 +1,7 @@
 export interface NavSubItem {
   label: string;
   href: string;
+  disabled?: boolean;
 }
 
 export interface NavItem {
@@ -10,13 +11,21 @@ export interface NavItem {
 }
 
 export const NAV_ITEMS: NavItem[] = [
-  { label: "서비스소개", href: "/about" },
+  {
+    label: "서비스소개",
+    href: "/about",
+    children: [
+      { label: "프로젝트", href: "/project" },
+    ],
+  },
   {
     label: "웹소설",
     href: "/landing/landing1",
     children: [
-      { label: "웹소설 소개", href: "/landing/landing1" },
-      { label: "웹소설 보기", href: "/webnovel" },
+      { label: "웹소설",  href: "/webnovel" },
+      { label: "쇼츠",   href: "/shorts" },
+      { label: "카드뉴스", href: "/card-news" },
+      { label: "웹툰",   href: "/webtoon" },
     ],
   },
   { label: "영상자동화", href: "/landing/landing4" },

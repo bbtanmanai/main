@@ -2,7 +2,7 @@ import "@/styles/homepage.css";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { AI_UI_SOURCES } from "@/lib/ai-ui-homepage";
-import type { HomepageItem } from "@/types/homepage";
+import { getAllHomepageItems } from "@/lib/homepage";
 import LdHomepageTabSwitcher from "@/components/homepage/LdHomepageTabSwitcher";
 import LdHomepageCategoryFilter from "@/components/homepage/LdHomepageCategoryFilter";
 import LdHomepageGrid from "@/components/homepage/LdHomepageGrid";
@@ -16,9 +16,6 @@ export const metadata: Metadata = {
 
 const PER_PAGE = 12;
 
-// 향후 Supabase에서 로드 — 현재 정적 빈 배열
-const HOMEPAGE_ITEMS: HomepageItem[] = [];
-
 interface PageProps {
   searchParams: Promise<{ tab?: string; category?: string; page?: string }>;
 }
@@ -30,6 +27,7 @@ export default async function HomepagePage({ searchParams }: PageProps) {
   const currentPage = Math.max(1, Number(params.page) || 1);
 
   const aiItems = AI_UI_SOURCES;
+  const HOMEPAGE_ITEMS = getAllHomepageItems();
 
   const filtered = category
     ? HOMEPAGE_ITEMS.filter((item) => item.category === category)

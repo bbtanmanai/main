@@ -1,13 +1,22 @@
 "use client";
 
 import { useEffect } from "react";
-import Script from "next/script";
 import externalLinks from "@/data/external-links.json";
 
 export default function RainyHeroSection() {
   useEffect(() => {
+    // 이전 인스턴스 스크립트 제거 (SPA 재진입 시 재실행 보장)
+    const prev = document.getElementById("raindrops-script");
+    if (prev) prev.remove();
+
+    const script = document.createElement("script");
+    script.id = "raindrops-script";
+    script.src = "/js/raindrops.js";
+    document.body.appendChild(script);
+
     return () => {
-      // Script는 페이지 생명주기 동안 유지 — cleanup 불필요
+      const s = document.getElementById("raindrops-script");
+      if (s) s.remove();
     };
   }, []);
 
@@ -64,11 +73,6 @@ export default function RainyHeroSection() {
         </div>
       </div>
 
-      {/* raindrops.js — id="bg-canvas" 캔버스를 자동으로 찾아 비 효과 시작 */}
-      <Script
-        src="/js/raindrops.js"
-        strategy="afterInteractive"
-      />
     </section>
   );
 }

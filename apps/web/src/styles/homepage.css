@@ -46,12 +46,13 @@
   display: flex;
   align-items: stretch;
   gap: 0;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
   padding: 6px;
   margin-bottom: 28px;
-  overflow: hidden;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .hp-tab-btn {
@@ -61,12 +62,13 @@
   gap: 12px;
   padding: 14px 20px;
   border-radius: 12px;
-  border: none;
+  border: 1px solid transparent;
   background: transparent;
   color: var(--text-secondary, #8899cc);
   cursor: pointer;
   text-align: left;
-  transition: background 200ms, color 200ms;
+  transition: background 200ms, color 200ms, border-color 200ms;
+  position: relative;
 }
 
 .hp-tab-btn:hover {
@@ -75,8 +77,24 @@
 }
 
 .hp-tab-btn--active {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.1);
   color: var(--text-primary, #eff4ff);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* neon bottom indicator on active tab */
+.hp-tab-btn--active::after {
+  content: "";
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--accent-neon, #6fff00);
+  box-shadow: 0 0 8px rgba(111, 255, 0, 0.6);
 }
 
 .hp-tab-icon {
@@ -86,15 +104,16 @@
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.05);
   flex-shrink: 0;
   color: var(--text-secondary, #8899cc);
-  transition: background 200ms, color 200ms;
+  transition: background 200ms, color 200ms, box-shadow 200ms;
 }
 
 .hp-tab-btn--active .hp-tab-icon {
   background: rgba(111, 255, 0, 0.12);
   color: var(--accent-neon, #6fff00);
+  box-shadow: 0 0 12px rgba(111, 255, 0, 0.2);
 }
 
 .hp-tab-body {
@@ -116,29 +135,30 @@
 }
 
 .hp-tab-count {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  padding: 1px 7px;
+  padding: 2px 8px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.07);
   color: var(--text-secondary, #8899cc);
+  transition: background 200ms, color 200ms;
 }
 
 .hp-tab-btn--active .hp-tab-count {
-  background: rgba(111, 255, 0, 0.15);
+  background: rgba(111, 255, 0, 0.14);
   color: var(--accent-neon, #6fff00);
 }
 
 .hp-tab-sub {
-  font-size: 0.75rem;
+  font-size: 0.73rem;
   color: var(--text-secondary, #8899cc);
-  opacity: 0.7;
+  opacity: 0.65;
 }
 
 .hp-tab-divider {
   width: 1px;
-  background: rgba(255, 255, 255, 0.08);
-  margin: 8px 0;
+  background: rgba(255, 255, 255, 0.07);
+  margin: 10px 0;
   flex-shrink: 0;
 }
 
@@ -149,20 +169,14 @@
 }
 
 .hp-filter-scroll {
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.hp-filter-scroll::-webkit-scrollbar {
-  display: none;
+  overflow-x: visible;
 }
 
 .hp-filter-chip-list {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   padding-bottom: 4px;
-  width: max-content;
 }
 
 .hp-filter-chip {
@@ -179,8 +193,9 @@
 }
 
 .hp-filter-chip:hover {
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.22);
   color: var(--text-primary, #eff4ff);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .hp-filter-chip[data-active="true"] {
@@ -188,71 +203,133 @@
   border-color: var(--accent-neon, #6fff00);
   color: #010828;
   font-weight: 700;
+  box-shadow: 0 0 16px rgba(111, 255, 0, 0.3);
 }
 
 /* ── 홈페이지 카드 ───────────────────────────────────────── */
-.hp-card {
-  border-radius: 14px;
+.hp-card-root {
+  border-radius: 16px;
   overflow: hidden;
   cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  transition: border-color 200ms, transform 200ms;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    transform 220ms ease;
+  display: flex;
+  flex-direction: column;
 }
 
-.hp-card:hover {
-  border-color: rgba(255, 255, 255, 0.18);
-  transform: translateY(-2px);
+.hp-card-root:hover {
+  border-color: rgba(111, 255, 0, 0.3);
+  box-shadow:
+    0 0 0 1px rgba(111, 255, 0, 0.12),
+    0 12px 40px rgba(0, 0, 0, 0.5),
+    0 0 24px rgba(111, 255, 0, 0.06);
+  transform: translateY(-3px);
 }
 
-.hp-card:focus-visible {
+.hp-card-root:focus-visible {
   outline: 2px solid var(--accent-neon, #6fff00);
   outline-offset: 2px;
 }
 
+/* 썸네일 영역 */
 .hp-card-thumb-layer {
   position: relative;
   width: 100%;
   aspect-ratio: 4 / 3;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(10, 21, 64, 0.8);
+  flex-shrink: 0;
 }
 
+/* hover 시 이미지 살짝 확대 */
+.hp-card-root:hover .hp-card-thumb-layer img {
+  transform: scale(1.04);
+  transition: transform 400ms ease;
+}
+
+.hp-card-thumb-layer img {
+  transition: transform 400ms ease;
+}
+
+/* 플레이스홀더 — 슬러그 텍스트 대신 격자 패턴 */
 .hp-card__placeholder {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.2);
-  letter-spacing: 0.05em;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 16px,
+      rgba(255, 255, 255, 0.015) 16px,
+      rgba(255, 255, 255, 0.015) 17px
+    );
+  font-size: 0;
 }
 
+.hp-card__placeholder::after {
+  content: "";
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* 미리보기 오버레이 (hover 시 나타남) */
+.hp-card-thumb-layer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  transition: background 220ms;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hp-card-root:hover .hp-card-thumb-layer::after {
+  background: rgba(0, 0, 0, 0.18);
+}
+
+/* 정보 패널 */
 .hp-card__info {
-  padding: 12px 14px;
-  background: rgba(0, 0, 0, 0.3);
+  padding: 12px 14px 14px;
+  background: rgba(6, 12, 40, 0.92);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .hp-card-info-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .hp-card__category {
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: 0.67rem;
+  font-weight: 700;
   color: var(--accent-neon, #6fff00);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.07em;
 }
 
 .hp-card__title {
-  font-size: 0.85rem;
+  font-size: 0.83rem;
   font-weight: 600;
   color: var(--text-primary, #eff4ff);
-  line-height: 1.3;
+  line-height: 1.35;
   margin: 0;
   overflow: hidden;
   display: -webkit-box;
@@ -261,7 +338,7 @@
 }
 
 .hp-download-btn {
-  font-size: 0.7rem;
+  font-size: 0.67rem;
   font-weight: 600;
   color: var(--text-secondary, #8899cc);
   text-decoration: none;
@@ -275,6 +352,7 @@
 .hp-download-btn:hover {
   background: rgba(255, 255, 255, 0.07);
   color: var(--text-primary, #eff4ff);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 /* ── 빈 상태 / 페이지네이션 ─────────────────────────────── */
@@ -294,7 +372,7 @@
 }
 
 .hp-paginator-btn {
-  padding: 8px 20px;
+  padding: 8px 22px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: transparent;
@@ -308,6 +386,7 @@
 .hp-paginator-btn:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.07);
   color: var(--text-primary, #eff4ff);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .hp-paginator-btn:disabled {
@@ -517,11 +596,12 @@
   font-weight: 700;
   font-size: 0.9rem;
   text-decoration: none;
-  transition: opacity 150ms;
+  transition: opacity 150ms, box-shadow 150ms;
 }
 
 .hp-prev-btn-buy:hover {
-  opacity: 0.88;
+  opacity: 0.9;
+  box-shadow: 0 0 20px rgba(111, 255, 0, 0.35);
 }
 
 .hp-prev-btn-download {
@@ -552,26 +632,26 @@
 }
 
 .hp-ai-card {
-  border-radius: 16px;
+  border-radius: 18px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.025);
   display: flex;
   flex-direction: column;
-  transition: border-color 200ms, transform 200ms, box-shadow 200ms;
+  transition: border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
 }
 
 .hp-ai-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
 }
 
-/* 색상 변형 — border accent */
-.hp-ai-card--aqua:hover   { border-color: rgba(0, 212, 255, 0.35); }
-.hp-ai-card--neon:hover   { border-color: rgba(111, 255, 0, 0.35); }
-.hp-ai-card--amber:hover  { border-color: rgba(255, 160, 64, 0.35); }
-.hp-ai-card--rose:hover   { border-color: rgba(255, 77, 122, 0.35); }
-.hp-ai-card--lime:hover   { border-color: rgba(184, 255, 0, 0.35); }
+/* 색상 변형 — hover border glow */
+.hp-ai-card--aqua:hover  { border-color: rgba(0, 212, 255, 0.4); box-shadow: 0 16px 40px rgba(0,0,0,0.45), 0 0 20px rgba(0,212,255,0.08); }
+.hp-ai-card--neon:hover  { border-color: rgba(111, 255, 0, 0.4); box-shadow: 0 16px 40px rgba(0,0,0,0.45), 0 0 20px rgba(111,255,0,0.08); }
+.hp-ai-card--amber:hover { border-color: rgba(255, 160, 64, 0.4); box-shadow: 0 16px 40px rgba(0,0,0,0.45), 0 0 20px rgba(255,160,64,0.08); }
+.hp-ai-card--rose:hover  { border-color: rgba(255, 77, 122, 0.4); box-shadow: 0 16px 40px rgba(0,0,0,0.45), 0 0 20px rgba(255,77,122,0.08); }
+.hp-ai-card--lime:hover  { border-color: rgba(184, 255, 0, 0.4); box-shadow: 0 16px 40px rgba(0,0,0,0.45), 0 0 20px rgba(184,255,0,0.08); }
 
 /* 썸네일 영역 */
 .hp-ai-card-image {
@@ -579,7 +659,7 @@
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(10, 21, 64, 0.8);
 }
 
 .hp-ai-card-image--clickable { cursor: pointer; }
@@ -597,7 +677,7 @@
 .hp-ai-image-bar {
   flex: 1;
   border-radius: 4px;
-  opacity: 0.12;
+  opacity: 0.14;
 }
 
 .hp-ai-card--aqua  .hp-ai-image-bar { background: #00d4ff; }
@@ -613,7 +693,7 @@
 
 /* 카테고리 배지 */
 .hp-ai-badge {
-  font-size: 0.68rem;
+  font-size: 0.67rem;
   font-weight: 700;
   padding: 3px 10px;
   border-radius: 999px;
@@ -671,11 +751,12 @@
 
 /* 카드 본문 */
 .hp-ai-card-content {
-  padding: 16px;
+  padding: 16px 18px;
   display: flex;
   flex-direction: column;
   gap: 10px;
   flex: 1;
+  background: rgba(6, 12, 40, 0.6);
 }
 
 .hp-ai-tools {
@@ -688,12 +769,13 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 600;
   color: var(--text-secondary, #8899cc);
   padding: 3px 9px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 /* 난이도 */
@@ -707,16 +789,17 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.1);
   flex-shrink: 0;
 }
 
 .hp-ai-dot--on {
   background: var(--accent-neon, #6fff00);
+  box-shadow: 0 0 4px rgba(111, 255, 0, 0.5);
 }
 
 .hp-ai-difficulty-label {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 600;
   color: var(--text-secondary, #8899cc);
   margin-left: 2px;
@@ -762,14 +845,18 @@
   font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
-  transition: opacity 150ms;
+  transition: opacity 150ms, box-shadow 150ms;
 }
 
-.hp-ai-cta-btn:hover:not(:disabled) { opacity: 0.88; }
+.hp-ai-cta-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  box-shadow: 0 0 16px rgba(111, 255, 0, 0.3);
+}
+
 .hp-ai-cta-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
 .hp-ai-cta-btn--copied {
-  background: rgba(111, 255, 0, 0.2);
+  background: rgba(111, 255, 0, 0.18);
   color: var(--accent-neon, #6fff00);
 }
 
@@ -778,7 +865,7 @@
   padding: 0 14px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  background: transparent;
+  background: rgba(255, 255, 255, 0.03);
   color: var(--text-secondary, #8899cc);
   font-size: 0.78rem;
   font-weight: 600;
@@ -793,9 +880,206 @@
 .hp-ai-chatgpt-btn:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.07);
   color: var(--text-primary, #eff4ff);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .hp-ai-chatgpt-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* ── 라이트 테마 오버라이드 ─────────────────────────────────── */
+[data-theme="light"] .hp-tab-switcher {
+  background: rgba(255, 255, 255, 0.62);
+  border-color: rgba(15, 23, 42, 0.12);
+}
+
+[data-theme="light"] .hp-tab-btn:hover {
+  background: rgba(15, 23, 42, 0.05);
+}
+
+[data-theme="light"] .hp-tab-btn--active {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(15, 23, 42, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+[data-theme="light"] .hp-tab-btn--active::after {
+  box-shadow: 0 0 8px rgba(58, 168, 0, 0.5);
+}
+
+[data-theme="light"] .hp-tab-icon {
+  background: rgba(15, 23, 42, 0.06);
+}
+
+[data-theme="light"] .hp-tab-btn--active .hp-tab-icon {
+  background: rgba(58, 168, 0, 0.12);
+  box-shadow: 0 0 12px rgba(58, 168, 0, 0.15);
+}
+
+[data-theme="light"] .hp-tab-count {
+  background: rgba(15, 23, 42, 0.07);
+}
+
+[data-theme="light"] .hp-tab-btn--active .hp-tab-count {
+  background: rgba(58, 168, 0, 0.14);
+}
+
+[data-theme="light"] .hp-tab-divider {
+  background: rgba(15, 23, 42, 0.09);
+}
+
+[data-theme="light"] .hp-filter-chip {
+  border-color: rgba(15, 23, 42, 0.14);
+}
+
+[data-theme="light"] .hp-filter-chip:hover {
+  border-color: rgba(15, 23, 42, 0.26);
+  background: rgba(15, 23, 42, 0.04);
+}
+
+[data-theme="light"] .hp-filter-chip[data-active="true"] {
+  color: #fff;
+}
+
+[data-theme="light"] .hp-card-root {
+  background: rgba(255, 255, 255, 0.78);
+  border-color: rgba(15, 23, 42, 0.1);
+}
+
+[data-theme="light"] .hp-card-root:hover {
+  border-color: rgba(58, 168, 0, 0.4);
+  box-shadow:
+    0 0 0 1px rgba(58, 168, 0, 0.15),
+    0 12px 40px rgba(15, 23, 42, 0.13),
+    0 0 24px rgba(58, 168, 0, 0.08);
+}
+
+[data-theme="light"] .hp-card-thumb-layer {
+  background: rgba(220, 232, 248, 0.85);
+}
+
+[data-theme="light"] .hp-card__placeholder {
+  background:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 16px,
+      rgba(15, 23, 42, 0.025) 16px,
+      rgba(15, 23, 42, 0.025) 17px
+    );
+}
+
+[data-theme="light"] .hp-card__placeholder::after {
+  background: rgba(15, 23, 42, 0.07);
+  border-color: rgba(15, 23, 42, 0.1);
+}
+
+[data-theme="light"] .hp-card__info {
+  background: rgba(255, 255, 255, 0.92);
+  border-top-color: rgba(15, 23, 42, 0.08);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+[data-theme="light"] .hp-download-btn {
+  border-color: rgba(15, 23, 42, 0.14);
+}
+
+[data-theme="light"] .hp-download-btn:hover {
+  background: rgba(15, 23, 42, 0.05);
+  border-color: rgba(15, 23, 42, 0.24);
+}
+
+[data-theme="light"] .hp-paginator-btn {
+  border-color: rgba(15, 23, 42, 0.15);
+}
+
+[data-theme="light"] .hp-paginator-btn:hover:not(:disabled) {
+  background: rgba(15, 23, 42, 0.05);
+  border-color: rgba(15, 23, 42, 0.26);
+}
+
+[data-theme="light"] .hp-drawer-panel {
+  background: #f0f6ff;
+  border-left-color: rgba(15, 23, 42, 0.1);
+}
+
+[data-theme="light"] .hp-drawer-header {
+  background: #f0f6ff;
+  border-bottom-color: rgba(15, 23, 42, 0.1);
+}
+
+[data-theme="light"] .hp-drawer-close {
+  border-color: rgba(15, 23, 42, 0.12);
+}
+
+[data-theme="light"] .hp-drawer-close:hover {
+  background: rgba(15, 23, 42, 0.05);
+}
+
+[data-theme="light"] .hp-drawer-thumb-wrap {
+  background: rgba(220, 232, 248, 0.75);
+  border-color: rgba(15, 23, 42, 0.1);
+}
+
+[data-theme="light"] .hp-drawer-live-link {
+  border-color: rgba(58, 168, 0, 0.3);
+  background: rgba(58, 168, 0, 0.07);
+}
+
+[data-theme="light"] .hp-drawer-live-link:hover {
+  background: rgba(58, 168, 0, 0.12);
+}
+
+[data-theme="light"] .hp-prev-tag {
+  border-color: rgba(15, 23, 42, 0.1);
+}
+
+[data-theme="light"] .hp-prev-divider {
+  background: rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="light"] .hp-ai-card {
+  background: rgba(255, 255, 255, 0.78);
+  border-color: rgba(15, 23, 42, 0.1);
+}
+
+[data-theme="light"] .hp-ai-card-image {
+  background: rgba(220, 232, 248, 0.85);
+}
+
+[data-theme="light"] .hp-ai-image-bar { opacity: 0.09; }
+
+[data-theme="light"] .hp-ai-card-content {
+  background: rgba(255, 255, 255, 0.88);
+}
+
+[data-theme="light"] .hp-ai-tool-chip {
+  border-color: rgba(15, 23, 42, 0.1);
+  background: rgba(15, 23, 42, 0.04);
+}
+
+[data-theme="light"] .hp-ai-dot {
+  background: rgba(15, 23, 42, 0.12);
+}
+
+[data-theme="light"] .hp-ai-preview-label {
+  background: rgba(15, 23, 42, 0.65);
+}
+
+[data-theme="light"] .hp-ai-chatgpt-btn {
+  border-color: rgba(15, 23, 42, 0.15);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+[data-theme="light"] .hp-ai-chatgpt-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(15, 23, 42, 0.25);
+}
+
+[data-theme="light"] .hp-ai-card--aqua:hover  { box-shadow: 0 16px 40px rgba(15,23,42,0.12), 0 0 20px rgba(0,212,255,0.12); }
+[data-theme="light"] .hp-ai-card--neon:hover  { box-shadow: 0 16px 40px rgba(15,23,42,0.12), 0 0 20px rgba(58,168,0,0.12); }
+[data-theme="light"] .hp-ai-card--amber:hover { box-shadow: 0 16px 40px rgba(15,23,42,0.12), 0 0 20px rgba(255,160,64,0.12); }
+[data-theme="light"] .hp-ai-card--rose:hover  { box-shadow: 0 16px 40px rgba(15,23,42,0.12), 0 0 20px rgba(255,77,122,0.12); }
+[data-theme="light"] .hp-ai-card--lime:hover  { box-shadow: 0 16px 40px rgba(15,23,42,0.12), 0 0 20px rgba(184,255,0,0.12); }
 
 /* ── 반응형 ─────────────────────────────────────────────── */
 @media (max-width: 640px) {

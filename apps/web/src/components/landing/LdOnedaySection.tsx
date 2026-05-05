@@ -100,12 +100,6 @@ export default function LdOnedaySection() {
           ))}
         </div>
 
-        {/* CTA */}
-        <div className={styles.ldOnedayCtaWrap}>
-          <a href="/project" className={styles.ldOnedayCtaBtn}>
-            원데이 클래스 전체 보기 →
-          </a>
-        </div>
 
       </div>
     </section>

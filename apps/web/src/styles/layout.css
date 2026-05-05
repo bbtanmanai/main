@@ -338,7 +338,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-primary);
+  color: #FF0000;
   transition: background 0.2s ease, transform 0.2s ease;
   flex-shrink: 0;
   outline: none;
@@ -348,8 +348,9 @@
   transform: scale(1.06);
 }
 [data-theme="light"] .lg-theme-toggle {
-  background: rgba(0, 0, 0, 0.06);
+  background: #111111;
   border-color: rgba(0, 0, 0, 0.1);
+  color: #FFCC00;
 }
 
 /* ============================================================
@@ -800,6 +801,15 @@
   border-bottom: 1px solid rgba(111, 255, 0, 0.15);
   font-family: 'Pretendard Variable', Pretendard, sans-serif;
 }
+.gnb-bar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/img/gnb_bg1.png') center top / auto repeat-y;
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
+}
 
 [data-theme="light"] .gnb-bar {
   border-bottom-color: rgba(15, 23, 42, 0.10);
@@ -875,7 +885,7 @@
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.07em;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.82);
   cursor: pointer;
   white-space: nowrap;
   transition: color 0.2s ease;
@@ -898,12 +908,12 @@
   transition: transform 0.25s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-.gnb-btn:hover { color: var(--menu-accent-dark, rgba(255, 255, 255, 0.88)); }
+.gnb-btn:hover { color: #ffffff; }
 .gnb-btn.active { color: var(--menu-accent-dark, #6fff00); }
 
 /* 라이트 테마 메뉴 버튼 색상 */
-[data-theme="light"] .gnb-btn { color: rgba(15, 23, 42, 0.60); }
-[data-theme="light"] .gnb-btn:hover { color: var(--menu-accent-light, rgba(15, 23, 42, 0.92)); }
+[data-theme="light"] .gnb-btn { color: rgba(15, 23, 42, 0.85); }
+[data-theme="light"] .gnb-btn:hover { color: rgba(15, 23, 42, 1); }
 [data-theme="light"] .gnb-btn.active { color: var(--menu-accent-light, #0891b2); }
 [data-theme="light"] .gnb-btn::after { background: var(--menu-accent-light, #0891b2); box-shadow: 0 0 8px var(--menu-accent-glow-light, rgba(8, 145, 178, 0.55)); }
 
@@ -997,6 +1007,29 @@
   border-bottom-color: var(--menu-accent-dark, #6fff00);
 }
 
+.gnb-drop-link--disabled {
+  opacity: 0.38;
+  cursor: default;
+  pointer-events: none;
+  gap: 8px;
+}
+
+.gnb-drop-badge-soon {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.10);
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1;
+}
+
+[data-theme="light"] .gnb-drop-badge-soon {
+  background: rgba(15, 23, 42, 0.08);
+  color: rgba(15, 23, 42, 0.45);
+}
+
 /* 우측 버튼 영역 */
 .gnb-right {
   display: flex;
@@ -1027,7 +1060,7 @@
 .gnb-cta-primary:hover { background: #8aff33; }
 .gnb-cta-primary:active { transform: scale(0.97); }
 
-/* 로그인 버튼 — ghost, 직사각 */
+/* 로그인/로그아웃 버튼 — ghost, 직사각 */
 .gnb-login-btn {
   padding: 0 18px;
   height: 36px;
@@ -1035,11 +1068,11 @@
   align-items: center;
   font-family: 'Pretendard Variable', Pretendard, sans-serif;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.03em;
   background: transparent;
-  color: rgba(255, 255, 255, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.38);
   border-radius: 2px;
   cursor: pointer;
   transition: color 0.18s ease, border-color 0.18s ease;
@@ -1047,8 +1080,8 @@
 }
 
 .gnb-login-btn:hover {
-  color: rgba(255, 255, 255, 0.9);
-  border-color: rgba(255, 255, 255, 0.45);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.65);
 }
 
 /* 마이페이지 버튼 */
@@ -1058,44 +1091,44 @@
   gap: 8px;
   padding: 0 14px 0 8px;
   height: 36px;
-  background: rgba(111, 255, 0, 0.07);
-  border: 1px solid rgba(111, 255, 0, 0.22);
+  background: rgba(111, 255, 0, 0.12);
+  border: 1px solid rgba(111, 255, 0, 0.40);
   border-radius: 2px;
   cursor: pointer;
   font-family: 'Pretendard Variable', Pretendard, sans-serif;
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.03em;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.92);
   transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 }
 
 .gnb-mypage-btn:hover {
-  background: rgba(111, 255, 0, 0.14);
-  border-color: rgba(111, 255, 0, 0.45);
+  background: rgba(111, 255, 0, 0.20);
+  border-color: rgba(111, 255, 0, 0.65);
   color: #ffffff;
 }
 
-/* 라이트 테마 로그인 버튼 */
+/* 라이트 테마 로그인/로그아웃 버튼 */
 [data-theme="light"] .gnb-login-btn {
-  color: rgba(15, 23, 42, 0.62);
-  border-color: rgba(15, 23, 42, 0.22);
+  color: rgba(15, 23, 42, 0.88);
+  border-color: rgba(15, 23, 42, 0.38);
 }
 [data-theme="light"] .gnb-login-btn:hover {
-  color: rgba(15, 23, 42, 0.92);
-  border-color: rgba(15, 23, 42, 0.50);
+  color: rgba(15, 23, 42, 1);
+  border-color: rgba(15, 23, 42, 0.65);
 }
 
 /* 라이트 테마 마이페이지 버튼 */
 [data-theme="light"] .gnb-mypage-btn {
-  color: rgba(15, 23, 42, 0.72);
-  background: rgba(8, 145, 178, 0.07);
-  border-color: rgba(8, 145, 178, 0.28);
+  color: rgba(15, 23, 42, 0.90);
+  background: rgba(8, 145, 178, 0.10);
+  border-color: rgba(8, 145, 178, 0.45);
 }
 [data-theme="light"] .gnb-mypage-btn:hover {
-  background: rgba(8, 145, 178, 0.14);
-  border-color: rgba(8, 145, 178, 0.55);
-  color: rgba(15, 23, 42, 0.92);
+  background: rgba(8, 145, 178, 0.18);
+  border-color: rgba(8, 145, 178, 0.70);
+  color: rgba(15, 23, 42, 1);
 }
 
 /* 라이트 테마 드롭다운 패널 */

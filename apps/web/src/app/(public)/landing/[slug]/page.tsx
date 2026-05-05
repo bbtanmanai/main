@@ -20,7 +20,7 @@ import LdProofSection from "@/components/landing/LdProofSection";
 import LdPricingSection from "@/components/landing/LdPricingSection";
 import LdFAQSection from "@/components/landing/LdFAQSection";
 import LdFinalCTASection from "@/components/landing/LdFinalCTASection";
-import LdStickyBottomCTA from "@/components/landing/LdStickyBottomCTA";
+
 const LdLanding4 = dynamic(() => import("@/components/landing/cinematic/LdLanding4"));
 const LdLanding1 = dynamic(() => import("@/components/landing/LdLanding1"));
 const LdLanding2 = dynamic(() => import("@/components/landing/LdLanding2"));
@@ -31,7 +31,7 @@ const LdLanding10 = dynamic(() => import("@/components/landing/LdLanding10"));
 const LdLanding7 = dynamic(() => import("@/components/landing/LdLanding7"));
 import LdTopicFinderBanner from "@/components/landing/LdTopicFinderBanner";
 import LdMascotFloat from "@/components/landing/LdMascotFloat";
-import LdPromptPreview from "@/components/landing/LdPromptPreview";
+
 import LdBonusSection from "@/components/landing/LdBonusSection";
 import type { VideoSection } from "@/types/landing";
 
@@ -75,53 +75,11 @@ export default async function LandingPage({
 
   const BonusSection = <LdBonusSection />;
 
-  // 프롬프트 미리보기 공통 섹션 — 모든 랜딩 variant에 삽입
-  const PromptSection = (
-    <section style={{ padding: "72px 24px" }}>
-      <div style={{ maxWidth: 960, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 36 }}>
-          <h2 style={{
-            fontSize: "clamp(1.5rem, 3vw, 2.2rem)", fontWeight: 700,
-            margin: "0 0 12px", lineHeight: 1.8,
-            fontFamily: "Pretendard Variable, Pretendard, sans-serif",
-          }}>
-            <span style={{
-              display: "inline",
-              color: "rgba(255,255,255,0.92)",
-              background: "rgba(0,0,0,0.82)",
-              padding: "2px 10px",
-              boxDecorationBreak: "clone",
-              WebkitBoxDecorationBreak: "clone",
-            }}>
-              프롬프트 라이브러리
-            </span>
-          </h2>
-          <p style={{ margin: 0, fontSize: "0.87rem",
-            fontFamily: "Pretendard Variable, Pretendard, sans-serif", lineHeight: 2,
-          }}>
-            <span style={{
-              display: "inline",
-              color: "rgba(255,255,255,0.55)",
-              background: "rgba(0,0,0,0.82)",
-              padding: "2px 10px",
-              boxDecorationBreak: "clone",
-              WebkitBoxDecorationBreak: "clone",
-            }}>
-              200개+ 프롬프트 중 랜덤 샘플 — 전체는 멤버십 가입 후 이용 가능합니다
-            </span>
-          </p>
-        </div>
-        <LdPromptPreview />
-      </div>
-    </section>
-  );
-
   // 부업 주제 가이드 분기 — landing10 variant: "topic-guide" (라이트/다크 공용)
   if ((landing as Record<string, unknown>).variant === "topic-guide") {
     return (
       <>
         <LdLanding10 />
-        {PromptSection}
         {BonusSection}
         <LdFooter />
       </>
@@ -133,10 +91,8 @@ export default async function LandingPage({
     return (
       <>
         <LdLanding7 />
-        {PromptSection}
         {BonusSection}
         <LdFooter />
-        <LdStickyBottomCTA />
       </>
     );
   }
@@ -146,10 +102,8 @@ export default async function LandingPage({
     return (
       <>
         <LdLanding1 />
-        {PromptSection}
         {BonusSection}
         <LdFooter />
-        <LdStickyBottomCTA />
       </>
     );
   }
@@ -159,10 +113,8 @@ export default async function LandingPage({
     return (
       <>
         <LdLanding2 />
-        {PromptSection}
         {BonusSection}
         <LdFooter />
-        <LdStickyBottomCTA />
       </>
     );
   }
@@ -172,10 +124,8 @@ export default async function LandingPage({
     return (
       <>
         <LdLanding3 />
-        {PromptSection}
         {BonusSection}
         <LdFooter />
-        <LdStickyBottomCTA />
       </>
     );
   }
@@ -185,10 +135,8 @@ export default async function LandingPage({
     return (
       <>
         <LdLanding5 />
-        {PromptSection}
         {BonusSection}
         <LdFooter />
-        <LdStickyBottomCTA />
       </>
     );
   }
@@ -198,10 +146,8 @@ export default async function LandingPage({
     return (
       <>
         <LdLanding6 />
-        {PromptSection}
         {BonusSection}
         <LdFooter />
-        <LdStickyBottomCTA />
       </>
     );
   }
@@ -212,10 +158,8 @@ export default async function LandingPage({
     return (
       <>
         <LdLanding4 sections={videoSections} />
-        {PromptSection}
         {BonusSection}
         <LdFooter />
-        <LdStickyBottomCTA />
       </>
     );
   }
@@ -253,10 +197,7 @@ export default async function LandingPage({
         {/* 섹션 8: FAQ */}
         <LdFAQSection slug={slug} />
 
-        {/* 프롬프트 라이브러리 */}
-        {PromptSection}
-
-        {/* 보너스 */}
+        {/* 원데이 클래스 + 프롬프트 라이브러리 + 보너스 */}
         {BonusSection}
 
         {/* 온라인부업 주제 찾기 배너 — 모든 랜딩 공통 */}
@@ -267,9 +208,6 @@ export default async function LandingPage({
       </main>
 
       <LdFooter />
-
-      {/* 모바일 하단 고정 CTA 바 — 스크롤 300px 이상일 때만 노출 */}
-      <LdStickyBottomCTA />
     </>
   );
 }

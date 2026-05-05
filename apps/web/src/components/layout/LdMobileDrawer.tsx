@@ -172,7 +172,7 @@ export default function LdMobileDrawer({
                         const isSubActive = pathname === sub.href || pathname.startsWith(sub.href + "/");
                         return (
                           <button
-                            key={sub.href}
+                            key={sub.label}
                             className={`ld-drawer-sub-item${isSubActive ? " active" : ""}`}
                             onClick={() => navigate(sub.href)}
                           >

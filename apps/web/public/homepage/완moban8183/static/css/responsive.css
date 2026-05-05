@@ -1,0 +1,153 @@
+@media all and (max-width:1100px) {
+
+	#navigation,
+	.wrapper-bottom-header .btn {
+		display: none;
+	}
+
+	#openmenu,
+	#openmenu {
+		display: inline-block;
+	}
+
+	.aboutus-img {
+		display: none;
+	}
+
+	.aboutus-content {
+		width: 100%;
+		padding-left: 0px;
+	}
+
+	.single-step {
+		width: 50%;
+		text-align: center;
+	}
+
+	.wrapper-services .single-service {
+		width: calc(50% - 20px);
+	}
+
+	.single-content-footer:first-child,
+	.single-content-footer {
+		width: 50%;
+		text-align: center;
+	}
+
+	.footer-social {
+		display: -webkit-box;
+		display: -ms-flexbox;
+		display: flex;
+		-webkit-box-orient: horizontal;
+		-webkit-box-direction: normal;
+		-ms-flex-direction: row;
+		flex-direction: row;
+		-webkit-box-pack: center;
+		-ms-flex-pack: center;
+		justify-content: center;
+	}
+
+	.wrapper-brands {
+		-webkit-box-pack: center;
+		-ms-flex-pack: center;
+		justify-content: center;
+	}
+
+	.wrapper-brands>div {
+		width: 33.333333%;
+	}
+
+	.w-70,
+	.w-30 {
+		width: 100%;
+	}
+
+	.sidebar-right .sidebar {
+		padding-left: 0px;
+	}
+
+	.sidebar-left .sidebar {
+		padding-right: 0px;
+		-webkit-box-ordinal-group: 2;
+		-ms-flex-order: 1;
+		order: 1;
+	}
+
+	.sidebar-left .sidebar,
+	.sidebar-right .sidebar {
+		padding-top: 50px;
+	}
+
+	.single-blog {
+		width: calc(50% - 20px);
+	}
+
+	.wrapper-pricing article {
+		width: calc(50% - 20px);
+	}
+
+	.wrapper-pricing {
+		-webkit-box-pack: center;
+		-ms-flex-pack: center;
+		justify-content: center;
+	}
+
+	.wrapper-faq-list {
+		width: 100%;
+	}
+
+	#appointment {
+		width: 100%;
+		padding-right: 0px;
+		margin-bottom: 50px;
+	}
+
+	#contact {
+		width: 100%;
+	}
+
+}
+
+
+@media all and (max-width:800px) {
+
+	.wrapper-top-header {
+		display: none;
+	}
+}
+
+@media all and (max-width:600px) {
+
+	.single-step,
+	.wrapper-services .single-service,
+	.single-content-footer:first-child,
+	.single-content-footer {
+		width: 100%;
+	}
+
+	.wrapper-brands>div {
+		width: 50%;
+	}
+
+	h1 {
+		font-size: 60px;
+	}
+
+	h2 {
+		font-size: 40px;
+	}
+
+	.sidebar-left .wrapper-services a,
+	.sidebar-right .wrapper-services a,
+	.single-blog,
+	.sidebar-left .single-blog,
+	.sidebar-right .single-blog,
+	.wrapper-pricing article {
+		width: calc(100% - 20px);
+	}
+
+	.wrapper-input input {
+		width: calc(100% - 0px);
+	}
+
+}

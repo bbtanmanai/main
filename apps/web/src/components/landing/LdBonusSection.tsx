@@ -207,19 +207,22 @@ export default function LdBonusSection() {
 
         {/* 프롬프트 라이브러리 */}
         <div style={{ marginBottom: 40 }}>
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
-            <span style={{
-              display: "inline-flex", alignItems: "center", gap: 7,
-              padding: "6px 16px", borderRadius: 999,
-              background: "rgba(111,255,0,0.10)",
-              border: "1px solid rgba(111,255,0,0.35)",
-              fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.06em",
-              color: "#6fff00",
+          <div style={{ textAlign: "center", marginBottom: 16 }}>
+            <h2 style={{
+              fontSize: "clamp(1.5rem, 3vw, 2.2rem)", fontWeight: 900,
+              margin: "0 0 10px", lineHeight: 1.6,
+              fontFamily: "Pretendard Variable, Pretendard, sans-serif",
+              color: "var(--text-primary)",
+            }}>
+              프롬프트 라이브러리
+            </h2>
+            <p style={{
+              margin: 0, fontSize: "0.9rem", lineHeight: 1.8,
+              color: "var(--text-secondary)",
               fontFamily: "Pretendard Variable, Pretendard, sans-serif",
             }}>
-              <span style={{ fontSize: "1rem" }}>💬</span>
-              ChatGPT 프롬프트
-            </span>
+              200개+ 프롬프트 중 랜덤 샘플 — 전체는 멤버십 가입 후 이용 가능합니다
+            </p>
           </div>
           <LdPromptPreview />
         </div>
