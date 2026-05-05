@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dark Glassmorphism AI Agency Landing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+html,body{
+  background:#050510;
+  color:#fff;
+  font-family:'Barlow',sans-serif;
+  font-weight:300;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ═══════════════════════════════════════
+   COLOR BLOB SCENE (glassmorphism의 핵심)
+   — backdrop-filter가 이 색을 블러해 glass를 만든다
+   ═══════════════════════════════════════ */
+.blob-scene{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  overflow:hidden;
+}
+.blob{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(90px);
+  animation:blob-drift 18s ease-in-out infinite;
+}
+.blob-1{
+  width:720px;height:720px;
+  top:-200px;left:-180px;
+  background:radial-gradient(circle,rgba(6,182,212,0.55) 0%,rgba(59,130,246,0.40) 100%);
+  animation-delay:-6s;
+}
+.blob-2{
+  width:640px;height:640px;
+  bottom:-200px;right:-160px;
+  background:radial-gradient(circle,rgba(139,92,246,0.50) 0%,rgba(236,72,153,0.38) 100%);
+  animation-delay:-12s;
+}
+.blob-3{
+  width:480px;height:480px;
+  top:40%;left:38%;
+  background:radial-gradient(circle,rgba(251,191,36,0.30) 0%,rgba(249,115,22,0.22) 100%);
+}
+@keyframes blob-drift{
+  0%,100%{transform:translate(0,0) scale(1);}
+  33%{transform:translate(40px,-30px) scale(1.06);}
+  66%{transform:translate(-25px,40px) scale(0.96);}
+}
+@media(prefers-reduced-motion:reduce){.blob{animation:none;}}
+
+/* ═══════════════════════════════════════
+   LIQUID GLASS
+   ═══════════════════════════════════════ */
+.liquid-glass{
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(18px) saturate(180%);
+  -webkit-backdrop-filter:blur(18px) saturate(180%);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,0.18);
+  position:relative;
+  overflow:hidden;
+}
+.liquid-glass::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  padding:1.4px;
+  background:linear-gradient(180deg,
+    rgba(255,255,255,0.48) 0%,
+    rgba(255,255,255,0.18) 20%,
+    rgba(255,255,255,0.00) 40%,
+    rgba(255,255,255,0.00) 60%,
+    rgba(255,255,255,0.18) 80%,
+    rgba(255,255,255,0.48) 100%
+  );
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;
+  mask-composite:exclude;
+  pointer-events:none;
+}
+.liquid-glass-strong{
+  background:rgba(255,255,255,0.12);
+  backdrop-filter:blur(50px) saturate(200%);
+  -webkit-backdrop-filter:blur(50px) saturate(200%);
+  box-shadow:4px 4px 16px rgba(0,0,0,0.12),
+             inset 0 1px 1px rgba(255,255,255,0.22);
+  position:relative;
+  overflow:hidden;
+}
+.liquid-glass-strong::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  padding:1.4px;
+  background:linear-gradient(180deg,
+    rgba(255,255,255,0.55) 0%,
+    rgba(255,255,255,0.22) 20%,
+    rgba(255,255,255,0.00) 40%,
+    rgba(255,255,255,0.00) 60%,
+    rgba(255,255,255,0.22) 80%,
+    rgba(255,255,255,0.55) 100%
+  );
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;
+  mask-composite:exclude;
+  pointer-events:none;
+}
+
+/* ═══════════════════════════════════════
+   PAGE WRAPPER
+   ═══════════════════════════════════════ */
+.page{position:relative;z-index:1;}
+
+/* ═══════════════════════════════════════
+   NAVBAR
+   ═══════════════════════════════════════ */
+.navbar{
+  position:fixed;
+  top:16px;left:0;right:0;
+  z-index:50;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 64px;
+}
+.nav-logo{
+  width:44px;height:44px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,0.22);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Instrument Serif',serif;
+  font-style:italic;font-size:19px;color:#fff;
+}
+.nav-pill{
+  display:flex;align-items:center;gap:4px;
+  border-radius:9999px;padding:6px;
+}
+.nav-link{
+  padding:6px 14px;
+  font-size:13px;font-weight:500;
+  color:rgba(255,255,255,0.80);
+  font-family:'Barlow',sans-serif;
+  text-decoration:none;border-radius:9999px;
+}
+.nav-link:hover{color:#fff;}
+.nav-cta{
+  background:#fff;color:#000;
+  border-radius:9999px;
+  padding:6px 18px;
+  font-size:13px;font-weight:500;
+  font-family:'Barlow',sans-serif;
+  display:flex;align-items:center;gap:5px;
+  text-decoration:none;
+}
+
+/* ═══════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════ */
+.hero{
+  position:relative;
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;
+  overflow:hidden;
+  padding-top:100px;
+  padding-bottom:80px;
+}
+.hero-fade-bottom{
+  position:absolute;bottom:0;left:0;right:0;
+  height:300px;
+  background:linear-gradient(to bottom,transparent,#050510);
+  z-index:1;pointer-events:none;
+}
+.hero-content{
+  position:relative;z-index:2;
+  display:flex;flex-direction:column;
+  align-items:center;gap:32px;
+  padding:0 32px;
+  max-width:900px;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  border-radius:9999px;padding:4px;
+}
+.hero-badge-new{
+  background:#fff;color:#000;
+  border-radius:9999px;padding:3px 12px;
+  font-size:11px;font-weight:600;
+  font-family:'Barlow',sans-serif;letter-spacing:0.03em;
+}
+.hero-badge-text{
+  padding-right:12px;
+  font-size:12px;color:rgba(255,255,255,0.75);
+  font-family:'Barlow',sans-serif;font-weight:400;
+}
+h1.hero-heading{
+  font-family:'Instrument Serif',serif;
+  font-style:italic;
+  font-size:clamp(3.5rem,8vw,5.8rem);
+  color:#fff;
+  line-height:0.88;
+  letter-spacing:-0.035em;
+}
+.hero-sub{
+  font-size:18px;font-weight:300;
+  color:rgba(255,255,255,0.60);
+  line-height:1.6;max-width:520px;
+}
+.hero-btns{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:center;}
+.btn-glass{
+  border-radius:9999px;
+  padding:12px 28px;
+  font-size:14px;font-weight:500;
+  font-family:'Barlow',sans-serif;
+  color:#fff;
+  display:inline-flex;align-items:center;gap:8px;
+  cursor:pointer;border:none;
+}
+.btn-ghost{
+  background:transparent;border:none;
+  color:rgba(255,255,255,0.78);
+  font-size:14px;font-weight:400;
+  font-family:'Barlow',sans-serif;
+  display:inline-flex;align-items:center;gap:8px;
+  cursor:pointer;
+}
+.hero-partners{
+  display:flex;align-items:center;gap:12px;
+  flex-wrap:wrap;justify-content:center;
+  margin-top:8px;
+}
+.partners-pill{
+  border-radius:9999px;padding:6px 16px;
+  font-size:11px;color:rgba(255,255,255,0.48);
+  font-family:'Barlow',sans-serif;font-weight:400;
+  white-space:nowrap;
+}
+.partners-names{display:flex;gap:36px;align-items:center;}
+.partner{
+  font-family:'Instrument Serif',serif;
+  font-style:italic;font-size:1.9rem;
+  color:#fff;opacity:0.80;
+}
+
+/* ═══════════════════════════════════════
+   SECTION COMMONS
+   ═══════════════════════════════════════ */
+section{position:relative;z-index:1;}
+.section-inner{max-width:1100px;margin:0 auto;padding:0 64px;}
+.section-badge{
+  display:inline-flex;border-radius:9999px;
+  padding:5px 16px;font-size:11px;font-weight:500;
+  font-family:'Barlow',sans-serif;
+  color:rgba(255,255,255,0.68);
+  margin-bottom:22px;
+}
+.section-heading{
+  font-family:'Instrument Serif',serif;
+  font-style:italic;
+  font-size:clamp(2.5rem,5vw,3.6rem);
+  color:#fff;
+  line-height:0.92;letter-spacing:-0.025em;
+  margin-bottom:48px;
+}
+.section-sub{
+  font-size:16px;font-weight:300;
+  color:rgba(255,255,255,0.55);
+  line-height:1.6;max-width:480px;
+  margin-bottom:36px;
+}
+
+/* ═══════════════════════════════════════
+   HOW IT WORKS
+   ═══════════════════════════════════════ */
+.how-section{
+  padding:100px 0;
+  background:transparent;
+}
+.how-inner{
+  text-align:center;
+  max-width:700px;
+  margin:0 auto;
+  padding:0 32px;
+}
+.how-inner .section-heading{margin-bottom:20px;}
+.how-cta{
+  border-radius:9999px;padding:13px 32px;
+  font-size:15px;font-weight:500;
+  font-family:'Barlow',sans-serif;
+  color:#fff;display:inline-flex;align-items:center;gap:8px;
+  cursor:pointer;border:none;margin-top:32px;
+}
+
+/* ═══════════════════════════════════════
+   FEATURES CHESS
+   ═══════════════════════════════════════ */
+.chess-section{padding:80px 0;}
+.chess-row{
+  display:flex;align-items:center;gap:64px;
+  max-width:1100px;margin:0 auto 80px;
+  padding:0 64px;
+}
+.chess-row.reverse{flex-direction:row-reverse;}
+.chess-text{flex:1;min-width:0;}
+.chess-title{
+  font-family:'Instrument Serif',serif;
+  font-style:italic;font-size:2.4rem;
+  color:#fff;line-height:1.1;
+  letter-spacing:-0.02em;margin-bottom:18px;
+}
+.chess-body{
+  font-size:16px;font-weight:300;
+  color:rgba(255,255,255,0.58);
+  line-height:1.7;margin-bottom:28px;
+}
+.chess-btn{
+  border-radius:9999px;padding:10px 24px;
+  font-size:13px;font-weight:500;
+  font-family:'Barlow',sans-serif;
+  color:#fff;display:inline-flex;align-items:center;gap:6px;
+  cursor:pointer;border:none;
+}
+.chess-visual{
+  flex:1;min-width:0;
+  border-radius:20px;overflow:hidden;
+  min-height:280px;
+  display:flex;align-items:center;justify-content:center;
+}
+.chess-visual-inner{
+  width:100%;height:280px;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:16px;
+  padding:32px;
+}
+/* Fake UI mockup bars */
+.mock-bar{
+  height:10px;border-radius:9999px;
+  background:rgba(255,255,255,0.14);
+  animation:mock-pulse 2.2s ease-in-out infinite;
+}
+.mock-bar.accent{background:rgba(6,182,212,0.45);}
+.mock-bar.accent2{background:rgba(139,92,246,0.40);}
+.mock-bar.short{width:60%;}
+.mock-bar.mid{width:80%;}
+.mock-bar.full{width:100%;}
+@keyframes mock-pulse{
+  0%,100%{opacity:0.5;}50%{opacity:1;}
+}
+@media(prefers-reduced-motion:reduce){.mock-bar{animation:none;}}
+
+/* ═══════════════════════════════════════
+   FEATURES GRID
+   ═══════════════════════════════════════ */
+.features-section{padding:80px 0;}
+.features-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:20px;
+}
+.feature-card{
+  border-radius:18px;padding:28px 24px;
+  display:flex;flex-direction:column;gap:16px;
+}
+.feature-icon{
+  width:42px;height:42px;border-radius:9999px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.feature-icon svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.feature-title{
+  font-family:'Barlow',sans-serif;font-weight:600;
+  font-size:15px;color:#fff;
+}
+.feature-body{
+  font-family:'Barlow',sans-serif;font-weight:300;
+  font-size:14px;color:rgba(255,255,255,0.55);
+  line-height:1.65;
+}
+
+/* ═══════════════════════════════════════
+   STATS
+   ═══════════════════════════════════════ */
+.stats-section{
+  padding:100px 0;
+  background:transparent;
+}
+.stats-card{
+  border-radius:28px;padding:56px 64px;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:32px;text-align:center;
+}
+.stat-val{
+  font-family:'Instrument Serif',serif;
+  font-style:italic;font-size:3.8rem;
+  color:#fff;line-height:1;display:block;
+}
+.stat-label{
+  font-family:'Barlow',sans-serif;font-weight:300;
+  font-size:14px;color:rgba(255,255,255,0.50);
+  margin-top:8px;display:block;
+}
+
+/* ═══════════════════════════════════════
+   TESTIMONIALS
+   ═══════════════════════════════════════ */
+.testimonials-section{padding:80px 0;}
+.testimonials-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:24px;
+}
+.testimonial-card{
+  border-radius:20px;padding:32px 28px;
+  display:flex;flex-direction:column;gap:20px;
+}
+.testimonial-quote{
+  font-family:'Barlow',sans-serif;font-weight:300;
+  font-size:15px;color:rgba(255,255,255,0.80);
+  line-height:1.7;font-style:italic;
+  flex:1;
+}
+.testimonial-author{}
+.author-name{
+  font-family:'Barlow',sans-serif;font-weight:500;
+  font-size:14px;color:#fff;
+}
+.author-role{
+  font-family:'Barlow',sans-serif;font-weight:300;
+  font-size:12px;color:rgba(255,255,255,0.45);
+  margin-top:3px;
+}
+
+/* ═══════════════════════════════════════
+   CTA + FOOTER
+   ═══════════════════════════════════════ */
+.cta-section{
+  padding:120px 0 80px;
+  text-align:center;
+}
+.cta-heading{
+  font-family:'Instrument Serif',serif;
+  font-style:italic;
+  font-size:clamp(3rem,7vw,5rem);
+  color:#fff;line-height:0.90;
+  letter-spacing:-0.03em;
+  margin-bottom:24px;
+}
+.cta-sub{
+  font-size:16px;font-weight:300;
+  color:rgba(255,255,255,0.55);
+  line-height:1.65;max-width:480px;
+  margin:0 auto 40px;
+}
+.cta-btns{display:flex;align-items:center;gap:16px;justify-content:center;flex-wrap:wrap;}
+.btn-white{
+  background:#fff;color:#000;
+  border-radius:9999px;padding:13px 32px;
+  font-size:14px;font-weight:500;
+  font-family:'Barlow',sans-serif;
+  border:none;cursor:pointer;
+}
+.footer-bar{
+  border-top:1px solid rgba(255,255,255,0.08);
+  margin-top:96px;padding-top:32px;
+  display:flex;justify-content:space-between;
+  align-items:center;
+}
+.footer-copy{
+  font-size:12px;color:rgba(255,255,255,0.35);
+  font-family:'Barlow',sans-serif;font-weight:300;
+}
+.footer-links{display:flex;gap:24px;}
+.footer-link{
+  font-size:12px;color:rgba(255,255,255,0.35);
+  font-family:'Barlow',sans-serif;font-weight:300;
+  text-decoration:none;
+}
+.footer-link:hover{color:rgba(255,255,255,0.65);}
+
+/* ═══════════════════════════════════════
+   VIDEO BACKGROUNDS
+   ═══════════════════════════════════════ */
+.vid-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+/* Hero: MP4 — top:0 so video extends behind GNB glass */
+.hero-vid {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  top: 0;
+  opacity: 0.85;
+}
+/* Sections: HLS object-cover */
+.sec-vid {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.75;
+}
+.sec-vid.desat { filter: saturate(0); }
+
+/* Gradient fades */
+.vid-fade-t {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 220px;
+  background: linear-gradient(to bottom, #050510 0%, transparent 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+.vid-fade-b {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 220px;
+  background: linear-gradient(to top, #050510 0%, transparent 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+.vid-fade-b-lg {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 320px;
+  background: linear-gradient(to top, #050510 0%, transparent 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Sections with video need relative + overflow:hidden */
+.how-section,
+.stats-section,
+.cta-section {
+  position: relative;
+  overflow: hidden;
+}
+/* Content above video */
+.how-inner,
+.section-inner {
+  position: relative;
+  z-index: 2;
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body>
+
+<!-- BLOB SCENE (glassmorphism의 핵심 — 이것이 blur될 색상을 제공) -->
+<div class="blob-scene" aria-hidden="true">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<div class="page">
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-logo liquid-glass">S</div>
+  <div class="nav-pill liquid-glass">
+    <a href="#" class="nav-link">Home</a>
+    <a href="#services" class="nav-link">Services</a>
+    <a href="#work" class="nav-link">Work</a>
+    <a href="#process" class="nav-link">Process</a>
+    <a href="#" class="nav-cta">
+      Get Started
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+    </a>
+  </div>
+  <div style="width:44px;"></div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="vid-wrap">
+    <video class="hero-vid" autoplay loop muted playsinline>
+      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260307_083826_e938b29f-a43a-41ec-a153-3d4730578ab8.mp4" type="video/mp4">
+    </video>
+    <div class="vid-fade-b-lg"></div>
+  </div>
+  <div class="hero-fade-bottom"></div>
+  <div class="hero-content">
+    <div class="hero-badge liquid-glass">
+      <span class="hero-badge-new">New</span>
+      <span class="hero-badge-text">Introducing AI-powered web design.</span>
+    </div>
+    <h1 class="hero-heading">The Website Your<br>Brand Deserves</h1>
+    <p class="hero-sub">Stunning design. Blazing performance. Built by AI, refined by experts. This is web design, wildly reimagined.</p>
+    <div class="hero-btns">
+      <button class="btn-glass liquid-glass-strong">
+        Get Started
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+      </button>
+      <button class="btn-ghost">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        Watch the Film
+      </button>
+    </div>
+    <div class="hero-partners">
+      <span class="partners-pill liquid-glass">Trusted by the teams behind</span>
+      <div class="partners-names">
+        <span class="partner">Stripe</span>
+        <span class="partner">Vercel</span>
+        <span class="partner">Linear</span>
+        <span class="partner">Notion</span>
+        <span class="partner">Figma</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="process">
+  <div class="vid-wrap">
+    <video id="how-vid" class="sec-vid" autoplay loop muted playsinline></video>
+    <div class="vid-fade-t"></div>
+    <div class="vid-fade-b"></div>
+  </div>
+  <div class="how-inner">
+    <div class="section-badge liquid-glass">How It Works</div>
+    <h2 class="section-heading">You dream it.<br>We ship it.</h2>
+    <p class="section-sub" style="margin:0 auto 0;">Share your vision. Our AI handles the rest — wireframes, design, code, launch. All in days, not quarters.</p>
+    <button class="how-cta liquid-glass-strong">
+      Get Started
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- FEATURES CHESS -->
+<section class="chess-section" id="services">
+  <div class="section-inner" style="padding:0 64px;">
+    <div class="section-badge liquid-glass">Capabilities</div>
+    <h2 class="section-heading">Pro features.<br>Zero complexity.</h2>
+  </div>
+
+  <!-- Row 1 -->
+  <div class="chess-row">
+    <div class="chess-text">
+      <div class="chess-title">Designed to convert.<br>Built to perform.</div>
+      <p class="chess-body">Every pixel is intentional. Our AI studies what works across thousands of top sites — then builds yours to outperform them all.</p>
+      <button class="chess-btn liquid-glass-strong">
+        Learn more
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+      </button>
+    </div>
+    <div class="chess-visual liquid-glass">
+      <div class="chess-visual-inner">
+        <div class="mock-bar full accent" style="animation-delay:0s;"></div>
+        <div class="mock-bar mid" style="animation-delay:0.2s;"></div>
+        <div class="mock-bar full" style="animation-delay:0.4s;"></div>
+        <div class="mock-bar short accent2" style="animation-delay:0.6s;"></div>
+        <div class="mock-bar mid" style="animation-delay:0.8s;"></div>
+        <div class="mock-bar full" style="animation-delay:1.0s;"></div>
+        <div class="mock-bar short accent" style="animation-delay:1.2s;"></div>
+        <div class="mock-bar full" style="animation-delay:1.4s;"></div>
+        <div class="mock-bar mid accent2" style="animation-delay:1.6s;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 2 -->
+  <div class="chess-row reverse">
+    <div class="chess-text">
+      <div class="chess-title">It gets smarter.<br>Automatically.</div>
+      <p class="chess-body">Your site evolves on its own. AI monitors every click, scroll, and conversion — then optimizes in real time. No manual updates. Ever.</p>
+      <button class="chess-btn liquid-glass-strong">
+        See how it works
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+      </button>
+    </div>
+    <div class="chess-visual liquid-glass">
+      <div class="chess-visual-inner" style="gap:20px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;">
+          <div style="border-radius:12px;height:80px;background:rgba(6,182,212,0.18);border:1px solid rgba(6,182,212,0.25);display:flex;align-items:center;justify-content:center;">
+            <span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:2rem;color:#22d3ee;">3.2x</span>
+          </div>
+          <div style="border-radius:12px;height:80px;background:rgba(139,92,246,0.18);border:1px solid rgba(139,92,246,0.25);display:flex;align-items:center;justify-content:center;">
+            <span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:2rem;color:#a78bfa;">98%</span>
+          </div>
+        </div>
+        <div class="mock-bar full" style="animation-delay:0.3s;"></div>
+        <div class="mock-bar mid accent" style="animation-delay:0.6s;"></div>
+        <div class="mock-bar short" style="animation-delay:0.9s;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES GRID -->
+<section class="features-section" id="work">
+  <div class="section-inner">
+    <div class="section-badge liquid-glass">Why Us</div>
+    <h2 class="section-heading">The difference<br>is everything.</h2>
+    <div class="features-grid">
+      <div class="feature-card liquid-glass">
+        <div class="feature-icon liquid-glass-strong">
+          <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <div class="feature-title">Days, Not Months</div>
+        <div class="feature-body">Concept to launch at a pace that redefines fast. Because waiting isn't a strategy.</div>
+      </div>
+      <div class="feature-card liquid-glass">
+        <div class="feature-icon liquid-glass-strong">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>
+        </div>
+        <div class="feature-title">Obsessively Crafted</div>
+        <div class="feature-body">Every detail considered. Every element refined. Design so precise, it feels inevitable.</div>
+      </div>
+      <div class="feature-card liquid-glass">
+        <div class="feature-icon liquid-glass-strong">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </div>
+        <div class="feature-title">Built to Convert</div>
+        <div class="feature-body">Layouts informed by data. Decisions backed by performance. Results you can measure.</div>
+      </div>
+      <div class="feature-card liquid-glass">
+        <div class="feature-icon liquid-glass-strong">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="feature-title">Secure by Default</div>
+        <div class="feature-body">Enterprise-grade protection comes standard. SSL, DDoS mitigation, compliance. All included.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats-section">
+  <div class="vid-wrap">
+    <video id="stats-vid" class="sec-vid desat" autoplay loop muted playsinline></video>
+    <div class="vid-fade-t"></div>
+    <div class="vid-fade-b"></div>
+  </div>
+  <div class="section-inner">
+    <div class="stats-card liquid-glass">
+      <div>
+        <span class="stat-val">200+</span>
+        <span class="stat-label">Sites launched</span>
+      </div>
+      <div>
+        <span class="stat-val">98%</span>
+        <span class="stat-label">Client satisfaction</span>
+      </div>
+      <div>
+        <span class="stat-val">3.2x</span>
+        <span class="stat-label">More conversions</span>
+      </div>
+      <div>
+        <span class="stat-val">5 days</span>
+        <span class="stat-label">Average delivery</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section">
+  <div class="section-inner">
+    <div class="section-badge liquid-glass">What They Say</div>
+    <h2 class="section-heading">Don't take our<br>word for it.</h2>
+    <div class="testimonials-grid">
+      <div class="testimonial-card liquid-glass">
+        <p class="testimonial-quote">"A complete rebuild in five days. The result outperformed everything we'd spent months building before."</p>
+        <div class="testimonial-author">
+          <div class="author-name">Sarah Chen</div>
+          <div class="author-role">CEO, Luminary</div>
+        </div>
+      </div>
+      <div class="testimonial-card liquid-glass">
+        <p class="testimonial-quote">"Conversions up 4x. That's not a typo. The design just works differently when it's built on real data."</p>
+        <div class="testimonial-author">
+          <div class="author-name">Marcus Webb</div>
+          <div class="author-role">Head of Growth, Arcline</div>
+        </div>
+      </div>
+      <div class="testimonial-card liquid-glass">
+        <p class="testimonial-quote">"They didn't just design our site. They defined our brand. World-class doesn't begin to cover it."</p>
+        <div class="testimonial-author">
+          <div class="author-name">Elena Voss</div>
+          <div class="author-role">Brand Director, Helix</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA + FOOTER -->
+<section class="cta-section">
+  <div class="vid-wrap">
+    <video id="cta-vid" class="sec-vid" autoplay loop muted playsinline></video>
+    <div class="vid-fade-t"></div>
+    <div class="vid-fade-b"></div>
+  </div>
+  <div class="section-inner">
+    <h2 class="cta-heading">Your next website<br>starts here.</h2>
+    <p class="cta-sub">Book a free strategy call. See what AI-powered design can do. No commitment, no pressure. Just possibilities.</p>
+    <div class="cta-btns">
+      <button class="btn-glass liquid-glass-strong">
+        Book a Call
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+      </button>
+      <button class="btn-white">View Pricing</button>
+    </div>
+    <div class="footer-bar">
+      <span class="footer-copy">© 2026 Studio. All rights reserved.</span>
+      <nav class="footer-links">
+        <a href="#" class="footer-link">Privacy</a>
+        <a href="#" class="footer-link">Terms</a>
+        <a href="#" class="footer-link">Contact</a>
+      </nav>
+    </div>
+  </div>
+</section>
+
+</div><!-- .page -->
+
+<script>
+(function () {
+  var MUX = {
+    'how-vid':   'https://stream.mux.com/9JXDljEVWYwWu01PUkAemafDugK89o01BR6zqJ3aS9u00A.m3u8',
+    'stats-vid': 'https://stream.mux.com/NcU3HlHeF7CUL86azTTzpy3Tlb00d6iF3BmCdFslMJYM.m3u8',
+    'cta-vid':   'https://stream.mux.com/8wrHPCX2dC3msyYU9ObwqNdm00u3ViXvOSHUMRYSEe5Q.m3u8'
+  };
+  Object.entries(MUX).forEach(function ([id, src]) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (window.Hls && Hls.isSupported()) {
+      var hls = new Hls({ autoStartLoad: true });
+      hls.loadSource(src);
+      hls.attachMedia(el);
+      hls.on(Hls.Events.MANIFEST_PARSED, function () { el.play().catch(function(){}); });
+    } else if (el.canPlayType('application/vnd.apple.mpegurl')) {
+      el.src = src;
+      el.play().catch(function(){});
+    }
+  });
+})();
+</script>
+</body>
+</html>

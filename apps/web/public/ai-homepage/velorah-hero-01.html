@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Velorah</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --background: hsl(201, 100%, 13%);
+      --foreground: hsl(0, 0%, 100%);
+      --muted-foreground: hsl(240, 4%, 66%);
+      --font-display: 'Instrument Serif', serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--background);
+      color: var(--foreground);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Liquid Glass ── */
+    .liquid-glass {
+      background: rgba(255, 255, 255, 0.01);
+      background-blend-mode: luminosity;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border: none;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .liquid-glass::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1.4px;
+      background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.45) 0%,
+        rgba(255,255,255,0.15) 20%,
+        rgba(255,255,255,0)    40%,
+        rgba(255,255,255,0)    60%,
+        rgba(255,255,255,0.15) 80%,
+        rgba(255,255,255,0.45) 100%
+      );
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* ── Animations ── */
+    @keyframes fade-rise {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-rise          { animation: fade-rise 0.8s ease-out 0.0s both; }
+    .animate-fade-rise-delay    { animation: fade-rise 0.8s ease-out 0.2s both; }
+    .animate-fade-rise-delay-2  { animation: fade-rise 0.8s ease-out 0.4s both; }
+
+    /* ── Video Background ── */
+    .video-bg {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    /* ── Page Shell ── */
+    .page {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Navigation ── */
+    .nav-wrap {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+    }
+    .nav {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 32px;
+      max-width: 1280px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.875rem;
+      letter-spacing: -0.025em;
+      color: var(--foreground);
+      text-decoration: none;
+    }
+    .nav-logo sup {
+      font-size: 0.75rem;
+      vertical-align: super;
+    }
+    .nav-links {
+      display: none;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--foreground);
+    }
+    .nav-cta {
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      color: var(--foreground);
+      padding: 10px 24px;
+      border-radius: 9999px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      transition: transform 0.2s ease;
+    }
+    .nav-cta:hover {
+      transform: scale(1.03);
+    }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 128px 24px 160px;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 8vw, 7.5rem);
+      line-height: 0.95;
+      letter-spacing: -2.46px;
+      max-width: 1280px;
+      font-weight: 400;
+      color: var(--foreground);
+    }
+    .hero-title em {
+      font-style: normal;
+      color: var(--muted-foreground);
+    }
+    .hero-sub {
+      color: var(--muted-foreground);
+      font-size: clamp(1rem, 2vw, 1.125rem);
+      max-width: 672px;
+      margin-top: 32px;
+      line-height: 1.75;
+    }
+    .hero-cta {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      color: var(--foreground);
+      padding: 20px 56px;
+      border-radius: 9999px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      margin-top: 48px;
+      transition: transform 0.2s ease;
+    }
+    .hero-cta:hover {
+      transform: scale(1.03);
+    }
+
+    @media (min-width: 768px) {
+      .nav-links { display: flex; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Video Background -->
+  <video class="video-bg" autoplay loop muted playsinline>
+    <source
+      src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4"
+      type="video/mp4"
+    />
+  </video>
+
+  <div class="page">
+
+    <!-- Navigation -->
+    <nav class="nav-wrap">
+      <div class="nav">
+        <a href="#" class="nav-logo">Velorah<sup>®</sup></a>
+        <ul class="nav-links">
+          <li><a href="#" class="active">Home</a></li>
+          <li><a href="#">Studio</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Journal</a></li>
+          <li><a href="#">Reach Us</a></li>
+        </ul>
+        <button class="nav-cta liquid-glass">Begin Journey</button>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <h1 class="hero-title animate-fade-rise">
+        Where <em>dreams</em> rise <em>through the silence.</em>
+      </h1>
+      <p class="hero-sub animate-fade-rise-delay">
+        We're designing tools for deep thinkers, bold creators, and quiet rebels.
+        Amid the chaos, we build digital spaces for sharp focus and inspired work.
+      </p>
+      <button class="hero-cta liquid-glass animate-fade-rise-delay-2">
+        Begin Journey
+      </button>
+    </section>
+
+  </div>
+
+</body>
+</html>
