@@ -1,0 +1,700 @@
+/* webnovel.css
+   WebnovelShell -- layout & styles
+   design-principles.md section 3-A: static values only (dynamic values stay in TSX inline)
+   DESIGN.md section 15 hybrid layout: radial-gradient background
+*/
+
+/* -- root container -------------------------------------------- */
+.wn-shell {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  /* DESIGN.md section 15 hybrid layout: static radial-gradient instead of blob scene */
+  background:
+    radial-gradient(ellipse at 10% 65%, rgba(180, 144, 245, 0.45) 0%, transparent 60%),
+    radial-gradient(ellipse at 92% 12%, rgba(94, 231, 223, 0.35) 0%, transparent 60%),
+    radial-gradient(ellipse at 52% 98%, rgba(247, 168, 196, 0.22) 0%, transparent 60%),
+    #f0f4ff;
+}
+
+/* -- layout wrapper -------------------------------------------- */
+.wn-layout {
+  display: flex;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  padding-top: 64px;
+}
+
+/* -- inner container ------------------------------------------- */
+.wn-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex: 1;
+  padding: 24px 16px 48px;
+  gap: 24px;
+}
+
+/* -- sidebar ---------------------------------------------------- */
+/* glass surface -- light area only (DESIGN.md section 15), LD-006 compliant */
+.wn-sidebar {
+  width: 182px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  padding: 20px 0;
+  height: fit-content;
+  position: sticky;
+  top: 80px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* -- sidebar section label ------------------------------------- */
+.wn-nav-label {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: rgba(0, 0, 0, 0.30);
+  text-transform: uppercase;
+  padding: 0 20px;
+  margin-bottom: 8px;
+}
+
+/* -- sidebar nav item (static props only) ---------------------- */
+/* fontWeight, color, backgroundColor, boxShadow: isActive conditional -> TSX inline */
+.wn-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 20px;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  outline: none;
+}
+
+/* -- sidebar nav icon (static props only) ---------------------- */
+/* color: isActive conditional -> TSX inline */
+.wn-nav-icon {
+  flex-shrink: 0;
+  display: flex;
+}
+
+/* -- main content area ----------------------------------------- */
+.wn-main {
+  flex: 1;
+  min-width: 0;
+}
+
+/* -- prefers-reduced-motion ------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .wn-nav-item {
+    transition: none;
+  }
+}
+
+/* ============================================================
+   page.tsx — 시리즈 목록 페이지 (wn-page-*)
+   design-principles.md 3-A: static values only
+   ============================================================ */
+
+/* -- 페이지 헤더 영역 ----------------------------------------- */
+.wn-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.wn-page-header-label {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #9CA3AF;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.wn-page-title {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  font-weight: 800;
+  color: #111827;
+  margin: 0;
+  letter-spacing: -0.03em;
+}
+
+.wn-page-title-count {
+  margin-left: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #9CA3AF;
+  vertical-align: middle;
+}
+
+/* -- 헤더 CTA 버튼 -------------------------------------------- */
+.wn-page-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 22px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  background: #1E293B;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  flex-shrink: 0;
+}
+
+/* -- 에러 배너 ------------------------------------------------- */
+.wn-page-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.20);
+}
+
+.wn-page-error-text {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 14px;
+  color: #DC2626;
+  line-height: 1.5;
+}
+
+/* -- 시리즈 카드 그리드 ---------------------------------------- */
+.wn-series-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* -- 시리즈 카드 ----------------------------------------------- */
+.wn-series-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid #E5E7EB;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  outline: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.wn-series-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.wn-series-code {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 11px;
+  color: #9CA3AF;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.wn-series-title {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 8px;
+  letter-spacing: -0.01em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wn-series-topic {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 13px;
+  color: #6B7280;
+  margin: 0 0 auto;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.wn-series-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #F3F4F6;
+}
+
+.wn-series-date {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 12px;
+  color: #9CA3AF;
+}
+
+.wn-series-open {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* -- 상태 뱃지 ------------------------------------------------- */
+/* color, background: STATUS_MAP 런타임 → TSX inline 유지 */
+.wn-status-badge {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  letter-spacing: 0.02em;
+}
+
+/* -- 스켈레톤 카드 --------------------------------------------- */
+.wn-skeleton-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid #E5E7EB;
+  animation: wn-pulse 1.8s ease-in-out infinite;
+}
+
+.wn-skeleton-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.wn-skeleton-bar {
+  background: #F3F4F6;
+}
+
+.wn-skeleton-title {
+  height: 22px;
+  border-radius: 6px;
+  width: 52%;
+}
+
+.wn-skeleton-badge {
+  height: 22px;
+  border-radius: 999px;
+  width: 60px;
+}
+
+.wn-skeleton-line-lg {
+  height: 14px;
+  border-radius: 4px;
+  width: 82%;
+  margin-bottom: 8px;
+}
+
+.wn-skeleton-line-sm {
+  height: 14px;
+  border-radius: 4px;
+  width: 60%;
+  margin-bottom: 24px;
+}
+
+.wn-skeleton-btn {
+  height: 36px;
+  border-radius: 10px;
+  width: 100px;
+}
+
+@keyframes wn-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.45; }
+}
+
+/* -- 빈 상태 --------------------------------------------------- */
+.wn-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 24px;
+}
+
+.wn-empty-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 24px;
+  background: rgba(30, 41, 59, 0.07);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  color: #1E293B;
+}
+
+.wn-empty-title {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 10px;
+  letter-spacing: -0.02em;
+}
+
+.wn-empty-desc {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 15px;
+  color: #6B7280;
+  margin-bottom: 32px;
+  line-height: 1.65;
+  max-width: 320px;
+}
+
+.wn-empty-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 28px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  background: #1E293B;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* ============================================================
+   WebnovelGnb.tsx — 웹소설 전용 GNB (wn-gnb-*)
+   design-principles.md 3-A: static values only
+   isActive / hovered / open / user → TSX inline 유지
+   ============================================================ */
+
+/* -- GNB 컨테이너 ---------------------------------------------- */
+.wn-gnb-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  z-index: 80;
+  background: #1C1C1C;
+  border-bottom: 1px solid rgba(255, 106, 0, 0.20);
+  display: flex;
+  align-items: center;
+}
+
+.wn-gnb-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* -- 로고 ------------------------------------------------------ */
+.wn-gnb-logo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.wn-gnb-logo-img {
+  object-fit: contain;
+  width: 110px;
+  height: auto;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.8));
+}
+
+/* -- 데스크톱 중앙 nav ----------------------------------------- */
+.wn-gnb-nav {
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+}
+
+/* -- 데스크톱 우측 버튼 영역 ----------------------------------- */
+.wn-gnb-actions {
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* -- nav 버튼 기본 (정적 공통값) ------------------------------- */
+/* background, fontWeight, color, textShadow: isActive/hovered → TSX inline 유지 */
+.wn-gnb-nav-btn {
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 0 14px;
+  height: 52px;
+  margin: 4px 1px;
+  font-size: 14px;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: color 0.2s ease, background 0.2s ease, text-shadow 0.2s ease;
+  white-space: nowrap;
+}
+
+/* -- nav 언더라인 (정적 공통값) -------------------------------- */
+/* width, opacity, boxShadow: isActive/hovered → TSX inline 유지 */
+.wn-gnb-underline {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 2px;
+  background: #FF6A00;
+  border-radius: 1px;
+  transition: width 0.22s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.2s ease;
+}
+
+/* -- 드롭다운 패널 --------------------------------------------- */
+.wn-gnb-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #2A2A2A;
+  border: 1px solid rgba(255, 106, 0, 0.30);
+  border-top: 2px solid #FF6A00;
+  border-radius: 0 0 10px 10px;
+  display: flex;
+  flex-direction: row;
+  padding: 4px 6px;
+  gap: 2px;
+  z-index: 100;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.30);
+  white-space: nowrap;
+}
+
+/* -- 드롭다운 서브 버튼 (정적 공통값) -------------------------- */
+/* fontWeight, color, textShadow, borderBottom: subActive → TSX inline 유지 */
+.wn-gnb-sub-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 9px 14px;
+  font-size: 13px;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  border-radius: 6px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, background 0.2s, text-shadow 0.2s;
+}
+
+/* -- 우측 버튼: 마이페이지 ------------------------------------ */
+.wn-gnb-btn-mypage {
+  background: rgba(255, 106, 0, 0.10);
+  border: 1px solid rgba(255, 106, 0, 0.35);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+}
+
+/* -- 우측 버튼: 로그아웃 -------------------------------------- */
+.wn-gnb-btn-logout {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+}
+
+/* -- 우측 버튼: 로그인 ---------------------------------------- */
+.wn-gnb-btn-login {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 8px;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.65);
+  cursor: pointer;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+}
+
+/* -- 우측 버튼: 시작하기 -------------------------------------- */
+.wn-gnb-btn-start {
+  background: #FF6A00;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  cursor: pointer;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+}
+
+/* -- 모바일 햄버거 버튼 ---------------------------------------- */
+.wn-gnb-hamburger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.80);
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* -- 드로어 오버레이 ------------------------------------------- */
+/* opacity, pointerEvents: open 상태 → TSX inline 유지 */
+.wn-gnb-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 89;
+  background: rgba(0, 0, 0, 0.45);
+  transition: opacity 0.25s ease;
+}
+
+/* -- 드로어 패널 ----------------------------------------------- */
+/* transform: open 상태 → TSX inline 유지 */
+.wn-gnb-drawer-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 280px;
+  z-index: 90;
+  background: #1C1C1C;
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+/* -- 드로어 헤더 ----------------------------------------------- */
+.wn-gnb-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 106, 0, 0.20);
+}
+
+.wn-gnb-drawer-title {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+}
+
+.wn-gnb-drawer-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.55);
+  padding: 4px;
+}
+
+/* -- 드로어 nav ----------------------------------------------- */
+.wn-gnb-drawer-nav {
+  padding: 8px 0;
+}
+
+/* -- 드로어 nav 버튼 (정적 공통값) ---------------------------- */
+/* background, fontWeight, color: isActive → TSX inline 유지 */
+.wn-gnb-drawer-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  padding: 13px 20px;
+  cursor: pointer;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 15px;
+  transition: all 0.15s ease;
+}
+
+/* -- 드로어 구분선 --------------------------------------------- */
+.wn-gnb-drawer-divider {
+  border-top: 1px solid rgba(255, 255, 255, 0.10);
+  margin: 4px 0;
+}
+
+/* -- 드로어 메인 메뉴 섹션 레이블 ----------------------------- */
+.wn-gnb-drawer-section-label {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  color: rgba(255, 255, 255, 0.30);
+  text-transform: uppercase;
+  padding: 8px 20px 4px;
+}
+
+/* -- 드로어 메인 메뉴 버튼 ------------------------------------ */
+.wn-gnb-drawer-main-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 11px 20px;
+  cursor: pointer;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.60);
+  transition: color 0.15s ease;
+}
+
+/* -- prefers-reduced-motion (추가) ----------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .wn-skeleton-card       { animation: none; }
+  .wn-series-card         { transition: none; }
+  .wn-page-btn            { transition: none; }
+  .wn-empty-btn           { transition: none; }
+  .wn-gnb-nav-btn         { transition: none; }
+  .wn-gnb-underline       { transition: none; }
+  .wn-gnb-sub-btn         { transition: none; }
+  .wn-gnb-drawer-overlay  { transition: none; }
+  .wn-gnb-drawer-panel    { transition: none; }
+  .wn-gnb-drawer-btn      { transition: none; }
+  .wn-gnb-drawer-main-btn { transition: none; }
+}

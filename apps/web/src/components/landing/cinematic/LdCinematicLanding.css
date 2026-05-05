@@ -1,0 +1,518 @@
+/* =====================================================
+   LinkDrop V2 — 시네마틱 랜딩 전용 CSS
+   오직 /landing/expert-video 에서만 import
+   ===================================================== */
+
+/* 섹션 컨테이너 — 풀스크린 */
+.ld-cine-section {
+  position: relative;
+  width: 100%;
+  height: 100lvh;
+  min-height: 100svh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* 라이트/다크 테마 무관 항상 어둠 — 전역 bg-base 차단 */
+  background: #000000;
+}
+
+@supports not (height: 100lvh) {
+  .ld-cine-section { height: 100vh; min-height: 100vh; }
+}
+
+/* 비디오 배경 */
+.ld-cine-video-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.ld-cine-video-bg video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 비네트 오버레이 */
+.ld-cine-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.85) 100%);
+  z-index: 1;
+}
+
+/* 섹션 콘텐츠 레이어 */
+.ld-cine-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1.6rem;
+}
+
+@media (min-width: 640px) {
+  .ld-cine-content { padding: 0 3.2rem; }
+}
+
+@media (min-width: 1024px) {
+  .ld-cine-content { padding: 0 6rem; }
+}
+
+@media (min-width: 1280px) {
+  .ld-cine-content { padding: 0 8rem; }
+}
+
+/* 히어로·마지막 섹션: 중앙 정렬 (모바일) → 좌측 정렬 (데스크톱) */
+.ld-cine-content--center {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .ld-cine-content--center {
+    text-align: left;
+    align-items: flex-start;
+  }
+}
+
+/* 아이브로 태그 */
+.ld-cine-eyebrow {
+  display: block;
+  font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 1.2rem;
+}
+
+/* 대형 헤딩 */
+.ld-cine-heading {
+  font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+  font-weight: 900;
+  font-size: clamp(3rem, 8vw, 7.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+  white-space: pre-line;
+  text-wrap: balance;
+}
+
+/* 서브헤딩 */
+.ld-cine-subheading {
+  font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+  font-size: clamp(1.125rem, 2vw, 1.5rem);
+  font-weight: 400;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.88);
+  max-width: 62ch;
+  margin-top: 1.6rem;
+}
+
+/* CTA 버튼 행 */
+.ld-cine-btn-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2.4rem;
+  align-items: flex-start;
+}
+
+@media (min-width: 640px) {
+  .ld-cine-btn-row {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 3.2rem;
+  }
+}
+
+/* =====================
+   Glass 버튼
+   ===================== */
+.ld-cine-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 2rem;
+  height: 56px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px) saturate(1.4) brightness(1.1);
+  -webkit-backdrop-filter: blur(10px) saturate(1.4) brightness(1.1);
+  font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #ffffff;
+  cursor: pointer;
+  text-decoration: none;
+  overflow: hidden;
+  transition: background 0.25s ease, border-color 0.25s ease, transform 0.18s ease;
+  white-space: nowrap;
+}
+
+.ld-cine-btn:hover {
+  background: rgba(255,255,255,0.16);
+  border-color: rgba(255,255,255,0.35);
+}
+
+.ld-cine-btn:active { transform: scale(0.97); }
+
+/* Hero CTA (더 큰 버튼) */
+.ld-cine-btn--lg {
+  height: 64px;
+  padding: 0 2.4rem;
+  font-size: 1.125rem;
+}
+
+/* Ghost 버튼 (secondary) */
+.ld-cine-btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  color: rgba(255,255,255,0.75);
+  gap: 0.5rem;
+  padding: 0 0.5rem;
+  height: 48px;
+}
+
+.ld-cine-btn--ghost:hover {
+  background: transparent;
+  border-color: transparent;
+  color: #ffffff;
+}
+
+/* Shine 애니메이션 */
+.ld-cine-btn::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -75%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.18) 50%,
+    rgba(255,255,255,0) 100%
+  );
+  transform: skewX(-20deg);
+  pointer-events: none;
+  transition: left 0.8s ease;
+}
+
+.ld-cine-btn:hover::after { left: 130%; }
+.ld-cine-btn--ghost::after { display: none; }
+
+/* 버튼 아이콘 (삼각형) */
+.ld-cine-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.12);
+  flex-shrink: 0;
+}
+
+.ld-cine-btn-icon svg {
+  width: 12px;
+  height: 12px;
+  fill: white;
+}
+
+/* =====================
+   헤더
+   ===================== */
+.ld-cine-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 1.2rem 1.6rem;
+  transition: background 0.3s ease, backdrop-filter 0.3s ease;
+}
+
+.ld-cine-header.is-scrolled {
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.ld-cine-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.ld-cine-logo-link {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+/* 헤더 CTA — 작은 사이즈 */
+.ld-cine-btn--header-cta {
+  height: 44px;
+  padding: 0 1.4rem;
+  font-size: 0.9375rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 639px) {
+  .ld-cine-btn--header-cta { display: none; }
+}
+
+/* =====================
+   Apple Liquid Glass GNB
+   ===================== */
+.ld-gnav {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 6px;
+  border-radius: 99px;
+
+  /* 극한 블러 — Apple 감각 */
+  background: rgba(20, 20, 25, 0.5);
+  backdrop-filter: blur(50px) saturate(200%);
+  -webkit-backdrop-filter: blur(50px) saturate(200%);
+
+  /* 다층 그림자 — 3D 볼륨 */
+  box-shadow:
+    0 40px 80px -20px rgba(0,0,0,0.7),
+    0 10px 30px -10px rgba(0,0,0,0.5),
+    inset 0 2px 3px -1px rgba(255,255,255,0.22),
+    inset 0 -2px 4px -1px rgba(255,255,255,0.05),
+    inset 0 0 0 1px rgba(255,255,255,0.13);
+
+  z-index: 10;
+}
+
+/* 상단 곡면 반사 (물방울 느낌) */
+.ld-gnav-reflection {
+  position: absolute;
+  top: 1px; left: 1px; right: 1px;
+  height: 46%;
+  border-radius: 99px 99px 24px 24px / 99px 99px 12px 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%);
+  pointer-events: none;
+  z-index: 6;
+}
+
+/* 마우스 글레어 컨테이너 */
+.ld-gnav-glare-wrap {
+  position: absolute;
+  inset: 0;
+  border-radius: 99px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.ld-gnav-glare {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(
+    circle 80px at var(--x, 50%) var(--y, 50%),
+    rgba(255,255,255,0.14) 0%,
+    transparent 100%
+  );
+  mix-blend-mode: overlay;
+}
+
+.ld-gnav:hover .ld-gnav-glare { opacity: 1; }
+
+/* 버튼 컨테이너 */
+.ld-gnav-items {
+  position: relative;
+  display: flex;
+  gap: 2px;
+  z-index: 3;
+}
+
+/* 슬라이딩 필 */
+.ld-gnav-pill {
+  position: absolute;
+  top: 0; left: 0;
+  height: 42px;
+  background: rgba(65, 65, 72, 0.85);
+  border-radius: 99px;
+  box-shadow:
+    0 4px 12px rgba(0,0,0,0.5),
+    0 1px 2px rgba(0,0,0,0.3),
+    inset 0 1px 1px rgba(255,255,255,0.18);
+  /* transition은 JS에서 동적으로 설정 */
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* 개별 버튼 */
+.ld-gnav-btn {
+  position: relative;
+  background: transparent;
+  border: none;
+  padding: 0 16px;
+  height: 42px;
+  min-width: 42px;
+  border-radius: 99px;
+  font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.48);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.3s ease;
+  outline: none;
+  z-index: 2;
+}
+
+.ld-gnav-btn.is-active { color: rgba(255,255,255,0.95); }
+
+.ld-gnav-btn-inner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+  transition: transform 0.2s cubic-bezier(0.32,0.72,0,1);
+}
+
+.ld-gnav-btn:active .ld-gnav-btn-inner { transform: scale(0.91); }
+
+/* 모바일: 레이블 숨김 */
+.ld-gnav-btn-label { white-space: nowrap; }
+
+@media (max-width: 767px) {
+  .ld-gnav-btn-label { display: none; }
+  .ld-gnav-btn { padding: 0 12px; }
+}
+
+/* 구분선 */
+.ld-gnav-divider {
+  width: 1px;
+  height: 22px;
+  background: rgba(255,255,255,0.15);
+  margin: 0 4px;
+  flex-shrink: 0;
+  z-index: 3;
+}
+
+/* 테마 토글 버튼 */
+.ld-gnav-theme-btn {
+  position: relative;
+  background: transparent;
+  border: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: rgba(255,255,255,0.48);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  z-index: 3;
+  outline: none;
+  margin-left: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+  flex-shrink: 0;
+}
+
+.ld-gnav-theme-btn:hover { color: rgba(255,255,255,0.95); }
+
+.ld-gnav-theme-icon {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  transition: transform 0.2s cubic-bezier(0.32,0.72,0,1);
+}
+
+.ld-gnav-theme-btn:active .ld-gnav-theme-icon { transform: scale(0.8); }
+
+/* 태양/달 전환 애니메이션 */
+.ld-gnav-sun,
+.ld-gnav-moon {
+  position: absolute;
+  top: 0; left: 0;
+  transition:
+    transform 0.5s cubic-bezier(0.34,1.2,0.64,1),
+    opacity 0.4s ease;
+}
+
+.ld-gnav-sun { opacity: 1; transform: rotate(0deg) scale(1); }
+.ld-gnav-moon { opacity: 0; transform: rotate(-90deg) scale(0); }
+
+.ld-gnav-sun.is-hidden { opacity: 0; transform: rotate(90deg) scale(0); }
+.ld-gnav-moon:not(.is-hidden) { opacity: 1; transform: rotate(0deg) scale(1); }
+
+/* GNB 전체 숨김 — 극소 화면 */
+@media (max-width: 479px) {
+  .ld-gnav { display: none; }
+}
+
+/* =====================
+   Scroll Animations (GSAP 보조)
+   ===================== */
+.ld-cine-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+/* =====================
+   콘텐츠 내부 최대 너비 래퍼
+   ===================== */
+.ld-cine-content-inner {
+  max-width: 860px;
+}
+
+/* =====================
+   prefers-reduced-motion
+   ===================== */
+@media (prefers-reduced-motion: reduce) {
+  .ld-gnav-glare,
+  .ld-gnav-pill,
+  .ld-gnav-sun,
+  .ld-gnav-moon,
+  .ld-gnav-btn-inner,
+  .ld-gnav-theme-icon {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .ld-cine-section *,
+  .ld-cine-section *::before,
+  .ld-cine-section *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+
+  .ld-cine-video-bg video {
+    /* will-change 제거 + parallax 정지 (GSAP에서도 처리) */
+    will-change: auto;
+    transform: none !important;
+  }
+
+  .ld-cine-btn::after { display: none; }
+  .ld-cine-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

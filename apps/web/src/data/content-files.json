@@ -1,0 +1,82 @@
+[
+  {
+    "id": "landing1-ebook",
+    "landingSlug": "landing1",
+    "title": "웹소설·블로그 수익화 자료집",
+    "category": "웹소설·블로그",
+    "description": "웹소설 작가로 수익화하는 전체 가이드 자료 압축 패키지",
+    "driveUrl": "#"
+  },
+  {
+    "id": "landing2-ebook",
+    "landingSlug": "landing2",
+    "title": "전자책 출간 완벽 가이드",
+    "category": "전자책",
+    "description": "처음부터 출판까지 전자책 제작 완성 패키지",
+    "driveUrl": "#"
+  },
+  {
+    "id": "landing3-ebook",
+    "landingSlug": "landing3",
+    "title": "AI 동화책 제작·출판 가이드",
+    "category": "AI 동화책",
+    "description": "AI 삽화·편집으로 동화책을 완성하는 전체 자료 패키지",
+    "driveUrl": "#"
+  },
+  {
+    "id": "landing4-ebook",
+    "landingSlug": "landing4",
+    "title": "AI 클래스 운영 가이드",
+    "category": "AI 클래스",
+    "description": "온라인 강의 기획·제작·수강생 모집 완성 패키지",
+    "driveUrl": "#"
+  },
+  {
+    "id": "landing5-ebook",
+    "landingSlug": "landing5",
+    "title": "제휴 마케팅·추천 수익 실전 가이드",
+    "category": "제휴마케팅",
+    "description": "쿠팡파트너스·애드센스 연동, AI 리뷰 작성으로 매달 수수료 적립하는 실전 가이드",
+    "driveUrl": "#"
+  },
+  {
+    "id": "landing6-ebook",
+    "landingSlug": "landing6",
+    "title": "바이브코딩 웹사이트 제작 가이드",
+    "category": "바이브코딩",
+    "description": "코딩 없이 AI로 웹사이트·웹앱을 만드는 전체 자료",
+    "driveUrl": "#"
+  },
+  {
+    "id": "landing7-ebook",
+    "landingSlug": "landing7",
+    "title": "인생 다큐 기록사 제작 가이드",
+    "category": "인생 다큐 기록사",
+    "description": "AI 녹취·편집으로 인생 다큐 영상을 완성하는 자료 패키지",
+    "driveUrl": "#"
+  },
+  {
+    "id": "landing8-ebook",
+    "landingSlug": "landing8",
+    "title": "1인기업 마케팅·자동화 자료집",
+    "category": "1인기업·마케팅",
+    "description": "SNS 운영·마케팅 자동화 완성 패키지 (PDF·엑셀·영상 포함)",
+    "driveUrl": "#"
+  },
+  {
+    "id": "landing9-ebook",
+    "landingSlug": "landing9",
+    "title": "트레이딩 커뮤니티 운영 가이드",
+    "category": "트레이딩·커뮤니티",
+    "description": "유료 투자 커뮤니티 기획·운영·수익화 전체 자료 패키지",
+    "driveUrl": "#"
+  },
+  {
+    "id": "bonus-bundle",
+    "landingSlug": null,
+    "title": "보너스 리소스 전체 패키지",
+    "category": "공통 보너스",
+    "description": "효과음 228종·BGM 97종·트랜지션 80종·LUTs 53종·형광아이콘 32종·애니메이션 31종·오버레이 23종·쇼츠배경 64종·이모지 150종·컴맹탈출 VOD 40강 전부 포함",
+    "driveUrl": "#"
+  }
+]

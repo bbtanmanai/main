@@ -1,0 +1,604 @@
+/* ────────────────────────────────────────────────────────────
+   member.css — /member/* 라우트 전용 스타일
+   접두사: mc- (content), md- (dashboard)
+   이 파일은 apps/web/src/app/member/layout.tsx 에서 단 한 번 import됨
+   ──────────────────────────────────────────────────────────── */
+
+/* ═══════════════════════════════════════════════════════════
+   LOADING STATE
+   ═══════════════════════════════════════════════════════════ */
+
+.mc-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.mc-loading-text {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MEMBER CONTENT — mc-*
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── 페이지 컨테이너 ── */
+.mc-container {
+  max-width: 760px;
+}
+
+/* ── 페이지 제목 ── */
+.mc-heading {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 800;
+  font-size: 26px;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+/* ── 환불 정책 배너 ── */
+.mc-refund-banner {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.22);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.mc-refund-banner-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.mc-refund-banner-text {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(239, 68, 68, 0.9);
+  margin: 0;
+}
+
+.mc-refund-banner-consented {
+  color: rgba(239, 68, 68, 0.65);
+}
+
+/* ── 파일 목록 래퍼 ── */
+.mc-file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── 파일 카드 (공통) ── */
+.mc-file-card {
+  background: var(--bg-surface);
+  border-radius: 16px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.mc-file-card--normal {
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.mc-file-card--bonus {
+  border: 1px solid rgba(111, 255, 0, 0.18);
+}
+
+/* ── 파일 카드 아이콘 박스 (공통) ── */
+.mc-file-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 800;
+}
+
+.mc-file-icon--normal {
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+
+.mc-file-icon--bonus {
+  background: rgba(111, 255, 0, 0.12);
+  font-size: 22px;
+  color: var(--accent-neon);
+}
+
+/* ── 파일 정보 영역 ── */
+.mc-file-info {
+  flex: 1;
+  min-width: 180px;
+}
+
+.mc-file-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+/* ── 카테고리 배지 ── */
+.mc-badge-category {
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.mc-badge-category--normal {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
+}
+
+.mc-badge-category--bonus {
+  background: rgba(111, 255, 0, 0.10);
+  color: var(--accent-neon);
+}
+
+/* ── 다운로드 완료 배지 ── */
+.mc-badge-downloaded {
+  padding: 2px 8px;
+  background: rgba(16, 185, 129, 0.12);
+  border-radius: 6px;
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #10b981;
+}
+
+/* ── 파일 제목 ── */
+.mc-file-title {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--text-primary);
+  margin: 0 0 4px;
+}
+
+/* ── 파일 설명 ── */
+.mc-file-desc {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── 다운로드 버튼 (공통 레이아웃) ── */
+.mc-download-btn {
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 10px;
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #010828;
+  cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.mc-download-btn--downloaded {
+  background: #10b981;
+  border: none;
+}
+
+.mc-download-btn--default {
+  background: #EEEEEE;
+  border: 1px solid rgba(128, 128, 128, 0.40);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CONSENT MODAL — mc-modal-*
+   ═══════════════════════════════════════════════════════════ */
+
+.mc-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.70);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+}
+
+.mc-modal-panel {
+  background: var(--bg-surface);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 20px;
+  padding: 32px 28px 24px;
+  max-width: 460px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mc-modal-icon {
+  font-size: 32px;
+  text-align: center;
+}
+
+.mc-modal-title {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 800;
+  font-size: 19px;
+  color: var(--text-primary);
+  margin: 0;
+  text-align: center;
+}
+
+.mc-modal-desc {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin: 0;
+  text-align: center;
+}
+
+.mc-modal-desc strong {
+  color: var(--text-primary);
+}
+
+/* ── 입력 필드 그룹 ── */
+.mc-modal-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.mc-modal-field-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mc-modal-label {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0;
+  flex-shrink: 0;
+  width: 72px;
+}
+
+.mc-modal-input {
+  flex: 1;
+  height: 48px;
+  border-radius: 10px;
+  background: var(--bg-base);
+  border: 1px solid rgba(128, 128, 128, 0.40);
+  color: var(--text-primary);
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 16px;
+  padding: 0 14px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+/* ── 체크박스 그룹 ── */
+.mc-modal-checks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mc-modal-check-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.mc-modal-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent-neon);
+  flex-shrink: 0;
+}
+
+.mc-modal-link {
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 600;
+}
+
+.mc-modal-required {
+  font-size: 12px;
+  color: var(--accent-rose);
+}
+
+/* ── 오류 메시지 ── */
+.mc-modal-error {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 13px;
+  color: var(--accent-rose);
+  margin: 0;
+}
+
+/* ── 버튼 행 ── */
+.mc-modal-btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.mc-modal-btn-cancel {
+  flex: 1;
+  height: 50px;
+  border-radius: 10px;
+  background: transparent;
+  border: 1px solid rgba(128, 128, 128, 0.40);
+  color: var(--text-secondary);
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* mc-modal-btn-confirm 의 배경·cursor는 동적(canSubmit/processing) → style prop 유지 */
+.mc-modal-btn-confirm {
+  flex: 2;
+  height: 50px;
+  border-radius: 10px;
+  color: #010828;
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  transition: background 0.15s;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MEMBER DASHBOARD — md-*
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── 페이지 컨테이너 ── */
+.md-container {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ── 환영 헤더 ── */
+.md-welcome-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+/* ── 아바타 (이미지) ── */
+.md-avatar-img {
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* ── 아바타 (텍스트 폴백) ── */
+.md-avatar-fallback {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--accent-neon);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 800;
+  color: #010828;
+  flex-shrink: 0;
+}
+
+/* ── 이름·이메일 영역 ── */
+.md-welcome-text {
+  min-width: 0;
+  flex: 1;
+}
+
+.md-welcome-name {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 800;
+  font-size: 26px;
+  color: var(--text-primary);
+  margin: 0 0 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.md-welcome-email {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── 역할 배지 — background/color/border는 동적(isBuyer) → style prop 유지 ── */
+.md-role-badge {
+  flex-shrink: 0;
+  white-space: nowrap;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+}
+
+/* ── 통계 카드 그리드 ── */
+.md-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+/* ── StatCard 레이아웃 ── */
+.md-stat-card-inner {
+  border-radius: 14px;
+  padding: 18px 16px;
+  text-align: center;
+}
+
+/* ── StatCard 값 텍스트 — color는 동적 prop → style 유지 ── */
+.md-stat-value {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 800;
+  font-size: 24px;
+  margin: 0 0 2px;
+}
+
+.md-stat-sub {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 0 0 6px;
+}
+
+.md-stat-label {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* ── SectionCard ── */
+.md-section-card-inner {
+  border-radius: 16px;
+  padding: 22px 20px;
+  margin-bottom: 18px;
+}
+
+.md-section-title {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--text-primary);
+  margin-bottom: 18px;
+}
+
+/* ── 이용권 구매 안내 박스 (미구매) ── */
+.md-upsell-box {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.md-upsell-text {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0 0 10px;
+}
+
+.md-upsell-btn {
+  padding: 8px 20px;
+  border-radius: 999px;
+  background: var(--accent-neon);
+  color: #010828;
+  border: none;
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ── 이용 중 안내 박스 (구매자) ── */
+.md-active-box {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: rgba(111, 255, 0, 0.06);
+  border: 1px solid rgba(111, 255, 0, 0.15);
+}
+
+.md-active-text {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.md-active-link {
+  color: var(--accent-neon);
+  font-weight: 600;
+}
+
+/* ── 계정 정보 목록 ── */
+.md-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── InfoRow ── */
+.md-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.md-info-label {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.md-info-value {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ── 스켈레톤 ── */
+.md-skeleton-container {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.md-skeleton-block {
+  background-color: var(--bg-surface);
+  border-radius: 16px;
+  margin-bottom: 18px;
+  opacity: 0.4;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .md-skeleton-block {
+    animation: none;
+  }
+}

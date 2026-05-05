@@ -1,0 +1,385 @@
+.ldBonusGrid { display: flex; flex-direction: column; gap: 16px; }
+.ldBonusCardInner { display: flex; flex-direction: row; aspect-ratio: 16/9; }
+.ldBonusImg { position: relative; width: 50%; flex-shrink: 0; }
+.ldBonusBody { width: 50%; flex-shrink: 0; padding: 22px 24px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; scrollbar-width: none; }
+.ldBonusBody::-webkit-scrollbar { display: none; }
+.ldVaBadge { position: absolute; top: -10px; left: -10px; z-index: 10; width: 200px; height: 200px; pointer-events: none; }
+
+@media (max-width: 640px) {
+  .ldBonusCardInner { flex-direction: column; aspect-ratio: 9/16; }
+  .ldBonusImg { width: 100%; flex: 0 0 42%; }
+  .ldBonusBody { width: 100%; flex: 1; overflow-y: auto; }
+  .ldVaBadge { width: 200px; height: 200px; top: -10px; left: -10px; }
+}
+
+/* 카드 외부 래퍼 */
+.ldBonusCard {
+  position: relative;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.10);
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+  cursor: pointer;
+}
+
+/* 카드 내부 overflow 클리핑 래퍼 */
+.ldBonusCardClip {
+  border-radius: 16px;
+  overflow: hidden;
+  background: #111111;
+}
+
+/* 이미지 영역 — 이미지 없을 때 폴백 */
+.ldBonusImgFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #1a1a1a;
+}
+
+.ldBonusImgFallbackIcon {
+  font-size: 2.8rem;
+}
+
+.ldBonusImgFallbackText {
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.22);
+  font-family: Pretendard Variable, Pretendard, sans-serif;
+}
+
+/* 헤더 행 — 뱃지 + 태그 */
+.ldBonusHeaderRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* BONUS # 뱃지 */
+.ldBonusBadge {
+  font-size: 0.60rem;
+  font-weight: 800;
+  letter-spacing: 0.10em;
+  color: #010828;
+  background: #6fff00;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-family: Pretendard Variable, Pretendard, sans-serif;
+}
+
+/* 태그 텍스트 */
+.ldBonusTag {
+  font-size: 0.63rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.38);
+  font-family: Pretendard Variable, Pretendard, sans-serif;
+}
+
+/* 카드 제목 */
+.ldBonusTitle {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.92);
+  line-height: 1.4;
+  font-family: Pretendard Variable, Pretendard, sans-serif;
+}
+
+/* 카드 설명 */
+.ldBonusDesc {
+  margin: 0;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.42);
+  line-height: 1.65;
+  font-family: Pretendard Variable, Pretendard, sans-serif;
+}
+
+/* 포함 항목 그리드 (1열) */
+.ldBonusIncludesSingle {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+/* 포함 항목 그리드 (2열) */
+.ldBonusIncludesDouble {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+/* 포함 항목 행 */
+.ldBonusIncludeItem {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* 체크 아이콘 박스 */
+.ldBonusCheckBox {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  background: rgba(111,255,0,0.12);
+  border: 1px solid rgba(111,255,0,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.55rem;
+  color: #6fff00;
+  font-weight: 800;
+}
+
+/* 포함 항목 텍스트 */
+.ldBonusIncludeText {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.60);
+  font-family: Pretendard Variable, Pretendard, sans-serif;
+}
+
+/* 가치 행 */
+.ldBonusValueRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  margin-top: auto;
+}
+
+/* 가치추정가 레이블 */
+.ldBonusValueLabel {
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.30);
+  font-family: Pretendard Variable, Pretendard, sans-serif;
+}
+
+/* 가치추정가 금액 */
+.ldBonusValueAmount {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #DDDDDD;
+  font-family: Pretendard Variable, Pretendard, sans-serif;
+  text-decoration: line-through;
+  text-decoration-color: #ef4444;
+  text-decoration-thickness: 2px;
+  margin: 0;
+}
+
+/* 섹션 루트 */
+.ldBonusSection {
+  padding: 80px 24px;
+}
+
+/* 내부 최대 너비 래퍼 */
+.ldBonusInner {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/* 프롬프트 프리뷰 블록 */
+.ldPromptBlock {
+  margin-bottom: 40px;
+}
+
+/* 헤더 공통 — 상대 배치, 중앙 정렬 */
+.ldBonusHeaderWrap {
+  position: relative;
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+/* 섹션 헤더 — 마스코트 여백 더 넓음 */
+.ldBonusSectionHeaderWrap {
+  position: relative;
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+/* 마스코트 — 좌측 하단 */
+.ldMascotLeft {
+  position: absolute;
+  bottom: -35px;
+  left: 0;
+  z-index: 10;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 24px rgba(111,255,0,0.25));
+}
+
+/* 마스코트 — 우측 하단 반전 */
+.ldMascotRight {
+  position: absolute;
+  bottom: -62px;
+  right: 24px;
+  z-index: 10;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 24px rgba(111,255,0,0.25));
+  transform: scaleX(-1);
+}
+
+/* 프롬프트 섹션 작은 레이블 */
+.ldBonusEyebrowPrompt {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin: 0 0 14px;
+  font-family: Pretendard Variable, Pretendard, sans-serif;
+}
+
+/* 인라인 배경 강조 span 공통 */
+.ldBonusHighlight {
+  display: inline;
+  background: rgba(0,0,0,0.82);
+  padding: 2px 10px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* 네온 텍스트 */
+.ldBonusNeonText {
+  color: #6fff00;
+}
+
+/* 밝은 흰색 텍스트 */
+.ldBonusBrightText {
+  color: rgba(255,255,255,0.95);
+}
+
+/* 프롬프트 섹션 h2 */
+.ldBonusH2Prompt {
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 800;
+  margin: 0 0 14px;
+  line-height: 1.8;
+  font-family: Pretendard Variable, Pretendard, sans-serif;
+  letter-spacing: -0.3px;
+}
+
+/* 프롬프트 섹션 소개 p */
+.ldBonusSubPrompt {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 2;
+  font-family: Pretendard Variable, Pretendard, sans-serif;
+}
+
+/* 섹션 eyebrow */
+.ldBonusEyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #6fff00;
+  text-transform: uppercase;
+  margin: 0 0 14px;
+  font-family: Pretendard Variable, Pretendard, sans-serif;
+}
+
+/* 섹션 h2 */
+.ldBonusH2 {
+  font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+  font-weight: 800;
+  margin: 0 0 16px;
+  line-height: 1.5;
+  font-family: Pretendard Variable, Pretendard, sans-serif;
+  letter-spacing: -0.3px;
+}
+
+/* 섹션 소개 p */
+.ldBonusSub {
+  font-size: 0.95rem;
+  margin: 0;
+  font-family: Pretendard Variable, Pretendard, sans-serif;
+  line-height: 2;
+}
+
+/* 총 가치 요약 박스 */
+.ldBonusTotalBox {
+  margin-top: 40px;
+  padding: 28px 32px;
+  background: #111111;
+  border: 1px solid rgba(111,255,0,0.22);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  box-shadow: 0 0 40px rgba(111,255,0,0.06);
+}
+
+/* 총 가치 레이블 */
+.ldBonusTotalLabel {
+  margin: 0;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.45);
+  font-family: Pretendard Variable, Pretendard, sans-serif;
+}
+
+/* 총 가치 금액 */
+.ldBonusTotalAmount {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 800;
+  color: #DDDDDD;
+  line-height: 1;
+  font-family: Pretendard Variable, Pretendard, sans-serif;
+  letter-spacing: -0.5px;
+  text-decoration: line-through;
+  text-decoration-color: #ef4444;
+  text-decoration-thickness: 3px;
+}
+
+/* 총 가치 설명 */
+.ldBonusTotalDesc {
+  margin: 0;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.38);
+  font-family: Pretendard Variable, Pretendard, sans-serif;
+}
+
+/* CTA 영역 */
+.ldBonusCtaWrap {
+  text-align: center;
+  margin-top: 32px;
+}
+
+/* CTA 버튼 */
+.ldBonusCtaBtn {
+  display: inline-block;
+  padding: 18px 48px;
+  border-radius: 12px;
+  background: #6fff00;
+  color: #010828;
+  font-size: 1.05rem;
+  font-weight: 800;
+  font-family: Pretendard Variable, Pretendard, sans-serif;
+  text-decoration: none;
+  letter-spacing: -0.2px;
+  box-shadow: 0 4px 24px rgba(111,255,0,0.35);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+/* CTA 보조 텍스트 */
+.ldBonusCtaNote {
+  margin-top: 12px;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.30);
+  font-family: Pretendard Variable, Pretendard, sans-serif;
+}
+
+/* 서브텍스트 색상 변형 */
+.ldBonusSubText50 {
+  color: rgba(255,255,255,0.50);
+}
+
+.ldBonusSubText80 {
+  color: rgba(255,255,255,0.80);
+}

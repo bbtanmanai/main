@@ -1,0 +1,434 @@
+/* ============================================================
+ * checkout.css — 결제 플로우 공통 스타일
+ * 적용 라우트: /checkout/order, /checkout/payment, /checkout/complete
+ * import 위치: apps/web/src/app/checkout/layout.tsx
+ * ============================================================ */
+
+/* ── 공통 레이아웃 ─────────────────────────────────────────── */
+
+/* checkout layout.tsx 래퍼 */
+.ck-layout-root {
+  min-height: 100dvh;
+  position: relative;
+}
+
+.ck-layout-content {
+  position: relative;
+  z-index: 1;
+  padding-top: 64px;
+}
+
+.ck-page {
+  min-height: 100vh;
+  color: var(--text-primary);
+  padding: 24px 16px 60px;
+}
+
+.ck-logo-header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding-top: 8px;
+}
+
+.ck-logo-link {
+  font-family: "Montserrat", "Pretendard Variable", "Pretendard", sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  color: #0055ff;
+  text-decoration: none;
+  letter-spacing: 0.05em;
+}
+
+.ck-stepper-wrap {
+  max-width: 480px;
+  margin: 0 auto 40px;
+}
+
+.ck-container {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* ── 카드 공통 ─────────────────────────────────────────────── */
+
+.ck-card {
+  background-color: var(--glass-bg);
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid var(--glass-border);
+}
+
+.ck-card-mb {
+  margin-bottom: 24px;
+}
+
+.ck-card-title {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: #111827;
+  margin-bottom: 16px;
+}
+
+/* ── order: 상품 카드 ──────────────────────────────────────── */
+
+.ck-order-product-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.ck-order-product-name {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: #111827;
+  margin: 0 0 4px;
+}
+
+.ck-order-product-label {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.ck-order-price-col {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.ck-order-regular-price {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 14px;
+  color: #9ca3af;
+  text-decoration: line-through;
+  margin: 0 0 2px;
+}
+
+.ck-order-launch-price {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-weight: 800;
+  font-size: 22px;
+  color: #0055ff;
+  margin: 0;
+}
+
+/* 혜택 목록 */
+
+.ck-benefit-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ck-benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 15px;
+  color: #374151;
+  padding: 4px 0;
+}
+
+/* 환불 보장 뱃지 */
+
+.ck-guarantee-box {
+  margin-top: 16px;
+  padding: 10px 14px;
+  background-color: #ecfdf5;
+  border-radius: 8px;
+  border: 1px solid #6ee7b7;
+}
+
+.ck-guarantee-text {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 14px;
+  color: #059669;
+  margin: 0;
+  font-weight: 600;
+}
+
+/* ── order: 구매자 정보 폼 ─────────────────────────────────── */
+
+.ck-buyer-title {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: #111827;
+  margin-bottom: 20px;
+}
+
+.ck-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ck-field-label {
+  display: block;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.ck-field-required {
+  color: #ef4444;
+}
+
+.ck-input {
+  width: 100%;
+  height: 48px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  background-color: #ffffff;
+  color: #111827;
+  font-size: 18px;
+  padding: 0 14px;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  outline: none;
+  box-sizing: border-box;
+}
+
+/* 결제 버튼 공통 */
+
+.ck-submit-btn {
+  height: 56px;
+  border-radius: 12px;
+  background-color: #0055ff;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.ck-submit-btn:disabled {
+  background-color: rgba(0, 85, 255, 0.5);
+  cursor: not-allowed;
+}
+
+/* ── payment: 금액 표시 ────────────────────────────────────── */
+
+.ck-amount-card {
+  background-color: #f0f4ff;
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  border: 1px solid #c7d2fe;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ck-amount-label {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  color: #374151;
+}
+
+.ck-amount-value {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-weight: 800;
+  font-size: 26px;
+  color: #0055ff;
+}
+
+/* ── payment: 토스페이먼츠 위젯 영역 ──────────────────────── */
+
+.ck-toss-widget {
+  background-color: #f8faff;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  border: 2px dashed #c7d2fe;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.ck-toss-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background-color: #0064ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ck-toss-label {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 16px;
+  color: #6b7280;
+  text-align: center;
+  margin: 0;
+}
+
+.ck-toss-label-sub {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.ck-payment-methods {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.ck-method-badge {
+  padding: 4px 10px;
+  background-color: #e0e7ff;
+  border-radius: 20px;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 13px;
+  color: #4338ca;
+  font-weight: 600;
+}
+
+/* ── payment: 보안 안내 ────────────────────────────────────── */
+
+.ck-security-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  background-color: #f0fdf4;
+  border-radius: 10px;
+  border: 1px solid #bbf7d0;
+  margin-bottom: 20px;
+}
+
+.ck-security-icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ck-security-text {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 14px;
+  color: #15803d;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.ck-pay-btn {
+  width: 100%;
+  height: 56px;
+  border-radius: 12px;
+  background-color: #0055ff;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  border: none;
+  cursor: pointer;
+}
+
+.ck-pay-note {
+  text-align: center;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 13px;
+  color: #9ca3af;
+  margin-top: 12px;
+}
+
+/* ── complete: 완료 페이지 ─────────────────────────────────── */
+
+.ck-complete-page {
+  min-height: 100vh;
+  background-color: #ffffff;
+  color: #111827;
+  padding: 24px 16px 60px;
+}
+
+.ck-complete-container {
+  max-width: 480px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.ck-success-icon-wrap {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background-color: #dcfce7;
+  border: 3px solid #10b981;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 28px;
+}
+
+.ck-complete-title {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-weight: 800;
+  font-size: 28px;
+  color: #111827;
+  margin-bottom: 12px;
+}
+
+.ck-complete-desc {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 18px;
+  color: #6b7280;
+  line-height: 1.7;
+  margin-bottom: 40px;
+}
+
+.ck-complete-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ck-cta-primary {
+  display: block;
+  height: 56px;
+  line-height: 56px;
+  border-radius: 12px;
+  background-color: #0055ff;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  text-decoration: none;
+}
+
+.ck-cta-secondary {
+  display: block;
+  height: 48px;
+  line-height: 48px;
+  border-radius: 10px;
+  background-color: transparent;
+  color: #6b7280;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  text-decoration: none;
+  border: 1px solid #e5e7eb;
+}
+
+.ck-complete-footer {
+  margin-top: 32px;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.ck-complete-mail-link {
+  color: #0055ff;
+}

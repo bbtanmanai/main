@@ -1,0 +1,562 @@
+/* ============================================================
+   Partner pages — partner.css
+   접두사: pt-
+   대상: /partner/mylanding, /partner/earnings, /partner/network
+   ============================================================ */
+
+/* ── 공통 컨테이너 ── */
+.pt-container {
+  max-width: 720px;
+}
+
+/* ── 공통 페이지 헤더 ── */
+.pt-page-title {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 800;
+  font-size: 26px;
+  color: var(--text-primary);
+  margin: 0 0 8px;
+}
+
+.pt-page-desc {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin: 0 0 28px;
+}
+
+/* ── 공통 surface 카드 ── */
+.pt-surface-card {
+  background-color: var(--bg-surface);
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 24px;
+}
+
+.pt-surface-card-sm {
+  background-color: var(--bg-surface);
+  border-radius: 14px;
+  padding: 16px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 24px;
+}
+
+/* ── 공통 섹션 제목 h2 ── */
+.pt-section-title {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+/* ── 공통 뱃지 ── */
+.pt-badge {
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* =============================================================
+   MyLanding 페이지 (/partner/mylanding)
+   ============================================================= */
+
+.pt-mylanding-header {
+  margin-bottom: 28px;
+}
+
+.pt-mylanding-title {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 800;
+  font-size: 26px;
+  color: var(--text-primary);
+  margin: 0 0 8px;
+}
+
+.pt-mylanding-desc {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* 홍보주소 카드 */
+.pt-promo-card {
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 28px;
+}
+
+.pt-promo-label {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 0 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.pt-promo-url-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pt-promo-url-text {
+  flex: 1;
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent-neon);
+  word-break: break-all;
+}
+
+.pt-promo-copy-btn {
+  flex-shrink: 0;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: var(--accent-neon);
+  color: #010828;
+  border: none;
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* 랜딩 선택 그리드 */
+.pt-grid-header {
+  margin-bottom: 24px;
+}
+
+.pt-grid-label {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 16px;
+}
+
+.pt-grid-label-count {
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.pt-topic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+/* 토픽 카드 버튼 — 정적 공통 */
+.pt-topic-btn {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 18px 16px;
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+  backdrop-filter: blur(8px);
+}
+
+/* 선택 체크 */
+.pt-topic-check {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent-neon);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 토픽 뱃지 (위치는 isSelected 여부에 따라 동적) */
+.pt-topic-badge {
+  position: absolute;
+  top: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+}
+
+/* 토픽 아이콘 박스 */
+.pt-topic-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* 토픽 제목 */
+.pt-topic-name {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  margin: 0 0 4px;
+  white-space: pre-line;
+  line-height: 1.4;
+}
+
+/* 토픽 설명 */
+.pt-topic-desc {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* 저장 버튼 래퍼 */
+.pt-save-row {
+  position: sticky;
+  bottom: 80px;
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 24px;
+}
+
+/* 저장 버튼 — 정적 공통 */
+.pt-save-btn {
+  padding: 14px 36px;
+  border-radius: 999px;
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+/* =============================================================
+   Earnings 페이지 (/partner/earnings)
+   ============================================================= */
+
+.pt-earnings-header-desc {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin-bottom: 28px;
+}
+
+/* 3색 수익 카드 그리드 */
+.pt-earnings-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+/* 개별 수익 카드 */
+.pt-earning-card {
+  background-color: var(--bg-surface);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+}
+
+.pt-earning-card-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.pt-earning-card-amount {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 800;
+  font-size: 22px;
+  margin: 0 0 6px;
+}
+
+.pt-earning-card-label {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* 총 수익 합계 행 */
+.pt-total-row {
+  background-color: var(--bg-surface);
+  border-radius: 14px;
+  padding: 16px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.pt-total-label {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--text-secondary);
+}
+
+.pt-total-amount {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 800;
+  font-size: 28px;
+  color: var(--text-primary);
+}
+
+/* 월별 차트 컨테이너 */
+.pt-chart-wrap {
+  background-color: var(--bg-surface);
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 24px;
+}
+
+.pt-chart-title {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+/* 바 차트 행 */
+.pt-bar-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  height: 160px;
+  padding: 0 4px;
+}
+
+/* 개별 바 열 */
+.pt-bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.pt-bar-amount-label {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 11px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* 막대 — 높이는 동적(JS), 색상은 동적(JS) */
+.pt-bar {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  transition: height 0.4s ease;
+}
+
+/* 월 레이블 — 색상/굵기는 동적 */
+.pt-bar-month-label {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 12px;
+}
+
+/* 정산 상태 섹션 */
+.pt-settlement-wrap {
+  background-color: var(--bg-surface);
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pt-settlement-title {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+.pt-settlement-notice {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-top: 16px;
+  padding: 10px 14px;
+  background-color: rgba(99, 102, 241, 0.08);
+  border-radius: 8px;
+}
+
+/* =============================================================
+   Network 페이지 (/partner/network)
+   ============================================================= */
+
+.pt-network-desc {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin-bottom: 28px;
+}
+
+/* 섹션 구분 제목 */
+.pt-network-section-title {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* 파트너 카드 목록 */
+.pt-partner-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+/* 파트너 카드 */
+.pt-partner-card {
+  background-color: var(--bg-surface);
+  border-radius: 14px;
+  padding: 16px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* 아바타 — 색상은 depth 기반 동적 */
+.pt-partner-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+/* 파트너 정보 영역 */
+.pt-partner-info {
+  flex: 1;
+  min-width: 120px;
+}
+
+.pt-partner-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+
+.pt-partner-name {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--text-primary);
+}
+
+/* depth 뱃지 — 색상은 동적 */
+.pt-depth-badge {
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.pt-partner-meta {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* 누적 수당 영역 */
+.pt-partner-reward {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.pt-partner-reward-amount {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  color: #FF8800;
+  margin: 0 0 2px;
+}
+
+.pt-partner-reward-label {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* 빈 상태 메시지 */
+.pt-empty-state {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 15px;
+  color: var(--text-secondary);
+  padding: 20px 0;
+  text-align: center;
+}
+
+/* 신규 파트너 초대 섹션 */
+.pt-invite-section {
+  background-color: rgba(255, 136, 0, 0.06);
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid rgba(255, 136, 0, 0.2);
+  text-align: center;
+}
+
+.pt-invite-emoji {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.pt-invite-title {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.pt-invite-desc {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+.pt-invite-btn {
+  display: inline-block;
+  height: 48px;
+  line-height: 48px;
+  padding: 0 28px;
+  border-radius: 10px;
+  background-color: #FF8800;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  text-decoration: none;
+}

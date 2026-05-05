@@ -1,0 +1,125 @@
+/* ============================================================
+   LdFinalCTASection — 전용 CSS (컴포넌트 동거)
+   design-principles.md §3-A: 정적 인라인 style={{ }} 이동
+   ============================================================ */
+
+.ld-fcta-section {
+  padding: 100px 24px;
+  text-align: center;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 배경 글로우 효과 */
+.ld-fcta-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 400px;
+  background: radial-gradient(ellipse, rgba(111, 255, 0, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* 컨테이너 */
+.ld-fcta-container {
+  max-width: 720px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* 서브 레이블 */
+.ld-fcta-label {
+  display: inline-block;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+/* 대형 헤딩 — Pretendard 800 (한글이므로 Anton 금지, LD-007) */
+.ld-fcta-title {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-weight: 800;
+  font-size: clamp(36px, 6vw, 60px);
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin-bottom: 24px;
+  letter-spacing: -0.02em;
+}
+
+/* 부제목 — 최소 18px 시니어 가독성 */
+.ld-fcta-desc {
+  font-size: 20px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: 48px;
+}
+
+/* Float 애니메이션 */
+@keyframes ld-cta-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.ld-cta-float {
+  animation: ld-cta-float 2.4s ease-in-out infinite;
+}
+
+.ld-cta-float:hover {
+  animation-play-state: paused;
+  transform: scale(1.02) !important;
+}
+
+/* Primary CTA 버튼 */
+.ld-fcta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-neon);
+  color: var(--bg-base);
+  border-radius: 16px;
+  padding: 22px 48px;
+  font-weight: 800;
+  font-size: 20px;
+  text-decoration: none;
+  min-height: 64px;
+  box-shadow: 0 0 48px rgba(111, 255, 0, 0.30);
+  transition: box-shadow 200ms ease;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+}
+
+/* Secondary 영역 */
+.ld-fcta-secondary {
+  margin-top: 20px;
+}
+
+.ld-fcta-secondary-hint {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-right: 6px;
+}
+
+/* Secondary 링크 */
+.ld-fcta-link {
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+}
+
+/* prefers-reduced-motion: 모든 애니메이션·전환 즉시 정지 */
+@media (prefers-reduced-motion: reduce) {
+  .ld-cta-float {
+    animation: none;
+  }
+  .ld-fcta-btn {
+    transition: none !important;
+  }
+}
