@@ -23,6 +23,10 @@ import LdFinalCTASection from "@/components/landing/LdFinalCTASection";
 import LdStickyBottomCTA from "@/components/landing/LdStickyBottomCTA";
 const LdCinematicLanding = dynamic(() => import("@/components/landing/cinematic/LdCinematicLanding"));
 const LdWebnovelGuide = dynamic(() => import("@/components/landing/LdWebnovelGuide"));
+const LdEbookGuide = dynamic(() => import("@/components/landing/LdEbookGuide"));
+const LdPictureBookGuide = dynamic(() => import("@/components/landing/LdPictureBookGuide"));
+const LdAffiliateGuide = dynamic(() => import("@/components/landing/LdAffiliateGuide"));
+const LdVibecodingGuide = dynamic(() => import("@/components/landing/LdVibecodingGuide"));
 const LdTopicGuide = dynamic(() => import("@/components/landing/LdTopicGuide"));
 const LdOralHistoryLanding = dynamic(() => import("@/components/landing/LdOralHistoryLanding"));
 import LdTopicFinderBanner from "@/components/landing/LdTopicFinderBanner";
@@ -142,6 +146,58 @@ export default async function LandingPage({
     return (
       <>
         <LdWebnovelGuide />
+        {PromptSection}
+        {BonusSection}
+        <LdFooter />
+        <LdStickyBottomCTA />
+      </>
+    );
+  }
+
+  // 전자책·경험 수익화 가이드 분기 — landing2 variant: "ebook-guide"
+  if ((landing as Record<string, unknown>).variant === "ebook-guide") {
+    return (
+      <>
+        <LdEbookGuide />
+        {PromptSection}
+        {BonusSection}
+        <LdFooter />
+        <LdStickyBottomCTA />
+      </>
+    );
+  }
+
+  // 동화책 가이드 분기 — landing3 variant: "picture-book-guide"
+  if ((landing as Record<string, unknown>).variant === "picture-book-guide") {
+    return (
+      <>
+        <LdPictureBookGuide />
+        {PromptSection}
+        {BonusSection}
+        <LdFooter />
+        <LdStickyBottomCTA />
+      </>
+    );
+  }
+
+  // 제휴 마케팅 가이드 분기 — landing5 variant: "affiliate-guide"
+  if ((landing as Record<string, unknown>).variant === "affiliate-guide") {
+    return (
+      <>
+        <LdAffiliateGuide />
+        {PromptSection}
+        {BonusSection}
+        <LdFooter />
+        <LdStickyBottomCTA />
+      </>
+    );
+  }
+
+  // 바이브코딩 가이드 분기 — landing6 variant: "vibecoding-guide"
+  if ((landing as Record<string, unknown>).variant === "vibecoding-guide") {
+    return (
+      <>
+        <LdVibecodingGuide />
         {PromptSection}
         {BonusSection}
         <LdFooter />

@@ -11,7 +11,14 @@ export interface NavItem {
 
 export const NAV_ITEMS: NavItem[] = [
   { label: "서비스소개", href: "/about" },
-  { label: "웹소설",     href: "/landing/landing1" },
+  {
+    label: "웹소설",
+    href: "/landing/landing1",
+    children: [
+      { label: "웹소설 소개", href: "/landing/landing1" },
+      { label: "웹소설 보기", href: "/webnovel" },
+    ],
+  },
   { label: "영상자동화", href: "/landing/landing4" },
   {
     label: "강사모집",

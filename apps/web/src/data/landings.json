@@ -18,6 +18,7 @@
     "variant": "webnovel-guide"
   },
   "landing2": {
+    "variant": "ebook-guide",
     "hero": {
       "eyebrow": "전자책 출간",
       "heading": "내 경험으로\n전자책을 쓰고\n수익을 만드세요",
@@ -35,6 +36,7 @@
     }
   },
   "landing3": {
+    "variant": "picture-book-guide",
     "hero": {
       "eyebrow": "AI 동화책 제작·출판",
       "heading": "내 이야기로\n동화책을 만들고\n출판하세요",
@@ -157,6 +159,7 @@
     ]
   },
   "landing5": {
+    "variant": "affiliate-guide",
     "hero": {
       "eyebrow": "유튜브 쇼츠 수익",
       "heading": "경험담 영상 하나로\n매달 광고비를\n받으세요",
@@ -174,6 +177,7 @@
     }
   },
   "landing6": {
+    "variant": "vibecoding-guide",
     "hero": {
       "eyebrow": "바이브코딩 웹사이트·웹앱",
       "heading": "코딩 몰라도\nAI로 웹사이트를\n직접 만드세요",
