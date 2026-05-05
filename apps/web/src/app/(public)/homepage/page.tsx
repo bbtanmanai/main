@@ -1,65 +1,87 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import { AI_UI_SOURCES } from "@/lib/ai-ui-homepage";
+import type { HomepageItem } from "@/types/homepage";
+import LdHomepageTabSwitcher from "@/components/homepage/LdHomepageTabSwitcher";
+import LdHomepageCategoryFilter from "@/components/homepage/LdHomepageCategoryFilter";
+import LdHomepageGrid from "@/components/homepage/LdHomepageGrid";
+import LdAiUiGrid from "@/components/homepage/LdAiUiGrid";
 
 export const metadata: Metadata = {
-  title: "홈페이지소스 | LinkDrop",
+  title: "홈페이지 소스 | LinkDrop",
+  description: "AI로 만든 홈페이지 템플릿과 AI 생성용 UI 프롬프트 소스 라이브러리",
   robots: { index: false },
 };
 
-export default function HomepagePage() {
+const PER_PAGE = 12;
+
+// 향후 Supabase에서 로드 — 현재 정적 빈 배열
+const HOMEPAGE_ITEMS: HomepageItem[] = [];
+
+interface PageProps {
+  searchParams: Promise<{ tab?: string; category?: string; page?: string }>;
+}
+
+export default async function HomepagePage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const tab = params.tab === "ai" ? "ai" : "homepage";
+  const category = params.category ?? "";
+  const currentPage = Math.max(1, Number(params.page) || 1);
+
+  const aiItems = AI_UI_SOURCES;
+
+  const filtered = category
+    ? HOMEPAGE_ITEMS.filter((item) => item.category === category)
+    : HOMEPAGE_ITEMS;
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+  const pageItems = filtered.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
+
+  const categories = [...new Set(HOMEPAGE_ITEMS.map((item) => item.category))];
+
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "80px 24px",
-        fontFamily: "'Pretendard Variable', Pretendard, sans-serif",
-        textAlign: "center",
-      }}
-    >
-      <h1
-        style={{
-          fontSize: "clamp(2rem, 5vw, 3.5rem)",
-          fontWeight: 900,
-          marginBottom: "1.2rem",
-          color: "var(--text-primary)",
-        }}
-      >
-        홈페이지 소스
-      </h1>
-      <p
-        style={{
-          fontSize: "1.125rem",
-          lineHeight: 1.7,
-          color: "var(--text-secondary)",
-          maxWidth: "52ch",
-          marginBottom: "2.4rem",
-        }}
-      >
-        각종 홈페이지 소스 및 템플릿을 제공합니다.
-        해당 서비스는 현재 준비 중입니다.
-      </p>
-      <a
-        href="mailto:hello@linkdrop.kr"
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          height: 56,
-          padding: "0 2rem",
-          borderRadius: 999,
-          background: "var(--accent-neon, #6fff00)",
-          color: "#010828",
-          fontWeight: 700,
-          fontSize: "1rem",
-          textDecoration: "none",
-          fontFamily: "'Pretendard Variable', Pretendard, sans-serif",
-        }}
-      >
-        서비스 문의
-      </a>
+    <main className="hp-page">
+      <header className="hp-page-header">
+        <h1 className="hp-page-title">
+          홈페이지 <span>소스</span> 라이브러리
+        </h1>
+        <p className="hp-page-desc">
+          AI 툴로 제작한 랜딩페이지 템플릿과 UI 프롬프트 소스를 자유롭게 활용하세요
+        </p>
+      </header>
+
+      <div className="hp-container">
+        <Suspense>
+          <LdHomepageTabSwitcher
+            active={tab}
+            homepageCount={HOMEPAGE_ITEMS.length}
+            aiCount={aiItems.length}
+          />
+        </Suspense>
+
+        {tab === "homepage" && (
+          <>
+            {categories.length > 0 && (
+              <Suspense>
+                <LdHomepageCategoryFilter
+                  categories={categories}
+                  current={category}
+                />
+              </Suspense>
+            )}
+            <Suspense>
+              <LdHomepageGrid
+                items={pageItems}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                category={category}
+              />
+            </Suspense>
+          </>
+        )}
+
+        {tab === "ai" && <LdAiUiGrid items={aiItems} />}
+      </div>
     </main>
   );
 }

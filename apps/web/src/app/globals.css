@@ -3,6 +3,7 @@
    Tailwind v4: @import로 기본 유틸리티 로드
    ============================================================ */
 @import "tailwindcss";
+@import "../styles/homepage.css";
 
 @font-face {
   font-family: "Montserrat";

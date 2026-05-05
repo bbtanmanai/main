@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const V3_API = process.env.V3_API_BASE_URL ?? 'http://localhost:8001';
+const V3_API = process.env.V3_API_BASE_URL ?? process.env.V3_INTERNAL_URL ?? 'http://localhost:8001';
 
 export async function GET(
   _req: NextRequest,
