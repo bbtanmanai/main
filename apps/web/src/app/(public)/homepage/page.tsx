@@ -1,3 +1,4 @@
+import "@/styles/homepage.css";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { AI_UI_SOURCES } from "@/lib/ai-ui-homepage";
