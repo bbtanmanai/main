@@ -1,6 +1,7 @@
 'use client';
 import Image from "next/image";
 import LdPromptPreview from "@/components/landing/LdPromptPreview";
+import LdOnedaySection from "@/components/landing/LdOnedaySection";
 import bonusData from "@/data/bonuses.json";
 
 type BundleItem = { icon: string; title: string; value?: number };
@@ -185,6 +186,8 @@ export default function LdBonusSection() {
   const totalValue = bonuses.reduce((sum, b) => sum + (b.value ?? 0), 0);
 
   return (
+    <>
+    <LdOnedaySection />
     <section style={{ padding: "80px 24px" }}>
       <style>{`
         .ld-bonus-grid { display: flex; flex-direction: column; gap: 16px; }
@@ -360,5 +363,6 @@ export default function LdBonusSection() {
 
       </div>
     </section>
+    </>
   );
 }
