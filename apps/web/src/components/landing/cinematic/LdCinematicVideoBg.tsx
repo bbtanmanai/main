@@ -3,27 +3,39 @@
 import { useEffect, useRef } from "react";
 
 interface Props {
-  playbackId: string;
+  playbackId?: string;
+  src?: string;
 }
 
-export default function LdCinematicVideoBg({ playbackId }: Props) {
+export default function LdCinematicVideoBg({ playbackId, src }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<import("hls.js").default | null>(null);
   const loadedRef = useRef(false); // state 대신 ref — IntersectionObserver 클로저 안전
 
-  const hlsSrc = `https://stream.mux.com/${playbackId}.m3u8`;
-  const posterSrc = `https://image.mux.com/${playbackId}/thumbnail.webp?time=0`;
+  const hlsSrc = playbackId ? `https://stream.mux.com/${playbackId}.m3u8` : null;
+  const posterSrc = playbackId ? `https://image.mux.com/${playbackId}/thumbnail.webp?time=0` : undefined;
 
   useEffect(() => {
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const container = containerRef.current;
     if (!container) return;
 
-    // ── HLS 로드 시작 ──────────────────────────────────────────
+    // ── 로드 시작 (MP4 직접 or Mux HLS) ─────────────────────────
     const startLoad = async (video: HTMLVideoElement) => {
       if (loadedRef.current || prefersReduced) return;
       loadedRef.current = true;
+
+      // MP4 직접 URL
+      if (src) {
+        video.src = src;
+        video.play().catch(() => {
+          document.addEventListener("click", () => video.play(), { once: true });
+        });
+        return;
+      }
+
+      if (!hlsSrc) return;
 
       // Safari / iOS 네이티브 HLS
       const canPlayHls =
@@ -90,7 +102,7 @@ export default function LdCinematicVideoBg({ playbackId }: Props) {
       hlsRef.current?.destroy();
       hlsRef.current = null;
     };
-  }, [hlsSrc]);
+  }, [hlsSrc, src]);
 
   return (
     <div ref={containerRef} className="ld-cine-video-bg" aria-hidden="true">
