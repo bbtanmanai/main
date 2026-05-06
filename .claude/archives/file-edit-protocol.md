@@ -45,3 +45,5 @@ content = """
 with open(path, 'w', encoding='utf-8') as f:
     f.write(content)
 print(f"작성 완료: {content.count(chr(10))}라인")
+EOF
+```

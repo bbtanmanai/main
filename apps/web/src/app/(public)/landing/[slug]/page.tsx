@@ -29,6 +29,7 @@ const LdLanding5 = dynamic(() => import("@/components/landing/LdLanding5"));
 const LdLanding6 = dynamic(() => import("@/components/landing/LdLanding6"));
 const LdLanding10 = dynamic(() => import("@/components/landing/LdLanding10"));
 const LdLanding7 = dynamic(() => import("@/components/landing/LdLanding7"));
+const LdLanding11 = dynamic(() => import("@/components/landing/LdLanding11"));
 import LdTopicFinderBanner from "@/components/landing/LdTopicFinderBanner";
 import LdMascotFloat from "@/components/landing/LdMascotFloat";
 
@@ -146,6 +147,17 @@ export default async function LandingPage({
     return (
       <>
         <LdLanding6 />
+        {BonusSection}
+        <LdFooter />
+      </>
+    );
+  }
+
+  // 위치기반 맛집 영상앱 분기 — landing11 variant: "foodmap-guide"
+  if ((landing as Record<string, unknown>).variant === "foodmap-guide") {
+    return (
+      <>
+        <LdLanding11 />
         {BonusSection}
         <LdFooter />
       </>

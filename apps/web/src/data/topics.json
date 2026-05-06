@@ -8,5 +8,6 @@
   { "slug": "landing7", "title": "디지털 구술\n생애사 기록가",           "icon": "Mic",          "badge": "추천",   "desc": "부모님 인생을 책·영상으로, 효도 선물 시장의 새로운 프리미엄 서비스" },
   { "slug": "landing8", "title": "소상공인 SNS 대행·\n1인기업 자동화",   "icon": "Zap",          "badge": "신규",   "desc": "지역 소상공인 SNS 관리 대행, 마케팅·CS AI 자동화" },
   { "slug": "landing9", "title": "트레이딩 노하우\n커뮤니티 운영",        "icon": "BarChart2",    "badge": "신규",   "desc": "주식·암호화폐 자동매매 솔루션으로 유료 커뮤니티 수익화" },
-  { "slug": "landing10", "title": "나만의 온라인\n부업 주제정하기",        "icon": "Lightbulb",    "badge": "신규",   "desc": "내 경험·관심사를 온라인 수익으로 연결하는 첫 단계" }
+  { "slug": "landing10", "title": "나만의 온라인\n부업 주제정하기",        "icon": "Lightbulb",    "badge": "신규",   "desc": "내 경험·관심사를 온라인 수익으로 연결하는 첫 단계" },
+  { "slug": "landing11", "title": "위치기반 맛집\n영상앱 만들기",          "icon": "MapPin",       "badge": "신규",   "desc": "외국인 관광객을 위한 맛집 지도 앱. 인스타·틱톡 영상을 지도 핀으로 변환, 5개국어 TTS 안내" }
 ]

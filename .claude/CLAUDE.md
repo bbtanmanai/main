@@ -17,20 +17,25 @@
 
 ---
 
-## 운영 규칙 문서 (.claude/rules/)
+## 운영 규칙 문서 (.claude/rules/) — 자동 로드 3개만 유지
 
 | 문서 | 내용 |
 |------|------|
-| `rules/project-overview.md` | 프로젝트 정의·V3 참조 규칙·라우트 구조·기술 스택 |
 | `rules/LOCKED_DECISIONS.md` | V2 잠금 결정 레지스트리 (LD-001~011) |
-| `rules/ai-behavior.md` | 코드 확인 우선·아카이브 선행 확인·Lock Protocol·서브에이전트·Skill Routing |
+| `rules/ai-behavior.md` | 코드 확인 우선·Lock Protocol·서브에이전트·Skill Routing |
 | `rules/design-principles.md` | Zero-API·CSS 아키텍처·인라인 style 금지·테마 정의·콤보 색상·Left Border 금지 |
-| `rules/gnb.md` | GNB 설계 규칙 — Glass 배경·테마별 색상·라우터별 props·top padding |
-| `rules/BACKLOG.md` | V2 개발 백로그 (Phase 0~7, 미완료 항목) |
-| `rules/debugging.md` | 디버깅 체크리스트 |
-| `rules/windows.md` | Windows bat/cmd 작성 규칙 |
-| `rules/file-edit-protocol.md` | null bytes 방지·Edit 도구 사용 기준·Python heredoc 패턴 |
-| `rules/DESIGN.md` | 디자인 시스템 레퍼런스 |
+
+## 참조 문서 (.claude/archives/) — 필요 시 수동 Read
+
+| 문서 | 내용 |
+|------|------|
+| `archives/project-overview.md` | 프로젝트 정의·V3 참조 규칙·라우트 구조·기술 스택 |
+| `archives/DESIGN.md` | 디자인 시스템 레퍼런스 |
+| `archives/gnb.md` | GNB 설계 규칙 — Glass 배경·라우터별 props·top padding |
+| `archives/BACKLOG.md` | V2 개발 백로그 (Phase 0~7, 미완료 항목) |
+| `archives/debugging.md` | 디버깅 체크리스트 |
+| `archives/windows.md` | Windows bat/cmd 작성 규칙 |
+| `archives/file-edit-protocol.md` | null bytes 방지·Edit 도구 사용 기준·Python heredoc 패턴 |
 
 ---
 

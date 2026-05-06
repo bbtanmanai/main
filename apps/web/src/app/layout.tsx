@@ -11,6 +11,7 @@ import LdThemeProvider from "@/components/layout/LdThemeProvider";
 import LdGnbConditional from "@/components/layout/LdGnbConditional";
 import LdAuthModal from "@/components/auth/LdAuthModal";
 import LdAuthBottomSheet from "@/components/auth/LdAuthBottomSheet";
+import LdViewTransitionHandler from "@/components/layout/LdViewTransitionHandler";
 import "./globals.css";
 
 export const viewport = {
@@ -56,6 +57,7 @@ export default function RootLayout({
             enableSystem=false  : 시스템 설정 무시 (디자인 의도 우선)
             attribute="data-theme" : CSS 토큰이 [data-theme] 선택자로 동작 */}
         <LdThemeProvider>
+          <LdViewTransitionHandler />
           <LdGnbConditional />
           {children}
           <LdAuthModal />

@@ -800,6 +800,7 @@
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(111, 255, 0, 0.15);
   font-family: 'Pretendard Variable', Pretendard, sans-serif;
+  view-transition-name: gnb;
 }
 .gnb-bar::before {
   content: '';

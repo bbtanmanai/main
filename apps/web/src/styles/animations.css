@@ -155,6 +155,37 @@
 }
 
 /* ============================================================
+   View Transition — 페이지 전환 애니메이션
+   LdViewTransitionHandler (layout.tsx)에서 document.startViewTransition 호출
+   GNB는 layout.css .gnb-bar에서 view-transition-name: gnb 설정
+   ============================================================ */
+
+@keyframes ld-vt-page-out {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to   { opacity: 0; transform: translateY(-20px) scale(0.98); }
+}
+
+@keyframes ld-vt-page-in {
+  from { opacity: 0; transform: translateY(20px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* root 페이지 콘텐츠 전환 */
+::view-transition-old(root) {
+  animation: ld-vt-page-out 250ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+::view-transition-new(root) {
+  animation: ld-vt-page-in 350ms cubic-bezier(0.22, 0.68, 0, 1.2) forwards;
+}
+
+/* GNB — 페이지 전환 중 정지 (깜빡임 방지) */
+::view-transition-old(gnb),
+::view-transition-new(gnb) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* ============================================================
    prefers-reduced-motion — BACKLOG P1-15 해소
    모든 모션 즉시 정지
    ============================================================ */
@@ -166,6 +197,13 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-old(gnb),
+  ::view-transition-new(gnb) {
+    animation-duration: 0.01ms !important;
   }
 }
 
