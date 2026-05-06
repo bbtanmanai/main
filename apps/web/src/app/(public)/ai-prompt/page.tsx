@@ -1,4 +1,5 @@
 'use client';
+import "@/styles/pages/ai-prompt.css";
 import { useState, useEffect, useRef } from 'react';
 import { useSession } from '@/hooks/useSession';
 import dynamic from 'next/dynamic';
@@ -190,7 +191,7 @@ export default function AiPromptPage() {
           backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)',
         }}
       >
-      <div style={{ maxWidth: 1200, margin: '0 auto', width: '100%', display: 'flex', alignItems: 'center', gap: 4, padding: '14px 24px 0' }}>
+      <div className="ai-tabbar-inner" style={{ maxWidth: 1200, margin: '0 auto', width: '100%', display: 'flex', alignItems: 'center', gap: 4, padding: '14px 24px 0' }}>
         {([
           { key: 'prompts' as Tab, label: 'AI 프롬프트', icon: '💬' },
           { key: 'dark'    as Tab, label: '다크경제학',  icon: '💀' },
@@ -371,6 +372,7 @@ export default function AiPromptPage() {
         {/* ── 메인 콘텐츠 (V3 라이트 그라디언트) ── */}
         <main
           ref={mainRef}
+          className="ai-main-content"
           style={{
             flex: 1, minWidth: 0,
             paddingTop: 36, paddingBottom: 80, paddingLeft: 40, paddingRight: 40,
@@ -528,7 +530,7 @@ export default function AiPromptPage() {
 
                     {/* ── 잠금 안내 — 비구매회원 (lock UI, 변경 없음) ── */}
                     {isLocked && (
-                      <div style={{
+                      <div className="ai-locked-panel-row" style={{
                         borderTop: '1px solid rgba(255,180,0,0.2)',
                         padding: '18px 20px',
                         background: 'rgba(255,180,0,0.05)',
@@ -621,7 +623,7 @@ export default function AiPromptPage() {
             -webkit-backdrop-filter: blur(20px) !important;
           }
           .ai-sidebar.open { transform: translateX(0); }
-          main { padding-left: 20px !important; padding-right: 20px !important; }
+          .ai-main-content { padding-left: 20px !important; padding-right: 20px !important; }
         }
         @media (prefers-reduced-motion: reduce) {
           .ai-sidebar { transition: none !important; }

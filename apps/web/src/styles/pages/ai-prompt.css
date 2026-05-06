@@ -1215,6 +1215,86 @@
 }
 
 /* ============================================================
+   Mobile optimization — ai-* class (page.tsx inline style 보완)
+   ============================================================ */
+
+/* 탭바 inner — 모바일 수평 스크롤 */
+.ai-tabbar-inner {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ai-tabbar-inner::-webkit-scrollbar {
+  display: none;
+}
+
+/* 탭 버튼 — 압축 방지 */
+.ai-tab-btn {
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  white-space: nowrap;
+}
+
+/* 잠금 패널 row (page.tsx 인라인 flex) */
+.ai-locked-panel-row {
+  /* 인라인 스타일 유지, 모바일에서만 오버라이드 */
+}
+
+/* 메인 콘텐츠 (page.tsx <main>) */
+.ai-main-content {
+  /* 인라인 스타일 유지, 모바일에서만 오버라이드 */
+}
+
+@media (max-width: 768px) {
+  .ai-tabbar-inner {
+    padding: 10px 16px 0 !important;
+    gap: 3px !important;
+  }
+
+  .ai-tab-btn {
+    padding: 7px 14px !important;
+    font-size: 0.82rem !important;
+    gap: 5px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .ai-tabbar-inner {
+    padding: 8px 12px 0 !important;
+    gap: 2px !important;
+  }
+
+  .ai-tab-btn {
+    padding: 6px 10px !important;
+    font-size: 0.78rem !important;
+    gap: 4px !important;
+  }
+
+  /* 잠금 패널: 세로 스택 */
+  .ai-locked-panel-row {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+
+  .ai-locked-panel-row a {
+    text-align: center;
+    padding: 10px 18px !important;
+  }
+
+  .ai-main-content {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    padding-top: 20px !important;
+    padding-bottom: 60px !important;
+  }
+}
+
+/* ============================================================
    HeartRating — 정적 구조 CSS
    ============================================================ */
 
