@@ -2,17 +2,21 @@
 
 // ============================================================
 // 파트너 수당 현황 페이지
+// Architectural Precision 디자인 시스템
 // 3색 수익 카드 (LD-004 색상 체계)
 // CSS 바 차트 (canvas/svg 없음) + 정산 상태 스테퍼
 // ============================================================
 
 import LdStatusStepper, { Step } from "@/components/ui/LdStatusStepper";
+import { ShoppingCart, Handshake, GraduationCap } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import "@/styles/pages/partner.css";
 
 // mock 수익 데이터 — 실제 Supabase 연결 후 교체
 const mockEarnings = {
-  directSales: 118000,   // 직접 판매 수익 (파랑)
-  partnerBonus: 45000,   // 파트너 후원 수당 (주황)
-  lectureIncome: 28000,  // 강의 수입 (초록)
+  directSales: 118000,
+  partnerBonus: 45000,
+  lectureIncome: 28000,
   total: 191000,
 };
 
@@ -26,7 +30,6 @@ const mockMonthlyData = [
   { month: "4월",  amount: 191000 },
 ];
 
-// 정산 진행 상태
 const SETTLEMENT_STEPS: Step[] = [
   { label: "수당 확정", status: "success" },
   { label: "정산 신청", status: "success" },
@@ -35,182 +38,86 @@ const SETTLEMENT_STEPS: Step[] = [
 ];
 
 export default function EarningsPage() {
-  // 차트 최대값 (CSS 퍼센트 계산용)
   const maxAmount = Math.max(...mockMonthlyData.map((d) => d.amount));
 
   return (
-    <div style={{ maxWidth: 720 }}>
-      <h1
-        style={{
-          fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-          fontWeight: 800,
-          fontSize: 26,
-          color: "var(--text-primary)",
-          marginBottom: 8,
-        }}
-      >
-        수당 현황
-      </h1>
-      <p
-        style={{
-          fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-          fontSize: 16,
-          color: "var(--text-secondary)",
-          marginBottom: 28,
-        }}
-      >
-        2026년 4월 기준 누적 수익
-      </p>
+    <div className="pt-container">
 
-      {/* 3색 수익 카드 행 */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-          gap: 16,
-          marginBottom: 24,
-        }}
-      >
-        {/* 직접 판매 수익 — 파랑 #0055FF */}
+      {/* ── 헤더 ── */}
+      <div style={{ marginBottom: 20, position: "relative", zIndex: 1 }}>
+        <p className="pt-eyebrow">파트너 대시보드</p>
+        <h1 className="pt-page-title">수당 현황</h1>
+        <p className="pt-page-desc">2026년 4월 기준 누적 수익</p>
+      </div>
+
+      {/* ── 총 수익 카드 ── */}
+      <div className="pt-total-card" style={{ position: "relative", zIndex: 1 }}>
+        <div>
+          <p className="pt-total-label">이번 달 총 수익</p>
+          <p className="pt-total-amount">
+            ₩{mockEarnings.total.toLocaleString()}
+          </p>
+        </div>
+        <p className="pt-total-period">2026년 4월</p>
+      </div>
+
+      {/* ── 3색 수익 카드 ── */}
+      <div className="pt-earnings-cards">
+        {/* 직접 판매 수익 — 파랑 #0055FF (동적 color → inline style 허용) */}
         <EarningCard
-          label="직접 판매 수익"
+          label="직접 판매"
           amount={mockEarnings.directSales}
           color="#0055FF"
-          icon="🛒"
+          icon={ShoppingCart}
         />
-        {/* 파트너 후원 수당 — 주황 #FF8800 */}
+        {/* 파트너 후원 수당 — 에메랄드 #059669 */}
         <EarningCard
-          label="파트너 후원 수당"
+          label="파트너 수당"
           amount={mockEarnings.partnerBonus}
-          color="#FF8800"
-          icon="🤝"
+          color="#059669"
+          icon={Handshake}
         />
         {/* 강의 수입 — 초록 #119944 */}
         <EarningCard
           label="강의 수입"
           amount={mockEarnings.lectureIncome}
           color="#119944"
-          icon="🎓"
+          icon={GraduationCap}
         />
       </div>
 
-      {/* 총 수익 합계 */}
-      <div
-        style={{
-          backgroundColor: "var(--bg-surface)",
-          borderRadius: 14,
-          padding: "16px 24px",
-          border: "1px solid rgba(255,255,255,0.06)",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 24,
-        }}
-      >
-        <span
-          style={{
-            fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-            fontWeight: 600,
-            fontSize: 18,
-            color: "var(--text-secondary)",
-          }}
-        >
-          이번 달 총 수익
-        </span>
-        <span
-          style={{
-            fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-            fontWeight: 800,
-            fontSize: 28,
-            color: "var(--text-primary)",
-          }}
-        >
-          {mockEarnings.total.toLocaleString()}원
-        </span>
-      </div>
-
-      {/* 월별 수익 CSS 바 차트 */}
-      <div
-        style={{
-          backgroundColor: "var(--bg-surface)",
-          borderRadius: 16,
-          padding: 24,
-          border: "1px solid rgba(255,255,255,0.06)",
-          marginBottom: 24,
-        }}
-      >
-        <h2
-          style={{
-            fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-            fontWeight: 700,
-            fontSize: 18,
-            color: "var(--text-primary)",
-            marginBottom: 20,
-          }}
-        >
-          월별 수익 추이
-        </h2>
-
-        {/* 바 차트 컨테이너 */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "flex-end",
-            gap: 12,
-            height: 160,
-            padding: "0 4px",
-          }}
-        >
+      {/* ── 월별 수익 추이 차트 ── */}
+      <div className="pt-chart" style={{ position: "relative", zIndex: 1 }}>
+        <div className="pt-section-header"><h2>월별 수익 추이</h2></div>
+        <div className="pt-chart-bars">
           {mockMonthlyData.map((d) => {
-            // 막대 높이를 최대값 대비 퍼센트로 계산
+            // 막대 높이를 최대값 대비 퍼센트로 계산 — 런타임 계산값
             const heightPct = maxAmount > 0 ? (d.amount / maxAmount) * 100 : 0;
+            const isCurrent = d.month === "4월";
             return (
-              <div
-                key={d.month}
-                style={{
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 6,
-                  height: "100%",
-                  justifyContent: "flex-end",
-                }}
-              >
-                {/* 금액 레이블 (막대 위) */}
+              <div key={d.month} className="pt-bar-col">
                 {d.amount > 0 && (
-                  <span
-                    style={{
-                      fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-                      fontSize: 11,
-                      color: "var(--text-secondary)",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
+                  <span className="pt-bar-amount-label">
                     {(d.amount / 10000).toFixed(0)}만
                   </span>
                 )}
-                {/* 막대 */}
+                {/* 막대 높이·배경색 — 런타임 계산값 → inline style 허용 */}
                 <div
+                  className="pt-bar"
                   style={{
-                    width: "100%",
                     height: `${heightPct}%`,
-                    minHeight: d.amount > 0 ? 4 : 0,
-                    borderRadius: "4px 4px 0 0",
-                    background:
-                      d.month === "4월"
-                        ? "linear-gradient(180deg, #0055FF, #6366f1)" // 이번 달 강조
-                        : "rgba(99,102,241,0.35)",
-                    transition: "height 0.4s ease",
+                    minHeight: d.amount > 0 ? 3 : 0,
+                    background: isCurrent
+                      ? "linear-gradient(180deg, #0055FF, #6366f1)"
+                      : "rgba(99,102,241,0.28)",
                   }}
                 />
-                {/* 월 레이블 */}
+                {/* 월 레이블 — 색상·굵기 런타임 → inline style 허용 */}
                 <span
+                  className="pt-bar-month-label"
                   style={{
-                    fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-                    fontSize: 12,
-                    color: d.month === "4월" ? "var(--text-primary)" : "var(--text-secondary)",
-                    fontWeight: d.month === "4월" ? 700 : 500,
+                    color: isCurrent ? "var(--text-primary)" : "var(--text-secondary)",
+                    fontWeight: isCurrent ? 700 : 500,
                   }}
                 >
                   {d.month}
@@ -221,79 +128,44 @@ export default function EarningsPage() {
         </div>
       </div>
 
-      {/* 정산 진행 상태 */}
-      <div
-        style={{
-          backgroundColor: "var(--bg-surface)",
-          borderRadius: 16,
-          padding: 24,
-          border: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
-        <h2
-          style={{
-            fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-            fontWeight: 700,
-            fontSize: 18,
-            color: "var(--text-primary)",
-            marginBottom: 20,
-          }}
-        >
-          이번 달 정산 상태
-        </h2>
+      {/* ── 정산 진행 상태 ── */}
+      <div className="pt-card" style={{ position: "relative", zIndex: 1 }}>
+        <div className="pt-section-header"><h2>이번 달 정산 상태</h2></div>
         <LdStatusStepper steps={SETTLEMENT_STEPS} />
-        <p
-          style={{
-            fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-            fontSize: 14,
-            color: "var(--text-secondary)",
-            marginTop: 16,
-            padding: "10px 14px",
-            backgroundColor: "rgba(99,102,241,0.08)",
-            borderRadius: 8,
-          }}
-        >
+        <p className="pt-settlement-notice">
           정산은 매월 15일 신청 마감, 20일 입금됩니다
         </p>
       </div>
+
     </div>
   );
 }
 
-// 수익 카드 컴포넌트
-function EarningCard({ label, amount, color, icon }: { label: string; amount: number; color: string; icon: string }) {
+// ── 수익 카드 컴포넌트
+// color prop이 동적 런타임 값이므로 inline style 허용
+function EarningCard({
+  label,
+  amount,
+  color,
+  icon: Icon,
+}: {
+  label: string;
+  amount: number;
+  color: string;
+  icon: LucideIcon;
+}) {
   return (
     <div
-      style={{
-        backgroundColor: "var(--bg-surface)",
-        borderRadius: 16,
-        padding: 20,
-        border: `1px solid ${color}33`, // 색상 투명도 20%
-        textAlign: "center",
-      }}
+      className="pt-earning-card"
+      style={{ border: `1px solid ${color}22` }}
     >
-      <div style={{ fontSize: 32, marginBottom: 8 }}>{icon}</div>
-      <p
-        style={{
-          fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-          fontWeight: 800,
-          fontSize: 22,
-          color,
-          margin: "0 0 6px",
-        }}
-      >
-        {amount.toLocaleString()}원
+      <div className="pt-earning-card-icon" style={{ color }}>
+        <Icon size={22} strokeWidth={1.8} />
+      </div>
+      <p className="pt-earning-card-amount" style={{ color }}>
+        ₩{amount.toLocaleString()}
       </p>
-      <p
-        style={{
-          fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-          fontSize: 13,
-          color: "var(--text-secondary)",
-          margin: 0,
-        }}
-      >
-        {label}
-      </p>
+      <p className="pt-earning-card-label">{label}</p>
     </div>
   );
 }

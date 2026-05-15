@@ -1,6 +1,7 @@
 #!/bin/bash
-# check-null.sh — null bytes 검사 래퍼
-# 사용법: bash scripts/check-null.sh apps/web/src/components/landing/LdAffiliateGuide.tsx
+# ⚠️ 이 파일은 루트 잔류 사본입니다.
+# 정식 위치: .claude/hooks/check-null.sh
+# 사용법: bash .claude/hooks/check-null.sh <파일경로>
 
 ROOT="/sessions/vigilant-zealous-goldberg/mnt/LinkDropV2"
 TARGET="${1}"

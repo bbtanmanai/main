@@ -1,458 +1,361 @@
 /* ============================================================
-   Partner pages — partner.css
+   partner.css — /partner/* 라우트 전용 스타일
+   디자인 시스템: Architectural Precision (Vercel·Linear·Craft)
    접두사: pt-
    대상: /partner/mylanding, /partner/earnings, /partner/network
    ============================================================ */
 
+/* ── 노이즈 텍스처 오버레이 ── */
+.pt-container::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+  opacity: 0.035;
+}
+
 /* ── 공통 컨테이너 ── */
 .pt-container {
+  position: relative;
   max-width: 720px;
 }
 
-/* ── 공통 페이지 헤더 ── */
+/* ── 공통 AP 카드 ── */
+.pt-card {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 4px;
+  padding: 20px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.pt-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(15, 23, 42, 0.04), transparent);
+  pointer-events: none;
+}
+
+/* ── Eyebrow 레이블 ── */
+.pt-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin: 0 0 6px;
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+}
+
+/* ── 페이지 제목 ── */
 .pt-page-title {
   font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
   font-weight: 800;
-  font-size: 26px;
+  font-size: 22px;
+  letter-spacing: -0.025em;
   color: var(--text-primary);
-  margin: 0 0 8px;
+  margin: 0 0 4px;
 }
 
+/* ── 페이지 설명 ── */
 .pt-page-desc {
   font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   color: var(--text-secondary);
-  margin: 0 0 28px;
+  margin: 0 0 20px;
+  line-height: 1.55;
 }
 
-/* ── 공통 surface 카드 ── */
-.pt-surface-card {
-  background-color: var(--bg-surface);
-  border-radius: 16px;
-  padding: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  margin-bottom: 24px;
+/* ── Section 헤더 (uppercase + hairline) ── */
+.pt-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
 }
 
-.pt-surface-card-sm {
-  background-color: var(--bg-surface);
-  border-radius: 14px;
-  padding: 16px 24px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  margin-bottom: 24px;
-}
-
-/* ── 공통 섹션 제목 h2 ── */
-.pt-section-title {
+.pt-section-header h2 {
   font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-weight: 700;
-  font-size: 18px;
-  color: var(--text-primary);
-  margin-bottom: 20px;
-}
-
-/* ── 공통 뱃지 ── */
-.pt-badge {
-  padding: 2px 8px;
-  border-radius: 6px;
-  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin: 0;
+  white-space: nowrap;
 }
 
-/* =============================================================
-   MyLanding 페이지 (/partner/mylanding)
-   ============================================================= */
-
-.pt-mylanding-header {
-  margin-bottom: 28px;
+.pt-section-header::after {
+  content: "";
+  display: block;
+  flex: 1;
+  height: 1px;
+  background: rgba(15, 23, 42, 0.08);
 }
 
-.pt-mylanding-title {
+/* ═══════════════════════════════════════════════════════════
+   Earnings 페이지 (/partner/earnings)
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── 총 수익 카드 ── */
+.pt-total-card {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 4px;
+  padding: 24px 20px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.pt-total-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(15, 23, 42, 0.04), transparent);
+  pointer-events: none;
+}
+
+.pt-total-label {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin: 0 0 6px;
+}
+
+.pt-total-amount {
   font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
   font-weight: 800;
-  font-size: 26px;
+  font-size: 48px;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
   color: var(--text-primary);
-  margin: 0 0 8px;
-}
-
-.pt-mylanding-desc {
-  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-size: 15px;
-  color: var(--text-secondary);
   margin: 0;
 }
 
-/* 홍보주소 카드 */
-.pt-promo-card {
-  border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 28px;
-}
-
-.pt-promo-label {
-  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-secondary);
-  margin: 0 0 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.pt-promo-url-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.pt-promo-url-text {
-  flex: 1;
-  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--accent-neon);
-  word-break: break-all;
-}
-
-.pt-promo-copy-btn {
-  flex-shrink: 0;
-  padding: 8px 18px;
-  border-radius: 999px;
-  background: var(--accent-neon);
-  color: #010828;
-  border: none;
-  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-/* 랜딩 선택 그리드 */
-.pt-grid-header {
-  margin-bottom: 24px;
-}
-
-.pt-grid-label {
-  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 0 0 16px;
-}
-
-.pt-grid-label-count {
-  color: var(--text-secondary);
-  font-weight: 400;
-}
-
-.pt-topic-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 14px;
-}
-
-/* 토픽 카드 버튼 — 정적 공통 */
-.pt-topic-btn {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 18px 16px;
-  border-radius: 14px;
-  cursor: pointer;
-  text-align: left;
-  transition: all 0.15s ease;
-  backdrop-filter: blur(8px);
-}
-
-/* 선택 체크 */
-.pt-topic-check {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--accent-neon);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* 토픽 뱃지 (위치는 isSelected 여부에 따라 동적) */
-.pt-topic-badge {
-  position: absolute;
-  top: 12px;
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 700;
-  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-}
-
-/* 토픽 아이콘 박스 */
-.pt-topic-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-/* 토픽 제목 */
-.pt-topic-name {
-  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-weight: 700;
-  font-size: 14px;
-  margin: 0 0 4px;
-  white-space: pre-line;
-  line-height: 1.4;
-}
-
-/* 토픽 설명 */
-.pt-topic-desc {
+.pt-total-period {
   font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
   font-size: 12px;
   color: var(--text-secondary);
   margin: 0;
-  line-height: 1.5;
+  text-align: right;
+  align-self: flex-end;
+  padding-bottom: 4px;
 }
 
-/* 저장 버튼 래퍼 */
-.pt-save-row {
-  position: sticky;
-  bottom: 80px;
-  display: flex;
-  justify-content: flex-end;
-  padding-bottom: 24px;
-}
-
-/* 저장 버튼 — 정적 공통 */
-.pt-save-btn {
-  padding: 14px 36px;
-  border-radius: 999px;
-  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  transition: all 0.2s ease;
-}
-
-/* =============================================================
-   Earnings 페이지 (/partner/earnings)
-   ============================================================= */
-
-.pt-earnings-header-desc {
-  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-size: 16px;
-  color: var(--text-secondary);
-  margin-bottom: 28px;
-}
-
-/* 3색 수익 카드 그리드 */
+/* ── 수익 카드 3열 그리드 ── */
 .pt-earnings-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 1;
 }
 
-/* 개별 수익 카드 */
+/* ── 개별 수익 카드 ── */
 .pt-earning-card {
-  background-color: var(--bg-surface);
-  border-radius: 16px;
-  padding: 20px;
+  position: relative;
+  background: #ffffff;
+  border-radius: 4px;
+  padding: 18px 16px;
   text-align: center;
+  overflow: hidden;
 }
+
+.pt-earning-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(15, 23, 42, 0.04), transparent);
+  pointer-events: none;
+}
+
+/* border는 동적 색상 — inline style 허용 */
 
 .pt-earning-card-icon {
-  font-size: 32px;
-  margin-bottom: 8px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
 }
 
 .pt-earning-card-amount {
   font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
   font-weight: 800;
   font-size: 22px;
-  margin: 0 0 6px;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  margin: 0 0 5px;
+  /* color: 동적 → inline style */
 }
 
 .pt-earning-card-label {
   font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-size: 13px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: var(--text-secondary);
   margin: 0;
 }
 
-/* 총 수익 합계 행 */
-.pt-total-row {
-  background-color: var(--bg-surface);
-  border-radius: 14px;
-  padding: 16px 24px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
+/* ── CSS 바 차트 ── */
+.pt-chart {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 4px;
+  padding: 20px;
+  margin-bottom: 10px;
+  overflow: hidden;
 }
 
-.pt-total-label {
-  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-weight: 600;
-  font-size: 18px;
-  color: var(--text-secondary);
+.pt-chart::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(15, 23, 42, 0.04), transparent);
+  pointer-events: none;
 }
 
-.pt-total-amount {
-  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-weight: 800;
-  font-size: 28px;
-  color: var(--text-primary);
-}
-
-/* 월별 차트 컨테이너 */
-.pt-chart-wrap {
-  background-color: var(--bg-surface);
-  border-radius: 16px;
-  padding: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  margin-bottom: 24px;
-}
-
-.pt-chart-title {
-  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-weight: 700;
-  font-size: 18px;
-  color: var(--text-primary);
-  margin-bottom: 20px;
-}
-
-/* 바 차트 행 */
-.pt-bar-row {
+.pt-chart-bars {
   display: flex;
   align-items: flex-end;
-  gap: 12px;
-  height: 160px;
-  padding: 0 4px;
+  gap: 10px;
+  height: 120px;
+  padding: 0 2px;
 }
 
-/* 개별 바 열 */
 .pt-bar-col {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   height: 100%;
   justify-content: flex-end;
 }
 
 .pt-bar-amount-label {
   font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-secondary);
   white-space: nowrap;
 }
 
-/* 막대 — 높이는 동적(JS), 색상은 동적(JS) */
+/* 막대 — 높이·색상은 동적(inline style 허용) */
 .pt-bar {
   width: 100%;
-  border-radius: 4px 4px 0 0;
+  border-radius: 2px 2px 0 0;
   transition: height 0.4s ease;
 }
 
-/* 월 레이블 — 색상/굵기는 동적 */
+@media (prefers-reduced-motion: reduce) {
+  .pt-bar {
+    transition: none;
+  }
+}
+
 .pt-bar-month-label {
   font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-size: 12px;
+  font-size: 11px;
+  /* color·fontWeight는 동적 */
 }
 
-/* 정산 상태 섹션 */
-.pt-settlement-wrap {
-  background-color: var(--bg-surface);
-  border-radius: 16px;
-  padding: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.pt-settlement-title {
-  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-weight: 700;
-  font-size: 18px;
-  color: var(--text-primary);
-  margin-bottom: 20px;
-}
-
+/* ── 정산 안내 노티스 ── */
 .pt-settlement-notice {
   font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-secondary);
-  margin-top: 16px;
+  margin-top: 14px;
   padding: 10px 14px;
-  background-color: rgba(99, 102, 241, 0.08);
-  border-radius: 8px;
+  background: rgba(99, 102, 241, 0.06);
+  border: 1px solid rgba(99, 102, 241, 0.14);
+  border-radius: 4px;
+  line-height: 1.55;
 }
 
-/* =============================================================
+/* ═══════════════════════════════════════════════════════════
    Network 페이지 (/partner/network)
-   ============================================================= */
+   ═══════════════════════════════════════════════════════════ */
 
-.pt-network-desc {
-  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-size: 16px;
-  color: var(--text-secondary);
-  margin-bottom: 28px;
-}
-
-/* 섹션 구분 제목 */
-.pt-network-section-title {
-  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-weight: 700;
-  font-size: 18px;
-  color: var(--text-primary);
-  margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-/* 파트너 카드 목록 */
 .pt-partner-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 28px;
+  gap: 8px;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
 }
 
-/* 파트너 카드 */
+/* ── 파트너 카드 ── */
 .pt-partner-card {
-  background-color: var(--bg-surface);
-  border-radius: 14px;
-  padding: 16px 20px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  position: relative;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 4px;
+  padding: 16px 18px;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   flex-wrap: wrap;
+  overflow: hidden;
+}
+
+.pt-partner-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(15, 23, 42, 0.04), transparent);
+  pointer-events: none;
 }
 
 /* 아바타 — 색상은 depth 기반 동적 */
 .pt-partner-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  border-radius: 2px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
   font-weight: 700;
-  font-size: 18px;
+  font-size: 16px;
 }
 
-/* 파트너 정보 영역 */
 .pt-partner-info {
   flex: 1;
   min-width: 120px;
@@ -468,27 +371,29 @@
 .pt-partner-name {
   font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
   font-weight: 700;
-  font-size: 17px;
+  font-size: 15px;
+  letter-spacing: -0.01em;
   color: var(--text-primary);
 }
 
 /* depth 뱃지 — 색상은 동적 */
 .pt-depth-badge {
-  padding: 2px 8px;
-  border-radius: 6px;
+  padding: 2px 6px;
+  border-radius: 2px;
   font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
 }
 
 .pt-partner-meta {
   font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-secondary);
   margin: 0;
 }
 
-/* 누적 수당 영역 */
 .pt-partner-reward {
   text-align: right;
   flex-shrink: 0;
@@ -497,66 +402,289 @@
 .pt-partner-reward-amount {
   font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
   font-weight: 800;
-  font-size: 18px;
-  color: #FF8800;
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  color: #059669;
   margin: 0 0 2px;
 }
 
 .pt-partner-reward-label {
   font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-size: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--text-secondary);
   margin: 0;
 }
 
-/* 빈 상태 메시지 */
-.pt-empty-state {
+/* ── 빈 상태 ── */
+.pt-empty {
   font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   color: var(--text-secondary);
-  padding: 20px 0;
+  padding: 16px 0;
   text-align: center;
+  letter-spacing: 0.04em;
 }
 
-/* 신규 파트너 초대 섹션 */
-.pt-invite-section {
-  background-color: rgba(255, 136, 0, 0.06);
-  border-radius: 16px;
-  padding: 24px;
-  border: 1px solid rgba(255, 136, 0, 0.2);
+/* ── 초대 CTA ── */
+.pt-invite-cta {
+  position: relative;
+  background: rgba(5, 150, 105, 0.04);
+  border: 1px solid rgba(5, 150, 105, 0.18);
+  border-radius: 4px;
+  padding: 24px 20px;
   text-align: center;
+  overflow: hidden;
+  margin-top: 10px;
 }
 
-.pt-invite-emoji {
-  font-size: 40px;
+.pt-invite-cta::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(5, 150, 105, 0.2), transparent);
+  pointer-events: none;
+}
+
+.pt-invite-icon {
+  display: flex;
+  justify-content: center;
   margin-bottom: 12px;
+  color: #059669;
 }
 
 .pt-invite-title {
   font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
   font-weight: 700;
-  font-size: 20px;
+  font-size: 17px;
+  letter-spacing: -0.015em;
   color: var(--text-primary);
-  margin-bottom: 8px;
+  margin: 0 0 6px;
 }
 
 .pt-invite-desc {
   font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   color: var(--text-secondary);
-  margin-bottom: 20px;
+  margin: 0 0 18px;
+  line-height: 1.55;
 }
 
 .pt-invite-btn {
   display: inline-block;
-  height: 48px;
-  line-height: 48px;
-  padding: 0 28px;
-  border-radius: 10px;
-  background-color: #FF8800;
+  height: 44px;
+  line-height: 44px;
+  padding: 0 24px;
+  border-radius: 4px;
+  background: #059669;
   color: #ffffff;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
   text-decoration: none;
+  letter-spacing: 0.02em;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   MyLanding 페이지 (/partner/mylanding)
+   ═══════════════════════════════════════════════════════════ */
+
+.pt-mylanding-header {
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── 홍보주소 카드 ── */
+.pt-promo-card {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 4px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.pt-promo-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(15, 23, 42, 0.04), transparent);
+  pointer-events: none;
+}
+
+.pt-promo-label {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin: 0 0 8px;
+}
+
+.pt-promo-url-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pt-promo-url-text {
+  flex: 1;
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #059669;
+  word-break: break-all;
+  letter-spacing: -0.01em;
+}
+
+.pt-promo-copy-btn {
+  flex-shrink: 0;
+  padding: 7px 14px;
+  border-radius: 4px;
+  background: #059669;
+  color: #ffffff;
+  border: none;
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+/* ── 토픽 그리드 ── */
+.pt-topic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(196px, 1fr));
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── 토픽 카드 버튼 ── */
+.pt-topic-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 16px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+}
+
+.pt-topic-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(15, 23, 42, 0.04), transparent);
+  pointer-events: none;
+}
+
+/* 선택 상태 */
+.pt-topic-card.is-selected {
+  border-color: #059669;
+  background: rgba(5, 150, 105, 0.08);
+}
+
+/* 선택 체크 */
+.pt-topic-check {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #059669;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 토픽 뱃지 */
+.pt-topic-badge {
+  position: absolute;
+  top: 10px;
+  padding: 2px 6px;
+  border-radius: 2px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+}
+
+/* 아이콘 박스 */
+.pt-topic-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* 토픽 제목 */
+.pt-topic-name {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: -0.01em;
+  margin: 0 0 3px;
+  white-space: pre-line;
+  line-height: 1.4;
+}
+
+/* 토픽 설명 */
+.pt-topic-desc {
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── 저장 버튼 ── */
+.pt-save-row {
+  position: sticky;
+  bottom: 80px;
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 24px;
+  z-index: 2;
+}
+
+.pt-save-btn {
+  padding: 12px 28px;
+  border-radius: 2px;
+  font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  transition: background 0.2s ease, color 0.2s ease;
+  cursor: pointer;
+  border: none;
+}
+
+/* saved 상태 — 동적이므로 inline style 허용 */

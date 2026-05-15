@@ -1,6 +1,6 @@
 ---
 # V2 SESSION START — 이 파일 하나만 먼저 읽을 것
-> 업데이트: 2026-05-06 | 전체 규칙: rules/LOCKED_DECISIONS.md | 전체 작업: rules/BACKLOG.md
+> 업데이트: 2026-05-15 | 전체 규칙: rules/LOCKED_DECISIONS.md | 전체 작업: archives/BACKLOG.md
 ---
 
 ## 🚨 지금 해야 할 일 (BACKLOG 요약)
@@ -21,7 +21,7 @@
 | LD-005 | 마케팅 콘텐츠는 `src/data/*.json` 전용 (DB/CMS 금지) | Supabase/API로 랜딩 데이터 조회 |
 | LD-006 | liquid-glass = `.ld-glass` 단일 CSS 클래스 (JS 분기 금지) | JS에서 isDark 분기로 glass 스타일 변경 |
 | LD-007 | Anton = 영문 대형 헤딩만 / 한글 = Pretendard 800 | 한글에 font-anton 적용 |
-| LD-008 | (checkout) 테마 상속 — data-theme="light" 강제 금지 | checkout 라이트 강제 |
+| LD-012 | checkout = 라이트 테마 강제 (`data-theme="light"`) | 다크 테마 허용, `data-theme` 제거 |
 | LD-009 | 인증 = Google OAuth + Kakao OAuth만. 이메일+비번 영구 폐기 | signInWithPassword 복구, /signup 부활 |
 | LD-011 | role 체계: guest/partner/gold_partner/instructor/admin | role='buyer' 사용, guest에게 콘텐츠 열람 허용 |
 
@@ -41,6 +41,10 @@
 | 2026-05-05 | landing2/3/5/6 Guide 컴포넌트 연결 + GNB 웹소설 중메뉴 추가 |
 | 2026-05-05 | landing 컴포넌트명 → landing 번호 기준 일괄 리네임 |
 | 2026-05-05 | globals.css 2461줄 인라인 → 5개 @import 인덱스 전용으로 분리 |
+| 2026-05-15 | DESIGN.md `archives/` → `.claude/` 루트 승격 (V3 구조 동일) |
+| 2026-05-15 | ai-behavior.md 섹션 9 스킬 체인 5종(A~E) + 섹션 10 고가치 스킬 추가 |
+| 2026-05-15 | hookify 3개 규칙 설치 — browse·simplify·security-review 자동 경고 |
+| 2026-05-15 | COMMANDS.md 42개 커맨드 6카테고리 재편 (워크플로우/개발/제품/전략/분석/문서) |
 
 ---
 
@@ -91,7 +95,7 @@ admin/(panel)/      /admin/*
 1. 변경이 LD 항목(테마/V3 import/색상/auth/role 등)에 해당하는가?
    → YES: `rules/LOCKED_DECISIONS.md` 확인 후 사용자에게 먼저 보여줄 것
    → NO: 바로 진행
-2. GNB 수정 시: `rules/gnb.md` 반드시 확인
+2. GNB 수정 시: `archives/gnb.md` 반드시 확인
 3. CSS 수정 시: `globals.css` 직접 편집 금지 → `src/styles/` 하위 해당 파일 편집
 
 ---
@@ -103,6 +107,6 @@ admin/(panel)/      /admin/*
 | 설계 전체 레퍼런스 | `archives/01_V2_프론트_설계_확정.md` |
 | 404 라우트 문제 | `archives/02_라우트그룹_404_원인분석.md` |
 | role/수당 구조 | `archives/03_V2_회원구분 및 역할.md` |
-| 디버깅 체크리스트 | `rules/debugging.md` |
-| Windows bat/cmd 작성 | `rules/windows.md` |
-| GNB 전체 스펙 | `rules/gnb.md` |
+| 디버깅 체크리스트 | `archives/debugging.md` |
+| Windows bat/cmd 작성 | `archives/windows.md` |
+| GNB 전체 스펙 | `archives/gnb.md` |

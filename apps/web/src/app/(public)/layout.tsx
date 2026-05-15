@@ -6,6 +6,7 @@
 // ============================================================
 
 import LgBackground from "@/components/lg/LgBackground";
+import LdFooterConditional from "@/components/layout/LdFooterConditional";
 
 export default function PublicLayout({
   children,
@@ -16,6 +17,7 @@ export default function PublicLayout({
     <>
       <LgBackground />
       {children}
+      <LdFooterConditional />
     </>
   );
 }

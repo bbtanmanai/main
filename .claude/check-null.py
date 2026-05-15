@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-check-null.py — Edit 도구 사용 후 null bytes 검사 및 자동 정리
-사용법: python3 scripts/check-null.py <파일경로>
+⚠️ 이 파일은 루트 잔류 사본입니다.
+정식 위치: .claude/hooks/check-null.py
+사용법: python3 .claude/hooks/check-null.py <파일경로>
 """
 import sys, os
 

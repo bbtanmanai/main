@@ -88,7 +88,7 @@ export default function PromptTabImage() {
 
       {/* ── 사이드바 ── */}
       <aside
-        className={`ai-sidebar${sidebarOpen ? ' open' : ''}`}
+        className={`aip-sidebar${sidebarOpen ? ' open' : ''}`}
         style={{
           width: 260, flexShrink: 0,
           background: 'rgba(255,255,255,0.06)',

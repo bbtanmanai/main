@@ -11,7 +11,7 @@ import { useAuthModal } from "@/hooks/useAuthModal";
 import LdAuthPanel from "./LdAuthPanel";
 
 export default function LdAuthModal() {
-  const { isOpen, close } = useAuthModal();
+  const { isOpen, close, redirectTo } = useAuthModal();
   const overlayRef = useRef<HTMLDivElement>(null);
 
   // ESC 키로 닫기
@@ -51,7 +51,7 @@ export default function LdAuthModal() {
       aria-label="로그인"
     >
       <div className="ld-glass ld-auth-modal-card">
-        <LdAuthPanel onClose={close} />
+        <LdAuthPanel onClose={close} redirectTo={redirectTo} />
       </div>
     </div>
   );

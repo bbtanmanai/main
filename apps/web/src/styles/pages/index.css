@@ -1,33 +1,21 @@
 /* ============================================================
-   LinkDrop V2 — Index 페이지 전용 CSS
-   접두사: idx-
-   이 파일 외부에서 import 금지 / 다른 라우트에서 공유 금지
+   LinkDrop V2 — Index (/) 페이지 전용 스타일
    ============================================================ */
 
-/* ── main 색상 기본값 ────────────────────────────────────── */
-.idx-main {
-  color: var(--text-primary);
+/* h2 폰트 초기화 — 전역 Black Han Sans에서 Pretendard로 */
+main[data-page="home"] h2 {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-weight: 800 !important;
 }
 
-/* ============================================================
-   섹션 1: HERO
-   ============================================================ */
+/* ── 공통 ─────────────────────────────────────────────────── */
+.idx-page { color: var(--text-primary); }
 
-.idx-hero {
-  min-height: 100svh;
-}
+/* ── HERO 섹션 ─────────────────────────────────────────────── */
+.idx-hero { min-height: 100svh; }
 
-/* 비디오 배경 wrapper — 패럴랙스 translateY는 JS 런타임 값이므로 인라인 유지 */
-.idx-hero-video-bg {
-  /* static layout */
-}
+.idx-hero-bg-video { min-height: 110%; }
 
-/* video element */
-.idx-hero-video {
-  min-height: 110%;
-}
-
-/* 다크 그라디언트 오버레이 */
 .idx-hero-overlay {
   background: linear-gradient(
     to bottom,
@@ -37,50 +25,56 @@
   );
 }
 
-/* 하단 페이드 — ABOUT 섹션으로 자연스럽게 연결 */
-.idx-hero-fade-bottom {
+.idx-hero-fade {
   height: 180px;
   background: linear-gradient(to bottom, transparent 0%, #010828 100%);
-  pointer-events: none;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
 }
 
-/* 히어로 콘텐츠 컨테이너 */
-.idx-hero-content {
-  min-height: calc(100svh - 80px);
+.idx-hero-content { min-height: calc(100svh - 80px); }
+
+/* ── Dragon 플로팅 장식 ─────────────────────────────────────── */
+.idx-dragon-wrap {
+  right: 5%;
+  bottom: 16%;
+  z-index: 5;
+  width: clamp(180px, 26vw, 460px);
+  animation: idx-dragon-float 8s ease-in-out infinite;
+  filter: drop-shadow(0 12px 48px rgba(0, 10, 60, 0.55))
+          drop-shadow(0 0 24px rgba(111, 200, 255, 0.15));
 }
 
-/* Condiment/NanumKalguksu 액센트 */
-.idx-hero-condiment {
+@keyframes idx-dragon-float {
+  0%, 100% { transform: translateY(0)     rotate(-1.5deg); }
+  40%       { transform: translateY(-22px) rotate(1deg);    }
+  70%       { transform: translateY(-9px)  rotate(-0.5deg); }
+}
+
+@media (max-width: 768px) {
+  .idx-dragon-wrap {
+    width: clamp(130px, 38vw, 210px);
+    right: 1%;
+    bottom: 28%;
+    opacity: 0.72;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .idx-dragon-wrap { animation: none; }
+}
+
+.idx-hero-script {
   font-family: "NanumKalguksu", sans-serif;
   color: var(--accent-neon);
 }
 
-/* Anton 대형 헤딩 */
-.idx-hero-title {
-  font-family: "Anton", sans-serif;
-  color: var(--text-primary);
-  max-width: 900px;
-}
+.idx-hero-h1 { max-width: 900px; }
 
-/* 스크롤 인디케이터 텍스트 */
-.idx-scroll-label {
-  color: var(--text-secondary);
-  font-family: "Pretendard Variable", "Pretendard", sans-serif;
-}
+.idx-scroll-wrap { color: var(--text-secondary); }
+.idx-scroll-label { font-family: "Pretendard Variable", "Pretendard", sans-serif; }
 
-/* ============================================================
-   섹션 2: ABOUT
-   ============================================================ */
+/* ── ABOUT 섹션 ────────────────────────────────────────────── */
+.idx-about { min-height: 100svh; }
 
-.idx-about {
-  min-height: 100svh;
-}
-
-/* 색상 오버레이 */
 .idx-about-overlay {
   background: linear-gradient(
     to bottom,
@@ -89,208 +83,77 @@
   );
 }
 
-/* 상단 페이드 */
 .idx-about-fade-top {
   height: 260px;
   background: linear-gradient(to bottom, #010828 0%, transparent 100%);
-  pointer-events: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
 }
 
-/* 하단 페이드 */
 .idx-about-fade-bottom {
   height: 220px;
   background: linear-gradient(to bottom, transparent 0%, #010828 100%);
-  pointer-events: none;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
 }
 
-/* ABOUT 콘텐츠 컨테이너 */
-.idx-about-content {
-  min-height: 100svh;
-}
+.idx-about-content { min-height: 100svh; }
 
-/* ABOUT 대형 Anton 헤딩 */
-.idx-about-title {
-  font-family: "Anton", sans-serif;
-  color: var(--text-primary);
-}
-
-/* Condiment 오버레이 액센트 */
-.idx-about-condiment {
-  font-family: "Condiment", cursive;
+.idx-about-script {
+  font-family: Condiment, cursive;
   color: var(--accent-neon);
   opacity: 0.85;
 }
 
-/* 핵심 가치 요약 — NanumKalguksu 대형 */
-.idx-about-summary {
-  color: var(--text-primary);
-  text-align: right;
-}
-
-.idx-about-summary p {
+.idx-about-intro {
   font-family: "NanumKalguksu", sans-serif;
   font-size: clamp(1.25rem, 2.5vw, 2.5rem);
   line-height: 1.5;
   letter-spacing: 0.02em;
+  color: var(--text-primary);
+  text-align: right;
 }
 
-/* 키워드 클러스터 데코레이티브 */
-.idx-keyword-cluster {
+.idx-ticker {
   color: #dddddd;
-  opacity: 1;
+  font-family: Anton, sans-serif;
 }
 
-.idx-keyword-cluster-text {
-  font-family: "Anton", sans-serif;
-}
+.idx-stat-grid { border-color: rgba(255, 255, 255, 0.06); }
 
-/* CountUp 스탯 컨테이너 */
-.idx-stat-grid {
-  border-color: rgba(255, 255, 255, 0.06);
-}
+.idx-stat-number { color: var(--accent-neon); }
 
-/* StatCard — Anton 숫자 */
-.idx-stat-number {
-  font-family: "Anton", sans-serif;
-}
-
-/* StatCard — Pretendard 레이블 */
 .idx-stat-label {
   color: var(--text-secondary);
   font-family: "Pretendard Variable", "Pretendard", sans-serif;
 }
 
-/* ============================================================
-   섹션 3: FEATURED
-   ============================================================ */
-
-/* FEATURED 헤딩 */
-.idx-featured-title {
-  font-family: "Anton", sans-serif;
-  color: var(--text-primary);
-}
-
-/* "Services" Condiment 하위 텍스트 */
-.idx-featured-condiment {
-  font-family: "Condiment", cursive;
+/* ── FEATURED 섹션 ─────────────────────────────────────────── */
+.idx-featured-script {
+  font-family: Condiment, cursive;
   color: var(--accent-neon);
   font-size: 0.75em;
 }
 
-/* "전체 서비스 보기" 버튼 */
-.idx-featured-all-btn {
-  font-family: "Anton", sans-serif;
-  color: var(--text-primary);
-}
+.idx-feat-accent-bar { background: var(--accent-neon); }
 
-/* neon underline 바 */
-.idx-featured-neon-bar {
-  background: var(--accent-neon);
-}
+.idx-feat-overlay { background: rgba(1, 8, 40, 0.75); }
 
-/* 카드 오버레이 바 */
-.idx-card-overlay {
-  background: rgba(1, 8, 40, 0.75);
-}
+.idx-feat-tag { color: var(--text-secondary); }
 
-/* 카드 오버레이 — 태그 레이블 */
-.idx-card-tag {
-  color: var(--text-secondary);
-}
-
-/* 카드 오버레이 — 값 텍스트 */
-.idx-card-value {
+.idx-feat-value {
   color: var(--text-primary);
   font-family: "Pretendard Variable", "Pretendard", sans-serif;
 }
 
-/* 화살표 버튼 */
-.idx-card-arrow-btn {
-  color: var(--accent-neon);
-}
+.idx-feat-arrow { color: var(--accent-neon); }
 
-/* 카드 하단 — 한글 분류 */
-.idx-card-subtitle {
+.idx-feat-subtitle {
   color: var(--accent-neon);
   font-family: "Pretendard Variable", "Pretendard", sans-serif;
 }
 
-/* 카드 하단 — Anton 헤딩 */
-.idx-card-title {
-  color: var(--text-primary);
-  font-family: "Anton", sans-serif;
-}
+/* ── CTA 섹션 ──────────────────────────────────────────────── */
+.idx-cta { min-height: 100svh; }
 
-/* ============================================================
-   섹션 3-B: 프롬프트 미리보기
-   ============================================================ */
+.idx-cta-video { z-index: 0; }
 
-.idx-prompt-container {
-  max-width: 960px;
-  margin: 0 auto;
-}
-
-.idx-prompt-header {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.idx-prompt-title {
-  font-family: "Pretendard Variable", "Pretendard", sans-serif;
-  font-size: clamp(1.6rem, 3vw, 2.4rem);
-  font-weight: 700;
-  line-height: 1.8;
-  margin: 0 0 14px;
-}
-
-/* 하이라이트 span — 검정 배경 pill */
-.idx-prompt-title-highlight {
-  display: inline;
-  color: rgba(255, 255, 255, 0.92);
-  background: rgba(0, 0, 0, 0.82);
-  padding: 2px 10px;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-}
-
-.idx-prompt-desc {
-  margin: 0;
-  font-size: 0.88rem;
-  font-family: "Pretendard Variable", "Pretendard", sans-serif;
-  line-height: 2;
-}
-
-.idx-prompt-desc-highlight {
-  display: inline;
-  color: rgba(255, 255, 255, 0.55);
-  background: rgba(0, 0, 0, 0.82);
-  padding: 2px 10px;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-}
-
-/* ============================================================
-   섹션 4: CTA / CONTACT
-   ============================================================ */
-
-.idx-cta {
-  min-height: 100svh;
-}
-
-/* CTA 비디오 레이어 */
-.idx-cta-video {
-  z-index: 0;
-}
-
-/* 우측 다크 그라디언트 오버레이 */
 .idx-cta-overlay {
   z-index: 1;
   background: linear-gradient(
@@ -301,58 +164,26 @@
   );
 }
 
-/* 상단 페이드 */
 .idx-cta-fade-top {
   z-index: 2;
   height: 220px;
   background: linear-gradient(to bottom, #010828 0%, transparent 100%);
-  pointer-events: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
 }
 
-/* CTA 콘텐츠 오버레이 */
-.idx-cta-content {
-  z-index: 2;
-}
+.idx-cta-content { z-index: 2; }
 
-/* Condiment 액센트 */
-.idx-cta-condiment {
-  font-family: "Condiment", cursive;
+.idx-cta-script {
+  font-family: Condiment, cursive;
   color: var(--accent-neon);
 }
 
-/* Anton 대형 헤딩 */
-.idx-cta-title {
-  font-family: "Anton", sans-serif;
-  color: var(--text-primary);
-}
-
-/* 소셜 아이콘 */
-.idx-social-icon {
-  color: var(--text-secondary);
-}
-
-/* 푸터 브랜드 */
 .idx-footer-brand {
-  font-family: "Anton", sans-serif;
+  font-family: Anton, sans-serif;
   color: var(--text-secondary);
 }
 
-/* 푸터 카피라이트 + 링크 */
 .idx-footer-copy,
 .idx-footer-link {
   color: var(--text-secondary);
   font-family: "Pretendard Variable", "Pretendard", sans-serif;
-}
-
-/* ============================================================
-   prefers-reduced-motion
-   ============================================================ */
-@media (prefers-reduced-motion: reduce) {
-  .idx-hero-video-bg {
-    transform: none !important;
-  }
 }

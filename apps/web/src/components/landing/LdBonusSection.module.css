@@ -256,10 +256,9 @@
 /* 프롬프트 섹션 h2 */
 .ldBonusH2Prompt {
   font-size: clamp(1.5rem, 3vw, 2.2rem);
-  font-weight: 800;
   margin: 0 0 14px;
   line-height: 1.8;
-  font-family: Pretendard Variable, Pretendard, sans-serif;
+  color: var(--text-primary);
   letter-spacing: -0.3px;
 }
 
@@ -285,10 +284,8 @@
 /* 섹션 h2 */
 .ldBonusH2 {
   font-size: clamp(1.6rem, 3.5vw, 2.6rem);
-  font-weight: 800;
   margin: 0 0 16px;
   line-height: 1.5;
-  font-family: Pretendard Variable, Pretendard, sans-serif;
   letter-spacing: -0.3px;
 }
 
@@ -382,4 +379,17 @@
 
 .ldBonusSubText80 {
   color: rgba(255,255,255,0.80);
+}
+
+/* 카드 hover */
+.ldBonusCard:hover {
+  border-color: rgba(111,255,0,0.45);
+  box-shadow: 0 12px 48px rgba(111,255,0,0.18), 0 4px 16px rgba(0,0,0,0.50);
+  transform: translateY(-4px);
+}
+
+/* CTA 버튼 hover */
+.ldBonusCtaBtn:hover {
+  box-shadow: 0 8px 40px rgba(111,255,0,0.55);
+  transform: translateY(-2px);
 }

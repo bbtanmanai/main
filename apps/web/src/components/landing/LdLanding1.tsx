@@ -46,7 +46,7 @@ const CARD_ICON: React.CSSProperties = { fontSize: "2rem", marginBottom: 12 };
 
 export default function LdLanding1() {
   return (
-    <div className="ld-wg-wrap">
+    <div className="ld-wg-wrap ld-landing1-root">
       {/* ══ 표지 — 900px 무관, 전체 화면 풀블리드 ══ */}
       <div className="ld-wg-cover" id="top">
         <LdCinematicVideoBg playbackId="ExchtTC1yIF00nVN32kc009f00LUu4yhMvVhQlR7Ce1ovc" />
@@ -231,7 +231,7 @@ export default function LdLanding1() {
           </div>
 
           <div className="ld-wg-section-inner">
-            <div style={{ ...CARD_STYLE_BASE, borderLeft: "4px solid var(--accent-aqua)" }}>
+            <div style={{ ...CARD_STYLE_BASE }}>
               <div style={CARD_ICON}>🏭</div>
               <h3 style={CARD_H3}>파이프라인이 뭔가요?</h3>
               <p style={CARD_P}>
@@ -242,7 +242,7 @@ export default function LdLanding1() {
               </p>
             </div>
 
-            <div style={{ ...CARD_STYLE_BASE, borderLeft: "4px solid var(--accent-amber)" }}>
+            <div style={{ ...CARD_STYLE_BASE }}>
               <div style={CARD_ICON}>🤔</div>
               <h3 style={CARD_H3}>왜 이 방식이 필요한가요?</h3>
               <p style={CARD_P}>
@@ -275,7 +275,7 @@ export default function LdLanding1() {
           </div>
 
           <div className="ld-wg-section-inner">
-            <div style={{ ...CARD_STYLE_BASE, borderLeft: "4px solid var(--accent-aqua)" }}>
+            <div style={{ ...CARD_STYLE_BASE }}>
               <div style={CARD_ICON}>🎭</div>
               <h3 style={CARD_H3}>트로프(Trope)란 무엇인가요?</h3>
               <p style={CARD_P}>
@@ -286,7 +286,7 @@ export default function LdLanding1() {
               </p>
             </div>
 
-            <div style={{ ...CARD_STYLE_BASE, borderLeft: "4px solid var(--accent-amber)" }}>
+            <div style={{ ...CARD_STYLE_BASE }}>
               <div style={CARD_ICON}>🪝</div>
               <h3 style={CARD_H3}>HOOK — 독자의 감정을 잡아두는 장치</h3>
               <p style={CARD_P}>
@@ -319,7 +319,7 @@ export default function LdLanding1() {
           </div>
 
           <div className="ld-wg-section-inner">
-            <div style={{ ...CARD_STYLE_BASE, borderLeft: "4px solid var(--accent-aqua)" }}>
+            <div style={{ ...CARD_STYLE_BASE }}>
               <div style={CARD_ICON}>🎴</div>
               <h3 style={CARD_H3}>캐릭터 카드에 담긴 정보들</h3>
               <p style={CARD_P}>
@@ -331,7 +331,7 @@ export default function LdLanding1() {
             </div>
 
             <div>
-              <div style={{ ...CARD_STYLE_BASE, borderLeft: "4px solid var(--accent-lime)" }}>
+              <div style={{ ...CARD_STYLE_BASE }}>
                 <div style={CARD_ICON}>🔐</div>
                 <h3 style={CARD_H3}>관계 잠금 — AI가 멋대로 못 고치는 보호 장치</h3>
                 <p style={CARD_P}>
@@ -372,7 +372,7 @@ export default function LdLanding1() {
           </div>
 
           <div className="ld-wg-section-inner">
-            <div style={{ ...CARD_STYLE_BASE, borderLeft: "4px solid var(--accent-aqua)" }}>
+            <div style={{ ...CARD_STYLE_BASE }}>
               <div style={CARD_ICON}>🗺️</div>
               <h3 style={CARD_H3}>스토리 아크란 무엇인가요?</h3>
               <p style={CARD_P}>
@@ -383,7 +383,7 @@ export default function LdLanding1() {
               </p>
             </div>
 
-            <div style={{ ...CARD_STYLE_BASE, borderLeft: "4px solid #9b8ec4" }}>
+            <div style={{ ...CARD_STYLE_BASE }}>
               <div style={CARD_ICON}>⚡</div>
               <h3 style={CARD_H3}>설계도가 완성되면 AI가 움직여요</h3>
               <p style={CARD_P}>
@@ -476,7 +476,7 @@ export default function LdLanding1() {
           </div>
 
           <div className="ld-wg-section-inner">
-            <div style={{ ...CARD_STYLE_BASE, borderLeft: "4px solid var(--accent-aqua)" }}>
+            <div style={{ ...CARD_STYLE_BASE }}>
               <div style={CARD_ICON}>⚙️</div>
               <h3 style={CARD_H3}>"시스템에 내장된 원칙"이란?</h3>
               <p style={CARD_P}>
@@ -488,7 +488,7 @@ export default function LdLanding1() {
             </div>
 
             <div>
-              <div style={{ ...CARD_STYLE_BASE, borderLeft: "4px solid #c45c72" }}>
+              <div style={{ ...CARD_STYLE_BASE }}>
                 <div style={CARD_ICON}>🔒</div>
                 <h3 style={CARD_H3}>핵심 품질 원칙 17가지</h3>
                 <p style={CARD_P}>

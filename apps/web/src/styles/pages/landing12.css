@@ -1,0 +1,960 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap');
+
+/* landing12.css — 사주×타로 글로벌 AI 앱 (ld-st- 접두사) */
+/* 콤보: 퍼플 #7C3AED (BaZi/동양) + 골드 #F59E0B (Tarot/서양) */
+
+/* ── 페이지 래퍼 ─────────────────────────────────────────── */
+.ld-st-wrap {
+  position: relative;
+  min-height: 100vh;
+}
+
+/* ── CTA 버튼 ────────────────────────────────────────────── */
+.ld-st-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 36px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #7C3AED 0%, #9F67F5 100%);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 8px 32px rgba(124, 58, 237, 0.35);
+  transition: transform 0.20s ease, box-shadow 0.20s ease;
+  margin-bottom: 16px;
+}
+
+.ld-st-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(124, 58, 237, 0.50);
+}
+
+/* ── 본문 ────────────────────────────────────────────────── */
+.ld-st-doc {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+/* ── 섹션 공통 ───────────────────────────────────────────── */
+.ld-st-section {
+  margin-bottom: 72px;
+  padding-top: 24px;
+}
+
+.ld-st-section-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #7C3AED;
+  margin-bottom: 12px;
+}
+
+.ld-st-section-eyebrow--gold {
+  color: #F59E0B;
+}
+
+.ld-st-section-h2 {
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 14px;
+  line-height: 1.25;
+}
+
+.ld-st-section-lead {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  margin-bottom: 36px;
+  max-width: 680px;
+}
+
+/* ── 피처 그리드 ─────────────────────────────────────────── */
+.ld-st-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 32px;
+}
+
+.ld-st-feature-card {
+  padding: 22px 20px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(12px);
+}
+
+[data-theme="light"] .ld-st-feature-card {
+  background: rgba(255,255,255,0.55);
+  border-color: rgba(0,0,0,0.07);
+}
+
+.ld-st-feature-icon {
+  font-size: 1.6rem;
+  margin-bottom: 10px;
+  line-height: 1;
+}
+
+.ld-st-feature-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.ld-st-feature-desc {
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+/* ── 경쟁사 테이블 ───────────────────────────────────────── */
+.ld-st-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 32px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+[data-theme="light"] .ld-st-table-wrap {
+  border-color: rgba(0,0,0,0.08);
+}
+
+.ld-st-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.ld-st-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #7C3AED;
+  background: rgba(124, 58, 237, 0.07);
+  border-bottom: 1px solid rgba(124, 58, 237, 0.15);
+}
+
+.ld-st-table td {
+  padding: 12px 16px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  vertical-align: top;
+  line-height: 1.6;
+}
+
+[data-theme="light"] .ld-st-table td {
+  border-bottom-color: rgba(0,0,0,0.05);
+}
+
+.ld-st-table tr:last-child td { border-bottom: none; }
+
+.ld-st-table td:first-child {
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.ld-st-table-highlight td {
+  background: rgba(124, 58, 237, 0.08);
+}
+
+.ld-st-table-highlight td:first-child {
+  color: #7C3AED;
+}
+
+/* ── 유저 플로우 스텝 ────────────────────────────────────── */
+.ld-st-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 32px;
+}
+
+.ld-st-flow-step {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  position: relative;
+}
+
+.ld-st-flow-step + .ld-st-flow-step {
+  margin-top: 0;
+}
+
+.ld-st-flow-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 36px;
+}
+
+.ld-st-flow-num {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  background: rgba(124, 58, 237, 0.15);
+  border: 2px solid rgba(124, 58, 237, 0.35);
+  color: #7C3AED;
+}
+
+.ld-st-flow-num--gold {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.35);
+  color: #F59E0B;
+}
+
+.ld-st-flow-connector {
+  width: 2px;
+  flex: 1;
+  min-height: 28px;
+  background: linear-gradient(180deg, rgba(124,58,237,0.30) 0%, rgba(124,58,237,0.05) 100%);
+  margin: 4px 0;
+}
+
+.ld-st-flow-body {
+  padding: 4px 0 28px;
+}
+
+.ld-st-flow-title {
+  font-size: 0.97rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.ld-st-flow-desc {
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+/* ── 기술 스택 카드 ──────────────────────────────────────── */
+.ld-st-tech-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.ld-st-tech-card {
+  padding: 20px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+[data-theme="light"] .ld-st-tech-card {
+  background: rgba(255,255,255,0.55);
+  border-color: rgba(0,0,0,0.07);
+}
+
+.ld-st-tech-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: #7C3AED;
+  margin-bottom: 8px;
+}
+
+.ld-st-tech-value {
+  font-size: 0.97rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.ld-st-tech-desc {
+  font-size: 0.83rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ── 수익 하이라이트 ─────────────────────────────────────── */
+.ld-st-revenue-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.ld-st-revenue-card {
+  padding: 24px 20px;
+  border-radius: 16px;
+  text-align: center;
+  background: rgba(124, 58, 237, 0.08);
+  border: 1px solid rgba(124, 58, 237, 0.20);
+}
+
+.ld-st-revenue-value {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #7C3AED;
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+
+.ld-st-revenue-value--gold {
+  color: #F59E0B;
+}
+
+.ld-st-revenue-label {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ── 로드맵 ──────────────────────────────────────────────── */
+.ld-st-roadmap {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.ld-st-roadmap-card {
+  padding: 22px 20px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  position: relative;
+}
+
+[data-theme="light"] .ld-st-roadmap-card {
+  background: rgba(255,255,255,0.55);
+  border-color: rgba(0,0,0,0.07);
+}
+
+.ld-st-roadmap-stage {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: #7C3AED;
+  margin-bottom: 6px;
+}
+
+.ld-st-roadmap-period {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #F59E0B;
+  margin-bottom: 12px;
+}
+
+.ld-st-roadmap-title {
+  font-size: 0.97rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.ld-st-roadmap-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ld-st-roadmap-list li {
+  font-size: 0.83rem;
+  color: var(--text-secondary);
+  padding-left: 14px;
+  position: relative;
+  line-height: 1.5;
+}
+
+.ld-st-roadmap-list li::before {
+  content: "›";
+  position: absolute;
+  left: 0;
+  color: #7C3AED;
+  font-weight: 700;
+}
+
+/* ── 구분선 ──────────────────────────────────────────────── */
+.ld-st-divider {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  margin: 56px 0;
+}
+
+[data-theme="light"] .ld-st-divider {
+  border-top-color: rgba(0,0,0,0.07);
+}
+
+/* ── 결론 CTA ────────────────────────────────────────────── */
+.ld-st-conclusion {
+  text-align: center;
+  padding: 56px 24px;
+  border-radius: 24px;
+  background: rgba(124, 58, 237, 0.08);
+  border: 1px solid rgba(124, 58, 237, 0.18);
+}
+
+.ld-st-conclusion-eyebrow {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #F59E0B;
+  margin-bottom: 14px;
+}
+
+.ld-st-conclusion-h2 {
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 900;
+  color: var(--text-primary);
+  margin-bottom: 14px;
+  line-height: 1.2;
+}
+
+.ld-st-conclusion-desc {
+  font-size: 1.02rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  max-width: 540px;
+  margin: 0 auto 32px;
+}
+
+/* ── 반응형 ──────────────────────────────────────────────── */
+@media (max-width: 1000px) {
+  .ld-st-feature-grid { grid-template-columns: 1fr 1fr; }
+  .ld-st-roadmap { grid-template-columns: 1fr; }
+  .ld-st-revenue-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 600px) {
+  .ld-st-doc { padding: 0 16px 60px; }
+  .ld-st-feature-grid { grid-template-columns: 1fr; }
+  .ld-st-tech-grid { grid-template-columns: 1fr; }
+  .ld-st-revenue-grid { grid-template-columns: 1fr; }
+  .ld-st-table { font-size: 0.80rem; }
+  .ld-st-table td, .ld-st-table th { padding: 10px 12px; }
+}
+
+/* ── iframe 사이클링 커버 ────────────── */
+.ld-st-cover {
+  position: relative;
+  width: 100%;
+  min-height: 100dvh;
+  overflow: hidden;
+}
+
+.ld-st-cover-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.ld-st-cover-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.68);
+  z-index: 1;
+}
+
+.ld-st-iframe-stage {
+  position: absolute;
+  left: 75%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: 273px;   /* 390 × 0.7 */
+  height: 591px;  /* 844 × 0.7 */
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+}
+
+.ld-st-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 390px;
+  height: 844px;
+  transform: scale(0.7);
+  transform-origin: top left;
+  border: none;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+}
+
+.ld-st-iframe.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.ld-st-iframe-dots {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+}
+
+.ld-st-idot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.35);
+  transition: background 0.3s;
+}
+
+.ld-st-idot.on {
+  background: rgba(255,255,255,0.9);
+}
+
+@media (max-width: 600px) {
+  .ld-st-iframe-stage {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@media (max-width: 360px) {
+  .ld-st-iframe-stage {
+    width: 230px;
+    height: 497px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .ld-st-iframe {
+    width: 329px;
+    height: 710px;
+    transform: scale(0.7);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ld-st-cta-btn { transition: none; }
+  .ld-st-iframe { transition: none; }
+  .ld-st-idot { transition: none; }
+}
+
+/* ── 커버 텍스트 콘텐츠 ──────────────────────────────────── */
+.ld-st-cover-content {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 50%;
+  padding: 0 48px;
+}
+
+.ld-st-cover-app-name {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.8rem, 3.5vw, 3rem);
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+
+.ld-st-cover-app-sub {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #F59E0B;
+  margin-bottom: 22px;
+}
+
+.ld-st-cover-tagline {
+  font-size: clamp(1rem, 1.8vw, 1.25rem);
+  font-weight: 400;
+  color: rgba(255,255,255,0.82);
+  line-height: 1.65;
+  margin-bottom: 32px;
+}
+
+.ld-st-trust-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ld-st-trust-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.58);
+  line-height: 1.4;
+}
+
+.ld-st-trust-badge-icon {
+  flex-shrink: 0;
+  font-size: 0.9rem;
+}
+
+/* ── AI 샘플 채팅 ─────────────────────────────────────────── */
+.ld-st-chat-sample {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(124, 58, 237, 0.22);
+  border-radius: 16px;
+  padding: 24px 24px 20px;
+  margin-top: 8px;
+}
+
+.ld-st-chat-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: #F59E0B;
+  margin-bottom: 16px;
+}
+
+.ld-st-chat-bubble {
+  background: rgba(124, 58, 237, 0.12);
+  border: 1px solid rgba(124, 58, 237, 0.20);
+  border-radius: 14px 14px 14px 4px;
+  padding: 16px 18px;
+  font-size: 0.93rem;
+  line-height: 1.85;
+  color: var(--text-primary);
+  white-space: pre-line;
+}
+
+/* ── 시장 규모 카드 ───────────────────────────────────────── */
+.ld-st-market-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.ld-st-market-card {
+  padding: 22px 18px;
+  border-radius: 16px;
+  background: rgba(245, 158, 11, 0.14);
+  border: 1px solid rgba(245, 158, 11, 0.32);
+  text-align: center;
+  backdrop-filter: blur(8px);
+}
+
+.ld-st-market-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: #F59E0B;
+  margin-bottom: 10px;
+}
+
+.ld-st-market-value {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.ld-st-market-desc {
+  font-size: 0.80rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+/* ── 경쟁 해자 ────────────────────────────────────────────── */
+.ld-st-moat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.ld-st-moat-item {
+  display: flex;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: 14px;
+  background: rgba(124, 58, 237, 0.06);
+  border: 1px solid rgba(124, 58, 237, 0.15);
+  align-items: flex-start;
+}
+
+.ld-st-moat-num {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #7C3AED;
+  min-width: 28px;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+
+.ld-st-moat-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 5px;
+}
+
+.ld-st-moat-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+/* ── 왜 지금인가 ──────────────────────────────────────────── */
+.ld-st-why-now {
+  background: rgba(245, 158, 11, 0.06);
+  border: 1px solid rgba(245, 158, 11, 0.18);
+  border-radius: 14px;
+  padding: 24px 26px;
+  margin-top: 32px;
+}
+
+.ld-st-why-now-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #F59E0B;
+  margin-bottom: 12px;
+}
+
+.ld-st-why-now-text {
+  font-size: 0.93rem;
+  line-height: 1.85;
+  color: var(--text-secondary);
+}
+
+/* ── 유닛 이코노믹스 테이블 ──────────────────────────────── */
+.ld-st-metrics-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 40px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(245, 158, 11, 0.22);
+}
+
+.ld-st-metrics-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #F59E0B;
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.ld-st-metrics-table td {
+  padding: 12px 16px;
+  font-size: 0.90rem;
+  color: var(--text-secondary);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  line-height: 1.5;
+}
+
+[data-theme="light"] .ld-st-metrics-table td {
+  border-top-color: rgba(0,0,0,0.05);
+}
+
+.ld-st-metrics-table td:first-child {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.ld-st-metrics-table td:nth-child(2) {
+  font-weight: 700;
+  color: #F59E0B;
+}
+
+/* ── CTA 그룹 (이원화) ────────────────────────────────────── */
+.ld-st-cta-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+}
+
+.ld-st-cta-btn--ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 36px;
+  border-radius: 9999px;
+  background: transparent;
+  color: #F59E0B;
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  border: 2px solid rgba(245, 158, 11, 0.45);
+  transition: transform 0.20s ease, border-color 0.20s ease;
+}
+
+.ld-st-cta-btn--ghost:hover {
+  transform: translateY(-2px);
+  border-color: #F59E0B;
+}
+
+/* ── 반응형 추가 ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .ld-st-cover-content {
+    width: 100%;
+    padding: 24px 24px 0;
+    top: auto;
+    bottom: 52%;
+    transform: none;
+  }
+  .ld-st-market-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .ld-st-cover-content {
+    bottom: 54%;
+    padding: 16px 20px 0;
+  }
+  .ld-st-cover-app-name { font-size: 1.6rem; }
+  .ld-st-cover-tagline { font-size: 0.95rem; margin-bottom: 16px; }
+  .ld-st-trust-badges { display: none; }
+  .ld-st-cta-group { flex-direction: column; align-items: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ld-st-cta-btn--ghost { transition: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   가독성 보완 — Ch2~5 다크·라이트 공통
+═══════════════════════════════════════════════════════════════ */
+
+/* 다크: 카드 배경 강화 (0.06~0.07 → 0.11) */
+.ld-st-feature-card {
+  background: rgba(255,255,255,0.11);
+  border-color: rgba(255,255,255,0.16);
+}
+.ld-st-tech-card {
+  background: rgba(255,255,255,0.11);
+  border-color: rgba(255,255,255,0.16);
+}
+.ld-st-roadmap-card {
+  background: rgba(255,255,255,0.11);
+  border-color: rgba(255,255,255,0.16);
+}
+
+/* 라이트: 카드 배경 강화 (0.55 → 0.92 + 그림자) */
+[data-theme="light"] .ld-st-feature-card,
+[data-theme="light"] .ld-st-tech-card,
+[data-theme="light"] .ld-st-roadmap-card {
+  background: rgba(255,255,255,0.92);
+  border-color: rgba(0,0,0,0.09);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+
+/* 라이트: 채팅 샘플 (오버라이드 전무) */
+[data-theme="light"] .ld-st-chat-sample {
+  background: rgba(255,255,255,0.82);
+  border-color: rgba(124, 58, 237, 0.28);
+}
+[data-theme="light"] .ld-st-chat-bubble {
+  background: rgba(124, 58, 237, 0.06);
+  border-color: rgba(124, 58, 237, 0.20);
+}
+
+/* 라이트: 시장 규모 카드 (오버라이드 전무) */
+[data-theme="light"] .ld-st-market-card {
+  background: rgba(255,255,255,0.92);
+  border-color: rgba(245, 158, 11, 0.32);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* 라이트: 경쟁 해자 아이템 (오버라이드 전무) */
+[data-theme="light"] .ld-st-moat-item {
+  background: rgba(255,255,255,0.92);
+  border-color: rgba(124, 58, 237, 0.20);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* 라이트: 왜 지금인가 (오버라이드 전무) */
+[data-theme="light"] .ld-st-why-now {
+  background: rgba(255,255,255,0.82);
+  border-color: rgba(245, 158, 11, 0.32);
+}
+
+/* 라이트: 수익 카드 (오버라이드 전무) */
+[data-theme="light"] .ld-st-revenue-card {
+  background: rgba(255,255,255,0.82);
+  border-color: rgba(124, 58, 237, 0.24);
+}
+
+/* 라이트: 결론 CTA 블록 (오버라이드 전무) */
+[data-theme="light"] .ld-st-conclusion {
+  background: rgba(255,255,255,0.82);
+  border-color: rgba(124, 58, 237, 0.24);
+}
+
+/* 라이트: 경쟁사 테이블 행 구분선 (흰색 → 연회색) */
+[data-theme="light"] .ld-st-table td {
+  border-bottom-color: rgba(0,0,0,0.07);
+}
+
+/* 라이트: 유닛 이코노믹스 테이블 행 구분선 (흰색 → 연회색) */
+[data-theme="light"] .ld-st-metrics-table td {
+  border-top-color: rgba(0,0,0,0.07);
+}
+
+/* 라이트: 구분선 */
+[data-theme="light"] .ld-st-divider {
+  border-top-color: rgba(0,0,0,0.09);
+}
+
+/* ── 리딩 샘플 iframe (9:16) ──────────────────────────────── */
+.ld-st-reading-frame-wrap {
+  width: 390px;
+  max-width: 100%;
+  aspect-ratio: 9 / 16;
+  margin: 0 auto;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.40);
+  position: relative;
+}
+
+.ld-st-reading-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+[data-theme="light"] .ld-st-reading-frame-wrap {
+  box-shadow: 0 12px 48px rgba(0,0,0,0.14);
+}
+
+@media (max-width: 440px) {
+  .ld-st-reading-frame-wrap {
+    border-radius: 16px;
+  }
+}

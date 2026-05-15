@@ -20,12 +20,12 @@ export default function LdLanding2() {
   return (
     /* --wg-accent 동적 주입 — JS 런타임 변수이므로 인라인 유지 */
     <div
-      className="ld-wg-wrap"
+      className="ld-wg-wrap ld-landing2-root"
       style={{ "--wg-accent": ACCENT_COLOR } as React.CSSProperties}
     >
       {/* ══ 표지 — 풀스크린 동영상 배경 ══ */}
       <div className="ld-wg-cover" id="top">
-        <LdCinematicVideoBg playbackId="ExchtTC1yIF00nVN32kc009f00LUu4yhMvVhQlR7Ce1ovc" />
+        <LdCinematicVideoBg src="https://pub-3004911807a7429c89c576d1aa468160.r2.dev/V2/landing2/landing2_cover.mp4" />
         <div className="ld-wg-cover-inner">
           <div className="ld-wg-cover-left">
             <span className="ld-wg-cover-badge">경험·지식 수익화 가이드</span>

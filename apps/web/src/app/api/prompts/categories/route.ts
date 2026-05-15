@@ -10,7 +10,7 @@ function getSupabase() {
 
 export async function GET() {
   const { data, error } = await getSupabase()
-    .from('prompt_categories')
+    .from('v2_prompt_categories')
     .select('id,icon,label')
     .order('sort_order');
 

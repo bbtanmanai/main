@@ -1,17 +1,18 @@
 "use client";
 
 import { useSession } from "@/hooks/useSession";
-import LgShell from "@/components/lg/LgShell";
+import { LayoutDashboard, Package, Rocket, Wallet, Users } from "lucide-react";
+import LgShell, { type MenuItem } from "@/components/lg/LgShell";
 
-const GUEST_ITEMS = [
-  { label: "대시보드",    href: "/member/dashboard", icon: "🏠" },
-  { label: "구매 콘텐츠", href: "/member/content",   icon: "📦" },
+const GUEST_ITEMS: MenuItem[] = [
+  { label: "대시보드",    href: "/member/dashboard", icon: LayoutDashboard },
+  { label: "구매 콘텐츠", href: "/member/content",   icon: Package },
 ];
 
-const PARTNER_ITEMS = [
-  { label: "랜딩페이지",  href: "/partner/mylanding", icon: "🚀", divider: true },
-  { label: "수당 현황",   href: "/partner/earnings",  icon: "💰" },
-  { label: "파트너 목록", href: "/partner/network",   icon: "🌐" },
+const PARTNER_ITEMS: MenuItem[] = [
+  { label: "랜딩페이지",  href: "/partner/mylanding", icon: Rocket,  divider: true },
+  { label: "수당 현황",   href: "/partner/earnings",  icon: Wallet },
+  { label: "파트너 목록", href: "/partner/network",   icon: Users },
 ];
 
 const isBuyer = (role: string | null) =>
@@ -25,12 +26,13 @@ export default function MemberLayout({ children }: { children: React.ReactNode }
   return (
     <LgShell
       title="마이페이지"
-      accentColor="var(--accent-neon)"
-      accentBgActive="rgba(111,255,0,0.1)"
+      accentColor="var(--member-accent)"
+      accentBgActive="var(--member-accent-bg)"
       sidebarCls="member-sidebar"
       tabbarCls="member-tabbar"
       menuItems={menuItems}
       noHeader
+      a4Main
     >
       {children}
     </LgShell>

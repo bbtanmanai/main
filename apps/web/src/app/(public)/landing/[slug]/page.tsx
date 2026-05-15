@@ -10,7 +10,7 @@ import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import topicsData from "@/data/topics.json";
 import landingsData from "@/data/landings.json";
-import LdFooter from "@/components/layout/LdFooter";
+
 import LdHeroSection from "@/components/landing/LdHeroSection";
 import LdProblemEmpathySection from "@/components/landing/LdProblemEmpathySection";
 import LdV3PipelineSection from "@/components/landing/LdV3PipelineSection";
@@ -30,6 +30,7 @@ const LdLanding6 = dynamic(() => import("@/components/landing/LdLanding6"));
 const LdLanding10 = dynamic(() => import("@/components/landing/LdLanding10"));
 const LdLanding7 = dynamic(() => import("@/components/landing/LdLanding7"));
 const LdLanding11 = dynamic(() => import("@/components/landing/LdLanding11"));
+const LdLanding12 = dynamic(() => import("@/components/landing/LdLanding12"));
 import LdTopicFinderBanner from "@/components/landing/LdTopicFinderBanner";
 import LdMascotFloat from "@/components/landing/LdMascotFloat";
 
@@ -82,7 +83,7 @@ export default async function LandingPage({
       <>
         <LdLanding10 />
         {BonusSection}
-        <LdFooter />
+
       </>
     );
   }
@@ -93,7 +94,7 @@ export default async function LandingPage({
       <>
         <LdLanding7 />
         {BonusSection}
-        <LdFooter />
+
       </>
     );
   }
@@ -104,7 +105,7 @@ export default async function LandingPage({
       <>
         <LdLanding1 />
         {BonusSection}
-        <LdFooter />
+
       </>
     );
   }
@@ -115,7 +116,7 @@ export default async function LandingPage({
       <>
         <LdLanding2 />
         {BonusSection}
-        <LdFooter />
+
       </>
     );
   }
@@ -126,7 +127,7 @@ export default async function LandingPage({
       <>
         <LdLanding3 />
         {BonusSection}
-        <LdFooter />
+
       </>
     );
   }
@@ -137,7 +138,7 @@ export default async function LandingPage({
       <>
         <LdLanding5 />
         {BonusSection}
-        <LdFooter />
+
       </>
     );
   }
@@ -148,7 +149,7 @@ export default async function LandingPage({
       <>
         <LdLanding6 />
         {BonusSection}
-        <LdFooter />
+
       </>
     );
   }
@@ -159,7 +160,18 @@ export default async function LandingPage({
       <>
         <LdLanding11 />
         {BonusSection}
-        <LdFooter />
+
+      </>
+    );
+  }
+
+  // 사주×타로 글로벌 AI 앱 분기 — landing12 variant: "saju-tarot-guide"
+  if ((landing as Record<string, unknown>).variant === "saju-tarot-guide") {
+    return (
+      <>
+        <LdLanding12 />
+        {BonusSection}
+
       </>
     );
   }
@@ -171,7 +183,7 @@ export default async function LandingPage({
       <>
         <LdLanding4 sections={videoSections} />
         {BonusSection}
-        <LdFooter />
+
       </>
     );
   }
@@ -219,7 +231,6 @@ export default async function LandingPage({
         <LdFinalCTASection />
       </main>
 
-      <LdFooter />
     </>
   );
 }

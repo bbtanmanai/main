@@ -82,7 +82,7 @@ function LdRollingCover() {
 // ============================================================
 export default function LdLanding3() {
   return (
-    <div className="ld-wg-wrap ld-wg-theme-amber">
+    <div className="ld-wg-wrap ld-wg-theme-amber ld-landing3-root">
 
       {/* ══ 커버 — 롤링 배경영상 ══ */}
       <div className="ld-wg-cover" id="top">

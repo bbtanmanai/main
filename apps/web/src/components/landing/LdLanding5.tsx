@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import "@/styles/pages/landing5.css";
-import SuperFlowCover from "@/components/landing/SuperFlowCover";
+import LdCinematicVideoBg from "@/components/landing/cinematic/LdCinematicVideoBg";
 
 import LdFinalCTASection from "@/components/landing/LdFinalCTASection";
 
@@ -20,12 +20,11 @@ const STEPS = [
 // 주제: 제휴 마케팅·추천 수익
 export default function LdLanding5() {
   return (
-    <div className="ld-wg-wrap ld-wg-theme-orange">
+    <div className="ld-wg-wrap ld-wg-theme-orange ld-landing5-root">
 
       {/* ══ 커버 ══ */}
-      <div className="ld-wg-cover ld-af-cover-bg" id="top">
-        <SuperFlowCover />
-        <div aria-hidden="true" className="ld-af-cover-grid" />
+      <div className="ld-wg-cover" id="top">
+        <LdCinematicVideoBg src="https://pub-3004911807a7429c89c576d1aa468160.r2.dev/V2/landing5/landing5_cover1.mp4" />
         <div className="ld-wg-cover-inner">
           <div className="ld-wg-cover-left">
             <span className="ld-wg-cover-badge">제휴 마케팅·추천 수익</span>

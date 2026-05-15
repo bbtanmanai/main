@@ -113,12 +113,23 @@
 }
 
 .ld-wg-doc {
+  --color-text:          #0f172a;
+  --color-text-muted:    rgba(15, 23, 42, 0.58);
+  --color-text-subtle:   rgba(15, 23, 42, 0.38);
+  --color-heading:       #334155;
+  --glass-white:         rgba(255, 255, 255, 0.62);
+  --glass-white-md:      rgba(255, 255, 255, 0.78);
+  --glass-white-lg:      rgba(255, 255, 255, 0.90);
+  --glass-border:        rgba(15, 23, 42, 0.14);
+  --glass-border-subtle: rgba(15, 23, 42, 0.09);
+  --shadow-float:        0 20px 60px rgba(0,0,0,0.16), 0 4px 16px rgba(0,0,0,0.08);
+
   max-width: 900px;
   margin: 48px auto 0;
-  background: var(--glass-white-lg);
-  backdrop-filter: var(--blur-md);
-  -webkit-backdrop-filter: var(--blur-md);
-  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(15, 23, 42, 0.09);
   box-shadow: var(--shadow-float);
 }
 
@@ -129,7 +140,7 @@
   position: relative;
   overflow: hidden;
   width: 100%;
-  min-height: 100vh;
+  min-height: calc(100vh + 64px);
   margin-top: -64px;        /* sticky 헤더 높이만큼 위로 */
   display: flex;
   flex-direction: column;
@@ -152,8 +163,8 @@
   flex: 1;
 }
 
-/* 비디오 밝기 조정 */
-.ld-wg-cover .ld-cine-video-bg {
+/* 비디오 밝기 조정 — landing3 전용 */
+.ld-landing3-root .ld-wg-cover .ld-cine-video-bg {
   opacity: 1;
 }
 .ld-wg-cover-badge {
@@ -883,7 +894,7 @@
   background: radial-gradient(ellipse at center, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.85) 100%);
   z-index: 1;
 }
-.ld-wg-cover .ld-cine-vignette {
+.ld-landing3-root .ld-wg-cover .ld-cine-vignette {
   display: none;
 }
 

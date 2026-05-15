@@ -1657,6 +1657,53 @@
   transition: all 0.15s ease;
 }
 
+/* ── A4 메인 콘텐츠 래퍼 ─────────────────────────────────────
+   member / partner 전용. 흰 종이 부유 효과.
+   테마 무관 — 항상 라이트 렌더링. A4 메모리 패턴 동일.
+   ────────────────────────────────────────────────────────── */
+.lg-a4-main {
+  /* 라이트 CSS 변수 강제 오버라이드 */
+  --text-primary:   #0f172a;
+  --text-secondary: rgba(15, 23, 42, 0.55);
+  --bg-surface:     #f5f7fb;
+  --bg-base:        #ffffff;
+  /* shell accent — A4 내부에서는 라이트값 고정 */
+  --member-accent:     #0d9488;
+  --member-accent-bg:  rgba(13, 148, 136, 0.10);
+  --partner-accent:    #059669;
+  --partner-accent-bg: rgba(5, 150, 105, 0.10);
+  --shell-divider:     rgba(15, 23, 42, 0.08);
+
+  flex: 1;
+  background: rgba(255, 255, 255, 0.93);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(15, 23, 42, 0.09);
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+  box-shadow: 0 -4px 32px rgba(0, 0, 0, 0.07), 0 -1px 0 rgba(255, 255, 255, 0.6) inset;
+  padding: 28px 24px 100px;
+  min-height: calc(100dvh - 160px);
+}
+
+/* ── Member/Partner shell accent — 다크 테마 (밝은 변형) ── */
+:root[data-theme="dark"],
+:root:not([data-theme]) {
+  --member-accent:    #2dd4bf;
+  --member-accent-bg: rgba(45, 212, 191, 0.12);
+  --partner-accent:   #34d399;
+  --partner-accent-bg: rgba(52, 211, 153, 0.12);
+  --shell-divider:    rgba(255, 255, 255, 0.08);
+}
+/* ── Member/Partner shell accent — 라이트 테마 ── */
+[data-theme="light"] {
+  --member-accent:    #0d9488;
+  --member-accent-bg: rgba(13, 148, 136, 0.10);
+  --partner-accent:   #059669;
+  --partner-accent-bg: rgba(5, 150, 105, 0.10);
+  --shell-divider:    rgba(15, 23, 42, 0.08);
+}
+
 /* 사이드바 아이콘 */
 .lg-shell-nav-icon {
   font-size: 20px;

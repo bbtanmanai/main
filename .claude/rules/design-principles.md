@@ -88,7 +88,31 @@ glass 속성은 반드시 클래스 사용:
 
 ---
 
-## 6. ❌ Left Border Accent — 영구 금지
+## 6. 커버 섹션 높이 공식 — 필수 준수
+
+GNB 높이(`80px`)를 보상하기 위해 `margin-top: -80px`을 쓰는 커버 섹션은 반드시 아래 공식을 적용한다.
+
+```css
+/* ✅ 올바른 패턴 — margin-top 만큼 height를 더해 하단 공백 방지 */
+.hero {
+  height: calc(100dvh + 80px);
+  min-height: 600px;
+  margin-top: -80px;
+}
+
+/* ❌ 금지 — margin-top으로 올라간 만큼 하단이 비어 보임 */
+.hero {
+  height: 100dvh;
+  margin-top: -80px;
+}
+```
+
+**규칙**: `margin-top: -Npx` 사용 시 → `height: calc(100dvh + Npx)` 세트로 작성.  
+GNB 높이가 바뀌면 두 값을 동시에 변경한다.
+
+---
+
+## 7. ❌ Left Border Accent — 영구 금지
 
 ```css
 /* ❌ 이 패턴 전면 금지 */

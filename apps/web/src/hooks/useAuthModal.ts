@@ -9,21 +9,26 @@ import { useState, useEffect } from "react";
 
 export function useAuthModal() {
   const [isOpen, setIsOpen] = useState(false);
+  const [redirectTo, setRedirectTo] = useState<string | undefined>(undefined);
 
   // 전역에서 모달을 여는 함수 — GNB 버튼, 랜딩 CTA 등에서 호출
-  const open = () => {
+  const open = (redirect?: string) => {
     if (typeof window !== "undefined") {
-      window.dispatchEvent(new CustomEvent("ld-auth-open"));
+      window.dispatchEvent(new CustomEvent("ld-auth-open", { detail: { redirectTo: redirect } }));
     }
   };
 
   const close = () => setIsOpen(false);
 
   useEffect(() => {
-    const handler = () => setIsOpen(true);
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<{ redirectTo?: string }>).detail;
+      setRedirectTo(detail?.redirectTo);
+      setIsOpen(true);
+    };
     window.addEventListener("ld-auth-open", handler);
     return () => window.removeEventListener("ld-auth-open", handler);
   }, []);
 
-  return { isOpen, open, close };
+  return { isOpen, open, close, redirectTo };
 }

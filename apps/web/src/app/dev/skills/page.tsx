@@ -48,6 +48,9 @@ const KOREAN_META: Record<string, { name: string; description: string }> = {
   "/review":           { name: "코드 리뷰",          description: "git diff 기준으로 코드 품질·보안·컨벤션을 점검" },
   "/plan-eng-review":  { name: "아키텍처 리뷰",      description: "신규 기능 설계 방향을 시니어 엔지니어 관점으로 검토" },
   "/checkpoint":       { name: "체크포인트 저장",    description: "현재 작업 진행 상황을 저장하고 세션 간 연속성 확보" },
+  // 신규 개발 스킬
+  "/code-reviewer":    { name: "코드 리뷰어",        description: "TypeScript·React·Next.js·Python PR 리뷰, 보안 취약점 탐지, 성능 분석, 코딩 표준 검사" },
+  "/senior-frontend":  { name: "시니어 프론트엔드",  description: "React·Next.js 15·TypeScript·Tailwind CSS 기반 컴포넌트 생성, 번들 분석, 프로젝트 구조 점검" },
   // 디자인 스킬
   "/refactoring-ui":                  { name: "UI 리팩터링",         description: "기존 컴포넌트 스타일을 계층·간격·색상 원칙으로 체계적으로 개선" },
   "/ui-ux-pro-max":                   { name: "UI/UX 프로 맥스",    description: "디자인 시스템 생성, 산업별 UI 스타일 추천, 랜딩 방향 결정" },
@@ -155,6 +158,116 @@ const KOREAN_META: Record<string, { name: string; description: string }> = {
   "/review-resume":  { name: "이력서 검토",             description: "XYZ+S 공식·키워드 최적화·직무 맞춤화·구조 등 10가지 모범 사례로 PM 이력서 종합 검토 및 개선" },
 };
 
+// ── 카테고리 분류 ──────────────────────────────────────────────
+// 사용자 편의를 위한 9개 카테고리. 순서대로 렌더링됨.
+interface SkillCategory {
+  id: string;
+  title: string;
+  color: string;
+  desc: string;
+  commands: string[];
+}
+
+const SKILL_CATEGORIES: SkillCategory[] = [
+  {
+    id: "dev",
+    title: "개발·코드",
+    color: "#6fff00",
+    desc: "버그 조사·배포·QA·리뷰 — 개발 워크플로우 핵심",
+    commands: [
+      "/investigate", "/ship", "/qa", "/review", "/plan-eng-review", "/checkpoint",
+      "/code-reviewer", "/senior-frontend", "/bencium-code-conventions",
+      "/react-best-practices", "/react-view-transitions", "/composition-patterns",
+      "/web-design-guidelines", "/debug-issue", "/explore-codebase",
+      "/refactor-safely", "/review-changes",
+    ],
+  },
+  {
+    id: "design",
+    title: "디자인·UI",
+    color: "#a855f7",
+    desc: "UI 리팩터링·디자인 시스템·랜딩·감사",
+    commands: [
+      "/refactoring-ui", "/ui-ux-pro-max",
+      "/bencium-innovative-ux-designer", "/bencium-controlled-ux-designer",
+      "/bencium-impact-designer", "/design-audit",
+    ],
+  },
+  {
+    id: "document",
+    title: "문서 생성",
+    color: "#3b82f6",
+    desc: "PDF·Word·PowerPoint·Excel 변환 출력",
+    commands: ["/pdf", "/docx", "/pptx", "/xlsx"],
+  },
+  {
+    id: "pm-execution",
+    title: "PM 실행",
+    color: "#f59e0b",
+    desc: "백로그·스프린트·릴리즈·회고·스토리 작성",
+    commands: [
+      "/brainstorm-okrs", "/create-prd", "/dummy-dataset", "/job-stories",
+      "/outcome-roadmap", "/pre-mortem", "/prioritization-frameworks", "/release-notes",
+      "/retro", "/sprint-plan", "/stakeholder-map", "/summarize-meeting",
+      "/test-scenarios", "/user-stories", "/wwas",
+    ],
+  },
+  {
+    id: "pm-data",
+    title: "PM 데이터·분석",
+    color: "#ec4899",
+    desc: "A/B 테스트·코호트·SQL 쿼리 분석",
+    commands: ["/ab-test-analysis", "/cohort-analysis", "/sql-queries"],
+  },
+  {
+    id: "discovery",
+    title: "제품 디스커버리",
+    color: "#06b6d4",
+    desc: "가정 식별·실험 설계·기회 트리·인터뷰",
+    commands: [
+      "/analyze-feature-requests",
+      "/brainstorm-experiments-existing", "/brainstorm-experiments-new",
+      "/brainstorm-ideas-existing", "/brainstorm-ideas-new",
+      "/identify-assumptions-existing", "/identify-assumptions-new",
+      "/interview-script", "/metrics-dashboard", "/opportunity-solution-tree",
+      "/prioritize-assumptions", "/prioritize-features", "/summarize-interview",
+    ],
+  },
+  {
+    id: "market",
+    title: "시장·GTM",
+    color: "#10b981",
+    desc: "시장 진출 전략·경쟁 분석·리서치·마케팅",
+    commands: [
+      "/beachhead-segment", "/competitive-battlecard", "/growth-loops",
+      "/gtm-motions", "/gtm-strategy", "/ideal-customer-profile",
+      "/competitor-analysis", "/customer-journey-map", "/market-segments",
+      "/market-sizing", "/sentiment-analysis", "/user-personas", "/user-segmentation",
+      "/marketing-ideas", "/north-star-metric", "/positioning-ideas",
+      "/product-name", "/value-prop-statements",
+    ],
+  },
+  {
+    id: "strategy",
+    title: "제품 전략",
+    color: "#f97316",
+    desc: "BMC·린 캔버스·SWOT·가격·비전 수립",
+    commands: [
+      "/ansoff-matrix", "/business-model", "/lean-canvas", "/monetization-strategy",
+      "/pestle-analysis", "/porters-five-forces", "/pricing-strategy",
+      "/product-strategy", "/product-vision", "/startup-canvas",
+      "/swot-analysis", "/value-proposition",
+    ],
+  },
+  {
+    id: "toolkit",
+    title: "툴킷·기타",
+    color: "#94a3b8",
+    desc: "문서 검토·법무·문법·Obsidian 연동",
+    commands: ["/draft-nda", "/grammar-check", "/privacy-policy", "/review-resume", "/obsidian"],
+  },
+];
+
 // ── 수동 보강 데이터 (기존 스킬 상세 설명) ────────────────────
 // 파일시스템에서 자동 감지된 스킬에 추가 상세 정보를 덧붙임.
 // 새 스킬은 여기 추가하지 않아도 자동으로 카드가 생성됨.
@@ -247,6 +360,423 @@ const MANUAL_DETAILS: Record<string, ManualDetail> = {
     outputs: ["컨벤션 위반 항목 목록 (파일·라인)", "자동 수정 코드 패치", "V2 LD 체계 준수 여부 체크"],
     examplePrompts: ['"오늘 만든 컴포넌트 컨벤션 점검해줘"', '"useSession 훅 코드 스타일 맞아?"'],
     note: "V2 LOCKED_DECISIONS 준수 여부도 함께 체크.",
+  },
+
+  // ── 개발·코드 (신규)
+  "/code-reviewer": {
+    triggers: ["TypeScript·React·Next.js·Python PR 파일 리뷰", "배포 전 코드 품질 검증", "보안 취약점·성능 병목 탐지"],
+    outputs: ["파일별 코드 리뷰 코멘트", "보안 취약점 목록 (심각도 분류)", "성능 개선 제안 스니펫"],
+    examplePrompts: ['"오늘 추가한 auth 관련 파일 전체 리뷰해줘"', '"이 컴포넌트 보안 이슈 있어?"'],
+  },
+  "/senior-frontend": {
+    triggers: ["React·Next.js 15 컴포넌트 새로 만들 때", "번들 크기 분석이 필요할 때", "프로젝트 구조·아키텍처 개선"],
+    outputs: ["프로덕션 수준의 컴포넌트 코드", "번들 최적화 제안", "아키텍처 권고 및 구조 개선안"],
+    examplePrompts: ['"usePaymentForm 훅 시니어 수준으로 만들어줘"', '"이 컴포넌트 Next.js 15 모범 사례로 리팩터링해줘"'],
+  },
+  "/react-best-practices": {
+    triggers: ["서버/클라이언트 컴포넌트 구분이 헷갈릴 때", '"use client" 배치 고민', "직렬화 오류 발생"],
+    outputs: ["서버/클라이언트 분리 권장안", "직렬화 규칙 체크리스트", "리팩터링 코드"],
+    examplePrompts: ['"이 컴포넌트 서버 컴포넌트로 바꿀 수 있어?"', '"prop 직렬화 오류 왜 나?"'],
+  },
+  "/react-view-transitions": {
+    triggers: ["페이지 전환 애니메이션 추가", "View Transitions API 구현", "SPA 느낌의 부드러운 라우팅 효과"],
+    outputs: ["View Transitions API 적용 코드", "부드러운 페이지 전환 구현 (애니메이션 포함)"],
+    examplePrompts: ['"랜딩페이지 전환 애니메이션 추가해줘"', '"View Transitions API로 슬라이드 효과 만들어줘"'],
+  },
+  "/composition-patterns": {
+    triggers: ["컴포넌트 재사용성이 낮을 때", "상태가 불필요하게 위에 있을 때", "복잡한 컴포넌트 구조 분리"],
+    outputs: ["Compound Component·Render Props·Custom Hook 패턴 적용 코드", "상태 리프팅 없이 공유하는 구조"],
+    examplePrompts: ['"이 거대한 컴포넌트 어떻게 나눠?"', '"상태 리프팅 없이 공유하는 방법 없어?"'],
+  },
+  "/web-design-guidelines": {
+    triggers: ["접근성 기준 확인", "색상 대비·여백·타이포 표준 검토", "WCAG 준수 여부 점검"],
+    outputs: ["WCAG 기준 준수 여부 체크리스트", "디자인 표준 개선안"],
+    examplePrompts: ['"이 버튼 색상 접근성 기준 통과해?"', '"폼 여백 표준 알려줘"'],
+  },
+  "/debug-issue": {
+    triggers: ["에러 메시지 해석·단계별 분석", "원인 불명 이슈 추적", "특정 이슈를 단계적으로 파고들 때"],
+    outputs: ["단계별 디버깅 결과", "근본 원인 분류", "해결 코드"],
+    examplePrompts: ['"TypeError: Cannot read properties of undefined 이 에러 왜 나?"', '"콘솔 에러 해석해줘"'],
+  },
+  "/explore-codebase": {
+    triggers: ["낯선 코드베이스 파악이 필요할 때", "특정 기능이 어디 있는지 모를 때", "신규 합류 시 프로젝트 온보딩"],
+    outputs: ["프로젝트 구조 요약", "핵심 파일 목록", "데이터 흐름 설명"],
+    examplePrompts: ['"결제 플로우가 어떻게 돌아가는지 설명해줘"', '"인증 관련 코드 어디 있어?"'],
+  },
+  "/refactor-safely": {
+    triggers: ["동작 변경 없이 코드 구조를 개선할 때", "기술 부채 해소", "리팩터링 범위를 안전하게 잡고 싶을 때"],
+    outputs: ["단계별 리팩터링 계획", "안전한 변경 범위 명세", "리팩터링 코드"],
+    examplePrompts: ['"이 함수 로직은 그대로고 구조만 개선해줘"', '"중복 코드 줄이고 싶은데 기능은 유지해야 해"'],
+  },
+  "/review-changes": {
+    triggers: ["최근 커밋·git diff 검토", "의도치 않은 변경 확인", "머지 전 최종 점검"],
+    outputs: ["변경 파일 목록 + 변경 요약", "잠재적 문제 식별", "누락된 변경 체크"],
+    examplePrompts: ['"오늘 수정한 내용 전체 리뷰해줘"', '"이 diff에서 문제될 부분 있어?"'],
+  },
+
+  // ── 문서 생성
+  "/pdf": {
+    triggers: ["마크다운·HTML을 PDF로 저장", "인쇄용 문서 출력", "공식 문서 배포"],
+    outputs: ["스타일드 레이아웃 포함 PDF 파일"],
+    examplePrompts: ['"이 사업계획서 PDF로 내보내줘"', '"랜딩 내용 PDF 문서로 만들어줘"'],
+  },
+  "/docx": {
+    triggers: ["Word 형식 문서 제출", "협업자에게 편집 가능한 문서 전달"],
+    outputs: [".docx 파일 (스타일 포함)"],
+    examplePrompts: ['"계약서 초안 Word 파일로 만들어줘"', '"이 내용 DOCX로 내보내줘"'],
+  },
+  "/pptx": {
+    triggers: ["프레젠테이션 제출", "투자자 덱", "교육 자료"],
+    outputs: [".pptx 파일 (슬라이드 레이아웃 포함)"],
+    examplePrompts: ['"이 전략 문서 PPT 슬라이드로 만들어줘"', '"투자자 덱 PPTX로 내보내줘"'],
+  },
+  "/xlsx": {
+    triggers: ["데이터 정리·표·스프레드시트 필요", "팀 공유용 데이터 파일"],
+    outputs: [".xlsx 파일 (셀 포맷 포함)"],
+    examplePrompts: ['"스프린트 백로그 엑셀로 만들어줘"', '"이 분석 결과 XLSX로 내보내줘"'],
+  },
+
+  // ── PM 실행
+  "/brainstorm-okrs": {
+    triggers: ["분기 시작 시 팀 목표 설정", "회사 전략과 팀 OKR 정렬"],
+    outputs: ["정성적 Objective 3개 + Objective당 측정 가능한 Key Results 3개"],
+    examplePrompts: ['"2분기 프로덕트팀 OKR — 목표 유저 리텐션 개선"', '"성장팀 OKR 브레인스토밍해줘"'],
+  },
+  "/create-prd": {
+    triggers: ["신규 기능 개발 시작 전", "이해관계자 정렬이 필요할 때", "기능 범위 명확히 해야 할 때"],
+    outputs: ["문제·목표·세그먼트·가치 제안·솔루션·성공 지표·출시 계획 포함 8섹션 PRD"],
+    examplePrompts: ['"결제 구독 기능 PRD 작성해줘"', '"파트너 대시보드 PRD 만들어줘"'],
+  },
+  "/dummy-dataset": {
+    triggers: ["개발·테스트용 가짜 데이터 필요", "디자인 프로토타입에 사실적인 데이터 삽입"],
+    outputs: ["CSV·JSON·SQL 형식의 커스터마이징된 테스트 데이터"],
+    examplePrompts: ['"users 테이블 기반 50명 더미 데이터 CSV로 만들어줘"', '"결제 내역 더미 JSON 100건 만들어줘"'],
+  },
+  "/job-stories": {
+    triggers: ["유저 스토리가 너무 추상적일 때", "사용 맥락 중심 요구사항 작성"],
+    outputs: ["'상황~하고 싶다~할 수 있다' 형식의 잡 스토리 + 인수 기준"],
+    examplePrompts: ['"파트너 수당 확인 기능 잡 스토리 써줘"', '"모바일 알림 잡 스토리 작성해줘"'],
+  },
+  "/outcome-roadmap": {
+    triggers: ["기능 중심 로드맵을 임팩트 중심으로 재구성할 때", "로드맵에 전략적 Why가 없을 때"],
+    outputs: ["아웃컴 중심 분기별 로드맵 (비즈니스·사용자 임팩트 포함)"],
+    examplePrompts: ['"우리 로드맵 아웃컴 기반으로 다시 정리해줘"', '"기능 로드맵을 왜 만드는지 중심으로 재구성해줘"'],
+  },
+  "/pre-mortem": {
+    triggers: ["출시 전 리스크 평가", "팀이 낙관적일 때 현실적 시각 추가"],
+    outputs: ["Tigers·Paper Tigers·Elephants 분류 리스크 목록 + 출시 차단·빠른 후속·모니터링 전략"],
+    examplePrompts: ['"파트너 모집 캠페인 출시 전 프리모텀 해줘"', '"새 결제 기능 출시 리스크 뭐야?"'],
+  },
+  "/prioritization-frameworks": {
+    triggers: ["백로그 우선순위를 정할 때", "여러 기능 중 무엇을 먼저 할지 결정"],
+    outputs: ["RICE·ICE·Kano·MoSCoW 등 9개 방법론 설명 + 적합 상황"],
+    examplePrompts: ['"우리 상황에 어떤 우선순위 프레임워크가 맞아?"', '"RICE vs ICE 차이 설명해줘"'],
+  },
+  "/release-notes": {
+    triggers: ["배포 후 사용자 커뮤니케이션", "변경 이력 문서화"],
+    outputs: ["신기능·개선·버그수정 카테고리로 정리된 릴리즈 노트"],
+    examplePrompts: ['"이번 스프린트 배포 내용으로 릴리즈 노트 써줘"', '"v1.2.0 릴리즈 노트 만들어줘"'],
+  },
+  "/retro": {
+    triggers: ["스프린트 종료 시 팀 성과·개선점 정리", "회고 미팅 전 준비"],
+    outputs: ["잘된 점·개선점·액션 아이템(담당자+기한) 구조화된 회고록"],
+    examplePrompts: ['"지난 2주 스프린트 회고 정리해줘"', '"우리 팀 회고 문서 만들어줘"'],
+    note: "gstack 스킬.",
+  },
+  "/sprint-plan": {
+    triggers: ["스프린트 시작 전 팀 용량 산정과 백로그 선정"],
+    outputs: ["용량 산정·스토리포인트 배분·의존성 맵·리스크 식별 포함 스프린트 계획"],
+    examplePrompts: ['"다음 2주 스프린트 계획 짜줘 — 팀 4명, 각 70% 용량"', '"이 백로그에서 스프린트에 뭘 넣을지 골라줘"'],
+  },
+  "/stakeholder-map": {
+    triggers: ["신규 프로젝트 시작 시 이해관계자 파악", "소통 전략 수립"],
+    outputs: ["파워/관심도 그리드 + 분면별 소통 전략 + 커뮤니케이션 계획"],
+    examplePrompts: ['"새 유료화 기능의 이해관계자 맵 만들어줘"', '"이 프로젝트 관련된 사람들 정리해줘"'],
+  },
+  "/summarize-meeting": {
+    triggers: ["미팅 후 회의록 정리", "결정 사항·액션 아이템 문서화"],
+    outputs: ["날짜·참석자·핵심 결정·요약·액션 아이템 포함 회의록"],
+    examplePrompts: ['"이 회의 녹취 요약해줘"', '"오늘 기획 미팅 회의록 만들어줘"'],
+  },
+  "/test-scenarios": {
+    triggers: ["QA 시나리오 문서화", "유저 스토리 기반 테스트 케이스 작성"],
+    outputs: ["테스트 목표·조건·단계·예상 결과 포함 QA 시나리오"],
+    examplePrompts: ['"결제 완료 플로우 테스트 시나리오 써줘"', '"파트너 가입 QA 케이스 만들어줘"'],
+  },
+  "/user-stories": {
+    triggers: ["개발팀에 요구사항 전달", "기능 범위를 명확히 할 때"],
+    outputs: ["INVEST 기준 유저 스토리 + 인수 기준"],
+    examplePrompts: ['"파트너 수당 조회 유저 스토리 써줘"', '"로그인 기능 유저 스토리 만들어줘"'],
+  },
+  "/wwas": {
+    triggers: ["전략적 맥락이 담긴 백로그 항목 작성", "Why가 명확한 작업 카드 필요"],
+    outputs: ["Why·What·Acceptance 형식의 백로그 항목"],
+    examplePrompts: ['"추천인 링크 클릭 트래킹 WWA 백로그 항목 써줘"', '"이 기능 왜 만드는지 포함한 작업 카드 작성해줘"'],
+  },
+
+  // ── PM 데이터·분석
+  "/ab-test-analysis": {
+    triggers: ["A/B 테스트 결과 해석", "출시·연장·중단 결정"],
+    outputs: ["통계적 유의성·신뢰구간·표본 크기 분석", "출시 권고 (Go/No-Go/Extend)"],
+    examplePrompts: ['"CTA 버튼 A/B 테스트 (대조군 CTR 2.3%, 실험군 2.8%, n=5000) 분석해줘"', '"이 테스트 결과 출시해도 돼?"'],
+  },
+  "/cohort-analysis": {
+    triggers: ["신규 기능 이후 리텐션 변화 추적", "가입 월별 사용자 행동 패턴 분석"],
+    outputs: ["코호트별 리텐션 곡선", "기능 채택 추이", "이탈 구간 식별"],
+    examplePrompts: ['"1월 가입자 vs 3월 가입자 리텐션 비교해줘"', '"신규 대시보드 출시 전후 코호트 분석해줘"'],
+  },
+  "/sql-queries": {
+    triggers: ["데이터 분석을 위한 SQL 작성", "자연어로 데이터 질문"],
+    outputs: ["방언별(PostgreSQL·BigQuery·MySQL) SQL 쿼리 + 설명"],
+    examplePrompts: ['"지난 30일 파트너별 추천 건수 상위 10명 뽑아줘 — PostgreSQL"', '"이 스키마로 MAU 쿼리 써줘"'],
+  },
+
+  // ── 제품 디스커버리
+  "/analyze-feature-requests": {
+    triggers: ["사용자 피드백·지원 티켓에서 기능 패턴 파악", "로드맵 우선순위 결정"],
+    outputs: ["테마 분류·전략 정렬도·임팩트·노력·리스크 평가된 기능 요청 분석표"],
+    examplePrompts: ['"지난 분기 사용자 피드백 기능 요청 분석해줘"', '"이 지원 티켓 목록에서 패턴 뽑아줘"'],
+  },
+  "/brainstorm-experiments-existing": {
+    triggers: ["가정 검증을 위한 저비용 실험 기획", "빌드 전에 확인하고 싶을 때"],
+    outputs: ["프로토타입·A/B 테스트·스파이크 등 검증 실험 설계"],
+    examplePrompts: ['"파트너 추천 리워드 증가 가정 실험 설계해줘"', '"이 가정을 1주일 안에 검증하는 방법은?"'],
+  },
+  "/brainstorm-experiments-new": {
+    triggers: ["린 스타트업 방식 신제품 아이디어 검증", "빌드 전 시장 반응 확인"],
+    outputs: ["랜딩페이지·영상·선주문 등 XYZ 가설 기반 신제품 검증 실험"],
+    examplePrompts: ['"AI 홈페이지 생성 서비스 아이디어 검증 실험 설계해줘"', '"이 신제품 가정 어떻게 검증해?"'],
+  },
+  "/brainstorm-ideas-existing": {
+    triggers: ["기존 제품의 성장 정체 타개", "신규 기능 아이디어 발굴"],
+    outputs: ["PM·디자이너·엔지니어 3가지 관점의 신규 기능 아이디어"],
+    examplePrompts: ['"LinkDrop 파트너 대시보드 개선 아이디어 브레인스토밍해줘"', '"리텐션 높이는 기능 아이디어 뭐가 있어?"'],
+  },
+  "/brainstorm-ideas-new": {
+    triggers: ["새 프로덕트 라인 발굴", "멀티 시각 초기 기능 아이디어 발굴"],
+    outputs: ["PM·디자이너·엔지니어 3가지 관점의 초기 기능 아이디어 목록"],
+    examplePrompts: ['"시니어 디지털 교육 플랫폼 아이디어 브레인스토밍해줘"', '"교육 SaaS 신제품 기능 아이디어 발굴해줘"'],
+  },
+  "/identify-assumptions-existing": {
+    triggers: ["기존 기능 아이디어의 리스크 파악", "개발 전 가정 명확히 할 때"],
+    outputs: ["가치·사용성·실행 가능성·기술 리스크 가정 목록"],
+    examplePrompts: ['"파트너 자동 수당 지급 기능의 위험 가정 뭐야?"', '"이 아이디어 무엇을 믿어야 동작해?"'],
+  },
+  "/identify-assumptions-new": {
+    triggers: ["신제품·신사업 아이디어의 위험 가정 파악"],
+    outputs: ["GTM·전략·팀 등 8가지 리스크 카테고리별 가정 목록"],
+    examplePrompts: ['"B2B SaaS 세금 자동화 신제품의 위험 가정 식별해줘"', '"이 아이디어 어떤 게 틀릴 수 있어?"'],
+  },
+  "/interview-script": {
+    triggers: ["고객 발견 인터뷰 준비", "The Mom Test 원칙 기반 질문 설계"],
+    outputs: ["워밍업·JTBD 탐색·핵심 질문·마무리 구조의 인터뷰 스크립트"],
+    examplePrompts: ['"왜 파트너 등록을 안 하는지 인터뷰 스크립트 써줘"', '"시니어 타겟 고객 발견 인터뷰 준비해줘"'],
+  },
+  "/metrics-dashboard": {
+    triggers: ["제품 지표를 체계적으로 추적할 때", "대시보드 신규 설계"],
+    outputs: ["핵심 지표·데이터 소스·시각화 유형·알림 임계값 포함 대시보드 정의"],
+    examplePrompts: ['"파트너 성장 지표 대시보드 설계해줘"', '"사용자 리텐션 대시보드 어떻게 만들어?"'],
+  },
+  "/opportunity-solution-tree": {
+    triggers: ["디스커버리를 구조화할 때", "Teresa Torres 방식 OST 작성"],
+    outputs: ["목표→기회→솔루션→실험 계층 구조의 OST"],
+    examplePrompts: ['"파트너 수 증가 목표 OST 만들어줘"', '"이 OKR을 OST로 펼쳐줘"'],
+  },
+  "/prioritize-assumptions": {
+    triggers: ["여러 가정 중 어떤 것을 먼저 검증할지 결정"],
+    outputs: ["임팩트×리스크 매트릭스 + 검증 실험 우선순위"],
+    examplePrompts: ['"이 가정 목록 중 어떤 걸 먼저 검증해야 해?"', '"리스크 높은 가정 먼저 정렬해줘"'],
+  },
+  "/prioritize-features": {
+    triggers: ["백로그에서 다음 스프린트에 넣을 기능 선정"],
+    outputs: ["임팩트·노력·리스크·전략 정렬 기준 기능 우선순위 + Top 5 권고"],
+    examplePrompts: ['"이 기능 목록 우선순위 정해줘"', '"다음 분기에 뭘 먼저 만들어야 해?"'],
+  },
+  "/summarize-interview": {
+    triggers: ["고객 인터뷰 후 핵심 인사이트 정리"],
+    outputs: ["JTBD·만족 신호·불만·액션 아이템 포함 구조화된 인터뷰 요약"],
+    examplePrompts: ['"이 인터뷰 녹취록 요약해줘"', '"고객 인터뷰에서 핵심 인사이트 뽑아줘"'],
+  },
+
+  // ── 시장·GTM
+  "/beachhead-segment": {
+    triggers: ["첫 진입 시장 선택", "여러 세그먼트 중 어디서 시작할지 결정"],
+    outputs: ["세그먼트별 평가 스코어카드 + 권장 교두보 시장 + 근거"],
+    examplePrompts: ['"LinkDrop 교두보 세그먼트 어디가 좋아?"', '"이 4개 세그먼트 중 어디서 시작해야 해?"'],
+  },
+  "/competitive-battlecard": {
+    triggers: ["영업·마케팅 자료 준비", "경쟁사 대비 포지셔닝 명확히 할 때"],
+    outputs: ["포지셔닝·기능 비교·이의 처리·승패 패턴 포함 배틀카드"],
+    examplePrompts: ['"링크트리 vs LinkDrop 배틀카드 써줘"', '"클래스101 대비 우리 강점 정리해줘"'],
+  },
+  "/growth-loops": {
+    triggers: ["지속 가능한 성장 메커니즘 설계", "바이럴·추천 루프 구조화"],
+    outputs: ["바이럴·사용량·협업·UGC·추천 루프 유형별 분석 + 권장 루프"],
+    examplePrompts: ['"LinkDrop에 맞는 성장 루프 설계해줘"', '"추천인 바이럴 루프 어떻게 만들어?"'],
+  },
+  "/gtm-motions": {
+    triggers: ["제품 출시 채널 전략 결정", "PLG vs SLG 선택"],
+    outputs: ["7가지 GTM 모션 평가 + 현재 단계에 맞는 최적 모션 + 채널·도구"],
+    examplePrompts: ['"LinkDrop에 맞는 GTM 모션 뭐야?"', '"PLG로 가야 해, SLG로 가야 해?"'],
+  },
+  "/gtm-strategy": {
+    triggers: ["신규 기능·제품 출시 전 전략 수립"],
+    outputs: ["마케팅 채널·메시지·성공 지표·출시 타임라인 포함 GTM 전략 문서"],
+    examplePrompts: ['"골드파트너 승급 기능 GTM 전략 만들어줘"', '"이번 분기 파트너 모집 GTM 전략 짜줘"'],
+  },
+  "/ideal-customer-profile": {
+    triggers: ["타겟 고객 명확화", "세일즈·마케팅 메시지 정렬"],
+    outputs: ["인구통계·행동·JTBD·니즈 기반 ICP 정의"],
+    examplePrompts: ['"LinkDrop 파트너 ICP 정의해줘"', '"우리 최적 고객이 누구야?"'],
+  },
+  "/competitor-analysis": {
+    triggers: ["시장 진입 전 경쟁 지형 파악", "차별화 기회 발굴"],
+    outputs: ["직접 경쟁사 강점·약점·차별화 기회 + 경쟁 지형 맵"],
+    examplePrompts: ['"교육 링크인바이오 시장 경쟁사 분석해줘"', '"링크트리·스타터 vs LinkDrop 비교해줘"'],
+  },
+  "/customer-journey-map": {
+    triggers: ["사용자 경험 전체 파악", "이탈 지점·페인 포인트 발굴"],
+    outputs: ["단계·터치포인트·감정·페인 포인트·기회 포함 엔드투엔드 여정 맵"],
+    examplePrompts: ['"신규 파트너 가입 ~ 첫 수당 여정 맵 만들어줘"', '"고객 온보딩 경험 맵 그려줘"'],
+  },
+  "/market-segments": {
+    triggers: ["타겟 시장을 세분화할 때", "새로운 세그먼트 발굴"],
+    outputs: ["3~5개 잠재 고객 세그먼트 (인구통계·JTBD·적합도 포함)"],
+    examplePrompts: ['"교육 플랫폼 시장 세그먼트 뭐가 있어?"', '"50대 타겟 세그먼트 더 세분화해줘"'],
+  },
+  "/market-sizing": {
+    triggers: ["시장 기회 규모 파악", "투자자 피칭 자료 준비"],
+    outputs: ["TAM·SAM·SOM 탑다운·바텀업 방식 산정"],
+    examplePrompts: ['"한국 중장년 디지털 교육 시장 TAM 산정해줘"', '"우리 SOM이 얼마나 돼?"'],
+  },
+  "/sentiment-analysis": {
+    triggers: ["사용자 리뷰·피드백 데이터 분석", "제품 만족도 파악"],
+    outputs: ["세그먼트별 감정 점수·JTBD·제품 만족도 인사이트"],
+    examplePrompts: ['"이 앱스토어 리뷰 감정 분석해줘"', '"사용자 피드백에서 긍/부정 패턴 뽑아줘"'],
+  },
+  "/user-personas": {
+    triggers: ["제품 설계·마케팅 메시지 정렬", "팀 공통 사용자 이해"],
+    outputs: ["JTBD·페인·게인·예상치 못한 인사이트 포함 3개 페르소나"],
+    examplePrompts: ['"LinkDrop 파트너 3가지 페르소나 만들어줘"', '"시니어 사용자 페르소나 생성해줘"'],
+  },
+  "/user-segmentation": {
+    triggers: ["사용자 그룹별 행동 패턴 이해", "타겟팅 기반 마케팅 준비"],
+    outputs: ["최소 3개 뚜렷한 사용자 세그먼트 (행동·JTBD·니즈 기반)"],
+    examplePrompts: ['"우리 파트너 회원 세그먼트 나눠줘"', '"활성/비활성 사용자 세그멘테이션해줘"'],
+  },
+  "/marketing-ideas": {
+    triggers: ["예산 제한 속 창의적 캠페인 아이디어 발굴"],
+    outputs: ["채널·메시지·참여 근거 포함 5가지 마케팅 캠페인 아이디어"],
+    examplePrompts: ['"파트너 모집 마케팅 아이디어 5개 줘"', '"저예산 SNS 바이럴 캠페인 아이디어 줘"'],
+  },
+  "/north-star-metric": {
+    triggers: ["팀 전체가 집중할 단일 지표 정의", "OKR 수립 전 북극성 설정"],
+    outputs: ["비즈니스 유형 분류 + 검증된 노스스타 지표 + 3~5개 인풋 지표"],
+    examplePrompts: ['"LinkDrop 노스스타 지표 정의해줘"', '"우리 팀이 집중해야 할 핵심 지표 하나 뭐야?"'],
+  },
+  "/positioning-ideas": {
+    triggers: ["경쟁사 대비 차별화된 포지셔닝 필요", "브랜드 메시지 방향 결정"],
+    outputs: ["3~5가지 포지셔닝 아이디어 + 각 문구 + 타겟 세그먼트"],
+    examplePrompts: ['"링크트리 대비 LinkDrop 차별화 포지셔닝 아이디어 줘"', '"시니어 타겟 포지셔닝 어떻게 할까?"'],
+  },
+  "/product-name": {
+    triggers: ["신규 제품·기능·캠페인 이름 결정"],
+    outputs: ["기억에 남는 5개 이름 아이디어 + 브랜드 가치 정렬 근거"],
+    examplePrompts: ['"파트너 등급 업그레이드 기능 이름 아이디어 줘"', '"새 멤버십 프로그램 이름 뭐가 좋아?"'],
+  },
+  "/value-prop-statements": {
+    triggers: ["마케팅 카피 작성", "랜딩페이지·이메일·세일즈 자료 문구 필요"],
+    outputs: ["마케팅·영업·온보딩용 다양한 가치 제안 문구"],
+    examplePrompts: ['"LinkDrop 파트너십 가치 제안 문구 5개 써줘"', '"시니어 타겟 마케팅 카피 만들어줘"'],
+  },
+
+  // ── 제품 전략
+  "/ansoff-matrix": {
+    triggers: ["성장 전략 옵션 탐색", "신시장/신제품 방향 결정"],
+    outputs: ["시장침투·시장개발·제품개발·다각화 4가지 전략 옵션 매핑"],
+    examplePrompts: ['"LinkDrop 성장 전략 안소프 매트릭스로 분석해줘"', '"신시장 진출 전략 뭐가 있어?"'],
+  },
+  "/business-model": {
+    triggers: ["비즈니스 모델 전체 문서화", "투자자·파트너에게 비즈니스 설명"],
+    outputs: ["9개 구성 요소(고객·채널·관계·수익·자원·활동·파트너·비용·가치 제안) BMC"],
+    examplePrompts: ['"LinkDrop 비즈니스 모델 캔버스 만들어줘"', '"우리 수익 구조 BMC로 정리해줘"'],
+  },
+  "/lean-canvas": {
+    triggers: ["스타트업·신제품 아이디어 빠른 문서화", "투자자 커뮤니케이션"],
+    outputs: ["문제·솔루션·UVP·경쟁 우위·채널·세그먼트·수익 모델·비용 구조 린 캔버스"],
+    examplePrompts: ['"LinkDrop V2 린 캔버스 만들어줘"', '"새 웹소설 기능 린 캔버스로 정리해줘"'],
+  },
+  "/monetization-strategy": {
+    triggers: ["수익 모델 다각화", "새로운 수익원 탐색"],
+    outputs: ["3~5가지 수익 모델 옵션 + 오디언스 적합도·리스크·검증 실험"],
+    examplePrompts: ['"LinkDrop 추가 수익화 전략 브레인스토밍해줘"', '"프리미엄 기능 가격 모델 어떻게 설계할까?"'],
+  },
+  "/pestle-analysis": {
+    triggers: ["거시 환경 리스크 파악", "전략 기획 시 외부 환경 분석"],
+    outputs: ["정치·경제·사회·기술·법률·환경 6가지 요인 분석"],
+    examplePrompts: ['"한국 디지털 교육 시장 PESTLE 분석해줘"', '"MLM 규제 리스크 법적 요인으로 분석해줘"'],
+  },
+  "/porters-five-forces": {
+    triggers: ["산업 매력도 평가", "진입 장벽·경쟁 강도 파악"],
+    outputs: ["경쟁·공급자·구매자·대체재·신규 진입자 5가지 힘 분석 + 전략적 시사점"],
+    examplePrompts: ['"교육 링크인바이오 시장 포터 5 힘 분석해줘"', '"우리 시장 진입 장벽 높아?"'],
+  },
+  "/pricing-strategy": {
+    triggers: ["신규 기능 가격 결정", "경쟁사 가격 비교", "가격 인상 검토"],
+    outputs: ["가격 모델 옵션·경쟁사 비교·지불 의향 추정·권장 전략"],
+    examplePrompts: ['"파트너 이용권 가격 전략 어떻게 설계해?"', '"프리미엄 플랜 얼마가 적당해?"'],
+  },
+  "/product-strategy": {
+    triggers: ["제품 전략 전체 정렬", "연간 전략 문서화"],
+    outputs: ["비전·세그먼트·가치 제안·트레이드오프·지표·성장·역량·방어성 9섹션 전략 캔버스"],
+    examplePrompts: ['"LinkDrop V2 제품 전략 캔버스 만들어줘"', '"내년 제품 방향성 전략 문서로 정리해줘"'],
+  },
+  "/product-vision": {
+    triggers: ["팀 동기부여용 비전 문구 작성", "이해관계자 정렬"],
+    outputs: ["영감을 주는 제품 비전 문구 3~5개 후보 + 각 근거"],
+    examplePrompts: ['"LinkDrop 제품 비전 문구 써줘"', '"시니어 디지털 교육의 미래 비전 표현해줘"'],
+  },
+  "/startup-canvas": {
+    triggers: ["신규 스타트업·제품 라인의 통합 문서화"],
+    outputs: ["제품 전략 9섹션 + 비즈니스 모델(비용·수익) 결합 통합 캔버스"],
+    examplePrompts: ['"LinkDrop V2 스타트업 캔버스 작성해줘"', '"웹소설 플랫폼 신사업 캔버스 만들어줘"'],
+  },
+  "/swot-analysis": {
+    triggers: ["경쟁 포지셔닝 파악", "전략적 의사결정 전 상황 분석"],
+    outputs: ["강점·약점·기회·위협 분석 + 실행 가능한 전략적 권고"],
+    examplePrompts: ['"LinkDrop SWOT 분석해줘"', '"이 신기능 출시 전 SWOT 체크해줘"'],
+  },
+  "/value-proposition": {
+    triggers: ["제품 가치 제안을 체계적으로 문서화", "JTBD 기반 포지셔닝"],
+    outputs: ["누구에게·왜·현재 상태·어떻게·미래 상태·대안 포함 6파트 가치 제안 문서"],
+    examplePrompts: ['"파트너 회원 가치 제안 6파트로 써줘"', '"LinkDrop 핵심 가치 제안 문서화해줘"'],
+  },
+
+  // ── 툴킷·기타
+  "/draft-nda": {
+    triggers: ["파트너십·외주 계약 전 NDA 준비"],
+    outputs: ["정보 유형·관할권·검토 필요 조항 포함 NDA 초안"],
+    examplePrompts: ['"강사 파트너 계약 NDA 초안 써줘"', '"외주 개발자용 비밀유지계약서 만들어줘"'],
+  },
+  "/grammar-check": {
+    triggers: ["공식 문서·이메일·블로그 발행 전 문법 검토"],
+    outputs: ["문법·논리·흐름 오류 목록 + 표적 수정안 (전체 재작성 없이)"],
+    examplePrompts: ['"이 랜딩 카피 문법 확인해줘"', '"블로그 포스트 논리 흐름 맞아?"'],
+  },
+  "/privacy-policy": {
+    triggers: ["서비스 출시 전 법적 의무 문서 준비", "GDPR·개인정보법 준수"],
+    outputs: ["데이터 유형·관할권·GDPR 준수·검토 필요 조항 포함 방침 초안"],
+    examplePrompts: ['"LinkDrop 개인정보처리방침 초안 써줘"', '"GDPR 준수 프라이버시 정책 만들어줘"'],
+  },
+  "/review-resume": {
+    triggers: ["PM 직무 이력서 개선", "취업 지원 전 최종 검토"],
+    outputs: ["XYZ+S 공식·키워드·직무 맞춤화 10가지 기준 종합 검토 + 개선안"],
+    examplePrompts: ['"이 PM 이력서 검토해줘"', '"이력서에서 가장 먼저 고쳐야 할 것 뭐야?"'],
+  },
+  "/obsidian": {
+    triggers: ["Obsidian 노트와 연동한 문서 관리", "링크드 노트 시스템 구축"],
+    outputs: ["Obsidian 형식 마크다운 파일", "내부 링크 구조"],
+    examplePrompts: ['"이 회의록 Obsidian 형식으로 저장해줘"', '"Obsidian 연동해서 프로젝트 노트 정리해줘"'],
   },
 };
 
@@ -343,21 +873,35 @@ function discoverSkills(): DiscoveredSkill[] {
     // SKILLS_DIR 접근 불가 시 빈 배열 반환
   }
 
-  // 알파벳 순 정렬 (수동 상세 있는 스킬 우선)
-  return skills.sort((a, b) => {
-    const aHas = !!MANUAL_DETAILS[a.command];
-    const bHas = !!MANUAL_DETAILS[b.command];
-    if (aHas !== bHas) return aHas ? -1 : 1;
-    return a.command.localeCompare(b.command);
-  });
+  return skills;
 }
 
 // ── 페이지 컴포넌트 ────────────────────────────────────────────
-export default function DevSkillsPage() {
+export default async function DevSkillsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ cat?: string }>;
+}) {
+  const { cat } = await searchParams;
   const skills = discoverSkills();
-  const withDetail = skills.filter((s) => !!MANUAL_DETAILS[s.command]);
-  const autoOnly   = skills.filter((s) => !MANUAL_DETAILS[s.command]);
+  const activeCat = cat ?? "all";
+
+  // command → skill 맵
+  const skillMap = new Map(skills.map((s) => [s.command, s]));
+
+  // 카테고리별 그룹 구성
+  const categorizedCommands = new Set(SKILL_CATEGORIES.flatMap((c) => c.commands));
+  const uncategorized = skills.filter((s) => !categorizedCommands.has(s.command));
+
   const routingRulesCount = skills.filter((s) => s.routingTrigger).length;
+  const categoryCount = SKILL_CATEGORIES.length + (uncategorized.length > 0 ? 1 : 0);
+
+  // 필터 적용: activeCat이 "all"이면 전체, 아니면 해당 카테고리만
+  const visibleCategories =
+    activeCat === "all"
+      ? SKILL_CATEGORIES
+      : SKILL_CATEGORIES.filter((c) => c.id === activeCat);
+  const showUncategorized = activeCat === "all" || activeCat === "etc";
 
   return (
     <div style={{
@@ -397,52 +941,130 @@ export default function DevSkillsPage() {
           {/* 통계 배지 */}
           <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 10 }}>
             <Stat label="전체 스킬" value={skills.length} color="#6fff00" />
-            <Stat label="상세 문서" value={withDetail.length} color="#a855f7" />
-            <Stat label="자동 감지" value={autoOnly.length} color="#f59e0b" />
+            <Stat label="카테고리" value={categoryCount} color="#a855f7" />
             <Stat label="라우팅 연결" value={routingRulesCount} color="#3b82f6" />
+            <Stat label="상세 문서" value={Object.keys(MANUAL_DETAILS).length} color="#f59e0b" />
           </div>
         </div>
       </div>
 
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 24px 0" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px 0" }}>
 
-        {/* 상세 문서 있는 스킬 */}
-        {withDetail.length > 0 && (
+        {/* ── 카테고리 필터 탭 ── */}
+        <div style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 8,
+          marginBottom: 40,
+          padding: "16px 20px",
+          background: "rgba(255,255,255,0.02)",
+          border: "1px solid rgba(255,255,255,0.07)",
+          borderRadius: 12,
+        }}>
+          {/* 전체 버튼 */}
+          <Link
+            href="/dev/skills"
+            style={{
+              fontSize: 13, fontWeight: 700,
+              padding: "6px 14px", borderRadius: 20,
+              textDecoration: "none",
+              background: activeCat === "all" ? "rgba(111,255,0,0.18)" : "rgba(255,255,255,0.05)",
+              color: activeCat === "all" ? "#6fff00" : "rgba(228,228,240,0.5)",
+              border: activeCat === "all" ? "1px solid rgba(111,255,0,0.4)" : "1px solid rgba(255,255,255,0.08)",
+              transition: "all 0.15s",
+            }}
+          >
+            전체 <span style={{ opacity: 0.6, fontWeight: 400 }}>{skills.length}</span>
+          </Link>
+
+          {/* 카테고리별 버튼 */}
+          {SKILL_CATEGORIES.map((cat) => {
+            const count = cat.commands.filter((cmd) => skillMap.has(cmd)).length;
+            if (count === 0) return null;
+            const isActive = activeCat === cat.id;
+            return (
+              <Link
+                key={cat.id}
+                href={`/dev/skills?cat=${cat.id}`}
+                style={{
+                  fontSize: 13, fontWeight: 700,
+                  padding: "6px 14px", borderRadius: 20,
+                  textDecoration: "none",
+                  background: isActive ? `${cat.color}22` : "rgba(255,255,255,0.05)",
+                  color: isActive ? cat.color : "rgba(228,228,240,0.5)",
+                  border: isActive ? `1px solid ${cat.color}55` : "1px solid rgba(255,255,255,0.08)",
+                  transition: "all 0.15s",
+                }}
+              >
+                {cat.title} <span style={{ opacity: 0.6, fontWeight: 400 }}>{count}</span>
+              </Link>
+            );
+          })}
+
+          {/* 미분류 버튼 */}
+          {uncategorized.length > 0 && (
+            <Link
+              href="/dev/skills?cat=etc"
+              style={{
+                fontSize: 13, fontWeight: 700,
+                padding: "6px 14px", borderRadius: 20,
+                textDecoration: "none",
+                background: activeCat === "etc" ? "rgba(100,116,139,0.25)" : "rgba(255,255,255,0.05)",
+                color: activeCat === "etc" ? "#94a3b8" : "rgba(228,228,240,0.5)",
+                border: activeCat === "etc" ? "1px solid rgba(100,116,139,0.4)" : "1px solid rgba(255,255,255,0.08)",
+                transition: "all 0.15s",
+              }}
+            >
+              미분류 <span style={{ opacity: 0.6, fontWeight: 400 }}>{uncategorized.length}</span>
+            </Link>
+          )}
+        </div>
+
+        {/* 카테고리별 섹션 */}
+        {visibleCategories.map((cat) => {
+          const catSkills = cat.commands
+            .map((cmd) => skillMap.get(cmd))
+            .filter((s): s is DiscoveredSkill => s !== undefined);
+
+          if (catSkills.length === 0) return null;
+
+          return (
+            <section key={cat.id} style={{ marginBottom: 56 }}>
+              <SectionHeader
+                title={cat.title}
+                count={catSkills.length}
+                color={cat.color}
+                desc={cat.desc}
+              />
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(2, 1fr)",
+                gap: 20,
+              }}>
+                {catSkills.map((skill) => (
+                  <SkillCard key={skill.command} skill={skill} detail={MANUAL_DETAILS[skill.command]} />
+                ))}
+              </div>
+            </section>
+          );
+        })}
+
+        {/* 미분류 스킬 */}
+        {showUncategorized && uncategorized.length > 0 && (
           <section style={{ marginBottom: 56 }}>
             <SectionHeader
-              title="상세 문서 스킬"
-              count={withDetail.length}
-              color="#a855f7"
-              desc="트리거·출력물·예시 프롬프트가 수동으로 작성된 스킬"
+              title="미분류"
+              count={uncategorized.length}
+              color="#64748b"
+              desc="카테고리 미지정 — SKILL_CATEGORIES에 추가 권장"
             />
             <div style={{
               display: "grid",
               gridTemplateColumns: "repeat(2, 1fr)",
               gap: 20,
             }}>
-              {withDetail.map((skill) => (
+              {uncategorized.map((skill) => (
                 <SkillCard key={skill.command} skill={skill} detail={MANUAL_DETAILS[skill.command]} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* 자동 감지만 된 스킬 */}
-        {autoOnly.length > 0 && (
-          <section style={{ marginBottom: 56 }}>
-            <SectionHeader
-              title="자동 감지 스킬"
-              count={autoOnly.length}
-              color="#f59e0b"
-              desc=".claude/skills/에서 발견됨 — CLAUDE.md에 라우팅 규칙 추가 권장"
-            />
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(2, 1fr)",
-              gap: 20,
-            }}>
-              {autoOnly.map((skill) => (
-                <SkillCard key={skill.command} skill={skill} detail={undefined} />
               ))}
             </div>
           </section>

@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
     ? 'code,cat,title,description,body,is_premium'
     : 'code,cat,title,description,is_premium';
 
-  let q = db.from('prompts').select(select).order('code');
+  let q = db.from('v2_prompts').select(select).order('code');
   if (cat) q = q.eq('cat', cat);
 
   const { data, error } = await q;

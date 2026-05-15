@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card Reveal — Sowon</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Noto+Serif+KR:wght@300;400&display=swap');
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: #010008;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Noto Serif KR', serif;
+    }
+    .phone-frame {
+      width: 390px; height: 844px; border-radius: 54px;
+      background: #0b0e1a; position: relative;
+      overflow: clip; flex-shrink: 0; zoom: 0.88;
+      box-shadow:
+        0 0 0 2px rgba(255,255,255,0.15),
+        0 0 0 9px #1a1a1a,
+        0 0 0 11px rgba(255,255,255,0.05),
+        0 50px 120px rgba(0,0,0,0.75),
+        0 0 80px rgba(80,0,180,0.10);
+      user-select: none; -webkit-user-select: none;
+    }
+    .phone-frame::before {
+      content: ''; position: absolute;
+      top: 14px; left: 50%; transform: translateX(-50%);
+      width: 110px; height: 30px; background: #0a0a0a;
+      border-radius: 0 0 18px 18px; z-index: 300;
+    }
+    /* Background */
+    .bg-glow { position: absolute; inset: 0; pointer-events: none; z-index: 0; background: #0b0e1a; overflow: hidden; }
+    .ld-blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.52; animation: ld-drift var(--dur,18s) ease-in-out infinite alternate; }
+    .ld-blob--1 { width:340px;height:340px; background:radial-gradient(circle,#5ee7df,#3b82f6); top:-120px;left:-80px; --dur:22s; }
+    .ld-blob--2 { width:290px;height:290px; background:radial-gradient(circle,#b490f5,#ec4899); bottom:-110px;right:-60px; --dur:17s; animation-delay:-8s; }
+    .ld-blob--3 { width:200px;height:200px; background:radial-gradient(circle,#ffd27f,#f7a8c4); top:40%;left:42%; --dur:25s; animation-delay:-13s; }
+    @keyframes ld-drift {
+      0%   { transform: translate(0,0) scale(1); }
+      33%  { transform: translate(28px,-18px) scale(1.08); }
+      66%  { transform: translate(-18px,28px) scale(0.94); }
+      100% { transform: translate(14px,14px) scale(1.04); }
+    }
+    /* Persona BG */
+    .persona-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; opacity: 0; z-index: 1; pointer-events: none; transition: opacity 1.4s ease; }
+    .persona-bg.on { opacity: 0.38; }
+    /* Header */
+    .header {
+      position: absolute; top: 0; left: 0; right: 0; z-index: 20;
+      text-align: center; padding: 50px 20px 14px;
+      background: linear-gradient(to bottom, rgba(11,14,26,0.96) 60%, transparent 100%);
+      pointer-events: none;
+    }
+    .hd-eyebrow { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 5px; color: rgba(255,255,255,0.38); text-transform: uppercase; margin-bottom: 4px; }
+    .hd-main { font-family: 'Cinzel', serif; font-size: 15px; letter-spacing: 2.5px; color: rgba(255,255,255,0.88); }
+    /* Main stage */
+    #stage {
+      position: absolute; inset: 0; z-index: 10;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 0; overflow: visible;
+    }
+    /* Zodiac coin */
+    .zodiac-hero {
+      position: relative; width: 176px; height: 176px;
+      margin: 0 auto -100px; z-index: 1; flex-shrink: 0;
+      opacity: 0; transform: scale(0.6) translateY(-16px);
+      transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .zodiac-hero.on { opacity: 1; transform: scale(1) translateY(0); }
+    .zodiac-hero img { width: 176px; height: 176px; object-fit: contain; position: relative; z-index: 2; image-rendering: high-quality; }
+    .zodiac-spin {
+      position: absolute; inset: -6px; border-radius: 50%; overflow: hidden; z-index: 0;
+    }
+    .zodiac-spin::before {
+      content: ''; position: absolute; width: 300%; height: 300%; top: 50%; left: 50%;
+      transform: translate(-50%,-50%) rotate(0deg); transform-origin: center center;
+      background: conic-gradient(from 0deg,
+        transparent 0deg,
+        var(--glow-faint, rgba(50,120,240,0.10)) 30deg,
+        var(--glow-mid,   rgba(20,60,180,0.55))  70deg,
+        var(--glow-inner, rgba(50,120,240,0.90)) 90deg,
+        var(--glow-mid,   rgba(20,60,180,0.55))  110deg,
+        var(--glow-faint, rgba(50,120,240,0.10)) 150deg,
+        transparent 180deg, transparent 360deg);
+      animation: z-spin 5s linear infinite;
+    }
+    @keyframes z-spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    .zodiac-glow {
+      position: absolute; inset: -16px; border-radius: 50%; pointer-events: none; z-index: -1;
+      box-shadow:
+        0 0 30px 8px  var(--glow-mid,   rgba(20,60,180,0.55)),
+        0 0 70px 20px var(--glow-outer, rgba(20,60,180,0.25)),
+        0 0 140px 40px var(--glow-faint, rgba(20,60,180,0.10));
+    }
+    /* Aura rings */
+    .aura-rings { position: absolute; left: 50%; top: 50%; width: 1px; height: 1px; pointer-events: none; z-index: -1; }
+    .aura-ring {
+      position: absolute; width: 150px; height: 150px; border-radius: 50%;
+      background: radial-gradient(circle,
+        transparent 50%,
+        var(--glow-outer, rgba(20,60,180,0.30)) 62%,
+        var(--glow-faint, rgba(20,60,180,0.10)) 74%,
+        transparent 86%);
+      transform: translate(-50%,-50%) scale(0.4); opacity: 0;
+    }
+    .aura-ring:nth-child(1) { animation: ring-ripple 3.6s ease-out 0s   infinite; }
+    .aura-ring:nth-child(2) { animation: ring-ripple 3.6s ease-out 1.2s infinite; }
+    .aura-ring:nth-child(3) { animation: ring-ripple 3.6s ease-out 2.4s infinite; }
+    @keyframes ring-ripple {
+      0%   { transform: translate(-50%,-50%) scale(0.4); opacity: 0.9; }
+      60%  { opacity: 0.4; }
+      100% { transform: translate(-50%,-50%) scale(4.0); opacity: 0; }
+    }
+    /* Fan row */
+    #fan-row {
+      display: flex; gap: 10px; align-items: flex-end;
+      overflow: visible; position: relative; z-index: 2;
+    }
+    /* Card column (fan item) */
+    .rv-col {
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      opacity: 1; transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    /* Initial: 06 결과 오버레이와 동일 — 182×273px, 팬 배치, scale 없음 */
+    .rv-col:nth-child(1) { transform: rotate(-13deg) translateY(96px) translateX(10px); z-index: 1; margin-right: -20px; }
+    .rv-col:nth-child(2) { transform: translateY(61px); z-index: 3; }
+    .rv-col:nth-child(3) { transform: rotate(13deg) translateY(96px) translateX(-10px); z-index: 1; margin-left: -20px; }
+    /* Final: 초기와 동일 위치 (이동 없음, 뒤집기만) */
+    .rv-col:nth-child(1).on { transform: rotate(-13deg) translateY(96px) translateX(10px); }
+    .rv-col:nth-child(2).on { transform: translateY(61px); }
+    .rv-col:nth-child(3).on { transform: rotate(13deg) translateY(96px) translateX(-10px); }
+    /* Card flip wrapper */
+    .rv-wrap {
+      position: relative; width: 182px; height: 273px;
+      perspective: 700px;
+    }
+    /* Two-face flip */
+    .rv-inner {
+      width: 100%; height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.65s cubic-bezier(0.45, 0.05, 0.55, 0.95);
+    }
+    .rv-col:nth-child(2) .rv-inner { transition-duration: 0.9s; }
+    .rv-back, .rv-front {
+      position: absolute; inset: 0;
+      border-radius: 10px; overflow: hidden;
+      backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    }
+    .rv-back img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; border: 1px solid rgba(255,255,255,0.09); }
+    .rv-front { transform: rotateY(180deg); }
+    .rv-art { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 10px; }
+    .rv-frame { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; pointer-events: none; }
+    .rv-inner.flipped { transform: rotateY(180deg); }
+    /* Glow (on wrap, behind card) */
+    .rv-glow {
+      position: absolute; inset: -4px; border-radius: 14px; pointer-events: none; z-index: -1;
+      opacity: 0; transition: opacity 0.4s ease;
+      box-shadow:
+        0 0 20px 4px  var(--glow-mid,   rgba(20,60,180,0.55)),
+        0 0 50px 12px var(--glow-outer, rgba(20,60,180,0.25)),
+        0 0 100px 24px var(--glow-faint, rgba(20,60,180,0.10));
+    }
+    .rv-col:nth-child(1) .rv-glow,
+    .rv-col:nth-child(3) .rv-glow {
+      box-shadow:
+        0 0 10px 2px  var(--glow-outer, rgba(20,60,180,0.25)),
+        0 0 24px 6px  var(--glow-faint, rgba(20,60,180,0.10));
+    }
+    .rv-glow.on { opacity: 1; }
+    /* Text labels */
+    .rv-pos {
+      font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 3px;
+      color: #DDDDDD; text-transform: uppercase;
+      opacity: 0; transform: translateY(-6px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .rv-col.text-on .rv-pos { opacity: 1; transform: translateY(0); }
+    /* Footer */
+    .footer {
+      position: absolute; bottom: 0; left: 0; right: 0; z-index: 20;
+      text-align: center; padding: 10px 20px 26px;
+      background: linear-gradient(to top, rgba(11,14,26,0.90) 55%, transparent 100%);
+      pointer-events: none;
+    }
+    /* CTA */
+    #btn-begin {
+      position: absolute; bottom: 56px; left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      z-index: 50;
+      font-family: 'Cinzel', serif; font-size: 12px;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: rgba(220,210,255,1);
+      background: rgba(160,130,255,0.18);
+      border: 1px solid rgba(190,170,255,0.60);
+      padding: 13px 32px; border-radius: 3px; cursor: pointer;
+      white-space: nowrap;
+    }
+    #btn-begin.visible { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+    #btn-begin:hover { background: rgba(160,130,255,0.30); border-color: rgba(200,180,255,0.85); }
+    @media (prefers-reduced-motion: reduce) {
+      .rv-inner { transition-duration: 0.05s !important; }
+      .rv-col   { transition-duration: 0.05s !important; }
+    }
+  </style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="bg-glow">
+    <img class="persona-bg" id="persona-bg" src="" alt="">
+    <div class="ld-blob ld-blob--1"></div>
+    <div class="ld-blob ld-blob--2"></div>
+    <div class="ld-blob ld-blob--3"></div>
+  </div>
+  <header class="header">
+    <div class="hd-eyebrow">Sowon · Tarot</div>
+    <div class="hd-main">The Cards Have Spoken</div>
+  </header>
+  <div id="stage">
+    <!-- zodiac + fan built by JS -->
+  </div>
+  <footer class="footer"></footer>
+  <button id="btn-begin">Begin Your Reading &nbsp;→</button>
+</div>
+
+<script>
+  const OHAENG = {
+    wood:  { inner:'rgba(56,200,100,0.90)',  outer:'rgba(30,140,60,0.55)'   },
+    fire:  { inner:'rgba(255,80,60,0.90)',   outer:'rgba(200,40,0,0.55)'    },
+    earth: { inner:'rgba(210,168,20,0.90)',  outer:'rgba(160,120,0,0.55)'   },
+    metal: { inner:'rgba(200,215,230,0.90)', outer:'rgba(140,170,200,0.55)' },
+    water: { inner:'rgba(50,120,240,0.90)',  outer:'rgba(20,60,180,0.55)'   },
+  };
+  const PERSONA_IMAGES = { nana:'img/Personas/Nana.webp', scholar:'img/Personas/Scholar.webp', prophet:'img/Personas/Prophet.webp', mago:'img/Personas/Mago.webp' };
+
+  // Read sessionStorage — fallback to demo data if direct open
+  let reading;
+  try { reading = JSON.parse(sessionStorage.getItem('sowon_reading')); } catch(e) {}
+  if (!reading) {
+    reading = {
+      element: 'water', zodiac: 'img/12/01_dragon.png', persona: 'mago',
+      cards: [
+        { pos:'Past',    name:'Death',      img:'img/tarot-card/major_13_death.jpeg',         slotX:105, slotY:690, slotRot:-8 },
+        { pos:'Present', name:'The Lovers', img:'img/tarot-card/major_06_lovers.jpeg',         slotX:195, slotY:670, slotRot:0  },
+        { pos:'Future',  name:'The World',  img:'img/tarot-card/major_21_world.jpeg',          slotX:285, slotY:690, slotRot:8  },
+      ],
+    };
+  }
+
+  // Set ohaeng CSS vars
+  const oc = OHAENG[reading.element] || OHAENG.water;
+  document.documentElement.style.setProperty('--glow-inner', oc.inner);
+  document.documentElement.style.setProperty('--glow-mid',   oc.outer);
+  document.documentElement.style.setProperty('--glow-outer', oc.outer.replace(/[\d.]+\)$/, '0.25)'));
+  document.documentElement.style.setProperty('--glow-faint',  oc.outer.replace(/[\d.]+\)$/, '0.10)'));
+
+  // Persona BG
+  const $pbg = document.getElementById('persona-bg');
+  $pbg.src = PERSONA_IMAGES[reading.persona] || PERSONA_IMAGES.mago;
+  setTimeout(() => $pbg.classList.add('on'), 300);
+
+  const $stage = document.getElementById('stage');
+
+  // Build zodiac coin
+  const $zh = document.createElement('div'); $zh.className = 'zodiac-hero';
+  const $zglow = document.createElement('div'); $zglow.className = 'zodiac-glow'; $zh.appendChild($zglow);
+  const $zspin = document.createElement('div'); $zspin.className = 'zodiac-spin'; $zh.appendChild($zspin);
+  const $zimg = document.createElement('img'); $zimg.src = reading.zodiac; $zimg.alt = ''; $zh.appendChild($zimg);
+  const $aura = document.createElement('div'); $aura.className = 'aura-rings';
+  for (let k=0;k<3;k++){const $r=document.createElement('div');$r.className='aura-ring';$aura.appendChild($r);}
+  $zh.appendChild($aura);
+  $stage.appendChild($zh);
+
+  // Build fan row
+  const $fanRow = document.createElement('div'); $fanRow.id = 'fan-row';
+
+  // cards[0]=Past, [1]=Present, [2]=Future — fan order: Past, Present, Future
+  reading.cards.forEach((card, i) => {
+    const $col = document.createElement('div'); $col.className = 'rv-col';
+
+    const $wrap = document.createElement('div'); $wrap.className = 'rv-wrap';
+
+    const $inner = document.createElement('div'); $inner.className = 'rv-inner';
+
+    const $back = document.createElement('div'); $back.className = 'rv-back';
+    const $backImg = document.createElement('img'); $backImg.src = 'img/back_design1.png'; $backImg.alt = '';
+    $back.appendChild($backImg); $inner.appendChild($back);
+
+    const $front = document.createElement('div'); $front.className = 'rv-front';
+    const $art = document.createElement('img'); $art.className = 'rv-art'; $art.src = card.img; $art.alt = card.name;
+    const $frame = document.createElement('img'); $frame.className = 'rv-frame'; $frame.src = 'img/card_frame.png'; $frame.alt = '';
+    $front.appendChild($art); $front.appendChild($frame); $inner.appendChild($front);
+
+    $wrap.appendChild($inner);
+
+    const $glow = document.createElement('div'); $glow.className = 'rv-glow'; $wrap.appendChild($glow);
+
+
+    $col.appendChild($wrap);
+
+    const $pos = document.createElement('div'); $pos.className = 'rv-pos'; $pos.textContent = card.pos; $col.appendChild($pos);
+
+    $fanRow.appendChild($col);
+  });
+  $stage.appendChild($fanRow);
+
+  // Animation sequence
+  const cols = $fanRow.querySelectorAll('.rv-col');
+
+  // Step 1: fan 위치 확정 (06 결과 오버레이와 동일 위치, 시각 변화 없음)
+  setTimeout(() => {
+    cols.forEach(col => col.classList.add('on'));
+  }, 150);
+
+  // Step 2: Y-flip sequence — Right(2) → Left(0) → Center(1)
+  const flipOrder = [2, 0, 1];
+  flipOrder.forEach((colIdx, seq) => {
+    setTimeout(() => {
+      const $col = cols[colIdx];
+      $col.querySelector('.rv-inner').classList.add('flipped');
+      $col.querySelector('.rv-glow').classList.add('on');
+      // Text appears 200ms after flip starts
+      setTimeout(() => { $col.classList.add('text-on'); }, 200);
+    }, 600 + seq * 350);
+  });
+
+  // Step 3: zodiac coin bounce-in after center card flips
+  setTimeout(() => { $zh.classList.add('on'); }, 600 + 2 * 350 + 700);
+
+  // Step 4: CTA button
+  setTimeout(() => { document.getElementById('btn-begin').classList.add('visible'); }, 600 + 2 * 350 + 1300);
+
+  document.getElementById('btn-begin').addEventListener('click', () => {
+    // Navigate to 08 when ready
+    alert('→ 08_Question Input (coming soon)');
+  });
+</script>
+</body>
+</html>

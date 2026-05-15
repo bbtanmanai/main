@@ -273,5 +273,8 @@
       "value": "연 2천만 명",
       "desc": "한국 방문 외국인 (2024년 기준)"
     }
+  },
+  "landing12": {
+    "variant": "saju-tarot-guide"
   }
 }

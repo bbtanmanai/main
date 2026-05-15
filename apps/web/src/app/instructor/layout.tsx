@@ -3,11 +3,12 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/hooks/useSession";
-import LgShell from "@/components/lg/LgShell";
+import { BookOpen, Users } from "lucide-react";
+import LgShell, { type MenuItem } from "@/components/lg/LgShell";
 
-const MENU_ITEMS = [
-  { label: "강의 관리", href: "/instructor/courses",  icon: "📖" },
-  { label: "수강생",   href: "/instructor/students", icon: "👥" },
+const MENU_ITEMS: MenuItem[] = [
+  { label: "강의 관리", href: "/instructor/courses",  icon: BookOpen },
+  { label: "수강생",   href: "/instructor/students", icon: Users },
 ];
 
 const ALLOWED = ["instructor", "admin"];

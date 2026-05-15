@@ -11,7 +11,7 @@ import { useAuthModal } from "@/hooks/useAuthModal";
 import LdAuthPanel from "./LdAuthPanel";
 
 export default function LdAuthBottomSheet() {
-  const { isOpen, close } = useAuthModal();
+  const { isOpen, close, redirectTo } = useAuthModal();
   const overlayRef = useRef<HTMLDivElement>(null);
   const touchStartY = useRef<number>(0);
 
@@ -72,7 +72,7 @@ export default function LdAuthBottomSheet() {
         <div className="ld-glass ld-auth-bs-card">
           {/* 드래그 핸들 */}
           <div className="ld-auth-bs-handle" aria-hidden="true" />
-          <LdAuthPanel onClose={close} />
+          <LdAuthPanel onClose={close} redirectTo={redirectTo} />
         </div>
       </div>
     </div>

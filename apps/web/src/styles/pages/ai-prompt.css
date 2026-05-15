@@ -14,6 +14,9 @@
   z-index: 1;
 }
 
+/* ── blob 배경 고정 ── */
+.aip-blob-bg { position: fixed; }
+
 /* ── 탭바 ── */
 .aip-tabbar {
   position: sticky;
@@ -107,6 +110,8 @@
   width: 100%;
 }
 
+.aip-hidden { display: none !important; }
+
 .aip-content-inner {
   display: flex;
   max-width: 1200px;
@@ -135,6 +140,8 @@
 }
 
 .aip-sidebar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
   display: none;
 }
 
@@ -173,6 +180,21 @@
   cursor: pointer;
   transition: transform 360ms cubic-bezier(0.22, 0.68, 0, 1.2),
               box-shadow 360ms, background 360ms, border-color 360ms;
+}
+
+/* ── 사이드바 아이템 활성 상태 ── */
+.aip-nav-item.active {
+  border: 1px solid rgba(94, 231, 223, 0.55);
+  background: linear-gradient(135deg, rgba(94, 231, 223, 0.28) 0%, rgba(180, 144, 245, 0.22) 100%);
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.10), inset 0 1px 0 rgba(94, 231, 223, 0.35), 0 0 20px rgba(94, 231, 223, 0.10);
+  cursor: default;
+}
+
+.aip-nav-item:not(.active):hover {
+  background: rgba(255, 255, 255, 0.20);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(255, 255, 255, 0.13), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  border-color: #bbbbbb;
 }
 
 .aip-nav-item-icon {
@@ -310,6 +332,24 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 
+/* ── 카드 상태별 테두리 ── */
+.aip-prompt-card.expanded {
+  border-color: rgba(8, 145, 178, 0.35);
+}
+
+.aip-prompt-card.locked {
+  border-color: rgba(255, 180, 0, 0.3);
+}
+
+.aip-prompt-card:hover {
+  background: rgba(255, 255, 255, 0.65);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.92);
+}
+
+.aip-prompt-card.expanded:hover { border-color: rgba(8, 145, 178, 0.5); }
+.aip-prompt-card.locked:hover   { border-color: rgba(255, 180, 0, 0.45); }
+.aip-prompt-card:not(.expanded):not(.locked):hover { border-color: rgba(15, 23, 42, 0.20); }
+
 /* ── 카드 헤더 클릭 영역 ── */
 .aip-prompt-card-header {
   padding: 16px 20px;
@@ -369,6 +409,11 @@
   flex-shrink: 0;
 }
 
+/* ── 화살표 열림 상태 ── */
+.aip-prompt-card-arrow.open {
+  transform: rotate(180deg);
+}
+
 /* ── 카드 본문 (구매회원) ── */
 .aip-prompt-card-content {
   border-top: 1px solid rgba(15, 23, 42, 0.09);
@@ -403,6 +448,13 @@
   font-size: 0.8rem;
   font-weight: 500;
   transition: all 0.15s;
+}
+
+/* ── 복사 완료 상태 ── */
+.aip-copy-btn.copied {
+  border-color: rgba(8, 145, 178, 0.45);
+  background: rgba(8, 145, 178, 0.10);
+  color: #0891b2;
 }
 
 /* ── 잠금 패널 ── */
@@ -440,6 +492,11 @@
   font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
+}
+
+/* ── 멤버십 CTA 호버 ── */
+.aip-locked-cta:hover {
+  background: rgba(255, 180, 0, 0.25);
 }
 
 /* ── 로딩 텍스트 ── */

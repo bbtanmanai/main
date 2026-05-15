@@ -12,10 +12,11 @@ type Project = {
   desc: string;
   href: string;
   status: string;
+  bizplan?: string;
 };
 
-function OnedayCard({ num, icon, title, sub, desc, href, status }: Project) {
-  const cardRef = useRef<HTMLAnchorElement>(null);
+function OnedayCard({ num, icon, title, sub, desc, href, status, bizplan }: Project) {
+  const cardRef = useRef<HTMLDivElement>(null);
 
   function handleMouseMove(e: React.MouseEvent) {
     const card = cardRef.current;
@@ -35,13 +36,11 @@ function OnedayCard({ num, icon, title, sub, desc, href, status }: Project) {
   const isSoon = status === 'soon';
 
   return (
-    <a
+    <div
       ref={cardRef}
-      href={isSoon ? undefined : href}
       className={`${styles.ldOnedayCard}${isSoon ? ` ${styles.ldOnedayCardSoon}` : ''}`}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      aria-disabled={isSoon}
     >
       <span className={styles.ldOnedayCardBgNum} aria-hidden="true">{num}</span>
       <div className={styles.ldOnedayCardGlare} aria-hidden="true" />
@@ -52,15 +51,32 @@ function OnedayCard({ num, icon, title, sub, desc, href, status }: Project) {
       <p className={styles.ldOnedayCardSub}>{sub}</p>
       <p className={styles.ldOnedayCardDesc}>{desc}</p>
       <div className={styles.ldOnedayCardFooter}>
-        <div className={`${styles.ldOnedayStatus} ${isSoon ? styles.ldOnedayStatusSoon : styles.ldOnedayStatusActive}`}>
-          <span className={styles.ldOnedayStatusDot} />
-          {isSoon ? '준비 중' : '운영 중'}
+        <div className={styles.ldOnedayFooterLeft}>
+          <div className={`${styles.ldOnedayStatus} ${isSoon ? styles.ldOnedayStatusSoon : styles.ldOnedayStatusActive}`}>
+            <span className={styles.ldOnedayStatusDot} />
+            {isSoon ? '준비 중' : '운영 중'}
+          </div>
+          {!isSoon && bizplan && (
+            <button
+              type="button"
+              className={styles.ldOnedayBizplanBtn}
+              onClick={() => window.open(bizplan, '_blank', 'noopener,noreferrer')}
+            >
+              사업기획서 다운받기
+            </button>
+          )}
         </div>
         {!isSoon && (
-          <span className={styles.ldOnedayCardLink}>자세히 →</span>
+          <a
+            href={href}
+            className={styles.ldOnedayCardLink}
+            onClick={(e) => e.stopPropagation()}
+          >
+            자세히 →
+          </a>
         )}
       </div>
-    </a>
+    </div>
   );
 }
 
@@ -99,7 +115,6 @@ export default function LdOnedaySection() {
             <OnedayCard key={p.num} {...p} />
           ))}
         </div>
-
 
       </div>
     </section>

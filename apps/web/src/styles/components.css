@@ -3,6 +3,14 @@
    Glass 카드, 버튼, 뱃지, 태그, 소셜 로그인, 마스코트 등
    ============================================================ */
 
+/* ── 전역 h2 헤딩 폰트 — Black Han Sans (index 제외) ─────── */
+/* font-weight: 400 !important — Black Han Sans는 400 단일 웨이트.
+   800 등 인라인 스타일이 남아있으면 Faux Bold가 발생하므로 강제 차단 */
+h2 {
+  font-family: var(--font-family-black-han-sans);
+  font-weight: 400 !important;
+}
+
 /* ============================================================
    Liquid-Glass 효과 — JS 분기 없이 단일 클래스로 사용
    모든 글래스 UI 요소에 .ld-glass 클래스 적용

@@ -50,7 +50,7 @@ function IncomeRow({ label, desc, amount, accent }: {
 // ════════════════════════════════════════════════════════════
 export default function LdLanding6() {
   return (
-    <div className="ld-wg-wrap">
+    <div className="ld-wg-wrap ld-landing6-root">
 
       {/* ══ 커버 ══ */}
       <div className="ld-wg-cover ld-vc-cover-bg" id="top">

@@ -22,7 +22,7 @@ export async function POST(request: Request) {
   if (error) {
     // RPC 미존재 시 upsert 폴백
     const { error: upsertError } = await supabase
-      .from("homepage_stats")
+      .from("v2_homepage_stats")
       .upsert({ slug, view_count: 1 }, { onConflict: "slug" });
 
     if (upsertError) {

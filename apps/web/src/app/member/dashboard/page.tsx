@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useSession } from "@/hooks/useSession";
 import { createClient } from "@/lib/supabase";
 import LdStatusStepper, { Step } from "@/components/ui/LdStatusStepper";
+import "@/styles/pages/member.css";
 
 interface Profile {
   full_name: string | null;
@@ -17,19 +18,10 @@ interface Profile {
   created_at: string | null;
 }
 
-interface Sale {
-  id: string;
-  product_price: number;
-  status: string;
-  payment_method: string | null;
-  created_at: string;
-}
-
 export default function DashboardPage() {
   const { user, role, loading } = useSession();
   const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [sales, setSales] = useState<Sale[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
 
   useEffect(() => {
@@ -66,13 +58,17 @@ export default function DashboardPage() {
   const avatarUrl =
     profile?.avatar_url || user?.user_metadata?.avatar_url || null;
 
-  const isBuyer = role === "partner" || role === "gold_partner" || role === "instructor" || role === "admin";
+  const isBuyer =
+    role === "partner" ||
+    role === "gold_partner" ||
+    role === "instructor" ||
+    role === "admin";
 
   const roleLabel =
-    role === "gold_partner" ? "골드파트너회원" :
-    role === "partner"      ? "파트너회원" :
-    role === "instructor"   ? "강사회원" :
-    role === "admin"        ? "관리자" : "일반회원";
+    role === "gold_partner" ? "GOLD PARTNER" :
+    role === "partner"      ? "PARTNER" :
+    role === "instructor"   ? "INSTRUCTOR" :
+    role === "admin"        ? "ADMIN" : "GUEST";
 
   const daysSince = profile?.first_purchase_at
     ? Math.max(
@@ -98,357 +94,161 @@ export default function DashboardPage() {
         { label: "이용 시작", status: "pending" },
       ];
 
+  // 동적 accentColor — isBuyer 여부에 따라 런타임 결정
+  const accentColor: string = isBuyer ? "#0d9488" : "var(--text-secondary)";
+  const accentBg: string = isBuyer
+    ? "rgba(13,148,136,0.08)"
+    : "rgba(15,23,42,0.04)";
+  const accentBorder: string = isBuyer
+    ? "1px solid rgba(13,148,136,0.25)"
+    : "1px solid rgba(15,23,42,0.10)";
+
   return (
-    <div style={{ maxWidth: 720, margin: "0 auto" }}>
-      {/* 환영 헤더 */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 16,
-          marginBottom: 32,
-        }}
-      >
-        {avatarUrl ? (
-          <Image
-            src={avatarUrl}
-            alt="프로필"
-            width={56}
-            height={56}
-            style={{ borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
-          />
-        ) : (
-          <div
-            style={{
-              width: 56,
-              height: 56,
-              borderRadius: "50%",
-              background: "var(--accent-neon)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 22,
-              fontWeight: 800,
-              color: "#010828",
-              flexShrink: 0,
-            }}
-          >
-            {displayName[0].toUpperCase()}
+    <div className="md-container">
+      <div className="md-bento">
+
+        {/* ── 프로필 카드 (full width) ── */}
+        <div className="md-card md-bento-wide md-profile-card">
+          {avatarUrl ? (
+            <Image
+              src={avatarUrl}
+              alt="프로필"
+              width={52}
+              height={52}
+              className="md-avatar-img"
+            />
+          ) : (
+            <div className="md-avatar-fallback">
+              {displayName[0].toUpperCase()}
+            </div>
+          )}
+          <div className="md-welcome-text">
+            <h1 className="md-welcome-name">안녕하세요, {displayName}님</h1>
+            <p className="md-welcome-email">
+              {profile?.email || user?.email}
+            </p>
           </div>
-        )}
-        <div style={{ minWidth: 0, flex: 1 }}>
-          <h1
+          {/* 역할 배지 — 동적 색상값이므로 inline style 허용 */}
+          <span
+            className="md-role-badge"
             style={{
-              fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-              fontWeight: 800,
-              fontSize: 26,
-              color: "var(--text-primary)",
-              margin: "0 0 4px",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
+              background: accentBg,
+              color: accentColor,
+              border: accentBorder,
             }}
           >
-            안녕하세요, {displayName}님
-          </h1>
-          <p
-            style={{
-              fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-              fontSize: 15,
-              color: "var(--text-secondary)",
-              margin: 0,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {profile?.email || user?.email}
+            {roleLabel}
+          </span>
+        </div>
+
+        {/* ── 구매 상품 stat ── */}
+        <div className="md-card">
+          <p className="md-eyebrow">구매 상품</p>
+          {/* 동적 accentColor → inline style 허용 */}
+          <p className="md-stat-value" style={{ color: accentColor }}>
+            {isBuyer ? "링크드롭" : "—"}
+          </p>
+          <p className="md-stat-sub">{isBuyer ? "이용권" : "미구매"}</p>
+        </div>
+
+        {/* ── 이용 일수 stat ── */}
+        <div className="md-card">
+          <p className="md-eyebrow">이용</p>
+          {/* 고정 indigo 계열 — 동적 런타임 값 */}
+          <p className="md-stat-value" style={{ color: "#6366f1" }}>
+            {daysSince ? `${daysSince}일` : "—"}
+          </p>
+          <p className="md-stat-sub">
+            {daysSince ? "함께하고 있어요" : "구매 전"}
           </p>
         </div>
-        <span
-          style={{
-            flexShrink: 0,
-            whiteSpace: "nowrap",
-            padding: "4px 12px",
-            borderRadius: 999,
-            fontSize: 13,
-            fontWeight: 700,
-            fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-            background: isBuyer
-              ? "rgba(111,255,0,0.12)"
-              : "rgba(255,255,255,0.07)",
-            color: isBuyer ? "var(--accent-neon)" : "var(--text-secondary)",
-            border: isBuyer
-              ? "1px solid rgba(111,255,0,0.3)"
-              : "1px solid rgba(255,255,255,0.1)",
-          }}
-        >
-          {roleLabel}
-        </span>
-      </div>
 
-      {/* 통계 카드 */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-          gap: 14,
-          marginBottom: 28,
-        }}
-      >
-        <StatCard
-          label="구매 상품"
-          value={isBuyer ? "링크드롭" : "—"}
-          sub={isBuyer ? "이용권" : "미구매"}
-          color={isBuyer ? "var(--accent-neon)" : "var(--text-secondary)"}
-        />
-        <StatCard
-          label="이용"
-          value={daysSince ? `${daysSince}일째` : "—"}
-          sub={daysSince ? "함께하고 있어요" : "구매 전"}
-          color="#6366f1"
-        />
-      </div>
-
-      {/* 콘텐츠 이용 상태 */}
-      <SectionCard title="콘텐츠 이용 상태">
-        <LdStatusStepper steps={contentSteps} />
-        {!isBuyer && (
-          <div
-            style={{
-              marginTop: 16,
-              padding: "12px 16px",
-              borderRadius: 10,
-              background: "rgba(99,102,241,0.08)",
-              border: "1px solid rgba(99,102,241,0.2)",
-            }}
-          >
-            <p
-              style={{
-                fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-                fontSize: 14,
-                color: "var(--text-secondary)",
-                margin: "0 0 10px",
-              }}
-            >
-              아직 이용권을 구매하지 않으셨습니다.
-            </p>
-            <button
-              onClick={() => router.push("/landing/senior-online-business")}
-              style={{
-                padding: "8px 20px",
-                borderRadius: 999,
-                background: "var(--accent-neon)",
-                color: "#010828",
-                border: "none",
-                fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-                fontSize: 14,
-                fontWeight: 700,
-                cursor: "pointer",
-              }}
-            >
-              이용권 구매하기
-            </button>
-          </div>
-        )}
-        {isBuyer && (
-          <div
-            style={{
-              marginTop: 16,
-              padding: "12px 16px",
-              borderRadius: 10,
-              background: "rgba(111,255,0,0.06)",
-              border: "1px solid rgba(111,255,0,0.15)",
-            }}
-          >
-            <p
-              style={{
-                fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-                fontSize: 14,
-                color: "var(--text-secondary)",
-                margin: 0,
-              }}
-            >
-              콘텐츠 이용 중입니다.{" "}
-              <a
-                href="/member/content"
-                style={{ color: "var(--accent-neon)", fontWeight: 600 }}
+        {/* ── 콘텐츠 이용 상태 (full width) ── */}
+        <div className="md-card md-bento-wide">
+          <div className="md-section-header"><h2>콘텐츠 이용 상태</h2></div>
+          <LdStatusStepper steps={contentSteps} />
+          {!isBuyer && (
+            <div className="md-upsell-box">
+              <p className="md-upsell-text">
+                아직 이용권을 구매하지 않으셨습니다.
+              </p>
+              <button
+                onClick={() => router.push("/landing/senior-online-business")}
+                className="md-upsell-btn"
               >
-                콘텐츠 보기 →
-              </a>
-            </p>
-          </div>
-        )}
-      </SectionCard>
-
-      {/* 계정 정보 */}
-      <SectionCard title="계정 정보">
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          <InfoRow label="이메일" value={profile?.email || user?.email || "—"} />
-          <InfoRow
-            label="로그인 방식"
-            value={
-              profile?.provider === "google"
-                ? "Google"
-                : profile?.provider === "kakao"
-                ? "카카오"
-                : user?.app_metadata?.provider === "google"
-                ? "Google"
-                : user?.app_metadata?.provider === "kakao"
-                ? "카카오"
-                : "소셜 로그인"
-            }
-          />
-          <InfoRow
-            label="가입일"
-            value={
-              profile?.created_at
-                ? new Date(profile.created_at).toLocaleDateString("ko-KR")
-                : "—"
-            }
-          />
+                이용권 구매하기
+              </button>
+            </div>
+          )}
+          {isBuyer && (
+            <div className="md-active-box">
+              <p className="md-active-text">
+                콘텐츠 이용 중입니다.{" "}
+                <a href="/member/content" className="md-active-link">
+                  콘텐츠 보기 →
+                </a>
+              </p>
+            </div>
+          )}
         </div>
-      </SectionCard>
-    </div>
-  );
-}
 
-// ── 서브 컴포넌트 ─────────────────────────────────────────────
+        {/* ── 계정 정보 (full width) ── */}
+        <div className="md-card md-bento-wide">
+          <div className="md-section-header"><h2>계정 정보</h2></div>
+          <div className="md-info-list">
+            <div className="md-info-row">
+              <span className="md-info-label">이메일</span>
+              <span className="md-info-value">
+                {profile?.email || user?.email || "—"}
+              </span>
+            </div>
+            <div className="md-info-row">
+              <span className="md-info-label">로그인 방식</span>
+              <span className="md-info-value">
+                {profile?.provider === "google" ||
+                user?.app_metadata?.provider === "google"
+                  ? "Google"
+                  : profile?.provider === "kakao" ||
+                    user?.app_metadata?.provider === "kakao"
+                  ? "카카오"
+                  : "소셜 로그인"}
+              </span>
+            </div>
+            <div className="md-info-row">
+              <span className="md-info-label">가입일</span>
+              <span className="md-info-value">
+                {profile?.created_at
+                  ? new Date(profile.created_at).toLocaleDateString("ko-KR")
+                  : "—"}
+              </span>
+            </div>
+          </div>
+        </div>
 
-function StatCard({
-  label,
-  value,
-  sub,
-  color,
-}: {
-  label: string;
-  value: string;
-  sub: string;
-  color: string;
-}) {
-  return (
-    <div
-      className="ld-surface-card"
-      style={{ borderRadius: 14, padding: "18px 16px", textAlign: "center" }}
-    >
-      <div className="glass-content">
-        <p
-          style={{
-            fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-            fontWeight: 800,
-            fontSize: 24,
-            color,
-            margin: "0 0 2px",
-          }}
-        >
-          {value}
-        </p>
-        <p
-          style={{
-            fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-            fontSize: 12,
-            color: "var(--text-secondary)",
-            margin: "0 0 6px",
-          }}
-        >
-          {sub}
-        </p>
-        <p
-          style={{
-            fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-            fontSize: 13,
-            fontWeight: 600,
-            color: "var(--text-secondary)",
-            margin: 0,
-          }}
-        >
-          {label}
-        </p>
       </div>
-    </div>
-  );
-}
-
-function SectionCard({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div
-      className="ld-surface-card"
-      style={{ borderRadius: 16, padding: "22px 20px", marginBottom: 18 }}
-    >
-      <div className="glass-content">
-        <h2
-          style={{
-            fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-            fontWeight: 700,
-            fontSize: 17,
-            color: "var(--text-primary)",
-            marginBottom: 18,
-          }}
-        >
-          {title}
-        </h2>
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function InfoRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "10px 0",
-        borderBottom: "1px solid rgba(255,255,255,0.05)",
-      }}
-    >
-      <span
-        style={{
-          fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-          fontSize: 14,
-          color: "var(--text-secondary)",
-        }}
-      >
-        {label}
-      </span>
-      <span
-        style={{
-          fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-          fontSize: 14,
-          fontWeight: 600,
-          color: "var(--text-primary)",
-        }}
-      >
-        {value}
-      </span>
     </div>
   );
 }
 
 function DashboardSkeleton() {
   return (
-    <div style={{ maxWidth: 720, margin: "0 auto" }}>
-      {[1, 2, 3, 4].map((i) => (
+    <div className="md-skeleton-container">
+      <div className="md-bento">
         <div
-          key={i}
-          style={{
-            backgroundColor: "var(--bg-surface)",
-            borderRadius: 16,
-            height: i === 1 ? 80 : 160,
-            marginBottom: 18,
-            opacity: 0.4,
-            animation: "pulse 1.5s ease-in-out infinite",
-          }}
+          className="md-skeleton-block md-bento-wide"
+          style={{ height: 88 }}
         />
-      ))}
+        <div className="md-skeleton-block" style={{ height: 110 }} />
+        <div className="md-skeleton-block" style={{ height: 110 }} />
+        <div
+          className="md-skeleton-block md-bento-wide"
+          style={{ height: 140 }}
+        />
+        <div
+          className="md-skeleton-block md-bento-wide"
+          style={{ height: 120 }}
+        />
+      </div>
     </div>
   );
 }

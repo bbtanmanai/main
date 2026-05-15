@@ -69,7 +69,7 @@ export async function GET(request: Request) {
 
   // role 확인 — partner 이상만 다운로드
   const { data: profile } = await supabase
-    .from("users")
+    .from("profiles")
     .select("role")
     .eq("id", user.id)
     .single();

@@ -1,14 +1,15 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import type { LucideIcon } from "lucide-react";
 import LgBackground from "./LgBackground";
 import LgThemeToggle from "./LgThemeToggle";
 
-interface MenuItem {
+export interface MenuItem {
   label: string;
   href: string;
-  icon: string;
-  divider?: boolean; // true: 이 항목 위에 구분선 렌더
+  icon: LucideIcon;
+  divider?: boolean;
 }
 
 interface LgShellProps {
@@ -19,7 +20,8 @@ interface LgShellProps {
   sidebarCls: string;
   tabbarCls: string;
   menuItems: MenuItem[];
-  noHeader?: boolean; // true: GNB가 상단을 대체 — 내부 헤더 숨김 (member/partner/instructor 전용)
+  noHeader?: boolean;
+  a4Main?: boolean;
 }
 
 export default function LgShell({
@@ -31,6 +33,7 @@ export default function LgShell({
   tabbarCls,
   menuItems,
   noHeader = false,
+  a4Main = false,
 }: LgShellProps) {
   const pathname = usePathname();
 
@@ -45,10 +48,8 @@ export default function LgShell({
     >
       <LgBackground />
 
-      {/* 상단 헤더 — noHeader=true 시 GNB가 대체하므로 숨김 */}
       {!noHeader && (
         <header
-          className="lg-header"
           style={{
             height: 60,
             display: "flex",
@@ -89,57 +90,96 @@ export default function LgShell({
         </header>
       )}
 
-      <div style={{ display: "flex", flex: 1, position: "relative", zIndex: 1, paddingTop: noHeader ? 64 : 0 }}>
-        <div className="lg-shell-inner" style={{ maxWidth: 1000, margin: "0 auto", width: "100%", display: "flex", flex: 1, paddingTop: 50 }}>
-        {/* 사이드바 — 데스크톱: 좌측 패널 / 모바일: 가로 스크롤 스트립 */}
-        <aside
-          className={`${sidebarCls} lg-sidebar-glass`}
-          style={{ width: 240, padding: "24px 0", flexShrink: 0, borderRadius: "16px 16px 0 0" }}
+      <div
+        style={{
+          display: "flex",
+          flex: 1,
+          position: "relative",
+          zIndex: 1,
+          paddingTop: noHeader ? 64 : 0,
+        }}
+      >
+        <div
+          className="lg-shell-inner"
+          style={{
+            maxWidth: 1000,
+            margin: "0 auto",
+            width: "100%",
+            display: "flex",
+            flex: 1,
+            paddingTop: 50,
+          }}
         >
-          <nav style={{ display: "contents" }}>
-            {menuItems.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <div key={item.href} style={{ display: "contents" }}>
-                  {item.divider && (
-                    <div className="lg-sidebar-divider" style={{
-                      margin: "8px 24px",
-                      borderTop: "1px solid rgba(255,255,255,0.08)",
-                    }} />
-                  )}
-                  <a
-                    href={item.href}
-                    className={`lg-sidebar-item${isActive ? " active" : ""}`}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 12,
-                      padding: "14px 24px",
-                      fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
-                      fontSize: 16,
-                      fontWeight: isActive ? 700 : 500,
-                      color: isActive ? accentColor : "var(--text-secondary)",
-                      textDecoration: "none",
-                      backgroundColor: isActive ? accentBgActive : "transparent",
-                      borderLeft: isActive
-                        ? `3px solid ${accentColor}`
-                        : "3px solid transparent",
-                      transition: "all 0.15s ease",
-                    }}
-                  >
-                    <span style={{ fontSize: 20 }}>{item.icon}</span>
-                    {item.label}
-                  </a>
-                </div>
-              );
-            })}
-          </nav>
-        </aside>
+          {/* 사이드바 */}
+          <aside
+            className={`${sidebarCls} lg-sidebar-glass`}
+            style={{
+              width: 240,
+              padding: "16px 0",
+              flexShrink: 0,
+              borderRadius: "16px 16px 0 0",
+            }}
+          >
+            <nav style={{ display: "contents" }}>
+              {menuItems.map((item) => {
+                const isActive = pathname === item.href;
+                const Icon = item.icon;
+                return (
+                  <div key={item.href} style={{ display: "contents" }}>
+                    {item.divider && (
+                      <div
+                        style={{
+                          margin: "8px 20px",
+                          borderTop: "1px solid var(--shell-divider)",
+                        }}
+                      />
+                    )}
+                    <a
+                      href={item.href}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 10,
+                        padding: "11px 14px",
+                        margin: "2px 12px",
+                        borderRadius: 4,
+                        fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",
+                        fontSize: 15,
+                        fontWeight: isActive ? 700 : 500,
+                        color: isActive ? accentColor : "var(--text-secondary)",
+                        textDecoration: "none",
+                        backgroundColor: isActive ? accentBgActive : "transparent",
+                        transition: "background-color 0.15s ease, color 0.15s ease",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <Icon
+                        size={18}
+                        strokeWidth={isActive ? 2.2 : 1.8}
+                      />
+                      {item.label}
+                    </a>
+                  </div>
+                );
+              })}
+            </nav>
+          </aside>
 
-        {/* 메인 콘텐츠 */}
-        <main style={{ flex: 1, padding: "32px 24px", paddingBottom: 80, overflowX: "hidden" }}>
-          {children}
-        </main>
+          {/* 메인 콘텐츠 */}
+          <main
+            style={{
+              flex: 1,
+              padding: a4Main ? 0 : "32px 24px",
+              paddingBottom: a4Main ? 0 : 80,
+              overflowX: "hidden",
+              display: a4Main ? "flex" : undefined,
+              flexDirection: a4Main ? "column" : undefined,
+            }}
+          >
+            {a4Main ? (
+              <div className="lg-a4-main">{children}</div>
+            ) : children}
+          </main>
         </div>
       </div>
 
@@ -159,6 +199,7 @@ export default function LgShell({
       >
         {menuItems.map((item) => {
           const isActive = pathname === item.href;
+          const Icon = item.icon;
           return (
             <a
               key={item.href}
@@ -169,13 +210,14 @@ export default function LgShell({
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: 1,
-                padding: "0 2px",
+                gap: 3,
+                padding: "0 4px",
                 textDecoration: "none",
                 color: isActive ? accentColor : "var(--text-secondary)",
+                cursor: "pointer",
               }}
             >
-              <span style={{ fontSize: 18 }}>{item.icon}</span>
+              <Icon size={22} strokeWidth={isActive ? 2.2 : 1.8} />
               <span
                 style={{
                   fontFamily: "'Pretendard Variable', 'Pretendard', sans-serif",

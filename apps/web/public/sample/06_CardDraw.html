@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tarot Card Draw — Sowon</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Noto+Serif+KR:wght@300;400&display=swap');
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: #010008;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Noto Serif KR', serif;
+    }
+
+    .phone-wrapper {
+      /* zoom: 0.88 은 phone-frame에 직접 적용 (sample-page-protocol 표준) */
+    }
+
+    /* ────────────────────────────────────────────────
+       폰 프레임
+       overflow: clip  ← hidden처럼 클립하되
+                          stacking context를 만들지 않음
+                       → transform-style:preserve-3d 유지됨
+                       → CSS 3D 헬릭스 정상 작동
+    ──────────────────────────────────────────────── */
+    .phone-frame {
+      width: 390px;
+      height: 844px;
+      border-radius: 54px;
+      background: #0b0e1a;
+      position: relative;
+      overflow: clip;             /* ★ 클립 + preserve-3d 유지 */
+      flex-shrink: 0;
+      zoom: 0.88;                 /* transform:scale 대신 zoom — 자식 이미지 DPR 정합 유지 */
+      box-shadow:
+        0 0 0 2px rgba(255,255,255,0.15),
+        0 0 0 9px #1a1a1a,
+        0 0 0 11px rgba(255,255,255,0.05),
+        0 50px 120px rgba(0,0,0,0.75),
+        0 0 80px rgba(80,0,180,0.10);
+      perspective: 900px;
+      perspective-origin: 50% 48%;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* 노치 */
+    .phone-frame::before {
+      content: '';
+      position: absolute;
+      top: 14px; left: 50%; transform: translateX(-50%);
+      width: 110px; height: 30px;
+      background: #0a0a0a;
+      border-radius: 0 0 18px 18px;
+      z-index: 300;
+    }
+
+    /* ── LinkDrop 다크 테마 블롭 ── */
+    .bg-glow {
+      position: absolute; inset: 0; pointer-events: none; z-index: 0;
+      background: #0b0e1a; overflow: hidden;
+    }
+    .ld-blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.52; animation: ld-drift var(--dur,18s) ease-in-out infinite alternate; }
+    .ld-blob--1 { width:340px;height:340px; background:radial-gradient(circle,#5ee7df,#3b82f6); top:-120px;left:-80px; --dur:22s; }
+    .ld-blob--2 { width:290px;height:290px; background:radial-gradient(circle,#b490f5,#ec4899); bottom:-110px;right:-60px; --dur:17s; animation-delay:-8s; }
+    .ld-blob--3 { width:200px;height:200px; background:radial-gradient(circle,#ffd27f,#f7a8c4); top:40%;left:42%; --dur:25s; animation-delay:-13s; }
+    @keyframes ld-drift {
+      0%   { transform: translate(0,0) scale(1); }
+      33%  { transform: translate(28px,-18px) scale(1.08); }
+      66%  { transform: translate(-18px,28px) scale(0.94); }
+      100% { transform: translate(14px,14px) scale(1.04); }
+    }
+
+    /* Header */
+    .header {
+      position: absolute; top: 0; left: 0; right: 0; z-index: 20;
+      text-align: center; padding: 50px 20px 16px;
+      background: linear-gradient(to bottom, rgba(11,14,26,0.96) 55%, transparent 100%);
+      pointer-events: none;
+    }
+    .hd-eyebrow {
+      font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 5px;
+      color: rgba(255,255,255,0.38); text-transform: uppercase; margin-bottom: 5px;
+    }
+    .hd-main {
+      font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 3px;
+      color: rgba(255,255,255,0.74); margin-bottom: 5px;
+    }
+    .hd-sub {
+      font-size: 11px; color: rgba(201,168,76,0.58); letter-spacing: 0.3px;
+    }
+    .hd-dots {
+      margin-top: 11px; display: flex; justify-content: center; gap: 10px;
+    }
+    .hd-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      border: 1px solid rgba(201,168,76,0.35); background: transparent;
+      transition: background 0.5s, border-color 0.5s, box-shadow 0.5s;
+    }
+    .hd-dot.on {
+      background: rgba(255,255,255,0.75);
+      border-color: rgba(255,255,255,0.75);
+      box-shadow: 0 0 7px rgba(255,255,255,0.40);
+    }
+
+    /* Footer */
+    .footer {
+      position: absolute; bottom: 0; left: 0; right: 0; z-index: 20;
+      text-align: center; padding: 10px 20px 26px;
+      background: linear-gradient(to top, rgba(11,14,26,0.90) 55%, transparent 100%);
+      pointer-events: none;
+    }
+    .ft-hint {
+      font-family: 'Cinzel', serif; font-size: 8px; letter-spacing: 3px;
+      color: rgba(255,255,255,0.28); text-transform: uppercase;
+    }
+
+    /* ────────────────────────────────────────────────
+       3D Scene — preserve-3d 정상 작동
+       (phone-frame의 overflow:clip이 stacking context
+        생성 안 함 → preserve-3d 유지)
+    ──────────────────────────────────────────────── */
+    #scene {
+      position: absolute; inset: 0;
+      transform-style: preserve-3d;
+      z-index: 5;
+    }
+
+    /* 헬릭스 회전 기준점 — 폰 중앙 */
+    #helix-wrap {
+      position: absolute; left: 50%; top: 50%;
+      transform-style: preserve-3d;
+    }
+
+    /* 카드 */
+    .card {
+      position: absolute;
+      width: 84px; height: 126px;
+      margin-left: -42px; margin-top: -63px;
+      border-radius: 7px;
+      background: #000;
+      cursor: pointer;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transition: filter 0.35s ease, box-shadow 0.35s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
+    }
+    .card img {
+      width: 100%; height: 100%; border-radius: 7px; display: block;
+      pointer-events: none;
+      opacity: 1;
+      border: 1px solid rgba(255,255,255,0.09);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.55);
+      image-rendering: high-quality;
+    }
+
+    /* ── 페르소나 배경 이미지 ── */
+    .persona-bg-img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center top;
+      opacity: 0.52; z-index: 0;
+      pointer-events: none;
+    }
+    .card.selected {
+      box-shadow:
+        0 0 0 1px var(--glow-inner, rgba(50,120,240,0.9)),
+        0 0 10px 2px var(--glow-mid, rgba(50,120,240,0.55)),
+        0 0 24px 4px var(--glow-outer, rgba(20,60,180,0.35));
+    }
+    .card-badge {
+      display: none;
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0.6);
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, var(--glow-inner, rgba(50,120,240,0.9)), var(--glow-outer, rgba(20,60,180,0.8)));
+      border-radius: 50%;
+      font-family: 'Cinzel', serif; font-size: 14px; font-weight: 700; color: #fff;
+      align-items: center; justify-content: center;
+      box-shadow: 0 0 12px var(--glow-mid, rgba(50,120,240,0.55));
+      z-index: 10;
+      opacity: 0;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .card.selected .card-badge { display: flex; }
+    .card.in-slot .card-badge {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    #slot-layer {
+      position: absolute; inset: 0;
+      z-index: 15; pointer-events: none;
+    }
+
+    .card.in-slot {
+      transform-style: flat;
+      transition: box-shadow 0.25s ease;
+      pointer-events: none;
+    }
+
+    .card.in-slot::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 9px;
+      border: 1px solid var(--glow-inner, rgba(50,120,240,0.8));
+      opacity: 0.75;
+      pointer-events: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card { transition-duration: 0.05s !important; }
+    }
+
+    /* 결과 오버레이 */
+    #result-overlay {
+      display: none;
+      position: absolute; inset: 0; z-index: 200;
+      background: rgba(4,0,13,0.78);
+      backdrop-filter: blur(6px);
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 20px; opacity: 0; transition: opacity 0.75s ease;
+      overflow: visible;
+    }
+    #result-persona-clip {
+      position: absolute; inset: 0;
+      overflow: hidden; pointer-events: none;
+    }
+    #result-persona-bg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center top;
+      opacity: 0; pointer-events: none;
+      transition: opacity 1.2s ease;
+    }
+    #result-persona-bg.visible { opacity: 0.38; }
+    #result-overlay.show   { display: flex; }
+    #result-overlay.visible { opacity: 1; }
+
+    .ro-eyebrow {
+      font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 5px;
+      color: rgba(255,255,255,0.45); text-transform: uppercase; margin-bottom: 6px;
+    }
+    .ro-title {
+      font-family: 'Cinzel', serif; font-size: 19px; font-weight: 600; letter-spacing: 1.5px;
+      color: rgba(255,255,255,0.92); text-align: center; padding: 0 24px;
+    }
+    .ro-cards { display: flex; gap: 10px; align-items: flex-end; overflow: visible; margin-top: 40px; position: relative; z-index: 2; }
+    .ro-card {
+      display: flex; flex-direction: column; align-items: center; gap: 9px;
+      opacity: 0;
+      transition: opacity 0.55s ease, transform 0.65s ease;
+    }
+    /* 부채꼴 스프레드 — 초기 위치 */
+    .ro-card:nth-child(1) {
+      transform: rotate(-13deg) translateY(60px) translateX(10px);
+      z-index: 1; margin-right: -20px;
+    }
+    .ro-card:nth-child(2) {
+      transform: translateY(20px);
+      z-index: 3;
+    }
+    .ro-card:nth-child(3) {
+      transform: rotate(13deg) translateY(60px) translateX(-10px);
+      z-index: 1; margin-left: -20px;
+    }
+    /* 부채꼴 스프레드 — 최종 위치 (.on) */
+    .ro-card:nth-child(1).on { opacity: 1; transform: rotate(-13deg) translateY(35px) translateX(10px); }
+    .ro-card:nth-child(2).on { opacity: 1; transform: translateY(0); }
+    .ro-card:nth-child(3).on { opacity: 1; transform: rotate(13deg) translateY(35px) translateX(-10px); }
+    .ro-card img {
+      width: 182px; height: 273px; border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.70);
+      image-rendering: high-quality;
+      position: relative; z-index: 1;
+    }
+    .ro-pos {
+      font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 3px;
+      color: #DDDDDD; text-transform: uppercase;
+    }
+    .ro-name {
+      font-size: 13px; color: rgba(255,255,255,0.88);
+      text-align: center; max-width: 82px; line-height: 1.6;
+    }
+    .btn-cont {
+      font-family: 'Cinzel', serif; font-size: 12px;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: rgba(220,210,255,1);
+      background: rgba(160,130,255,0.18);
+      border: 1px solid rgba(190,170,255,0.60);
+      padding: 13px 32px; border-radius: 3px; cursor: pointer;
+      margin-top: 18px;
+      transition: background 0.25s, border-color 0.25s;
+    }
+    .btn-cont:hover {
+      background: rgba(160,130,255,0.30); border-color: rgba(200,180,255,0.85);
+    }
+
+    /* ── 결과 오버레이 — Effect 03 카드 강화 ── */
+
+    /* 카드 래퍼 */
+    .roc-wrap {
+      position: relative;
+      display: inline-block;
+    }
+    /* 카드 글로우 */
+    .roc-glow {
+      position: absolute;
+      inset: -4px;
+      border-radius: 14px;
+      pointer-events: none;
+      z-index: 0;
+      box-shadow:
+        0 0 20px 4px  var(--glow-mid,   rgba(20,60,180,0.55)),
+        0 0 50px 12px var(--glow-outer, rgba(20,60,180,0.25)),
+        0 0 100px 24px var(--glow-faint, rgba(20,60,180,0.10));
+    }
+    .ro-card:nth-child(1) .roc-glow,
+    .ro-card:nth-child(3) .roc-glow {
+      box-shadow:
+        0 0 10px 2px  var(--glow-outer, rgba(20,60,180,0.25)),
+        0 0 24px 6px  var(--glow-faint, rgba(20,60,180,0.10));
+    }
+    /* 회전 테두리 — 중앙 카드 전용, z-index:0 으로 카드img(z-index:1) 아래 배치 */
+    .roc-spin-border {
+      position: absolute;
+      inset: -5px;
+      border-radius: 14px;
+      overflow: hidden;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .roc-spin-border::before {
+      content: '';
+      position: absolute;
+      width: 300%; height: 300%;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) rotate(0deg);
+      transform-origin: center center;
+      background: conic-gradient(
+        from 0deg,
+        transparent                                     0deg,
+        var(--glow-faint, rgba(50,120,240,0.10))       30deg,
+        var(--glow-mid,   rgba(20,60,180,0.55))        70deg,
+        var(--glow-inner, rgba(50,120,240,0.90))       90deg,
+        var(--glow-mid,   rgba(20,60,180,0.55))        110deg,
+        var(--glow-faint, rgba(50,120,240,0.10))       150deg,
+        transparent                                     180deg,
+        transparent                                     360deg
+      );
+      animation: roc-spin 6s linear infinite;
+    }
+    @keyframes roc-spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+    /* ── 십이지신 동전 (카드 스프레드 위, 가운데 카드 상단 겹침) ── */
+    .roc-zodiac-hero {
+      position: relative;
+      width: 176px; height: 176px;
+      margin: 0 auto -100px;
+      z-index: 1;          /* ro-cards(z-index:2)보다 낮아 중앙 카드에 가려짐 */
+      flex-shrink: 0;
+    }
+    .roc-zodiac-hero img {
+      width: 176px; height: 176px;
+      object-fit: contain;
+      position: relative; z-index: 2;
+      image-rendering: high-quality;
+    }
+    .roc-zodiac-spin {
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .roc-zodiac-spin::before {
+      content: '';
+      position: absolute;
+      width: 300%; height: 300%;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) rotate(0deg);
+      transform-origin: center center;
+      background: conic-gradient(
+        from 0deg,
+        transparent                                     0deg,
+        var(--glow-faint, rgba(50,120,240,0.10))       30deg,
+        var(--glow-mid,   rgba(20,60,180,0.55))        70deg,
+        var(--glow-inner, rgba(50,120,240,0.90))       90deg,
+        var(--glow-mid,   rgba(20,60,180,0.55))        110deg,
+        var(--glow-faint, rgba(50,120,240,0.10))       150deg,
+        transparent                                     180deg,
+        transparent                                     360deg
+      );
+      animation: roc-zodiac-spin 5s linear infinite;
+    }
+    @keyframes roc-zodiac-spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+    .roc-zodiac-glow {
+      position: absolute;
+      inset: -16px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: -1;
+      box-shadow:
+        0 0 30px 8px  var(--glow-mid,   rgba(20,60,180,0.55)),
+        0 0 70px 20px var(--glow-outer, rgba(20,60,180,0.25)),
+        0 0 140px 40px var(--glow-faint, rgba(20,60,180,0.10));
+    }
+
+    /* ── 오라 링 (십이지신 동전 뒤에서 방사) ── */
+    .ro-aura-rings {
+      position: absolute;
+      left: 50%; top: 50%;
+      width: 1px; height: 1px;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .ro-ring {
+      position: absolute;
+      width: 150px; height: 150px;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle,
+        transparent                                    50%,
+        var(--glow-outer, rgba(20,60,180,0.30))       62%,
+        var(--glow-faint, rgba(20,60,180,0.10))       74%,
+        transparent                                    86%
+      );
+      transform: translate(-50%, -50%) scale(0.4);
+      opacity: 0;
+    }
+    .ro-ring:nth-child(1) { animation: ro-ring-ripple 3.6s ease-out 0s   infinite; }
+    .ro-ring:nth-child(2) { animation: ro-ring-ripple 3.6s ease-out 1.2s infinite; }
+    .ro-ring:nth-child(3) { animation: ro-ring-ripple 3.6s ease-out 2.4s infinite; }
+    @keyframes ro-ring-ripple {
+      0%   { transform: translate(-50%, -50%) scale(0.4); opacity: 0.9; }
+      60%  { opacity: 0.4; }
+      100% { transform: translate(-50%, -50%) scale(4.0); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="phone-wrapper">
+<div class="phone-frame">
+  <div class="bg-glow">
+    <img class="persona-bg-img" id="persona-bg-img" src="img/Personas/Nana.webp" alt="">
+    <div class="ld-blob ld-blob--1"></div>
+    <div class="ld-blob ld-blob--2"></div>
+    <div class="ld-blob ld-blob--3"></div>
+  </div>
+
+  <header class="header">
+    <div class="hd-eyebrow">Sowon · Tarot</div>
+    <div class="hd-main">Choose Your Cards</div>
+    <div class="hd-sub">Select three cards that call to you</div>
+    <div class="hd-dots">
+      <div class="hd-dot" id="d1"></div>
+      <div class="hd-dot" id="d2"></div>
+      <div class="hd-dot" id="d3"></div>
+    </div>
+  </header>
+
+  <!-- CSS 3D 헬릭스 씬 -->
+  <div id="scene">
+    <div id="helix-wrap"></div>
+  </div>
+
+  <div id="slot-layer">
+    <div class="slot" data-slot="0"></div>
+    <div class="slot" data-slot="1"></div>
+    <div class="slot" data-slot="2"></div>
+  </div>
+
+  <footer class="footer">
+    <div class="ft-hint">drag to rotate &nbsp;·&nbsp; tap to select</div>
+  </footer>
+
+  <div id="result-overlay">
+    <div id="result-persona-clip">
+      <img id="result-persona-bg" src="img/Personas/Nana.webp" alt="">
+    </div>
+    <div class="ro-eyebrow">Your Reading</div>
+    <div class="ro-title">세 장의 카드가 말을 겁니다</div>
+    <div class="ro-cards" id="ro-cards"></div>
+    <button class="btn-cont" id="btn-cont">계속하기 &nbsp;→</button>
+  </div>
+</div><!-- /phone-frame -->
+</div><!-- /phone-wrapper -->
+
+<script type="module">
+  import { createTimer } from 'https://esm.sh/animejs@4.3.0';
+
+  /* ─── Helix params ─── */
+  const N      = 28;
+  const RADIUS = 220;
+  const TURNS  = 2;
+  const TOT_H  = 360;
+
+  /* ─── 오행 색상 (일간 기준) ─── */
+  const OHAENG = {
+    wood:  { inner: 'rgba(56,200,100,0.90)',  outer: 'rgba(30,140,60,0.55)'   }, // 木 청록
+    fire:  { inner: 'rgba(255,80,60,0.90)',   outer: 'rgba(200,40,0,0.55)'    }, // 火 적
+    earth: { inner: 'rgba(210,168,20,0.90)',  outer: 'rgba(160,120,0,0.55)'   }, // 土 황
+    metal: { inner: 'rgba(200,215,230,0.90)', outer: 'rgba(140,170,200,0.55)' }, // 金 백
+    water: { inner: 'rgba(50,120,240,0.90)',  outer: 'rgba(20,60,180,0.55)'   }, // 水 흑청
+  };
+  // 실제 앱에서 사주 계산 결과(일간 오행)로 교체
+  const USER_ELEMENT = 'water';
+  const oc = OHAENG[USER_ELEMENT];
+  document.documentElement.style.setProperty('--glow-inner', oc.inner);
+  document.documentElement.style.setProperty('--glow-mid',   oc.outer);
+  document.documentElement.style.setProperty('--glow-outer', oc.outer.replace(/[\d.]+\)$/, '0.25)'));
+  document.documentElement.style.setProperty('--glow-faint',  oc.outer.replace(/[\d.]+\)$/, '0.10)'));
+  /* 페르소나 이미지 — 실제 앱에서 선택된 페르소나로 교체 */
+  const PERSONA_IMAGES = {
+    nana:    'img/Personas/Nana.webp',
+    scholar: 'img/Personas/Scholar.webp',
+    prophet: 'img/Personas/Prophet.webp',
+    mago:    'img/Personas/Mago.webp',
+  };
+  const CURRENT_PERSONA = 'mago';
+  // 실제 앱에서 사용자 생년으로 결정 (십이지신 이미지 경로)
+  const CURRENT_ZODIAC  = 'img/12/01_dragon.png';
+  document.getElementById('persona-bg-img').src = PERSONA_IMAGES[CURRENT_PERSONA];
+
+  /* ─── Deck ─── */
+  const DECK_NAMES = [
+    'The Fool','The Magician','The High Priestess','The Empress','The Emperor',
+    'The Hierophant','The Lovers','The Chariot','Strength','The Hermit',
+    'Wheel of Fortune','Justice','The Hanged Man','Death','Temperance',
+    'The Devil','The Tower','The Star','The Moon','The Sun','Judgement','The World',
+    'Ace of Wands','Two of Wands','Three of Wands','Four of Wands','Five of Wands',
+    'Six of Wands','Seven of Wands','Eight of Wands','Nine of Wands','Ten of Wands',
+    'Page of Wands','Knight of Wands','Queen of Wands','King of Wands',
+    'Ace of Cups','Two of Cups','Three of Cups','Four of Cups','Five of Cups',
+    'Six of Cups','Seven of Cups','Eight of Cups','Nine of Cups','Ten of Cups',
+    'Page of Cups','Knight of Cups','Queen of Cups','King of Cups',
+    'Ace of Swords','Two of Swords','Three of Swords','Four of Swords','Five of Swords',
+    'Six of Swords','Seven of Swords','Eight of Swords','Nine of Swords','Ten of Swords',
+    'Page of Swords','Knight of Swords','Queen of Swords','King of Swords',
+    'Ace of Pentacles','Two of Pentacles','Three of Pentacles','Four of Pentacles','Five of Pentacles',
+    'Six of Pentacles','Seven of Pentacles','Eight of Pentacles','Nine of Pentacles','Ten of Pentacles',
+    'Page of Pentacles','Knight of Pentacles','Queen of Pentacles','King of Pentacles',
+  ];
+  let deck = [...DECK_NAMES].sort(() => Math.random() - 0.5).slice(0, N);
+
+  /* ─── DOM ─── */
+  const $wrap = document.getElementById('helix-wrap');
+  const dots  = ['d1','d2','d3'].map(id => document.getElementById(id));
+
+  /* ─── 카드 생성 ─── */
+  const cardEls = deck.map((name, i) => {
+    const $c = document.createElement('div');
+    $c.className = 'card';
+
+    const img     = document.createElement('img');
+    img.src       = 'img/back_design1.png';
+    img.alt       = '';
+    img.draggable = false;
+    img.decoding  = 'sync';
+    $c.appendChild(img);
+
+    const badge   = document.createElement('span');
+    badge.className = 'card-badge';
+    $c.appendChild(badge);
+
+    $wrap.appendChild($c);
+    return $c;
+  });
+
+  /* ─── 헬릭스 배치 (CSS 3D 트랜스폼) ─── */
+  cardEls.forEach(($c, i) => {
+    const t     = i / (N - 1);
+    const theta = t * TURNS * 2 * Math.PI;
+    const x     = RADIUS * Math.sin(theta);
+    const z     = RADIUS * Math.cos(theta);
+    const y     = t * TOT_H - TOT_H / 2;
+    const yaw   = Math.atan2(x, z);      // 바깥쪽 향함
+    $c.style.transform = `translate3d(${x}px,${y}px,${z}px) rotateY(${yaw}rad)`;
+    $c._theta = theta;                    // depth opacity 계산용
+  });
+
+  /* ─── 회전 상태 ─── */
+  let rot       = 0;
+  let vel       = 0.40;
+  const AUTO    = 0.40;
+  let dragging  = false;
+  let lastPX    = 0;
+  let downPX    = 0;
+  let wasDrag   = false;
+  let dragVel   = 0;
+  let allDimmed = false;
+
+  /* ─── 페이드인 ─── */
+  $wrap.style.opacity    = '0';
+  $wrap.style.transition = 'opacity 1.4s ease';
+  requestAnimationFrame(() => requestAnimationFrame(() => { $wrap.style.opacity = '1'; }));
+
+  /* ─── 메인 루프 ─── */
+  createTimer({
+    onUpdate() {
+      if (!dragging) {
+        vel += (AUTO - vel) * 0.012;
+        rot += vel;
+      }
+
+      // 헬릭스 전체 회전 (CSS 3D가 depth sorting 자동 처리)
+      $wrap.style.transform = `rotateY(${rot}deg)`;
+
+    }
+  });
+
+  /* ─── 드래그 ─── */
+  const $phone = document.querySelector('.phone-frame');
+
+  $phone.addEventListener('pointerdown', e => {
+    if (e.target.closest('#result-overlay')) return;
+    dragging = true; wasDrag = false;
+    lastPX = downPX = e.clientX; dragVel = 0;
+  });
+  document.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    const dx = e.clientX - lastPX;
+    if (Math.abs(e.clientX - downPX) > 5) wasDrag = true;
+    dragVel = dx * 0.40;
+    rot    += dragVel;
+    lastPX  = e.clientX;
+  });
+  document.addEventListener('pointerup', () => {
+    if (!dragging) return;
+    vel = dragVel; dragging = false;
+  });
+  document.addEventListener('pointercancel', () => { dragging = false; });
+
+  /* ─── 슬롯 좌표 (폰 390×844 기준) ─── */
+  const SLOT_COORDS = [
+    { x: 105, y: 690, rot: -8 },
+    { x: 195, y: 670, rot: 0  },
+    { x: 285, y: 690, rot: 8  },
+  ];
+
+  /* ─── 카드 선택 ─── */
+  const POSITIONS = ['Past', 'Present', 'Future'];
+  let selected = [];
+
+  $wrap.addEventListener('click', e => {
+    if (wasDrag || allDimmed) return;
+    const $c = e.target.closest('.card');
+    if (!$c) return;
+    if ($c.classList.contains('selected') || selected.length >= 3) return;
+
+    const idx = selected.length;
+    selected.push($c);
+    $c.classList.add('selected');
+    $c.querySelector('.card-badge').textContent = idx + 1;
+    dots[idx].classList.add('on');
+
+    // 현재 화면 좌표 캡쳐 (phone-frame zoom:0.88 보정)
+    const phoneRect = document.querySelector('.phone-frame').getBoundingClientRect();
+    const cardRect  = $c.getBoundingClientRect();
+    const cssScale  = phoneRect.width / 390;
+    const startX = (cardRect.left + cardRect.width  / 2 - phoneRect.left) / cssScale;
+    const startY = (cardRect.top  + cardRect.height / 2 - phoneRect.top)  / cssScale;
+
+    // 슬롯 목표 좌표
+    const slot = SLOT_COORDS[idx];
+
+    // helix-wrap → slot-layer 로 이동 (reparent)
+    const $slotLayer = document.getElementById('slot-layer');
+    // 현재 위치로 즉시 고정 (깜빡임 방지)
+    $c.style.transition = 'none';
+    $c.style.position   = 'absolute';
+    $c.style.left = '0px';
+    $c.style.top  = '0px';
+    $c.style.marginLeft = '0px';
+    $c.style.marginTop  = '0px';
+    $c.style.transform  = `translate(${startX - 42}px, ${startY - 63}px)`;
+    $slotLayer.appendChild($c);
+
+    // 다음 두 프레임 후 목표 좌표로 트윈
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      $c.style.transition = '';
+      $c.style.transform  = `translate(${slot.x - 42}px, ${slot.y - 63}px) rotate(${slot.rot}deg)`;
+
+      // 착지 후 in-slot 클래스 부여
+      setTimeout(() => {
+        $c.classList.add('in-slot');
+      }, 680);
+    }));
+
+    if (selected.length === 3) setTimeout(dimRest, 450);
+  });
+
+  function dimRest() {
+    allDimmed = true;
+    cardEls.forEach($c => {
+      if ($c.classList.contains('selected')) return;
+      $c.style.opacity      = '0.06';
+      $c.style.pointerEvents = 'none';
+    });
+    setTimeout(showResult, 1100);
+  }
+
+  /* ─── 결과 오버레이 ─── */
+  function showResult() {
+    const $ov  = document.getElementById('result-overlay');
+    const $roc = document.getElementById('ro-cards');
+    const $pbg = document.getElementById('result-persona-bg');
+    $pbg.src = PERSONA_IMAGES[CURRENT_PERSONA];
+    $roc.innerHTML = '';
+
+    // 이전 zodiac 제거 (리셋 후 재호출 시)
+    document.querySelector('.roc-zodiac-hero')?.remove();
+
+    // ── 십이지신 동전 (카드 스프레드 위에 독립 배치) ──
+    const $zh = document.createElement('div');
+    $zh.className = 'roc-zodiac-hero';
+
+    const $zglow = document.createElement('div');
+    $zglow.className = 'roc-zodiac-glow';
+    $zh.appendChild($zglow);
+
+    const $zspin = document.createElement('div');
+    $zspin.className = 'roc-zodiac-spin';
+    $zh.appendChild($zspin);
+
+    const $zimg = document.createElement('img');
+    $zimg.src = CURRENT_ZODIAC;
+    $zimg.alt = '';
+    $zh.appendChild($zimg);
+
+    // 오라 링 (동전 뒤에서 방사)
+    const $aura = document.createElement('div');
+    $aura.className = 'ro-aura-rings';
+    $aura.setAttribute('aria-hidden', 'true');
+    for (let k = 0; k < 3; k++) {
+      const $ring = document.createElement('div');
+      $ring.className = 'ro-ring';
+      $aura.appendChild($ring);
+    }
+    $zh.appendChild($aura);
+
+    // ro-cards 바로 위에 삽입 (flex 컬럼 순서: 동전 → 카드 스프레드)
+    $ov.insertBefore($zh, $roc);
+
+    // ── 카드 팬 스프레드 생성 ──
+    selected.forEach(($c, i) => {
+      const $rc = document.createElement('div');
+      $rc.className = 'ro-card';
+
+      const $cardWrap = document.createElement('div');
+      $cardWrap.className = 'roc-wrap';
+
+      const $glow = document.createElement('div');
+      $glow.className = 'roc-glow';
+      $cardWrap.appendChild($glow);
+
+      // 회전 테두리는 중앙 카드(Present)만
+      if (i === 1) {
+        const $sb = document.createElement('div');
+        $sb.className = 'roc-spin-border';
+        $cardWrap.appendChild($sb);
+      }
+
+      const img = document.createElement('img');
+      img.src = 'img/back_design1.png'; img.alt = '';
+      $cardWrap.appendChild(img);
+
+      $rc.appendChild($cardWrap);
+
+      const pos = document.createElement('div');
+      pos.className   = 'ro-pos';
+      pos.textContent = POSITIONS[i];
+      $rc.appendChild(pos);
+
+      $roc.appendChild($rc);
+    });
+
+    $wrap.style.transition = 'opacity 0.6s ease';
+    $wrap.style.opacity    = '0';
+
+    $ov.classList.add('show');
+    requestAnimationFrame(() => {
+      $ov.classList.add('visible');
+      setTimeout(() => $pbg.classList.add('visible'), 200);
+      $ov.querySelectorAll('.ro-card').forEach(($rc, i) => {
+        setTimeout(() => $rc.classList.add('on'), i * 230 + 280);
+      });
+    });
+  }
+
+  /* ─── 리셋 ─── */
+  document.getElementById('btn-cont').addEventListener('click', () => {
+    const POS_LABELS = ['Past', 'Present', 'Future'];
+    const MAJOR = {
+      'The Fool':'major_00_fool','The Magician':'major_01_magician',
+      'The High Priestess':'major_02_high_priestess','The Empress':'major_03_empress',
+      'The Emperor':'major_04_emperor','The Hierophant':'major_05_hierophant',
+      'The Lovers':'major_06_lovers','The Chariot':'major_07_chariot',
+      'Strength':'major_08_strength','The Hermit':'major_09_hermit',
+      'Wheel of Fortune':'major_10_wheel_of_fortune','Justice':'major_11_justice',
+      'The Hanged Man':'major_12_hanged_man','Death':'major_13_death',
+      'Temperance':'major_14_temperance','The Devil':'major_15_devil',
+      'The Tower':'major_16_tower','The Star':'major_17_star',
+      'The Moon':'major_18_moon','The Sun':'major_19_sun',
+      'Judgement':'major_20_judgement','The World':'major_21_world',
+    };
+    const RANK = {
+      'Ace':'01_ace','Two':'02','Three':'03','Four':'04','Five':'05','Six':'06',
+      'Seven':'07','Eight':'08','Nine':'09','Ten':'10',
+      'Page':'11_page','Knight':'12_knight','Queen':'13_queen','King':'14_king',
+    };
+    const SUIT = { 'Wands':'wands','Cups':'cups','Swords':'swords','Pentacles':'pentacles' };
+    const getCardImg = name => {
+      if (MAJOR[name]) return `img/tarot-card/${MAJOR[name]}.jpeg`;
+      const m = name.match(/^(\w+) of (\w+)$/);
+      if (m && RANK[m[1]] && SUIT[m[2]]) return `img/tarot-card/${SUIT[m[2]]}_${RANK[m[1]]}.jpeg`;
+      return 'img/tarot-card/major_00_fool.jpeg';
+    };
+
+    const cards = selected.map(($c, idx) => {
+      const name = deck[cardEls.indexOf($c)];
+      const slot = SLOT_COORDS[idx];
+      return {
+        pos:     POS_LABELS[idx],
+        name,
+        img:     getCardImg(name),
+        slotX:   slot.x,
+        slotY:   slot.y,
+        slotRot: slot.rot,
+      };
+    });
+
+    sessionStorage.setItem('sowon_reading', JSON.stringify({
+      element: USER_ELEMENT,
+      zodiac:  CURRENT_ZODIAC,
+      persona: CURRENT_PERSONA,
+      cards,
+    }));
+
+    window.location.href = '07_Card Reveal.html';
+  });
+</script>
+</body>
+</html>

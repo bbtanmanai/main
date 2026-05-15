@@ -22,10 +22,10 @@ const CARD: React.CSSProperties = {
   marginBottom: 16,
 };
 
-// 인용·강조 카드 — 좌측 accent 바 1개만 AC 사용
+// 인용·강조 카드 — 크림 배경 틴트로 강조 (left border 금지 §7)
 const ACCENT_CARD: React.CSSProperties = {
   ...CARD,
-  borderLeft: `4px solid ${AC}`,
+  background: "rgba(241, 233, 228, 0.07)",
 };
 
 // CTA 버튼 — 주 CTA 1개에만 AC
@@ -251,12 +251,12 @@ export default function LdLanding7() {
                   style={{
                     display: "flex", alignItems: "flex-start", gap: 14,
                     padding: "14px 0 14px 20px",
-                    borderLeft: "2px solid rgba(241,233,228,0.20)",
                     textDecoration: "none",
-                    transition: "border-left-color 0.18s",
+                    borderRadius: 8,
+                    transition: "background 0.18s",
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.borderLeftColor = AC)}
-                  onMouseLeave={(e) => (e.currentTarget.style.borderLeftColor = "rgba(241,233,228,0.20)")}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(241,233,228,0.08)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                 >
                   <div style={{
                     width: 28, height: 28, borderRadius: "50%",

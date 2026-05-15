@@ -15,6 +15,7 @@
 | **LD-007** | Anton = 영문 헤딩 전용. 한글은 Pretendard 800 | `globals.css` fontFamily | 한글 제목에 `font-anton` |
 | **LD-009** | 인증 = Google·Kakao OAuth만. 이메일+비밀번호 영구 폐기 | `(auth)/*` | `signInWithPassword()` 복구, `/signup` 부활 |
 | **LD-011** | role 4단계: `guest`/`partner`/`gold_partner`/`instructor`/`admin` | `useSession.ts`, `middleware.ts` | `role='buyer'`, 무료 구독 티어 |
+| **LD-012** | checkout = 라이트 테마 강제 (`data-theme="light"`) — 가독성·신뢰 목적 | `checkout/layout.tsx` | 다크 테마 허용, `data-theme` 제거 |
 
 > **LD-011 isBuyer 판정**: `role === 'partner' || role === 'gold_partner' || role === 'instructor' || role === 'admin'`
 
@@ -23,4 +24,5 @@
 | 번복 | 내용 |
 |-----|------|
 | LD-002 → LD-008 | checkout은 사용자 테마 상속 (`data-theme="light"` 강제 해제) |
+| LD-008 → LD-012 | checkout = 라이트 테마 강제 복원 (가독성·결제 신뢰성 사유, 2026-05-08) |
 | LD-010 → LD-011 | `role='buyer'` 폐기 → guest/partner/gold_partner 체계로 확장 |

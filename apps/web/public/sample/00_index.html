@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sowon — 화면 노드 맵</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #0b0e1a;
+  color: #c0c0d0;
+  font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── LinkDrop 다크 테마 블롭 keyframes ── */
+@keyframes ld-drift {
+  0%   { transform: translate(0,0) scale(1); }
+  33%  { transform: translate(28px,-18px) scale(1.08); }
+  66%  { transform: translate(-18px,28px) scale(0.94); }
+  100% { transform: translate(14px,14px) scale(1.04); }
+}
+
+/* ── 헤더 ── */
+.hdr {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 20px;
+  background: rgba(11,14,26,0.9);
+  border-bottom: 1px solid #1e1e3a;
+  position: relative;
+  z-index: 1;
+}
+.hdr-title { font-size: 14px; font-weight: 700; color: #c8a96e; letter-spacing: 0.5px; }
+.hdr-sub   { font-size: 11px; color: #40405a; }
+.hdr-badge {
+  font-size: 10px; color: #40405a;
+  border: 1px solid #1e1e3a;
+  padding: 2px 10px; border-radius: 10px;
+}
+
+/* ── 점수 배지 ── */
+.score-wrap {
+  margin-left: auto;
+  display: flex; align-items: center; gap: 6px;
+  font-size: 10px;
+}
+.score-label { color: #30304a; }
+.score-ai {
+  background: #12122a; border: 1px solid #2a2a5a;
+  border-radius: 6px; padding: 2px 8px;
+  color: #9e6ecb; font-weight: 700; letter-spacing: 0.5px;
+}
+.score-ai span { color: #40405a; font-weight: 400; }
+.score-user {
+  background: #12122a; border: 1px solid #2a3a2a;
+  border-radius: 6px; padding: 2px 8px;
+  color: #6ecb9e; font-weight: 700; letter-spacing: 0.5px;
+}
+.score-user span { color: #40405a; font-weight: 400; }
+
+/* ── 래퍼 ── */
+.wrapper { flex: 1; overflow: auto; position: relative; z-index: 1; }
+
+/* ── 캔버스 ── */
+.canvas {
+  position: relative;
+  width: 1080px;
+  height: 1260px;
+  margin: 0 auto;
+  background-image: radial-gradient(circle, #1a1e30 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* ── SVG 화살표 레이어 ── */
+.arrows {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+/* ── 노드 공통 ── */
+.node {
+  position: absolute;
+  width: 160px;
+  border-radius: 8px;
+  border: 1.5px solid;
+  background: #0c0c1e;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  z-index: 10;
+}
+.node:hover { transform: translateY(-2px); }
+.node a {
+  display: block;
+  padding: 10px 14px 12px;
+  text-decoration: none;
+  color: inherit;
+}
+.nid {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 1px; opacity: 0.45;
+  margin-bottom: 3px; text-transform: uppercase;
+}
+.nlabel { font-size: 13px; font-weight: 600; }
+.ndesc  { font-size: 10px; opacity: 0.4; margin-top: 2px; }
+
+/* ── 노드 타입 색상 ── */
+.t-entry   { border-color: #c8a96e; }
+.t-entry   .nid, .t-entry   .nlabel { color: #c8a96e; }
+.t-entry:hover   { box-shadow: 0 4px 24px rgba(200,169,110,.28); }
+
+.t-auth    { border-color: #6b9ec8; }
+.t-auth    .nid, .t-auth    .nlabel { color: #6b9ec8; }
+.t-auth:hover    { box-shadow: 0 4px 24px rgba(107,158,200,.28); }
+
+.t-core    { border-color: #9e6ecb; }
+.t-core    .nid, .t-core    .nlabel { color: #9e6ecb; }
+.t-core:hover    { box-shadow: 0 4px 24px rgba(158,110,203,.28); }
+
+.t-branch  { border-color: #6ecb9e; }
+.t-branch  .nid, .t-branch  .nlabel { color: #6ecb9e; }
+.t-branch:hover  { box-shadow: 0 4px 24px rgba(110,203,158,.28); }
+
+.t-payment { border-color: #cb9e6e; }
+.t-payment .nid, .t-payment .nlabel { color: #cb9e6e; }
+.t-payment:hover { box-shadow: 0 4px 24px rgba(203,158,110,.28); }
+
+.t-result  { border-color: #cb6e6e; }
+.t-result  .nid, .t-result  .nlabel { color: #cb6e6e; }
+.t-result:hover  { box-shadow: 0 4px 24px rgba(203,110,110,.28); }
+
+.t-abort   { border-color: #6e6e8e; }
+.t-abort   .nid, .t-abort   .nlabel { color: #6e6e8e; }
+.t-abort:hover   { box-shadow: 0 4px 24px rgba(110,110,142,.28); }
+
+.t-end     { border-color: #555568; }
+.t-end     .nid, .t-end     .nlabel { color: #555568; }
+.t-end:hover     { box-shadow: 0 4px 24px rgba(85,85,104,.28); }
+
+.t-sup     { border-color: #6b9ec8; border-style: dashed; }
+.t-sup     .nid, .t-sup     .nlabel { color: #6b9ec8; }
+.t-sup:hover     { box-shadow: 0 4px 24px rgba(107,158,200,.2); }
+
+/* ── 범례 ── */
+.legend {
+  position: absolute; right: 16px; bottom: 16px;
+  background: #0e0e1c; border: 1px solid #1e1e3a;
+  border-radius: 8px; padding: 12px 14px;
+}
+.legend-ttl { font-size: 9px; font-weight: 700; color: #383858; letter-spacing: 1px; margin-bottom: 10px; }
+.li { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; font-size: 10px; color: #40405a; }
+.ld { width: 12px; height: 12px; border-radius: 3px; border: 1.5px solid; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<!-- LinkDrop 다크 테마 블롭 배경 (fixed) -->
+<div style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;background:#0b0e1a;">
+  <div style="position:absolute;width:700px;height:700px;border-radius:50%;filter:blur(80px);opacity:0.45;background:radial-gradient(circle,#5ee7df,#3b82f6);top:-200px;left:-150px;animation:ld-drift 22s ease-in-out infinite alternate;"></div>
+  <div style="position:absolute;width:600px;height:600px;border-radius:50%;filter:blur(80px);opacity:0.45;background:radial-gradient(circle,#b490f5,#ec4899);bottom:-200px;right:-100px;animation:ld-drift 17s ease-in-out infinite alternate;animation-delay:-8s;"></div>
+  <div style="position:absolute;width:400px;height:400px;border-radius:50%;filter:blur(80px);opacity:0.40;background:radial-gradient(circle,#ffd27f,#f7a8c4);top:40%;left:50%;animation:ld-drift 25s ease-in-out infinite alternate;animation-delay:-13s;"></div>
+</div>
+
+<div class="hdr">
+  <span class="hdr-title">Sowon</span>
+  <span class="hdr-sub">화면 노드 맵 · 노드 클릭 → 샘플 페이지 이동</span>
+  <span class="hdr-badge">17 screens</span>
+  <div class="score-wrap">
+    <span class="score-label">완성도</span>
+    <span class="score-ai"><span>AI </span>72</span>
+    <span class="score-user"><span>나 </span>—</span>
+  </div>
+</div>
+
+<div class="wrapper">
+<div class="canvas">
+
+<!-- ════════════════════════════════════════════
+     SVG 화살표 레이어
+     노드 위치 기준 (left, top, w=160, h=58):
+     01  : 450, 40   → cx=530 cy=69  bot=98
+     02A : 200, 160  → cx=280 cy=189 bot=218
+     02B : 720, 160  → cx=800 cy=189 bot=218
+     03  : 450, 290  → cx=530 cy=319 bot=348 right=610
+     S1  : 840, 290  → cx=920 cy=319 left=840
+     S2  : 840, 370  → cx=920 cy=399 left=840
+     04  : 450, 420  → cx=530 cy=449 bot=478 left=450
+     05A : 200, 540  → cx=280 cy=569 bot=598
+     05B : 720, 540  → cx=800 cy=569 bot=598
+     06  : 450, 660  → cx=530 cy=689 bot=718
+     07  : 450, 770  → cx=530 cy=799 bot=828
+     08A : 200, 900  → cx=280 cy=929 bot=958
+     08B : 720, 900  → cx=800 cy=929 right=880
+     09  : 200, 1030 → cx=280 cy=1059 bot=1088
+     10A : 20,  1150 → cx=100 cy=1179 left=20
+     10B : 300, 1150 → cx=380 cy=1179 right=460
+════════════════════════════════════════════ -->
+<svg class="arrows" viewBox="0 0 1080 1260">
+  <defs>
+    <!-- 기본 포워드 마커 -->
+    <marker id="mf" viewBox="0 0 8 8" refX="7" refY="4"
+      markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,1 L7,4 L0,7 L1.5,4 Z" fill="#3a3a5a"/>
+    </marker>
+    <!-- 리턴 마커 (녹색) -->
+    <marker id="mr" viewBox="0 0 8 8" refX="7" refY="4"
+      markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,1 L7,4 L0,7 L1.5,4 Z" fill="#2a5a3a"/>
+    </marker>
+    <!-- 루프 마커 (청색) -->
+    <marker id="ml" viewBox="0 0 8 8" refX="7" refY="4"
+      markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,1 L7,4 L0,7 L1.5,4 Z" fill="#2a3a6a"/>
+    </marker>
+    <!-- 보조 마커 (점선용) -->
+    <marker id="ms" viewBox="0 0 8 8" refX="7" refY="4"
+      markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0,1 L7,4 L0,7 L1.5,4 Z" fill="#2a3a5a"/>
+    </marker>
+  </defs>
+
+  <!-- ── 포워드 플로우 ── -->
+
+  <!-- 01 → 02A (로그인) -->
+  <path d="M530,98 C530,132 280,132 280,160"
+    stroke="#3a3a5a" stroke-width="1.5" fill="none" marker-end="url(#mf)"/>
+  <text x="388" y="118" text-anchor="middle"
+    fill="#3a3a58" font-size="10" font-family="system-ui,sans-serif">로그인</text>
+
+  <!-- 01 → 02B (게스트) -->
+  <path d="M530,98 C530,132 800,132 800,160"
+    stroke="#3a3a5a" stroke-width="1.5" fill="none" marker-end="url(#mf)"/>
+  <text x="676" y="118" text-anchor="middle"
+    fill="#3a3a58" font-size="10" font-family="system-ui,sans-serif">게스트</text>
+
+  <!-- 02A → 03 -->
+  <path d="M280,218 C280,256 530,256 530,290"
+    stroke="#3a3a5a" stroke-width="1.5" fill="none" marker-end="url(#mf)"/>
+
+  <!-- 02B → 03 -->
+  <path d="M800,218 C800,256 530,256 530,290"
+    stroke="#3a3a5a" stroke-width="1.5" fill="none" marker-end="url(#mf)"/>
+
+  <!-- 03 → 04 -->
+  <path d="M530,348 L530,420"
+    stroke="#3a3a5a" stroke-width="1.5" fill="none" marker-end="url(#mf)"/>
+
+  <!-- 03 → S1 (보조, 점선) -->
+  <path d="M610,319 L840,319"
+    stroke="#2a3a5a" stroke-width="1.2" fill="none"
+    stroke-dasharray="4 3" marker-end="url(#ms)"/>
+
+  <!-- 03 → S2 (보조, 점선) -->
+  <path d="M610,319 C730,319 730,399 840,399"
+    stroke="#2a3a5a" stroke-width="1.2" fill="none"
+    stroke-dasharray="4 3" marker-end="url(#ms)"/>
+
+  <!-- 04 → 05A (출생정보 있음) -->
+  <path d="M530,478 C530,512 280,512 280,540"
+    stroke="#3a3a5a" stroke-width="1.5" fill="none" marker-end="url(#mf)"/>
+  <text x="390" y="503" text-anchor="middle"
+    fill="#3a3a58" font-size="10" font-family="system-ui,sans-serif">출생정보 있음</text>
+
+  <!-- 04 → 05B (출생정보 없음) -->
+  <path d="M530,478 C530,512 800,512 800,540"
+    stroke="#3a3a5a" stroke-width="1.5" fill="none" marker-end="url(#mf)"/>
+  <text x="676" y="503" text-anchor="middle"
+    fill="#3a3a58" font-size="10" font-family="system-ui,sans-serif">출생정보 없음</text>
+
+  <!-- 05A → 06 -->
+  <path d="M280,598 C280,632 530,632 530,660"
+    stroke="#3a3a5a" stroke-width="1.5" fill="none" marker-end="url(#mf)"/>
+
+  <!-- 05B → 06 -->
+  <path d="M800,598 C800,632 530,632 530,660"
+    stroke="#3a3a5a" stroke-width="1.5" fill="none" marker-end="url(#mf)"/>
+
+  <!-- 06 → 07 -->
+  <path d="M530,718 L530,770"
+    stroke="#3a3a5a" stroke-width="1.5" fill="none" marker-end="url(#mf)"/>
+
+  <!-- 07 → 08A (결제) -->
+  <path d="M530,828 C530,866 280,866 280,900"
+    stroke="#3a3a5a" stroke-width="1.5" fill="none" marker-end="url(#mf)"/>
+  <text x="390" y="858" text-anchor="middle"
+    fill="#3a3a58" font-size="10" font-family="system-ui,sans-serif">결제</text>
+
+  <!-- 07 → 08B (취소) -->
+  <path d="M530,828 C530,866 800,866 800,900"
+    stroke="#3a3a5a" stroke-width="1.5" fill="none" marker-end="url(#mf)"/>
+  <text x="676" y="858" text-anchor="middle"
+    fill="#3a3a58" font-size="10" font-family="system-ui,sans-serif">취소</text>
+
+  <!-- 08A → 09 -->
+  <path d="M280,958 L280,1030"
+    stroke="#3a3a5a" stroke-width="1.5" fill="none" marker-end="url(#mf)"/>
+
+  <!-- 09 → 10A (다시 질문) -->
+  <path d="M280,1088 C280,1122 100,1122 100,1150"
+    stroke="#3a3a5a" stroke-width="1.5" fill="none" marker-end="url(#mf)"/>
+  <text x="178" y="1112" text-anchor="middle"
+    fill="#3a3a58" font-size="10" font-family="system-ui,sans-serif">다시 질문</text>
+
+  <!-- 09 → 10B (완료) -->
+  <path d="M280,1088 C280,1122 380,1122 380,1150"
+    stroke="#3a3a5a" stroke-width="1.5" fill="none" marker-end="url(#mf)"/>
+  <text x="344" y="1112" text-anchor="middle"
+    fill="#3a3a58" font-size="10" font-family="system-ui,sans-serif">완료</text>
+
+  <!-- ── 리턴 패스 (점선) ── -->
+
+  <!-- 08B → 03 (홈으로, 우측 루트) -->
+  <polyline points="880,929 1020,929 1020,319 610,319"
+    stroke="#2a5a3a" stroke-width="1.2" fill="none"
+    stroke-dasharray="5 3" stroke-linejoin="round"
+    marker-end="url(#mr)"/>
+  <text font-size="10" font-family="system-ui,sans-serif" fill="#2a5a38"
+    transform="translate(1028,720) rotate(-90)">홈으로</text>
+
+  <!-- 10B → 03 (홈으로, 우측 루트 외곽) -->
+  <polyline points="460,1179 1040,1179 1040,305 610,305"
+    stroke="#2a5a3a" stroke-width="1.2" fill="none"
+    stroke-dasharray="5 3" stroke-linejoin="round"
+    marker-end="url(#mr)"/>
+  <text font-size="10" font-family="system-ui,sans-serif" fill="#2a5a38"
+    transform="translate(1048,820) rotate(-90)">홈으로</text>
+
+  <!-- 10A → 04 (루프, 좌측 루트) -->
+  <polyline points="20,1179 8,1179 8,449 450,449"
+    stroke="#2a3a6a" stroke-width="1.2" fill="none"
+    stroke-dasharray="5 3" stroke-linejoin="round"
+    marker-end="url(#ml)"/>
+  <text font-size="10" font-family="system-ui,sans-serif" fill="#2a3a6a"
+    transform="translate(0,820) rotate(-90)">루프</text>
+</svg>
+
+<!-- ════════════════════════════════════════════
+     노드
+════════════════════════════════════════════ -->
+
+<!-- 01 Splash -->
+<div class="node t-entry" style="left:450px;top:40px;">
+  <a href="01_splash.html">
+    <div class="nid">01</div>
+    <div class="nlabel">Splash</div>
+    <div class="ndesc">앱 시작 · 진입</div>
+  </a>
+</div>
+
+<!-- 02A Login -->
+<div class="node t-auth" style="left:200px;top:160px;">
+  <a href="02A_login.html">
+    <div class="nid">02A</div>
+    <div class="nlabel">Login</div>
+    <div class="ndesc">Google · Apple OAuth</div>
+  </a>
+</div>
+
+<!-- 02B Guest -->
+<div class="node t-auth" style="left:720px;top:160px;">
+  <a href="02B_guest.html">
+    <div class="nid">02B</div>
+    <div class="nlabel">Guest</div>
+    <div class="ndesc">비로그인 진입</div>
+  </a>
+</div>
+
+<!-- 03 Home -->
+<div class="node t-core" style="left:450px;top:290px;">
+  <a href="03_home.html">
+    <div class="nid">03</div>
+    <div class="nlabel">Home</div>
+    <div class="ndesc">홈 대시보드</div>
+  </a>
+</div>
+
+<!-- S1 History -->
+<div class="node t-sup" style="left:840px;top:290px;">
+  <a href="S1_history.html">
+    <div class="nid">S1</div>
+    <div class="nlabel">History</div>
+    <div class="ndesc">과거 상담 목록</div>
+  </a>
+</div>
+
+<!-- S2 Settings -->
+<div class="node t-sup" style="left:840px;top:370px;">
+  <a href="S2_settings.html">
+    <div class="nid">S2</div>
+    <div class="nlabel">Settings</div>
+    <div class="ndesc">프로필 · 알림</div>
+  </a>
+</div>
+
+<!-- 04 Question -->
+<div class="node t-core" style="left:450px;top:420px;">
+  <a href="04_question.html">
+    <div class="nid">04</div>
+    <div class="nlabel">Question</div>
+    <div class="ndesc">질문 입력</div>
+  </a>
+</div>
+
+<!-- 05A Question Form -->
+<div class="node t-branch" style="left:200px;top:540px;">
+  <a href="05A_question-form.html">
+    <div class="nid">05A</div>
+    <div class="nlabel">Question Form</div>
+    <div class="ndesc">출생정보 확인</div>
+  </a>
+</div>
+
+<!-- 05B Birth Entry -->
+<div class="node t-branch" style="left:720px;top:540px;">
+  <a href="05B_birth-entry.html">
+    <div class="nid">05B</div>
+    <div class="nlabel">Birth Entry</div>
+    <div class="ndesc">출생정보 입력</div>
+  </a>
+</div>
+
+<!-- 06 Card Draw -->
+<div class="node t-core" style="left:450px;top:660px;">
+  <a href="06_card-draw.html">
+    <div class="nid">06</div>
+    <div class="nlabel">Card Draw</div>
+    <div class="ndesc">카드 셔플 · 3장 선택</div>
+  </a>
+</div>
+
+<!-- 07 Card Reveal -->
+<div class="node t-core" style="left:450px;top:770px;">
+  <a href="07_card-reveal.html">
+    <div class="nid">07</div>
+    <div class="nlabel">Card Reveal</div>
+    <div class="ndesc">카드 앞면 공개</div>
+  </a>
+</div>
+
+<!-- 08A Payment -->
+<div class="node t-payment" style="left:200px;top:900px;">
+  <a href="08A_payment.html">
+    <div class="nid">08A</div>
+    <div class="nlabel">Payment</div>
+    <div class="ndesc">$1 IAP 결제</div>
+  </a>
+</div>
+
+<!-- 08B Abort -->
+<div class="node t-abort" style="left:720px;top:900px;">
+  <a href="08B_abort.html">
+    <div class="nid">08B</div>
+    <div class="nlabel">Abort</div>
+    <div class="ndesc">결제 취소 · 홈 복귀</div>
+  </a>
+</div>
+
+<!-- 09 Result -->
+<div class="node t-result" style="left:200px;top:1030px;">
+  <a href="09_result.html">
+    <div class="nid">09</div>
+    <div class="nlabel">Result</div>
+    <div class="ndesc">리딩 결과 unlock</div>
+  </a>
+</div>
+
+<!-- 10A Again -->
+<div class="node t-core" style="left:20px;top:1150px;">
+  <a href="10A_again.html">
+    <div class="nid">10A</div>
+    <div class="nlabel">Again</div>
+    <div class="ndesc">다시 질문</div>
+  </a>
+</div>
+
+<!-- 10B End -->
+<div class="node t-end" style="left:300px;top:1150px;">
+  <a href="10B_end.html">
+    <div class="nid">10B</div>
+    <div class="nlabel">End</div>
+    <div class="ndesc">완료 · 홈 복귀</div>
+  </a>
+</div>
+
+<!-- ── 범례 ── -->
+<div class="legend">
+  <div class="legend-ttl">LEGEND</div>
+  <div class="li"><div class="ld" style="border-color:#c8a96e"></div>진입</div>
+  <div class="li"><div class="ld" style="border-color:#6b9ec8"></div>인증</div>
+  <div class="li"><div class="ld" style="border-color:#9e6ecb"></div>코어 플로우</div>
+  <div class="li"><div class="ld" style="border-color:#6ecb9e"></div>분기</div>
+  <div class="li"><div class="ld" style="border-color:#cb9e6e"></div>결제</div>
+  <div class="li"><div class="ld" style="border-color:#cb6e6e"></div>결과</div>
+  <div class="li"><div class="ld" style="border-color:#6e6e8e"></div>취소 · 종료</div>
+  <div class="li"><div class="ld" style="border-color:#6b9ec8;border-style:dashed"></div>보조</div>
+  <div class="li" style="margin-top:8px;padding-top:8px;border-top:1px solid #1e1e3a;">
+    <svg width="24" height="8" style="flex-shrink:0">
+      <line x1="0" y1="4" x2="20" y2="4" stroke="#3a3a5a" stroke-width="1.5"/>
+    </svg>포워드
+  </div>
+  <div class="li">
+    <svg width="24" height="8" style="flex-shrink:0">
+      <line x1="0" y1="4" x2="20" y2="4" stroke="#2a5a3a" stroke-width="1.2" stroke-dasharray="4 2"/>
+    </svg>리턴
+  </div>
+  <div class="li">
+    <svg width="24" height="8" style="flex-shrink:0">
+      <line x1="0" y1="4" x2="20" y2="4" stroke="#2a3a6a" stroke-width="1.2" stroke-dasharray="4 2"/>
+    </svg>루프
+  </div>
+</div>
+
+</div><!-- /canvas -->
+</div><!-- /wrapper -->
+
+<script>
+  // 현재 페이지 기반 활성 노드 하이라이트
+  document.querySelectorAll('.node a').forEach(a => {
+    const href = a.getAttribute('href');
+    const current = location.pathname.split('/').pop();
+    if (href === current) {
+      a.closest('.node').style.opacity = '1';
+      a.closest('.node').style.outline = '2px solid currentColor';
+    }
+  });
+</script>
+
+</body>
+</html>

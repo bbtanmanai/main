@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import externalLinks from "@/data/external-links.json";
 import RainyHeroSection from "./_components/RainyHeroSection";
 import ProjectCardGrid from "@/components/project/ProjectCardGrid";
-import LdFooter from "@/components/layout/LdFooter";
+
 
 export const metadata: Metadata = {
   title: "원데이 클래스 — LinkDrop",
@@ -42,7 +42,6 @@ export default function AboutProjectPage() {
           </div>
         </section>
       </main>
-      <LdFooter />
     </div>
   );
 }

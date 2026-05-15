@@ -173,11 +173,95 @@
   z-index: 1;
 }
 
+/* ── 커버 비디오 섹션 ── */
+.ab-cover {
+  position: relative;
+  min-height: calc(100dvh + 80px);
+  margin-top: -80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--bg-base);
+}
+
+.ab-cover-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left center;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.ab-cover::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: clamp(140px, 22vh, 260px);
+  background: linear-gradient(to bottom, transparent 0%, var(--bg-base) 100%);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.ab-cover-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(1, 8, 40, 0.48);
+  z-index: 1;
+}
+
+/* ── 커버 비디오 위 가독성 — 라이트 테마에서 밝은 텍스트 강제 ── */
+[data-theme="light"] .ab-cover-overlay {
+  background: rgba(1, 8, 40, 0.55);
+}
+
+[data-theme="light"] .ab-cover .ab-badge {
+  color: #5ee7df;
+  border-color: rgba(94, 231, 223, 0.40);
+  background: rgba(94, 231, 223, 0.08);
+}
+
+[data-theme="light"] .ab-cover .ab-badge-dot {
+  background-color: #5ee7df;
+}
+
+[data-theme="light"] .ab-cover .ab-hero-title {
+  color: #ffffff;
+}
+
+[data-theme="light"] .ab-cover .ab-hero-title-accent {
+  color: #5ee7df;
+}
+
+[data-theme="light"] .ab-cover .ab-lead-1 {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+[data-theme="light"] .ab-cover .ab-lead-1 strong {
+  color: #ffffff;
+}
+
+[data-theme="light"] .ab-cover .ab-lead-2 {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+[data-theme="light"] .ab-cover .ab-cta-secondary {
+  color: #ffffff;
+}
+
 /* ── HERO 섹션 ── */
 .ab-hero {
+  position: relative;
+  z-index: 4;
   padding: clamp(80px, 12vw, 120px) clamp(20px, 5vw, 40px) clamp(64px, 8vw, 96px);
   text-align: center;
   max-width: 800px;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -799,4 +883,15 @@
   font-size: 14px;
   color: var(--color-text-subtle);
   margin-top: 20px;
+}
+
+/* HOW IT WORKS — 마지막 셀 제외 우측 구분선 */
+.ab-how-cell-inner:not(:last-child) {
+  border-right: 1px solid var(--glass-border);
+}
+@media (max-width: 539px) {
+  .ab-how-cell-inner:not(:last-child) {
+    border-right: none;
+    border-bottom: 1px solid var(--glass-border);
+  }
 }

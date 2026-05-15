@@ -7,12 +7,22 @@
 // ============================================================
 
 import type { Metadata } from "next";
+import { Black_Han_Sans } from "next/font/google";
 import LdThemeProvider from "@/components/layout/LdThemeProvider";
 import LdGnbConditional from "@/components/layout/LdGnbConditional";
 import LdAuthModal from "@/components/auth/LdAuthModal";
 import LdAuthBottomSheet from "@/components/auth/LdAuthBottomSheet";
 import LdViewTransitionHandler from "@/components/layout/LdViewTransitionHandler";
+
 import "./globals.css";
+
+const blackHanSans = Black_Han_Sans({
+  weight: "400",
+  subsets: ["latin"],
+  preload: false,
+  variable: "--font-black-han-sans",
+  display: "swap",
+});
 
 export const viewport = {
   width: "device-width",
@@ -50,7 +60,7 @@ export default function RootLayout({
 }) {
   return (
     // suppressHydrationWarning: next-themes가 서버/클라이언트 간 data-theme 불일치 경고 방지용
-    <html lang="ko" suppressHydrationWarning>
+    <html lang="ko" suppressHydrationWarning className={blackHanSans.variable}>
       <body suppressHydrationWarning>
         {/* ── next-themes ThemeProvider 설정 ──
             defaultTheme="dark" : 처음 방문 시 다크 테마
@@ -60,7 +70,7 @@ export default function RootLayout({
           <LdViewTransitionHandler />
           <LdGnbConditional />
           {children}
-          <LdAuthModal />
+<LdAuthModal />
           <LdAuthBottomSheet />
         </LdThemeProvider>
       </body>

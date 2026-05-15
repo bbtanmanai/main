@@ -6,16 +6,18 @@
     "sub": "인스타 · 틱톡 맛집 영상 제작",
     "desc": "유료 광고영상 으로 부업가지 가능, 맛집 데이터 수집부터 인스타·틱톡 영상 편집까지, 참가자들과 함께 실제 앱 콘셉트를 하루 안에 기획하고 만들어봅니다.",
     "href": "/landing/landing11",
-    "status": "active"
+    "status": "active",
+    "bizplan": "https://pub-3004911807a7429c89c576d1aa468160.r2.dev/V2/landing11/%EC%9C%84%EC%B9%98%EA%B8%B0%EB%B0%98%20%EB%A7%9B%EC%A7%91%20%EC%98%81%EC%83%81%EC%95%B1.pptx"
   },
   {
     "num": "02",
     "icon": "🔮",
-    "title": "사주팔자 + MBTI 사주풀이 앱",
-    "sub": "사주 DB × MBTI 조합 기획",
-    "desc": "사주 DB 구조 설계부터 MBTI 조합 로직까지, 다 같이 기획하고 프로토타입을 하루 만에 완성합니다.",
-    "href": "#",
-    "status": "soon"
+    "title": "사주팔자 + 타로카드 사주풀이 앱",
+    "sub": "사주 DB × 타로카드 조합 기획",
+    "desc": "사주 DB 구조 설계부터 타로카드 조합 로직까지, 다 같이 기획하고 프로토타입을 하루 만에 완성합니다.",
+    "href": "/landing/landing12",
+    "status": "active",
+    "bizplan": "https://pub-3004911807a7429c89c576d1aa468160.r2.dev/V2/landing12/Celestial_Convergence.pptx"
   },
   {
     "num": "03",
@@ -24,7 +26,8 @@
     "sub": "그림 · 글 모두 AI로",
     "desc": "AI로 글과 그림을 함께 만들고, 당일 전자책으로 출판하는 전 과정을 모두 함께 경험합니다.",
     "href": "/landing/landing3",
-    "status": "active"
+    "status": "active",
+    "bizplan": "/docs/bizplan-03.pdf"
   },
   {
     "num": "04",
@@ -33,7 +36,8 @@
     "sub": "강의 스크립트 · PPT 자동 생성",
     "desc": "강의 커리큘럼 기획·PPT·스크립트를 하루 동안 함께 완성하고, 실제 발표까지 해봅니다.",
     "href": "/landing/landing4",
-    "status": "active"
+    "status": "active",
+    "bizplan": "/docs/bizplan-04.pdf"
   },
   {
     "num": "05",
@@ -42,7 +46,8 @@
     "sub": "자막 · 썸네일 · 스크립트 자동화",
     "desc": "스크립트 작성부터 자막·썸네일 제작까지, 쇼츠 한 편을 다 같이 하루 안에 완성합니다.",
     "href": "/landing/landing5",
-    "status": "active"
+    "status": "active",
+    "bizplan": "/docs/bizplan-05.pdf"
   },
   {
     "num": "06",
@@ -51,7 +56,8 @@
     "sub": "코딩 없이 웹사이트 · 앱 제작",
     "desc": "코드 한 줄 없이 AI와 대화만으로 실제 웹앱을 하루 만에 함께 배포하는 과정을 경험합니다.",
     "href": "/landing/landing6",
-    "status": "active"
+    "status": "active",
+    "bizplan": "/docs/bizplan-06.pdf"
   },
   {
     "num": "07",
@@ -60,7 +66,8 @@
     "sub": "Oral History Archivist",
     "desc": "인터뷰 → AI 편집 → 출판까지, 어르신의 이야기 한 편을 다 같이 책으로 만들어봅니다.",
     "href": "/landing/landing7",
-    "status": "active"
+    "status": "active",
+    "bizplan": "/docs/bizplan-07.pdf"
   },
   {
     "num": "08",
@@ -69,7 +76,8 @@
     "sub": "1인기업 마케팅 · CS 자동화",
     "desc": "실제 소상공인 SNS 콘텐츠를 함께 기획·제작하고, 자동화 운영 시스템을 하루 만에 구축합니다.",
     "href": "/landing/landing8",
-    "status": "active"
+    "status": "active",
+    "bizplan": "/docs/bizplan-08.pdf"
   },
   {
     "num": "09",
@@ -78,7 +86,8 @@
     "sub": "주식 · 암호화폐 자동매매 솔루션",
     "desc": "투자 전략을 시스템으로 만들고, 다 같이 커뮤니티 운영 구조를 하루 안에 설계해봅니다.",
     "href": "/landing/landing9",
-    "status": "soon"
+    "status": "active",
+    "bizplan": "/docs/bizplan-09.pdf"
   },
   {
     "num": "10",

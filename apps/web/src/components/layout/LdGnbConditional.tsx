@@ -14,7 +14,10 @@ export default function LdGnbConditional() {
     pathname.startsWith("/instructor") ||
     pathname.startsWith("/admin");
 
+  const isAdminRoute = pathname.startsWith("/admin");
   const forceDarkGnb = pathname === "/landing/landing1";
+
+  if (isAdminRoute) return null;
 
   return (
     <LdCommonGnb

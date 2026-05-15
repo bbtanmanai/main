@@ -33,7 +33,7 @@ export const NAV_ITEMS: NavItem[] = [
     label: "강사모집",
     href: "/recruit-teacher",
     children: [
-      { label: "강사자격", href: "/certificate-teacher" },
+      { label: "강사신청", href: "/certificate-teacher" },
       { label: "강사혜택", href: "/recruit-teacher" },
     ],
   },

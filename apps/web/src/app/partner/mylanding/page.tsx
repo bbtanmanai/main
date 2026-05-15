@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useSession } from "@/hooks/useSession";
+import "@/styles/pages/partner.css";
 
 interface Topic {
   slug: string;
@@ -33,19 +34,19 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Code2, Mic, Zap, BarChart2,
 };
 
+// 배지 색상 — 런타임에 topic.badge 값으로 결정되므로 inline style 허용
 const BADGE_COLOR: Record<string, { bg: string; color: string }> = {
-  인기: { bg: "rgba(111,255,0,0.12)",   color: "var(--accent-neon)" },
-  신규: { bg: "rgba(99,102,241,0.15)",  color: "#818cf8" },
-  추천: { bg: "rgba(255,136,0,0.12)",   color: "#FF8800" },
+  인기: { bg: "rgba(5,150,105,0.10)",  color: "#059669" },
+  신규: { bg: "rgba(99,102,241,0.12)", color: "#818cf8" },
+  추천: { bg: "rgba(13,148,136,0.10)", color: "#0d9488" },
 };
 
 export default function MyLandingPage() {
-  // TODO: 초기값을 Supabase profiles.selected_landing 에서 읽어올 것
   const [selected, setSelected] = useState("landing1");
   const [saved, setSaved] = useState(true);
   const { user } = useSession();
   const userId = user?.id ?? "";
-  const [promoUrl, setPromoUrl] = useState("");
+  const [promoUrl, setPromoUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (userId) {
@@ -64,193 +65,124 @@ export default function MyLandingPage() {
   };
 
   return (
-    <div style={{ maxWidth: 720, margin: "0 auto" }}>
+    <div className="pt-container">
 
-      {/* 페이지 헤더 */}
-      <div style={{ marginBottom: 28 }}>
-        <h1 style={{
-          fontFamily: "'Pretendard Variable','Pretendard',sans-serif",
-          fontWeight: 800, fontSize: 26,
-          color: "var(--text-primary)", margin: "0 0 8px",
-        }}>
-          내 랜딩페이지
-        </h1>
-        <p style={{
-          fontFamily: "'Pretendard Variable','Pretendard',sans-serif",
-          fontSize: 15, color: "var(--text-secondary)", margin: 0,
-        }}>
+      {/* ── 페이지 헤더 ── */}
+      <div className="pt-mylanding-header">
+        <p className="pt-eyebrow">파트너 도구</p>
+        <h1 className="pt-page-title">내 랜딩페이지</h1>
+        <p className="pt-page-desc">
           홍보할 랜딩페이지를 선택하세요. 내 홍보주소로 방문한 고객에게 이 페이지가 보입니다.
         </p>
       </div>
 
-      {/* 홍보 주소 카드 */}
-      <div className="ld-surface-card" style={{ borderRadius: 16, padding: "20px", marginBottom: 28 }}>
-        <div className="glass-content">
-          <p style={{
-            fontFamily: "'Pretendard Variable','Pretendard',sans-serif",
-            fontSize: 13, fontWeight: 600,
-            color: "var(--text-secondary)", margin: "0 0 10px",
-            textTransform: "uppercase", letterSpacing: "0.08em",
-          }}>
-            내 홍보주소
-          </p>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{
-              flex: 1,
-              fontFamily: "'Pretendard Variable','Pretendard',sans-serif",
-              fontSize: 14, fontWeight: 600,
-              color: "var(--accent-neon)",
-              wordBreak: "break-all",
-            }}>
-              {promoUrl}
-            </span>
+      {/* ── 홍보주소 카드 ── */}
+      <div className="pt-promo-card">
+        <p className="pt-promo-label">내 홍보주소</p>
+        <div className="pt-promo-url-row">
+          <span className="pt-promo-url-text">
+            {promoUrl ?? "주소 불러오는 중..."}
+          </span>
+          <button
+            onClick={() => promoUrl && navigator.clipboard?.writeText(promoUrl)}
+            disabled={!promoUrl}
+            className="pt-promo-copy-btn"
+            style={{
+              background: promoUrl ? "#059669" : "rgba(15,23,42,0.05)",
+              color: promoUrl ? "#ffffff" : "var(--text-secondary)",
+              cursor: promoUrl ? "pointer" : "default",
+            }}
+          >
+            복사
+          </button>
+        </div>
+      </div>
+
+      {/* ── 랜딩페이지 선택 ── */}
+      <div className="pt-section-header">
+        <h2>
+          랜딩페이지 선택{" "}
+          <span style={{ color: "var(--text-secondary)", fontWeight: 400 }}>
+            ({TOPICS.length}개)
+          </span>
+        </h2>
+      </div>
+
+      <div className="pt-topic-grid">
+        {TOPICS.map((topic) => {
+          const Icon = ICON_MAP[topic.icon];
+          const isSelected = selected === topic.slug;
+          const badge = topic.badge ? BADGE_COLOR[topic.badge] : null;
+
+          // 아이콘 배경·색상 — isSelected 런타임 → inline style 허용
+          const iconBg: string = isSelected
+            ? "rgba(5,150,105,0.12)"
+            : "rgba(15,23,42,0.05)";
+          const iconColor: string = isSelected
+            ? "#059669"
+            : "var(--text-secondary)";
+          const nameColor: string = isSelected
+            ? "#059669"
+            : "var(--text-primary)";
+
+          return (
             <button
-              onClick={() => navigator.clipboard?.writeText(promoUrl)}
-              style={{
-                flexShrink: 0, padding: "8px 18px", borderRadius: 999,
-                background: "var(--accent-neon)", color: "#010828",
-                border: "none",
-                fontFamily: "'Pretendard Variable','Pretendard',sans-serif",
-                fontSize: 13, fontWeight: 700, cursor: "pointer",
-              }}
+              key={topic.slug}
+              onClick={() => handleSelect(topic.slug)}
+              className={`pt-topic-card${isSelected ? " is-selected" : ""}`}
             >
-              복사
+              {/* 선택 체크 */}
+              {isSelected && (
+                <div className="pt-topic-check">
+                  <Check size={12} color="#ffffff" strokeWidth={3} />
+                </div>
+              )}
+
+              {/* 뱃지 — bg·color 런타임 → inline style 허용 */}
+              {badge && (
+                <span
+                  className="pt-topic-badge"
+                  style={{
+                    right: isSelected ? 36 : 10,
+                    background: badge.bg,
+                    color: badge.color,
+                  }}
+                >
+                  {topic.badge}
+                </span>
+              )}
+
+              {/* 아이콘 — 배경·색상 런타임 → inline style 허용 */}
+              <div className="pt-topic-icon" style={{ background: iconBg }}>
+                {Icon && (
+                  <Icon size={20} color={iconColor} strokeWidth={1.8} />
+                )}
+              </div>
+
+              {/* 텍스트 */}
+              <div>
+                {/* 이름 색상 런타임 → inline style 허용 */}
+                <p className="pt-topic-name" style={{ color: nameColor }}>
+                  {topic.title}
+                </p>
+                <p className="pt-topic-desc">{topic.desc}</p>
+              </div>
             </button>
-          </div>
-        </div>
+          );
+        })}
       </div>
 
-      {/* 랜딩페이지 선택 그리드 */}
-      <div style={{ marginBottom: 24 }}>
-        <p style={{
-          fontFamily: "'Pretendard Variable','Pretendard',sans-serif",
-          fontSize: 15, fontWeight: 700,
-          color: "var(--text-primary)", margin: "0 0 16px",
-        }}>
-          랜딩페이지 선택 <span style={{ color: "var(--text-secondary)", fontWeight: 400 }}>({TOPICS.length}개)</span>
-        </p>
-
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-          gap: 14,
-        }}>
-          {TOPICS.map((topic) => {
-            const Icon = ICON_MAP[topic.icon];
-            const isSelected = selected === topic.slug;
-            const badge = topic.badge ? BADGE_COLOR[topic.badge] : null;
-
-            return (
-              <button
-                key={topic.slug}
-                onClick={() => handleSelect(topic.slug)}
-                style={{
-                  position: "relative",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                  gap: 10,
-                  padding: "18px 16px",
-                  borderRadius: 14,
-                  border: isSelected
-                    ? "2px solid var(--accent-neon)"
-                    : "2px solid rgba(255,255,255,0.08)",
-                  background: isSelected
-                    ? "rgba(111,255,0,0.07)"
-                    : "rgba(255,255,255,0.03)",
-                  cursor: "pointer",
-                  textAlign: "left",
-                  transition: "all 0.15s ease",
-                  backdropFilter: "blur(8px)",
-                }}
-              >
-                {/* 선택 체크 */}
-                {isSelected && (
-                  <div style={{
-                    position: "absolute", top: 12, right: 12,
-                    width: 22, height: 22, borderRadius: "50%",
-                    background: "var(--accent-neon)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                  }}>
-                    <Check size={13} color="#010828" strokeWidth={3} />
-                  </div>
-                )}
-
-                {/* 뱃지 */}
-                {badge && (
-                  <span style={{
-                    position: "absolute", top: 12, right: isSelected ? 40 : 12,
-                    padding: "2px 8px", borderRadius: 999,
-                    fontSize: 11, fontWeight: 700,
-                    fontFamily: "'Pretendard Variable','Pretendard',sans-serif",
-                    background: badge.bg, color: badge.color,
-                  }}>
-                    {topic.badge}
-                  </span>
-                )}
-
-                {/* 아이콘 */}
-                <div style={{
-                  width: 44, height: 44, borderRadius: 12,
-                  background: isSelected
-                    ? "rgba(111,255,0,0.15)"
-                    : "rgba(255,255,255,0.07)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  flexShrink: 0,
-                }}>
-                  {Icon && (
-                    <Icon
-                      size={22}
-                      color={isSelected ? "var(--accent-neon)" : "var(--text-secondary)"}
-                      strokeWidth={1.8}
-                    />
-                  )}
-                </div>
-
-                {/* 텍스트 */}
-                <div>
-                  <p style={{
-                    fontFamily: "'Pretendard Variable','Pretendard',sans-serif",
-                    fontWeight: 700, fontSize: 14,
-                    color: isSelected ? "var(--accent-neon)" : "var(--text-primary)",
-                    margin: "0 0 4px",
-                    whiteSpace: "pre-line", lineHeight: 1.4,
-                  }}>
-                    {topic.title}
-                  </p>
-                  <p style={{
-                    fontFamily: "'Pretendard Variable','Pretendard',sans-serif",
-                    fontSize: 12, color: "var(--text-secondary)",
-                    margin: 0, lineHeight: 1.5,
-                  }}>
-                    {topic.desc}
-                  </p>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* 저장 버튼 */}
-      <div style={{
-        position: "sticky", bottom: 80,
-        display: "flex", justifyContent: "flex-end",
-        paddingBottom: 24,
-      }}>
+      {/* ── 저장 버튼 ── */}
+      <div className="pt-save-row">
         <button
           onClick={handleSave}
           disabled={saved}
+          className="pt-save-btn"
           style={{
-            padding: "14px 36px", borderRadius: 999,
-            background: saved ? "rgba(255,255,255,0.06)" : "var(--accent-neon)",
-            color: saved ? "var(--text-secondary)" : "#010828",
-            border: saved ? "1px solid rgba(255,255,255,0.1)" : "none",
-            fontFamily: "'Pretendard Variable','Pretendard',sans-serif",
-            fontSize: 16, fontWeight: 700,
+            background: saved ? "rgba(15,23,42,0.04)" : "#059669",
+            color: saved ? "var(--text-secondary)" : "#ffffff",
+            border: saved ? "1px solid rgba(15,23,42,0.12)" : "none",
             cursor: saved ? "default" : "pointer",
-            transition: "all 0.2s ease",
-            boxShadow: saved ? "none" : "0 4px 24px rgba(111,255,0,0.25)",
           }}
         >
           {saved ? "저장됨" : "선택 저장하기"}

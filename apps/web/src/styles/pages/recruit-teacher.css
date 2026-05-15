@@ -1,0 +1,468 @@
+/* ============================================================
+   recruit-teacher.css — 강사 모집 페이지 전용
+   접두사: rt-
+   콤보: 에메랄드 #34D399 (성장) + 블루 #60A5FA (학습)
+   ============================================================ */
+
+/* ── 래퍼 ─────────────────────────────────────────────────── */
+.rt-wrap {
+  min-height: 100vh;
+  color: var(--text-primary);
+}
+
+/* ── 공통 섹션 ───────────────────────────────────────────── */
+.rt-section {
+  padding: 100px 24px;
+}
+
+.rt-section-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.rt-eyebrow {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #34D399;
+  margin-bottom: 16px;
+}
+
+.rt-h2 {
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+.rt-h2-center {
+  text-align: center;
+}
+
+.rt-h2-sub {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 56ch;
+  margin-bottom: 56px;
+}
+
+/* ── 강사란? ─────────────────────────────────────────────── */
+.rt-what-section {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.rt-what-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.rt-what-card {
+  padding: 32px 28px;
+  border-radius: 20px;
+}
+
+.rt-what-icon {
+  font-size: 2rem;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.rt-what-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  word-break: keep-all;
+}
+
+.rt-what-desc {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  word-break: keep-all;
+}
+
+/* ── 성장 여정 ───────────────────────────────────────────── */
+.rt-journey-steps {
+  display: grid;
+  grid-template-columns: 1fr 32px 1fr 32px 1fr 32px 1fr;
+  align-items: center;
+  gap: 0;
+}
+
+.rt-journey-step {
+  padding: 28px 24px;
+  border-radius: 18px;
+  text-align: center;
+}
+
+.rt-journey-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(52, 211, 153, 0.15);
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  color: #34D399;
+  font-size: 0.9rem;
+  font-weight: 800;
+  margin: 0 auto 14px;
+}
+
+.rt-journey-num-active {
+  background: #34D399;
+  color: #010828;
+  border-color: #34D399;
+}
+
+.rt-journey-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  word-break: keep-all;
+}
+
+.rt-journey-desc {
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  word-break: keep-all;
+}
+
+.rt-journey-arrow {
+  text-align: center;
+  color: rgba(52, 211, 153, 0.5);
+  font-size: 1.4rem;
+}
+
+/* ── 강사 혜택 ───────────────────────────────────────────── */
+.rt-benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.rt-benefit-card {
+  padding: 36px 32px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rt-benefit-icon {
+  font-size: 2rem;
+}
+
+.rt-benefit-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.rt-benefit-desc {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  word-break: keep-all;
+}
+
+.rt-benefit-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(96, 165, 250, 0.12);
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  color: #60A5FA;
+  border-radius: 9999px;
+  padding: 4px 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  width: fit-content;
+}
+
+/* ── 이런 분을 찾습니다 ─────────────────────────────────── */
+.rt-who-section {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.rt-who-card {
+  padding: 48px 40px;
+  border-radius: 24px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.rt-who-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 36px;
+}
+
+.rt-who-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--text-primary);
+  word-break: keep-all;
+}
+
+.rt-who-check {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(52, 211, 153, 0.15);
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  color: #34D399;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 900;
+  margin-top: 2px;
+}
+
+.rt-who-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin-bottom: 28px;
+}
+
+.rt-who-preferred-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #60A5FA;
+  letter-spacing: 0.06em;
+  margin-bottom: 16px;
+}
+
+.rt-who-preferred-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.rt-who-star {
+  color: #60A5FA;
+  font-size: 0.9rem;
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+/* ── 신청 프로세스 ───────────────────────────────────────── */
+.rt-process-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.rt-process-step {
+  padding: 32px 28px;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.rt-process-step-num {
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: #34D399;
+  line-height: 1;
+  margin-bottom: 16px;
+  font-family: "Anton", sans-serif;
+}
+
+.rt-process-step-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.rt-process-step-desc {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  word-break: keep-all;
+}
+
+/* ── FAQ ─────────────────────────────────────────────────── */
+.rt-faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.rt-faq-item {
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.rt-faq-item summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 28px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  cursor: pointer;
+  word-break: keep-all;
+  user-select: none;
+}
+
+.rt-faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.rt-faq-chevron {
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  color: #34D399;
+  transition: transform 0.2s;
+}
+
+.rt-faq-item[open] .rt-faq-chevron {
+  transform: rotate(180deg);
+}
+
+.rt-faq-answer {
+  padding: 0 28px 22px;
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  word-break: keep-all;
+}
+
+/* ── CTA ─────────────────────────────────────────────────── */
+.rt-cta-section {
+  padding: 80px 24px 120px;
+  text-align: center;
+}
+
+.rt-cta-box {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 60px 40px;
+  border-radius: 28px;
+}
+
+.rt-cta-h2 {
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 900;
+  line-height: 1.3;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+  word-break: keep-all;
+}
+
+.rt-cta-sub {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  margin-bottom: 36px;
+  word-break: keep-all;
+}
+
+.rt-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+  padding: 0 2.4rem;
+  border-radius: 9999px;
+  background: #34D399;
+  color: #010828;
+  font-weight: 800;
+  font-size: 1.05rem;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.rt-cta-btn:hover {
+  background: #10B981;
+  transform: translateY(-2px);
+}
+
+.rt-cta-note {
+  margin-top: 16px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* ── 애니메이션 ──────────────────────────────────────────── */
+
+/* ── 반응형 ─────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .rt-what-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rt-journey-steps {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .rt-journey-arrow {
+    transform: rotate(90deg);
+    font-size: 1rem;
+  }
+
+  .rt-benefits-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rt-process-steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .rt-section {
+    padding: 72px 20px;
+  }
+
+  .rt-who-card {
+    padding: 32px 24px;
+  }
+
+  .rt-cta-box {
+    padding: 40px 24px;
+  }
+
+  .rt-faq-item summary {
+    padding: 18px 20px;
+  }
+
+  .rt-faq-answer {
+    padding: 0 20px 18px;
+  }
+}
+
+/* ── prefers-reduced-motion ─────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .rt-hero-badge-dot {
+    animation: none;
+  }
+  .rt-hero-cta,
+  .rt-cta-btn {
+    transition: none;
+  }
+}
