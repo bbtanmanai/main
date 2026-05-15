@@ -188,14 +188,22 @@ export default async function LandingPage({
     );
   }
 
+  type StandardLanding = {
+    variant: string;
+    hero: { eyebrow: string; heading: string; subheading: string; cta: string };
+    pain: string[];
+    proof: { value: string; desc: string };
+  };
+  const ld = landing as StandardLanding;
+
   return (
     <>
       <main>
         {/* 섹션 1: 히어로 */}
-        <LdHeroSection data={landing.hero} />
+        <LdHeroSection data={ld.hero} />
 
         {/* 섹션 2: 공감 포인트 */}
-        <LdProblemEmpathySection pains={landing.pain} />
+        <LdProblemEmpathySection pains={ld.pain} />
 
         {/* 마스코트 A — 솔루션 전환 직전, 오른쪽 등장 */}
         <LdMascotFloat side="right" />
